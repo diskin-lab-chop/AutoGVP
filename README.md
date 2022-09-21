@@ -1,1 +1,1 @@
-# VCFtoAVF-python
+# Pathogenicity assessment development
