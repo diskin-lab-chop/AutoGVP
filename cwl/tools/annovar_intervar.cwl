@@ -29,7 +29,7 @@ inputs:
   annovar_db: { type: File, doc: "Annovar Database with at minimum required resources to InterVar", inputBinding: { position: 0 }}
   annovar_db_str: { type: string, doc: "Name of dir created when annovar db is un-tarred", inputBinding: { position: 1 }}
   buildver:  { type: ['null', { type: enum, symbols: ["hg38","hg19","hg18"], name: "buildver" } ], doc: "Genome reference build version",
-    default: "hg38", inputBinding: { prefix: "--buildver" } }
+    default: "hg38", inputBinding: { position: 1, prefix: "--buildver" } }
   remove: { type: 'boolean?', doc: "Remove intermediate files", default: true,
     inputBinding: {position: 1, prefix: "--remove" } }
   output_basename: { type: string, doc: "String that will be used in the output filenames. Be sure to be consistent with this as InterVar will use this too",
