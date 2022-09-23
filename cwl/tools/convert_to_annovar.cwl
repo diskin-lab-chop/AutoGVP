@@ -1,4 +1,4 @@
-cwlVersion: v1.0
+cwlVersion: v1.2
 class: CommandLineTool
 id: kfdrc-annovar-convert
 label: Convert to ANNOVAR FMT
@@ -16,7 +16,7 @@ requirements:
 baseCommand: [perl]
 arguments:
   - position: 1
-    shellQuote: true
+    shellQuote: false
     valueFrom: >-
       /annovar/convert2annovar.pl
       --allsample
@@ -29,4 +29,4 @@ inputs:
   output_basename: { type: string, doc: "String that will be used in the output filenames" }
 
 outputs:
-  vcf_to_gz_avinput: { type: File, outputBinding: { glob: '*.avinput'} }
+  vcf_to_avinput: { type: File, outputBinding: { glob: '*.avinput'} }
