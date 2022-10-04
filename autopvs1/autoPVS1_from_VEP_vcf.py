@@ -10,13 +10,9 @@ import random
 import string
 from collections import namedtuple
 import pysam
-import pdb
-
+from read_data_mod import trans_gene, gene_trans, gene_alias
+from read_data_mod import transcripts_hg38
 from pvs1 import PVS1
-from cnv import PVS1CNV, CNVRecord
-from read_data import trans_gene, gene_trans, gene_alias
-from read_data import transcripts_hg38, genome_hg38
-# from read_data import transcripts_hg19, transcripts_hg38, genome_hg19, genome_hg38
 from utils import get_transcript, vep_consequence_trans, VCFRecord
 
 
@@ -48,14 +44,17 @@ class AutoPVS1:
 def main():
     genome_version = sys.argv[1]
     in_vcf = pysam.VariantFile(sys.argv[2], threads=8)
+
+    # Use VEP PICK field to choose a representative transcript
     csq_fields = in_vcf.header.info['CSQ'].description.replace("Consequence annotations from Ensembl VEP. Format: ", "").split("|")
 
     # get index of PICK field
     p_idx = csq_fields.index("PICK")
 
-    print ("vcf_id",'SYMBOL','Feature','trans_name','strength_raw', 'strength','criterion', sep="\t")
+    print ("vcf_id",'SYMBOL','Feature','trans_name','consequence', 'strength_raw', 'strength','criterion', sep="\t")
 
     for record in in_vcf.fetch():
+        # Parse CSQ for PICKed transcript
         picked_csqs = []
         try:
             for csq in record.info['CSQ']:
@@ -68,24 +67,23 @@ def main():
             continue
         if len(picked_csqs) > 1:
             sys.stderr.write("WARN: More than 1 PICK detected\n" + "\n".join(picked_csqs) + "\n")
+        # Populate dict with CSQ key-value pairs
         info = {}
         first_picked = picked_csqs[0].split('|')
         for i in range(len(first_picked)):
             info[csq_fields[i]] = first_picked[i]
             # adjust this filed to match behavior of original auto pvs1 script
             if csq_fields[i] == 'HGVSp':
-                info[csq_fields[i]] = first_picked[i].replace('%3D', '='
+                info[csq_fields[i]] = first_picked[i].replace('%3D', '=')
 
         vcfrecord = VCFRecord(record.contig.replace('chr', ''), str(record.pos), record.ref, record.alts[0])
         transcript = get_transcript(info['Feature'], transcripts_hg38)
 
         consequence = vep_consequence_trans(info['Consequence'])
         vcf_id = "-".join([vcfrecord.chrom, str(vcfrecord.pos), vcfrecord.ref, vcfrecord.alt])
-        
         if consequence in lof_type and transcript:
             lof_pvs1 = PVS1(vcfrecord, consequence, info['HGVSc'], info['HGVSp'], transcript, genome_version)
             trans_name = lof_pvs1.transcript.full_name
-
             print(vcf_id,
                   info['SYMBOL'],
                   info['Feature'],
