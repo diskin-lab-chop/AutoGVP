@@ -4,12 +4,11 @@
 # datetime: 2019/6/27 21:54
 
 import re
+from read_data_mod import pvs1_levels
+from read_data_mod import genome_hg38, domain_hg38, hotspot_hg38, curated_region_hg38, exon_lof_popmax_hg38, pathogenic_hg38
 from strength import Strength
 from splicing import Splicing
 from utils import contained_in_bed
-from read_data import pvs1_levels
-# from read_data import genome_hg19, domain_hg19, hotspot_hg19, curated_region_hg19, exon_lof_popmax_hg19, pathogenic_hg19
-from read_data import genome_hg38, domain_hg38, hotspot_hg38, curated_region_hg38, exon_lof_popmax_hg38, pathogenic_hg38
 
 
 class PVS1:
