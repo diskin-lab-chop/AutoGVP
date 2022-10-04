@@ -6,3 +6,8 @@ data/hg19.fa
 data/hg19.fa.fai
 data/hg38.fa
 data/hg38.fa.fai
+autopvs1/*.fa*
+
+*.pyc
+# VS Code
+.vscode
