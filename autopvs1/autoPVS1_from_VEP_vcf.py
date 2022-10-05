@@ -17,7 +17,6 @@ from read_data_mod import trans_gene, gene_trans, gene_alias
 from read_data_mod import transcripts_hg38
 from pvs1 import PVS1
 from utils import get_transcript, vep_consequence_trans, VCFRecord
-from _version import __version__
 __version__ = 'v0.2.0'
 
 
@@ -48,7 +47,7 @@ class AutoPVS1:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_vcf', help='VCF classify')
+    parser.add_argument('--vep_vcf', help='VCF classify')
     parser.add_argument('--genome_version', help='Currently only hg38 or GRCh38 supported')
     parser.add_argument('--version', action='version',
                         version='%(prog)s {version}'.format(version=__version__))
@@ -56,7 +55,7 @@ def main():
     args = parser.parse_args()
 
     genome_version = args.genome_version
-    in_vcf = pysam.VariantFile(args.input_vcf, threads=8)
+    in_vcf = pysam.VariantFile(args.vep_vcf, threads=8)
 
     # Use VEP PICK field to choose a representative transcript
     csq_fields = in_vcf.header.info['CSQ'].description.replace("Consequence annotations from Ensembl VEP. Format: ", "").split("|")
