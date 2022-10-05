@@ -13,12 +13,10 @@ from pyhgvs.utils import read_transcripts
 from utils import read_morbidmap, read_pathogenic_site, read_pvs1_levels, create_bed_dict, read_gene_alias
 
 
-BinPath = os.path.split(os.path.realpath(__file__))[0]
+BinPath = os.getcwd()
 
 config = configparser.ConfigParser()
 config.read(BinPath+'/config.ini')
-
-vep_cache = config['DEFAULT']['vep_cache']
 
 for top in config:
     for key in config[top]:
