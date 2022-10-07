@@ -26,7 +26,7 @@ inputs:
   intervar_db: { type: File, doc: "InterVar Database from git repo + mim_genes.txt" }
   intervar_db_str: { type: 'string?', doc: "Name of dir created when intervar db is un-tarred", default: "intervardb" }
   # autoPVS1
-  autopvs1_db: { type: File, doc: "Annovar Database with at minimum required resources to InterVar"}
+  autopvs1_db: { type: File, doc: "git repo files plus a user-provided fasta reference"}
   autopvs1_db_str: { type: 'string?', doc: "Name of dir created when annovar db is un-tarred", default: "data"}
 
 outputs:
