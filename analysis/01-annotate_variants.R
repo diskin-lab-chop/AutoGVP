@@ -10,7 +10,6 @@
 
 suppressPackageStartupMessages({
   library("tidyverse")
-  library("dplyr")
 })
 
 # Get `magrittr` pipe
