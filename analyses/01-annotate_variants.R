@@ -5,16 +5,16 @@
 # This script annotates variants based on clinVar, and recomputes score and call 
 # for intervar and autoPVS1
 #
-# usage: Rscript 01-annotate_variants.R
+# usage: Rscript 01-annotate_variants.R--vcf <vcf file> --intervar <intervar file> --autopvs1 <autopvs1 file>
+#
 ################################################################################
 
 suppressPackageStartupMessages({
   library("tidyverse")
   library("optparse")
-  
-})
+} )
 
-# Get `magrittr` pipe
+#Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
 ## set up directories
@@ -39,10 +39,6 @@ input_clinVar_file <-  opt$vcf
 input_intervar_file <- opt$intervar
 input_autopvs1_file <- opt$autopvs1
 
-## set up directories
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-analysis_dir <- file.path(root_dir, "analyses")
-
 ## retrieve and store clinVar input file into table
 clinVar_results  <-  read_tsv(input_clinVar_file, comment = "#",
                               col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"))
@@ -57,7 +53,6 @@ clinvar_results <- clinVar_results %>%
                  ifelse(grepl('CLNREVSTAT\\=practice_guideline', INFO), "4",
                  ifelse(grepl('CLNREVSTAT\\=criteria_provided,_conflicting_interpretations', INFO), "Needs Resolving", "0")
                                       )))),
-        
           ## extract the calls and put in own column
          Call = str_match(INFO, "CLNSIG\\=(\\w+)\\;")[, 2])
 
@@ -70,10 +65,7 @@ additional_intervar_cases <- clinvar_results %>% filter(Stars == "0", Call!="Ben
 
 ## filter only those variant entries that need an InterVar run (No Star)
 entries_for_intervar <- clinvar_results %>%
-  filter(Stars == "0", na.rm = TRUE) %>% bind_rows((additional_intervar_cases))
-
-clinvar_results %>%
-  filter(Stars == "0" & Call != "Benign")
+                        filter(Stars == "0", na.rm = TRUE) %>% bind_rows((additional_intervar_cases))
 
 ## get vcf ids that need intervar run
 vcf_to_run_intervar <- entries_for_intervar$vcf_id
@@ -96,35 +88,52 @@ intervar_results <- intervar_results %>%
 combined_tab_for_intervar <- autopvs1_results %>%
   inner_join(intervar_results, by="vcf_id") %>%
   filter(vcf_id %in% entries_for_intervar$vcf_id) %>% 
+  
+  ## add column for individual scores that will be re-calculated if we need to adjust using autoPVS1 result
+  mutate(evidencePVS1 = str_match(`InterVar: InterVar and Evidence`, "PVS1\\=(\\d+)\\s")[, 2], 
+         evidencePS = str_match(`InterVar: InterVar and Evidence`, "PS\\=(\\d+)\\s")[, 2], 
+         evidencePM = str_match(`InterVar: InterVar and Evidence`, "PM\\=(\\d+)\\s")[, 2], 
+         evidencePP = str_match(`InterVar: InterVar and Evidence`, "PP\\=(\\d+)\\s")[, 2]) %>% 
+         replace(is.na(.), "0")
 
-  ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated call
+  combined_tab_for_intervar <- combined_tab_for_intervar %>% 
+  
+  ## if PVS1=0, take intervar call
+  mutate(final_call = if_else(evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2], "recalculate")) %>%
+  
+  ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call 
   #if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
-  mutate(score = case_when(criterion == "NF1" | criterion == "SS1" |
-                             criterion == "DEL1" | criterion == "DEL2" |
-                             criterion == "DUP1" | criterion == "IC1" ~  "PVS1=1",
-                           TRUE ~ NA_character_)) %>%
+  mutate(evidencePVS1 = if_else( (criterion == "NF1" | criterion == "SS1" |
+                                   criterion == "DEL1" | criterion == "DEL2" |
+                                   criterion == "DUP1" | criterion == "IC1") & evidencePVS1 == 1, "1", evidencePVS1)) %>% 
 
-#if criterion is NF3|NF5|SS3|SS5|SS8|SS10|DEL8|DEL6|DEL10|DUP3|IC2 then PVS1 = 0; PS = PS+1
-mutate(score = case_when(criterion == "NF3"  | criterion == "NF5" |
-                           criterion == "SS3" | criterion == "SS5" |
-                           criterion == "SS8" | criterion =="SS10" |
-                           criterion =="DEL8" | criterion =="DEL6" |
-                           criterion =="DEL10" | criterion =="DUP3" |
-                           criterion =="IC2" ~ "PVS1=0 PS=PS+1",
-                         TRUE ~ as.character(score))) %>%
+  #if criterion is NF3|NF5|SS3|SS5|SS8|SS10|DEL8|DEL6|DEL10|DUP3|IC2 then PVS1 = 0; PS = PS+1
+  mutate(evidencePVS1 = if_else(  (criterion == "NF3"  | criterion == "NF5" |
+                                   criterion == "SS3" | criterion == "SS5" |
+                                   criterion == "SS8" | criterion =="SS10" |
+                                   criterion =="DEL8" | criterion =="DEL6" |
+                                   criterion =="DEL10" | criterion =="DUP3" |
+                                   criterion =="IC2") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
+  mutate(evidencePS =  if_else(   (criterion == "NF3"  | criterion == "NF5" |
+                                  criterion == "SS3" | criterion == "SS5" |
+                                  criterion == "SS8" | criterion =="SS10" |
+                                  criterion =="DEL8" | criterion =="DEL6" |
+                                  criterion =="DEL10" | criterion =="DUP3" |
+                                  criterion =="IC2") & evidencePVS1 == 1, as.numeric(evidencePS)+1, as.double(evidencePS))) %>%
+          
+  #if criterion is NF6|SS6|SS9|DEL7|DEL11|IC3 then PVS1 = 0; PM = PM+1;
+  mutate(evidencePVS1 = if_else( (criterion == "NF6" | criterion == "SS6" |
+                                  criterion == "SS9" | criterion == "DEL7" |
+                                  criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, "0", evidencePVS1)) %>% 
+  mutate(evidencePM =   if_else( (criterion == "NF6" | criterion == "SS6" |
+                                  criterion == "SS9" | criterion == "DEL7" |
+                                  criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, as.numeric(evidencePM)+1, as.double(evidencePM))) %>% 
+  
+  #if criterion is IC4 then PVS1 = 0; PP = PP+1;
+  mutate(evidencePVS1 = if_else((criterion == "IC4") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
+  mutate(evidencePP   = if_else((criterion == "IC4") & evidencePVS1 == 1, as.numeric(evidencePP)+1, as.double(evidencePP)) %>%
+    
+  #if criterion is na then PVS1 = 0;
+  mutate(evidencePVS1 = if_else( (criterion == "na") & evidencePVS1 == 1, 0, evidencePVS1))
 
-#if criterion is NF6|SS6|SS9|DEL7|DEL11|IC3 then PVS1 = 0; PM = PM+1;
-mutate(score = case_when(criterion == "NF6" | criterion == "SS6" |
-                           criterion == "SS9" | criterion == "DEL7" |
-                           criterion == "DEL11" | criterion == "IC3" ~ "PVS1=1 PM=PM+1",
-                         TRUE ~ as.character(score))) %>%
-
-#if criterion is IC4 then PVS1 = 0; PP = PP+1;
-mutate(score = case_when(criterion == "IC4" ~ "PVS1=0 PP=PP+1",
-                         TRUE ~ as.character(score))) %>%
-
-#if criterion is na then PVS1 = 0;
-mutate(score = case_when(criterion == "na" ~ "PVS1=0",
-                         TRUE ~ as.character(score)))
-
-## add new call based on new scoring metric
+## add new call based on new re-calculated scores 
