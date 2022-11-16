@@ -12,6 +12,7 @@
 suppressPackageStartupMessages({
   library("tidyverse")
   library("optparse")
+  library("vroom")
 } )
 
 #Get `magrittr` pipe
@@ -39,9 +40,11 @@ input_clinVar_file <-  opt$vcf
 input_intervar_file <- opt$intervar
 input_autopvs1_file <- opt$autopvs1
 
-## retrieve and store clinVar input file into table
+## retrieve and store clinVar input file into table data.table::fread() 
 clinVar_results  <-  read_tsv(input_clinVar_file, comment = "#",
-                              col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"))
+                             col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"))
+
+clinVar_results  <-  vroom(input_clinVar_file, comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"))
 
 ## add column "vcf_id" to clinVar results in order to cross-reference with intervar and autopvs1 table
 clinvar_results <- clinVar_results %>%
@@ -54,16 +57,16 @@ clinvar_results <- clinVar_results %>%
                  ifelse(grepl('CLNREVSTAT\\=criteria_provided,_conflicting_interpretations', INFO), "Needs Resolving", "0")
                                       )))),
           ## extract the calls and put in own column
-         Call = str_match(INFO, "CLNSIG\\=(\\w+)\\;")[, 2])
+         final_call = str_match(INFO, "CLNSIG\\=(\\w+)\\;")[, 2])
 
 ## filter only those variants that need consensus call
 entries_for_cc <- clinvar_results %>%
           filter(Stars == "Needs Resolving", na.rm = TRUE)
 
-##one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP call must also go to intervar
-additional_intervar_cases <- clinvar_results %>% filter(Stars == "0", Call!="Benign",Call!="Pathogenic", Call != "Likely_benign",Call!="Likeley_pathogenic")
+## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP call must also go to intervar
+additional_intervar_cases <- clinvar_results %>% filter(Stars == "1", final_call!="Benign",final_call!="Pathogenic", final_call != "Likely_benign",final_call!="Likeley_pathogenic")
 
-## filter only those variant entries that need an InterVar run (No Star)
+## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
 entries_for_intervar <- clinvar_results %>%
                         filter(Stars == "0", na.rm = TRUE) %>% bind_rows((additional_intervar_cases))
 
@@ -80,9 +83,9 @@ intervar_results    <-  read_tsv(input_intervar_file, comment = "#", col_names =
 ## autopvs1 results and file
 autopvs1_results    <-  read_tsv(input_autopvs1_file, comment = "#", col_names = c("vcf_id","SYMBOL","Feature","trans_name","consequence","strength_raw","strength","criterion"))
 
-## add column "vcf_id" to intervar resultsin order to match with autopvs1 and clinvar table
+## add column "vcf_id" to intervar results in order to match with autopvs1 and clinvar table
 intervar_results <- intervar_results %>%
-  mutate(vcf_id = str_remove_all(paste (Chr,"-",Start,"-",Ref,"-",Alt), " "))
+                    mutate(vcf_id = str_remove_all(paste (Chr,"-",Start,"-",Ref,"-",Alt), " "))
 
 ## join all three tables together based on variant id that need intervar run
 combined_tab_for_intervar <- autopvs1_results %>%
@@ -90,15 +93,15 @@ combined_tab_for_intervar <- autopvs1_results %>%
   filter(vcf_id %in% entries_for_intervar$vcf_id) %>% 
   
   ## add column for individual scores that will be re-calculated if we need to adjust using autoPVS1 result
-  mutate(evidencePVS1 = str_match(`InterVar: InterVar and Evidence`, "PVS1\\=(\\d+)\\s")[, 2], 
-         evidencePS = str_match(`InterVar: InterVar and Evidence`, "PS\\=(\\d+)\\s")[, 2], 
-         evidencePM = str_match(`InterVar: InterVar and Evidence`, "PM\\=(\\d+)\\s")[, 2], 
-         evidencePP = str_match(`InterVar: InterVar and Evidence`, "PP\\=(\\d+)\\s")[, 2]) %>% 
-         replace(is.na(.), "0")
-
-  combined_tab_for_intervar <- combined_tab_for_intervar %>% 
+  mutate(evidencePVS1 = str_match(`InterVar: InterVar and Evidence`, "PVS1\\=(\\d+)\\s")[, 2]) %>% 
+  mutate(evidenceBA1 = str_match(`InterVar: InterVar and Evidence`, "BA1\\=(\\d+)\\s")[, 2]) %>% 
+  mutate( evidencePS = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sPS\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>% 
+  mutate( evidencePM = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sPM\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>% 
+  mutate( evidencePP = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sPP\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>% 
+  mutate( evidenceBS = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sBS\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>% 
+  mutate( evidenceBP = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sBP\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>% 
   
-  ## if PVS1=0, take intervar call
+  ## if PVS1=0, take intervar call as final call
   mutate(final_call = if_else(evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2], "recalculate")) %>%
   
   ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call 
@@ -114,6 +117,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
                                    criterion =="DEL8" | criterion =="DEL6" |
                                    criterion =="DEL10" | criterion =="DUP3" |
                                    criterion =="IC2") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
+  
   mutate(evidencePS =  if_else(   (criterion == "NF3"  | criterion == "NF5" |
                                   criterion == "SS3" | criterion == "SS5" |
                                   criterion == "SS8" | criterion =="SS10" |
@@ -125,15 +129,74 @@ combined_tab_for_intervar <- autopvs1_results %>%
   mutate(evidencePVS1 = if_else( (criterion == "NF6" | criterion == "SS6" |
                                   criterion == "SS9" | criterion == "DEL7" |
                                   criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, "0", evidencePVS1)) %>% 
+  
   mutate(evidencePM =   if_else( (criterion == "NF6" | criterion == "SS6" |
                                   criterion == "SS9" | criterion == "DEL7" |
                                   criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, as.numeric(evidencePM)+1, as.double(evidencePM))) %>% 
   
   #if criterion is IC4 then PVS1 = 0; PP = PP+1;
   mutate(evidencePVS1 = if_else((criterion == "IC4") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
-  mutate(evidencePP   = if_else((criterion == "IC4") & evidencePVS1 == 1, as.numeric(evidencePP)+1, as.double(evidencePP)) %>%
+  mutate(evidencePP   = if_else((criterion == "IC4") & evidencePVS1 == 1, as.numeric(evidencePP)+1, as.double(evidencePP))) %>%
     
   #if criterion is na then PVS1 = 0;
-  mutate(evidencePVS1 = if_else( (criterion == "na") & evidencePVS1 == 1, 0, evidencePVS1))
+  mutate(evidencePVS1 = if_else( (criterion == "na") & evidencePVS1 == 1, 0, as.double(evidencePVS1)))
 
-## add new call based on new re-calculated scores 
+## add new call based on new re-calculated scores (New ClinSig)
+# Pathogenic - Criteria 1
+# (i) 1 Very strong (PVS1) AND
+# (a) ≥1 Strong (PS1–PS4) OR
+# (b) ≥2 Moderate (PM1–PM6) OR
+# (c) 1 Moderate (PM1–PM6) and 1 supporting (PP1–PP5) OR
+# (d) ≥2 Supporting (PP1–PP5)
+combined_tab_for_intervar <- combined_tab_for_intervar %>% 
+  mutate(final_call = if_else( (evidencePVS1 == 1) & 
+                               (evidencePS   >= 1) |
+                               (evidencePM   >=2 ) | 
+                               (evidencePM   >= 1 & evidencePP ==1) | 
+                               (evidencePP   >=2 ), "Pathogenic", "")) %>%
+                            
+# Pathogenic - Criteria 2
+# (ii) ≥2 Strong (PS1–PS4) OR
+  mutate(final_call = if_else( (evidencePS >= 2), "Pathogenic", "Uncertain significance"))  %>%
+           
+# Pathogenic - Criteria 3
+# (iii) 1 Strong (PS1–PS4) AND
+# (a)≥3 Moderate (PM1–PM6) OR 
+# (b)2 Moderate (PM1–PM6) AND ≥2 Supporting (PP1–PP5) OR
+# (c)1 Moderate (PM1–PM6) AND ≥4 supporting (PP1–PP5)
+  mutate(final_call = if_else( (evidencePS == 1) & 
+                                 (evidencePM   >= 3) |
+                                 (evidencePM   ==2 & evidencePP >=2 ) | 
+                                 (evidencePM == 1 & evidencePP >=4 ), "Pathogenic", "Uncertain significance")) %>%
+           
+
+# Likely pathogenic
+# (i) 1 Very strong (PVS1) AND 1 moderate (PM1– PM6) OR
+# (ii) 1 Strong (PS1–PS4) AND 1–2 moderate (PM1–PM6) OR
+# (iii) 1 Strong (PS1–PS4) AND ≥2 supporting (PP1–PP5) OR
+# (iv) ≥3 Moderate (PM1–PM6) OR
+# (v) 2 Moderate (PM1–PM6) AND ≥2 supporting (PP1–PP5) OR
+# (vi) 1 Moderate (PM1–PM6) AND ≥4 supporting (PP1–PP5)
+  mutate(final_call = if_else( (evidencePVS1 == 1 & evidencePM == 1) |  
+                             (evidencePS==1 & evidencePM >= 1) |
+                             (evidencePS==1 & evidencePP >=2 ) | 
+                             (evidencePM >= 3) | 
+                             (evidencePM ==2 & evidencePP>=2 ) | 
+                             (evidencePM == 1 & evidencePP>=4), "Likely Pathogenic", "Uncertain significance")) %>%
+  
+# Benign
+# (i) 1 Stand-alone (BA1) OR
+# (ii) ≥2 Strong (BS1–BS4)
+  mutate(final_call = if_else( (evidenceBA1 == 1) | 
+                             (evidenceBS   >= 2), "Pathogenic", "Uncertain significance")) %>%
+
+  # Likely Benign
+# (i) 1 Strong (BS1–BS4) and 1 supporting (BP1– BP7) OR
+# (ii) ≥2 Supporting (BP1–BP7)
+  mutate(final_call = if_else( (evidenceBS == 1 & evidenceBP == 1) | 
+                             (evidenceBP   >= 2), "Pathogenic", "Uncertain significance"))
+  
+# Uncertain significance
+# (i) non of the criteria were met.
+# (ii) Benign and pathogenic are contradictory.
+
