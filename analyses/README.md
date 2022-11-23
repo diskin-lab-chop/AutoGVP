@@ -13,7 +13,8 @@ docker run --platform linux/amd64 --name pathogenecity_anno -d -v $PWD:/home/rst
 ```
 docker exec -ti pathogenecity_anno bash
 ```
-### Get data files
+
+## Get data files
 
 <br>**Run shell script to get dummy test files**
 ```
