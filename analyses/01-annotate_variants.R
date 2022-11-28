@@ -61,10 +61,6 @@ filter_gnomad_var    <- opt$gnomad_variable
 filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
 
-## testing purpose s##
-input_clinVar_file <- file.path(analysis_dir, "input/40dad0ba-f40c-4d87-aae6-d18864167b77.gatk_germline_single.chr17_chr10_chr11.vcf")
-input_intervar_file <- file.path(analysis_dir, "input/706d8be0-a723-4205-9920-a5954efc6793.hg38_multianno.txt.chr17_chr10_chr11.intervar")
-input_autopvs1_file <- file.path(analysis_dir, "input/706d8be0-a723-4205-9920-a5954efc6793.autopvs1.chr17_chr10_chr11.tsv")
 
 ## retrieve clinvar vcf if specified and download to input folder
 if(is.character(clinvar_ver)){
@@ -74,12 +70,12 @@ if(is.character(clinvar_ver)){
 }  
 
 ## function for gnomAD, variant af and depth filtering 
-gnomad_filtering <- function(clinVar_results) {
-  clinVar_results <- clinVar_results %>% 
+gnomad_filtering <- function(clinvar_vcf) {
+  clinvar_vcf <- clinvar_vcf %>% 
   mutate(variant_depth = if_else( as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])  > filter_variant_depth, "PASS","FAIL")) %>% 
   mutate(gnomad_af     = if_else( as.numeric( str_match(INFO, "gnomad_3_1_1_AF_non_cancer\\=(0\\.\\d+)\\;")[,2])  > filter_variant_af, "PASS","FAIL")) %>% 
   mutate(variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL"))
-  return(clinVar_results)
+  return(clinvar_vcf)
 }
 
 ## retrieve and store clinVar input file into table data.table::fread()
