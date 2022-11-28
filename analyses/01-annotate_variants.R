@@ -54,11 +54,24 @@ opt <- parse_args(OptionParser(option_list = option_list))
 input_clinVar_file  <-  opt$vcf
 input_intervar_file <- opt$intervar
 input_autopvs1_file <- opt$autopvs1
+clinvar_ver = opt$clinvar
 
 ## filters for gnomAD
 filter_gnomad_var    <- opt$gnomad_variable
 filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
+
+## testing purpose s##
+input_clinVar_file <- file.path(analysis_dir, "input/40dad0ba-f40c-4d87-aae6-d18864167b77.gatk_germline_single.chr17_chr10_chr11.vcf")
+input_intervar_file <- file.path(analysis_dir, "input/706d8be0-a723-4205-9920-a5954efc6793.hg38_multianno.txt.chr17_chr10_chr11.intervar")
+input_autopvs1_file <- file.path(analysis_dir, "input/706d8be0-a723-4205-9920-a5954efc6793.autopvs1.chr17_chr10_chr11.tsv")
+
+## retrieve clinvar vcf if specified and download to input folder
+if(is.character(clinvar_ver)){
+  ## generate full path to download
+  clinvar_ftp_path <- paste("ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2022/",clinvar_ver,".vcf.gz", sep="")
+  system(paste("wget -l 3", clinvar_ftp_path, "-P ",input_dir), wait = TRUE)
+}  
 
 ## function for gnomAD, variant af and depth filtering 
 gnomad_filtering <- function(clinVar_results) {
@@ -228,4 +241,7 @@ combined_tab_for_intervar <- combined_tab_for_intervar %>%
 # Uncertain significance
 # (i) non of the criteria were met.
 # (ii) Benign and pathogenic are contradictory.
+
+
+  
 
