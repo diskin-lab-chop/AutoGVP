@@ -61,6 +61,9 @@ filter_gnomad_var    <- opt$gnomad_variable
 filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
 
+output_tab_file <- file.path(analysis_dir, "annotations_report.tsv") 
+output_tab_abr_file  <- file.path(analysis_dir, "annotations_report.abridged.tsv")
+
 
 ## retrieve clinvar vcf if specified and download to input folder
 if(is.character(clinvar_ver)){
@@ -79,7 +82,7 @@ gnomad_filtering <- function(clinvar_vcf) {
 }
 
 ## retrieve and store clinVar input file into table data.table::fread()
-clinVar_results  <-  vroom(input_clinVar_file, comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"))
+clinVar_results  <-  vroom(input_clinVar_file, comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = FALSE)
 
 ## filter for gnomad, read depth and AF
 clinVar_results <- gnomad_filtering(clinVar_results)
@@ -238,6 +241,10 @@ combined_tab_for_intervar <- combined_tab_for_intervar %>%
 # (i) non of the criteria were met.
 # (ii) Benign and pathogenic are contradictory.
 
+write.table(combined_tab_for_intervar, output_tab_file, append = FALSE, sep = "\t", dec = ".",
+            row.names = FALSE, quote = FALSE, col.names = TRUE)
 
-  
+#results_tab_abridged <- combined_tab_for_intervar %>% select(vcf_id,SYMBOL,Feature, trans_name,gnomad_af, variant_depth, variant_af, final_call)
 
+#write.table(results_tab_abridged, output_tab_abr_file, append = FALSE, sep = "\t", dec = ".",
+            row.names = FALSE, quote = FALSE, col.names = TRUE)
