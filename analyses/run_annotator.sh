@@ -81,6 +81,13 @@ while getopts ":v:i:a:w:g:f:v:r:h" arg; do
 done
 
 
+if [[ "$workflow_type" == 'user' && -z ${gnomad_var} ]]
+then
+  echo "ERROR: if workflow type is non-cavatica, must provide gnomAD_var (ie. 'gnomad_3_1_1_AF_non_cancer') ";
+  exit 1;
+fi
+
+## print params and values
 echo "vcf = $vcf_file"
 echo "intervar = $intervar_file"
 echo "autopvs1 = $autopvs1_file"
@@ -91,22 +98,9 @@ echo "variant_depth_filter = $variant_depth_filter"
 echo "variant_AF = $variant_AF"
 echo "workflow_type = $workflow_type"
 
-if [[ "$workflow_type" == 'user' && -z ${gnomad_var} ]]
-then
-  echo "ERROR: if workflow type is non-cavatica, must provide gnomAD_var (ie. 'gnomad_3_1_1_AF_non_cancer') ";
-  exit 1;
-fi
-
 ## if workflow is cavatica run Rscript with this cmd
 if [ "$workflow_type" == 'cavatica' ]
 then
   echo "Rscript 01-annotate_variants.R --vcf $vcf_file --intervar intervar_file --autopvs1 autopvs1_file --clinvar $clinvar_version --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af variant_AF"
   pwd
 fi
-
-##default file paths for histology and rmats output
-#hist_file="../../data/v19_plus_20210311_pnoc_rna.tsv"
-#rmats_file="../../data/merge_rMATS_splicing.SE.single.tsv"
-
-## run script
-#Rscript 01-annotate_variants.R --vcf input/clinvar_dummy.nih.norm.annot.chr17.vcf --intervar clinvar_input_wf_test.hg38_multianno.chr17.txt.intervar --autopvs1 clinvar_dummy.nih.autopvs1.chr17.tsv
