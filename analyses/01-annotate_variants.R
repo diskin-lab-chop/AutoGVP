@@ -72,20 +72,28 @@ if(is.character(clinvar_ver)){
   system(paste("wget -l 3", clinvar_ftp_path, "-P ",input_dir), wait = TRUE)
 }  
 
-## function for gnomAD, variant af and depth filtering 
-gnomad_filtering <- function(clinvar_vcf) {
-  clinvar_vcf <- clinvar_vcf %>% 
-  mutate(variant_depth = if_else( as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])  > filter_variant_depth, "PASS","FAIL")) %>% 
-  mutate(gnomad_af     = if_else( as.numeric( str_match(INFO, "gnomad_3_1_1_AF_non_cancer\\=(0\\.\\d+)\\;")[,2])  > filter_variant_af, "PASS","FAIL")) %>% 
-  mutate(variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL"))
-  return(clinvar_vcf)
-}
+# ## function for gnomAD, variant af and depth filtering 
+# gnomad_filtering <- function(clinvar_vcf) {
+#   clinvar_vcf <- clinvar_vcf %>% 
+#   mutate(variant_depth = if_else( as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])  > filter_variant_depth, "PASS","FAIL")) %>% 
+#   mutate(gnomad_af     = if_else( as.numeric( str_match(INFO, "gnomad_3_1_1_AF_non_cancer\\=(0\\.\\d+)\\;")[,2])  > filter_variant_af, "PASS","FAIL")) %>% 
+#   mutate(variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL"))
+#   return(clinvar_vcf)
+# }
 
 ## retrieve and store clinVar input file into table data.table::fread()
 clinVar_results  <-  vroom(input_clinVar_file, comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = FALSE)
 
 ## filter for gnomad, read depth and AF
-clinVar_results <- gnomad_filtering(clinVar_results)
+#clinVar_results <- gnomad_filtering(clinVar_results)
+
+# ## function for gnomAD, variant af and depth filtering 
+clinVar_results <- clinVar_results %>% 
+   mutate(variant_depth = if_else( as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])  > filter_variant_depth, "PASS","FAIL")) %>% 
+   mutate(gnomad_af     = if_else( as.numeric( str_match(INFO, "gnomad_3_1_1_AF_non_cancer\\=(0\\.\\d+)\\;")[,2])  > filter_variant_af, "PASS","FAIL")) %>% 
+   mutate(variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL"))
+   #return(clinvar_vcf)
+# }
 
 ## add column "vcf_id" to clinVar results in order to cross-reference with intervar and autopvs1 table
 clinvar_results <- clinVar_results %>%
@@ -247,4 +255,4 @@ write.table(combined_tab_for_intervar, output_tab_file, append = FALSE, sep = "\
 #results_tab_abridged <- combined_tab_for_intervar %>% select(vcf_id,SYMBOL,Feature, trans_name,gnomad_af, variant_depth, variant_af, final_call)
 
 #write.table(results_tab_abridged, output_tab_abr_file, append = FALSE, sep = "\t", dec = ".",
-            row.names = FALSE, quote = FALSE, col.names = TRUE)
+#            row.names = FALSE, quote = FALSE, col.names = TRUE)
