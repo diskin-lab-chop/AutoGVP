@@ -35,11 +35,17 @@ usage() {
   1>&2; exit 1; }
 
 ## default values for options
+clinvar_version="clinvar_20211225"
 genomAD_AF_filter=0.001
 variant_depth_filter=15
 variant_AF=.2
 workflow_type="user"
-clinvar_version="clinvar_20211225"
+
+## if cavatica worklflow save gnomad variable as "gnomad_3_1_1_AF_non_cancer"
+if [ "$workflow_type" == 'cavatica' ]
+then
+  gnomad_var="gnomad_3_1_1_AF_non_cancer"
+fi
 
 while getopts ":v:i:a:w:g:f:v:r:h" arg; do
     case "$arg" in
@@ -86,7 +92,7 @@ fi
 ftp_path="ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2022/"$clinvar_version".vcf.gz"
 kREGEX_CLINVAR='clinvar[_/][0-9]{8}' # note use of [0-9] to avoid \d
 
-## wget clinvar file
+## wget clinvar file if workflow type is non-cavaita/"user"
 if [[ $clinvar_version =~ $kREGEX_CLINVAR && "$workflow_type" == 'user' ]]
 then
   echo "wget -l 3 $ftp_path -P input/, wait = TRUE"
