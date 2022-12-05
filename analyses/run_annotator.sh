@@ -35,17 +35,11 @@ usage() {
   1>&2; exit 1; }
 
 ## default values for options
-clinvar_version="clinvar_20211225"
 genomAD_AF_filter=0.001
 variant_depth_filter=15
 variant_AF=.2
 workflow_type="user"
-
-## if cavatica worklflow save gnomad variable as "gnomad_3_1_1_AF_non_cancer"
-if [ "$workflow_type" == 'cavatica' ]
-then
-  gnomad_var="gnomad_3_1_1_AF_non_cancer"
-fi
+clinvar_version="clinvar_20211225"
 
 while getopts ":v:i:a:w:g:f:v:r:h" arg; do
     case "$arg" in
@@ -81,6 +75,27 @@ while getopts ":v:i:a:w:g:f:v:r:h" arg; do
 done
 
 
+## if cavatica worklflow save gnomad variable as "gnomad_3_1_1_AF_non_cancer"
+if [ "$workflow_type" == 'cavatica' ]
+then
+  gnomad_var="gnomad_3_1_1_AF_non_cancer"
+fi
+
+## retrieve clinvar vcf if specified and download to input folder
+# generate full path to download
+ftp_path="ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2022/"$clinvar_version".vcf.gz"
+kREGEX_CLINVAR='clinvar[_/][0-9]{8}' # note use of [0-9] to avoid \d
+
+## wget clinvar file
+if [[ $clinvar_version =~ $kREGEX_CLINVAR && "$workflow_type" == 'user' ]]
+then
+  echo "wget -l 3 $ftp_path -P input/, wait = TRUE"
+else
+  echo "error: clinvar format error, must provide clinvar version (ie. clinvar_20211225) to download"
+  exit 1;
+fi
+
+## check to see gnomad option entered if workflow is "user"
 if [[ "$workflow_type" == 'user' && -z ${gnomad_var} ]]
 then
   echo "ERROR: if workflow type is non-cavatica, must provide gnomAD_var (ie. 'gnomad_3_1_1_AF_non_cancer') ";
