@@ -56,7 +56,13 @@ input_intervar_file <- opt$intervar
 input_autopvs1_file <- opt$autopvs1
 clinvar_ver = opt$clinvar
 
-## filters for gnomAD
+ input_clinVar_file  <- "/Users/naqvia/d3b_codes/pathogenicity-assessment/analyses/input/clinvar_dummy.nih.norm.annot.chr17.vcf" 
+
+ input_intervar_file <- "/Users/naqvia/d3b_codes/pathogenicity-assessment/analyses/input/clinvar_input_wf_test.hg38_multianno.chr17.txt.intervar"
+
+ input_autopvs1_file <- "/Users/naqvia/d3b_codes/pathogenicity-assessment/analyses/input/clinvar_dummy.nih.autopvs1.chr17.tsv"
+
+ ## filters for gnomAD
 filter_gnomad_var    <- opt$gnomad_variable
 filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
@@ -111,8 +117,9 @@ clinvar_results <- clinVar_results %>%
 ## retrieve and store clinVar input file into table data.table::fread()
 input_submissions_file_path = file.path(input_dir, "submission_summary.txt")
  
-submission_info_tab  <-  vroom(input_submissions_file_path, comment = "#",delim="\t", col_names = c("VariationID","ClinicalSignificance","DateLastEvaluated","Description","SubmittedPhenotypeInfo","ReportedPhenotypeInfo",
-                                                                                                    "ReviewStatus","CollectionMethod","OriginCounts","Submitter","SCV","SubmittedGeneSymbol","ExplanationOfInterpretation"), 
+submission_info_tab  <-  vroom(input_submissions_file_path, comment = "#",delim="\t", 
+                               col_names = c("VariationID","ClinicalSignificance","DateLastEvaluated","Description","SubmittedPhenotypeInfo","ReportedPhenotypeInfo",
+                                             "ReviewStatus","CollectionMethod","OriginCounts","Submitter","SCV","SubmittedGeneSymbol","ExplanationOfInterpretation"), 
                                show_col_types = FALSE)
 
 submission_info_tab <- submission_info_tab %>% mutate(c_id = str_match(ReportedPhenotypeInfo, "(C\\d+):")[, 2])
