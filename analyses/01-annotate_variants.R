@@ -87,13 +87,12 @@ clinVar_results  <-  vroom(input_clinVar_file, comment = "#",delim="\t", col_nam
 ## filter for gnomad, read depth and AF
 #clinVar_results <- gnomad_filtering(clinVar_results)
 
-# ## function for gnomAD, variant af and depth filtering 
+## gnomAD, variant af and depth filtering 
 clinVar_results <- clinVar_results %>% 
    mutate(variant_depth = if_else( as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])  > filter_variant_depth, "PASS","FAIL")) %>% 
    mutate(gnomad_af     = if_else( as.numeric( str_match(INFO, "gnomad_3_1_1_AF_non_cancer\\=(0\\.\\d+)\\;")[,2])  > filter_variant_af, "PASS","FAIL")) %>% 
    mutate(variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL"))
-   #return(clinvar_vcf)
-# }
+
 
 ## add column "vcf_id" to clinVar results in order to cross-reference with intervar and autopvs1 table
 clinvar_results <- clinVar_results %>%
@@ -249,10 +248,12 @@ combined_tab_for_intervar <- combined_tab_for_intervar %>%
 # (i) non of the criteria were met.
 # (ii) Benign and pathogenic are contradictory.
 
-write.table(combined_tab_for_intervar, output_tab_file, append = FALSE, sep = "\t", dec = ".",
+## merge tables together (clinvar and intervar) and write to file
+master_tab <- full_join(clinvar_results,intervar_results, by= "vcf_id" )
+write.table(master_tab, output_tab_file, append = FALSE, sep = "\t", dec = ".",
             row.names = FALSE, quote = FALSE, col.names = TRUE)
 
-#results_tab_abridged <- combined_tab_for_intervar %>% select(vcf_id,SYMBOL,Feature, trans_name,gnomad_af, variant_depth, variant_af, final_call)
-
-#write.table(results_tab_abridged, output_tab_abr_file, append = FALSE, sep = "\t", dec = ".",
-#            row.names = FALSE, quote = FALSE, col.names = TRUE)
+## abridged version
+results_tab_abridged <- master_tab %>% select(vcf_id,Gene.ensGene,gnomad_af, variant_depth, variant_af, final_call)
+write.table(results_tab_abridged, output_tab_abr_file, append = FALSE, sep = "\t", dec = ".",
+           row.names = FALSE, quote = FALSE, col.names = TRUE)
