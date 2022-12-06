@@ -96,6 +96,7 @@ clinVar_results <- clinVar_results %>%
 
 ## add column "vcf_id" to clinVar results in order to cross-reference with intervar and autopvs1 table
 clinvar_results <- clinVar_results %>%
+  mutate(c_id = str_match(INFO, "MedGen:(C\\d+);")[, 2]) %>% 
   mutate(vcf_id= str_remove_all(paste (CHROM,"-",START,"-",REF,"-",ALT), " "),
          ## add star annotations to clinVar results table based on filters // ## default version
          Stars = ifelse(grepl('CLNREVSTAT\\=criteria_provided,_single_submitter', INFO), "1",
@@ -107,9 +108,20 @@ clinvar_results <- clinVar_results %>%
           ## extract the calls and put in own column
          final_call = str_match(INFO, "CLNSIG\\=(\\w+)\\;")[, 2])
 
-## filter only those variants that need consensus call
+## retrieve and store clinVar input file into table data.table::fread()
+input_submissions_file_path = file.path(input_dir, "submission_summary.txt")
+ 
+submission_info_tab  <-  vroom(input_submissions_file_path, comment = "#",delim="\t", col_names = c("VariationID","ClinicalSignificance","DateLastEvaluated","Description","SubmittedPhenotypeInfo","ReportedPhenotypeInfo",
+                                                                                                    "ReviewStatus","CollectionMethod","OriginCounts","Submitter","SCV","SubmittedGeneSymbol","ExplanationOfInterpretation"), 
+                               show_col_types = FALSE)
+
+submission_info_tab <- submission_info_tab %>% mutate(c_id = str_match(ReportedPhenotypeInfo, "(C\\d+):")[, 2])
+       
+## filter only those variants that need consensus call and find final call in submission table
 entries_for_cc <- clinvar_results %>%
-          filter(Stars == "Needs Resolving", na.rm = TRUE)
+  filter(Stars == "Needs Resolving", na.rm = TRUE) 
+
+entries_for_cc <- entries_for_cc %>% inner_join(submission_info_tab, by="c_id") %>% mutate(final_call=submission_info_tab$ClinicalSignificance)
 
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP call must also go to intervar
 additional_intervar_cases <- clinvar_results %>% filter(Stars == "1", final_call!="Benign",final_call!="Pathogenic", final_call != "Likely_benign",final_call!="Likeley_pathogenic")
