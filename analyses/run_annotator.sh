@@ -13,10 +13,6 @@ cd "$script_directory" || exit
 echo $script_directory
 input_file="$script_directory"/""
 
-#-vcf input/clinvar_dummy.nih.norm.annot.chr17.vcf --intervar clinvar_input_wf_test.hg38_multianno.chr17.txt.intervar --autopvs1 clinvar_dummy.nih.autopvs1.chr17.tsv
-# usage() { echo "Usage: $0 [-v <*.vcf>][-i <*.txt.intervar>] [-a <*autopvs1.tsv>]
-#   [-w <cavatica || user] [-g <gnomad_var>] [-f genomAD_AF_filter <default: 0.001] [-v variant_depth_filter default: 15 ][-r variant_AF <default: 0.2>]" 1>&2; exit 1; }
-
 ## usage message to print for options
 usage() {
   echo "Usage: $0 [-v <*.vcf>][-i <*.txt.intervar>] [-a <*autopvs1.tsv>]
@@ -31,6 +27,7 @@ usage() {
   echo "  -f    gnomAD allele frequency filter, default: 0.001)"
   echo "  -v    variant depth filter (default: 15)"
   echo "  -r    variant_AF <variant allele frequency, default: 0.2"
+  echo "  -c    clinvar version (default: clinvar_20211225)"
   echo "  -h    Display usage information."
   1>&2; exit 1; }
 
@@ -93,7 +90,9 @@ ftp_path="ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2022/"$clinvar
 kREGEX_CLINVAR='clinvar[_/][0-9]{8}' # note use of [0-9] to avoid \d
 
 ## wget clinvar file if workflow type is non-cavaita/"user"
-if [[ $clinvar_version =~ $kREGEX_CLINVAR && "$workflow_type" == 'user' ]]
+echo "workflow_type = $workflow_type"
+
+if [[ $clinvar_version =~ $kREGEX_CLINVAR ]]
 then
   echo "wget -l 3 $ftp_path -P input/, wait = TRUE"
 else
@@ -101,10 +100,10 @@ else
   exit 1;
 fi
 
-## check to see gnomad option entered if workflow is "user"
+## check to see gnomad variable option entered if workflow is "user"
 if [[ "$workflow_type" == 'user' && -z ${gnomad_var} ]]
 then
-  echo "ERROR: if workflow type is non-cavatica, must provide gnomAD_var (ie. 'gnomad_3_1_1_AF_non_cancer') ";
+  echo "ERROR: if workflow type is of type 'user', must provide -g gnomAD_var (ie. 'gnomAD_genome_ALL') ";
   exit 1;
 fi
 
@@ -122,6 +121,16 @@ echo "workflow_type = $workflow_type"
 ## if workflow is cavatica run Rscript with this cmd
 if [ "$workflow_type" == 'cavatica' ]
 then
-  echo "Rscript 01-annotate_variants.R --vcf $vcf_file --intervar intervar_file --autopvs1 autopvs1_file --clinvar $clinvar_version --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af variant_AF"
-  pwd
+  ## check if file exists and then call R script
+  if [[ -f "$vcf_file" && -f "$intervar_file"  && -f "$autopvs1_file" ]];
+  then
+    echo "Rscript 01-annotate_variants.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af variant_AF"
+  else
+    echo "error: files do not exist."
+    exit 1
+  fi
+else
+  ## run autopvs1 and save output to input folder
+  
+  echo "Rscript 02-annotate_variants_user.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --clinvar $clinvar_version --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af variant_AF"
 fi
