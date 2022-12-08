@@ -70,6 +70,8 @@ while getopts ":v:i:a:w:g:f:v:r:h" arg; do
         r) #variant_AF type
           variant_AF="$OPTARG"
           ;;
+        c) ## clinvar version
+          clinvar_version="$OPTARG"
         h | *) # Display help.
           usage
           exit 0
@@ -131,6 +133,6 @@ then
   fi
 else
   ## run autopvs1 and save output to input folder
-  
+
   echo "Rscript 02-annotate_variants_user.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --clinvar $clinvar_version --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af variant_AF"
 fi
