@@ -25,4 +25,5 @@ input/*autopvs1.tsv
 ### Run annotation scripts (example)
 ```
 bash run_annotator.sh -v input/BS_test_ad_hoc_genotyping.CGP.filtered.deNovo.vep.chr17_test.vcf -i input/BS_test_ad_hoc_annovar_humandb_hg38_intervar.hg38_multianno.chr17_test.txt.intervar -a input/BS_test_ad_hoc_annovar_humandb_hg38_intervar.chr17_test.autopvs1.tsv -w cavatica
+bash run_annotator.sh -h
 ```
