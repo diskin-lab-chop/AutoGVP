@@ -15,7 +15,7 @@ docker exec -ti pathogenecity_anno bash
 ```
 
 ## How to Run
-### dummy input data
+### test input data
 ```
 input/*vcf
 input/*intervar
