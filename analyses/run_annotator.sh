@@ -36,13 +36,6 @@ clinvar_version="clinvar_20211225"
 genomAD_AF_filter=0.001
 variant_depth_filter=15
 variant_AF=.2
-workflow_type="user"
-
-## if cavatica worklflow save gnomad variable as "gnomad_3_1_1_AF_non_cancer"
-if [ "$workflow_type" == 'cavatica' ]
-then
-  gnomad_var="gnomad_3_1_1_AF_non_cancer"
-fi
 
 while getopts ":v:i:a:w:g:f:v:r:h" arg; do
     case "$arg" in
@@ -72,6 +65,7 @@ while getopts ":v:i:a:w:g:f:v:r:h" arg; do
           ;;
         c) ## clinvar version
           clinvar_version="$OPTARG"
+          ;;
         h | *) # Display help.
           usage
           exit 0
@@ -79,6 +73,20 @@ while getopts ":v:i:a:w:g:f:v:r:h" arg; do
     esac
 done
 
+if [[ -z ${workflow_type} ]]
+then
+  echo "ERROR: require -w option ('cavatica' or 'user')"
+  exit 1;
+else
+  echo "workflow type: $workflow_type"
+
+fi
+
+## if cavatica worklflow save gnomad variable as "gnomad_3_1_1_AF_non_cancer"
+if [ "$workflow_type" == 'cavatica' ]
+then
+  gnomad_var="gnomad_3_1_1_AF_non_cancer"
+fi
 
 ## if cavatica worklflow save gnomad variable as "gnomad_3_1_1_AF_non_cancer"
 if [ "$workflow_type" == 'cavatica' ]
@@ -91,14 +99,12 @@ fi
 ftp_path="ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2022/"$clinvar_version".vcf.gz"
 kREGEX_CLINVAR='clinvar[_/][0-9]{8}' # note use of [0-9] to avoid \d
 
-## wget clinvar file if workflow type is non-cavaita/"user"
-echo "workflow_type = $workflow_type"
-
+## wget clinvar file if workflow type is non-cavaita/"user" and its specified, otherwise use default clinvar db
 if [[ $clinvar_version =~ $kREGEX_CLINVAR ]]
 then
   echo "wget -l 3 $ftp_path -P input/, wait = TRUE"
 else
-  echo "error: clinvar format error, must provide clinvar version (ie. clinvar_20211225) to download"
+  echo "ERROR: clinvar format error, must provide clinvar version (ie. clinvar_20211225) to download"
   exit 1;
 fi
 
@@ -126,7 +132,8 @@ then
   ## check if file exists and then call R script
   if [[ -f "$vcf_file" && -f "$intervar_file"  && -f "$autopvs1_file" ]];
   then
-    echo "Rscript 01-annotate_variants.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af variant_AF"
+    echo "Rscript 01-annotate_variants.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af $variant_AF"
+    Rscript 01-annotate_variants.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af $variant_AF
   else
     echo "error: files do not exist."
     exit 1
