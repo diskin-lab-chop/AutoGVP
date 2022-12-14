@@ -293,3 +293,5 @@ chr17-360232-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=
 chr17-360232-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
 chr17-360289-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
 chr17-360290-C-T	PASS	FAIL	PASS	0	InterVar: Benign PVS1=1 PS=[0, 2, 0, 0, 0] PM=[0, 0, 2, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	1	2	2	0	1	1	0	Yes	Uncertain significance
+chr17-360291-C-T	PASS	FAIL	PASS	0	InterVar: Benign PVS1=1 PS=[0, 2, 0, 0, 0] PM=[0, 0, 2, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	2	3	0	1	1	0	Yes	Benign
+chr17-360293-C-T	PASS	FAIL	PASS	0	InterVar: Benign PVS1=1 PS=[0, 2, 0, 0, 0] PM=[0, 0, 2, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	2	2	1	1	1	0	Yes	Benign
