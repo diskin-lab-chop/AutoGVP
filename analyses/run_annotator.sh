@@ -23,7 +23,7 @@ usage() {
   echo "  -i    intervar results file"
   echo "  -a    autopvs1 results file"
   echo "  -w    workflow type, must be either "cavatica" or "user""
-  echo "  -g    gnomAD variable, default: gnomad_3_1_1_AF_non_cancer"
+  echo "  -g    gnomAD variable, default: gnomad_3_1_1_AF_non_cancer if -w is 'cavatica'"
   echo "  -f    gnomAD allele frequency filter, default: 0.001)"
   echo "  -v    variant depth filter (default: 15)"
   echo "  -r    variant_AF <variant allele frequency, default: 0.2"
@@ -37,7 +37,7 @@ genomAD_AF_filter=0.001
 variant_depth_filter=15
 variant_AF=.2
 
-while getopts ":v:i:a:w:g:f:v:r:h" arg; do
+while getopts ":v:i:a:w:g:f:v:r:c:h" arg; do
     case "$arg" in
         v) # vcf file
           vcf_file="$OPTARG"
@@ -85,11 +85,6 @@ then
   gnomad_var="gnomad_3_1_1_AF_non_cancer"
 fi
 
-## if cavatica worklflow save gnomad variable as "gnomad_3_1_1_AF_non_cancer"
-if [ "$workflow_type" == 'cavatica' ]
-then
-  gnomad_var="gnomad_3_1_1_AF_non_cancer"
-fi
 
 ## retrieve clinvar vcf if specified and download to input folder
 # generate full path to download
@@ -99,7 +94,15 @@ kREGEX_CLINVAR='clinvar[_/][0-9]{8}' # note use of [0-9] to avoid \d
 ## wget clinvar file if workflow type is non-cavaita/"user" and its specified, otherwise use default clinvar db
 if [[ $clinvar_version =~ $kREGEX_CLINVAR ]]
 then
-   echo "wget -l 3 $ftp_path -P input/, wait = TRUE"
+  ##check to see if ftp path for clinvar version exists and if so, get it
+  if [[ `wget -S --spider $ftp_path 2>&1 | grep 'Remote file exists.'` ]]; then exit_status=$?; fi
+  if [[ $exit_status == 0 ]];
+  then
+    echo "wget -l 3 $ftp_path -P input/ wait = TRUE"
+  else
+    echo "ERROR: clinVar file $ftp_path does note exist, try again..."
+    exit 1;
+  fi
 else
   echo "ERROR: clinvar format error, must provide clinvar version (ie. clinvar_20211225) to download"
   exit 1;
