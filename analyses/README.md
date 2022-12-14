@@ -27,3 +27,78 @@ input/*autopvs1.tsv
 bash run_annotator.sh -v input/BS_test_ad_hoc_genotyping.CGP.filtered.deNovo.vep.chr17_test.vcf -i input/BS_test_ad_hoc_annovar_humandb_hg38_intervar.hg38_multianno.chr17_test.txt.intervar -a input/BS_test_ad_hoc_annovar_humandb_hg38_intervar.chr17_test.autopvs1.tsv -w cavatica
 bash run_annotator.sh -h
 ```
+
+### Step by step workflow (_cavatica workflow_)
+- Read in user inputted clinVar file
+- Create `vcf_id` (chr and position)
+- Annotate stars based on `CLNREVSTAT`*
+- Report and save significant call if Stars are not 0 or 1 and not B/P/LB/LP
+- Identify variants that are ambiguous (“criteria_provided,_conflicting_interpretations’), generate table to then check against submission file
+- Identify variants that need further annotations or possible re-adjustment (Stars 0 or 1)
+- Retrieve and store interVar results file into table and create vcf_id
+- Retrieve and store corresponding autopvs1 results file into table and create vcf_id
+- Merge interVar and autopvs1 tables by matching vcf_ids
+- Create columns for `evidencePVS1`, `evidencePS`, `evidencePM`, `evidencePP`, `evidenceBP`, `evidencePM` and `evidenceBA1` (variables that may need re-adjusting) by parsing InterVar: InterVar and Evidence column
+- Indicate if there needs to be recalculation (if `evidencePVS1` == 1)
+- If not, take interVar significant call as final_call
+- Go through entries and adjust evidence variables above based on criterion*
+- Report final call based on recalculated evidence variables
+
+#### Annotating Stars
+```
+1 = 'criteria_provided,_single_submitter'
+2 = 'criteria_provided,_multiple_submitters'
+3 = 'reviewed_by_expert_panel'
+4 = 'practice_guideline'
+0/Need resolving = 'criteria_provided,_conflicting_interpretations'
+```
+#### Re-calculation adjustments
+```
+if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
+if criterion is NF3|NF5|SS3|SS5|SS8|SS10|DEL8|DEL6|DEL10|DUP3|IC2 then PVS1 = 0; PS = PS+1
+if criterion is NF6|SS6|SS9|DEL7|DEL11|IC3 then PVS1 = 0; PM = PM+1;
+if criterion is NF6|SS6|DEL7|DEL11|IC3 then PVS1 = 0; PP = PP+1;
+if criterion is IC4 then PVS1 = 0; PP = PP+1;
+if criterion is na|NF0  then PVS1 = 0;
+
+New ClinSig
+Pathogenic - Criteria 1
+  (i) 1 Very strong (PVS1) AND
+        (a) ≥1 Strong (PS1–PS4) OR
+        (b) ≥2 Moderate (PM1–PM6) OR
+        (c) 1 Moderate (PM1–PM6) and 1 supporting (PP1–PP5) OR
+        (d) ≥2 Supporting (PP1–PP5)
+
+Pathogenic - Criteria 2
+  (ii) ≥2 Strong (PS1–PS4) OR
+
+Pathogenic - Criteria 3
+  (iii) 1 Strong (PS1–PS4) AND
+        (a)≥3 Moderate (PM1–PM6) OR
+        (b)2 Moderate (PM1–PM6) AND ≥2 Supporting (PP1–PP5) OR
+        (c)1 Moderate (PM1–PM6) AND ≥4 supporting (PP1–PP5)
+
+Likely pathogenic
+        (i) 1 Very strong (PVS1) AND 1 moderate (PM1– PM6) OR
+        (ii) 1 Strong (PS1–PS4) AND 1–2 moderate (PM1–PM6) OR
+        (iii) 1 Strong (PS1–PS4) AND ≥2 supporting (PP1–PP5) OR
+        (iv)  ≥3 Moderate (PM1–PM6) OR
+        (v) 2 Moderate (PM1–PM6) AND ≥2 supporting (PP1–PP5) OR
+        (vi) 1 Moderate (PM1–PM6) AND ≥4 supporting (PP1–PP5)
+
+Benign
+        (i) 1 Stand-alone (BA1) OR
+        (ii) ≥2 Strong (BS1–BS4)
+
+Benign
+        (i) 1 Stand-alone (BA1) OR
+        (ii) ≥2 Strong (BS1–BS4)
+
+Likely Benign
+        (i) 1 Strong (BS1–BS4) and 1 supporting (BP1– BP7) OR
+        (ii) ≥2 Supporting (BP1–BP7)
+
+Uncertain  significance
+        (i) non of the criteria were met.
+        (ii) Benign and pathogenic are contradictory.
+```
