@@ -28,7 +28,7 @@ bash run_annotator.sh -v input/BS_test_ad_hoc_genotyping.CGP.filtered.deNovo.vep
 bash run_annotator.sh -h
 ```
 
-### Step by step workflow (_cavatica workflow_)
+### Step by step workflow (_-wcavatica workflow_)
 - Read in user inputted clinVar file
 - Create `vcf_id` (chr and position)
 - Annotate stars based on `CLNREVSTAT`*
