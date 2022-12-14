@@ -37,8 +37,6 @@ option_list <- list(
               help = "input intervar file"),
   make_option(c("--autopvs1"), type = "character",
               help = "input autopvs1 file"),
-  make_option(c("--clinvar"), type = "character",
-              help = "specific clinVar version (format: clinvar_20211225)"), ## https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2022clinvar_20211225.vcf.gz 
   make_option(c("--gnomad_variable"), type = "character",default = "gnomad_3_1_1_AF_non_cancer",
               help = "gnomAD variable"),
   make_option(c("--gnomad_af"), type = "numeric", default = 0.001,
@@ -56,13 +54,8 @@ input_intervar_file <- opt$intervar
 input_autopvs1_file <- opt$autopvs1
 clinvar_ver = opt$clinvar
 
- input_clinVar_file  <- "/Users/naqvia/d3b_codes/pathogenicity-assessment/analyses/input/clinvar_dummy.nih.norm.annot.chr17.vcf" 
 
- input_intervar_file <- "/Users/naqvia/d3b_codes/pathogenicity-assessment/analyses/input/clinvar_input_wf_test.hg38_multianno.chr17.txt.intervar"
-
- input_autopvs1_file <- "/Users/naqvia/d3b_codes/pathogenicity-assessment/analyses/input/clinvar_dummy.nih.autopvs1.chr17.tsv"
-
- ## filters for gnomAD
+## filters for gnomAD
 filter_gnomad_var    <- opt$gnomad_variable
 filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
@@ -70,13 +63,6 @@ filter_variant_af    <- opt$variant_af
 output_tab_file <- file.path(analysis_dir, "annotations_report.tsv") 
 output_tab_abr_file  <- file.path(analysis_dir, "annotations_report.abridged.tsv")
 
-
-## retrieve clinvar vcf if specified and download to input folder
-if(is.character(clinvar_ver)){
-  ## generate full path to download
-  clinvar_ftp_path <- paste("ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2022/",clinvar_ver,".vcf.gz", sep="")
-  system(paste("wget -l 3", clinvar_ftp_path, "-P ",input_dir), wait = TRUE)
-}  
 
 # ## function for gnomAD, variant af and depth filtering 
 # gnomad_filtering <- function(clinvar_vcf) {
@@ -103,7 +89,7 @@ clinVar_results <- clinVar_results %>%
 ## add column "vcf_id" to clinVar results in order to cross-reference with intervar and autopvs1 table
 clinvar_results <- clinVar_results %>%
   mutate(c_id = str_match(INFO, "MedGen:(C\\d+);")[, 2]) %>% 
-  mutate(vcf_id= str_remove_all(paste (CHROM,"-",START,"-",REF,"-",ALT), " "),
+  mutate(vcf_id= str_remove_all(paste ("chr",CHROM,"-",START,"-",REF,"-",ALT), " "),
          ## add star annotations to clinVar results table based on filters // ## default version
          Stars = ifelse(grepl('CLNREVSTAT\\=criteria_provided,_single_submitter', INFO), "1",
                  ifelse(grepl('CLNREVSTAT\\=criteria_provided,_multiple_submitters', INFO), "2",
@@ -114,21 +100,22 @@ clinvar_results <- clinVar_results %>%
           ## extract the calls and put in own column
          final_call = str_match(INFO, "CLNSIG\\=(\\w+)\\;")[, 2])
 
-## retrieve and store clinVar input file into table data.table::fread()
-input_submissions_file_path = file.path(input_dir, "submission_summary.txt")
- 
-submission_info_tab  <-  vroom(input_submissions_file_path, comment = "#",delim="\t", 
-                               col_names = c("VariationID","ClinicalSignificance","DateLastEvaluated","Description","SubmittedPhenotypeInfo","ReportedPhenotypeInfo",
-                                             "ReviewStatus","CollectionMethod","OriginCounts","Submitter","SCV","SubmittedGeneSymbol","ExplanationOfInterpretation"), 
-                               show_col_types = FALSE)
+## retrieve and store submissions input file // running out of memory issues
+# input_submissions_file_path = file.path(input_dir, "submission_summary.txt")
+#  
+# submission_info_tab  <-  vroom(input_submissions_file_path, comment = "#",delim="\t", 
+#                                col_names = c("VariationID","ClinicalSignificance","DateLastEvaluated","Description","SubmittedPhenotypeInfo","ReportedPhenotypeInfo",
+#                                              "ReviewStatus","CollectionMethod","OriginCounts","Submitter","SCV","SubmittedGeneSymbol","ExplanationOfInterpretation"), 
+#                                show_col_types = FALSE)
+# 
+# submission_info_tab <- submission_info_tab %>% mutate(c_id = str_match(ReportedPhenotypeInfo, "(C\\d+):")[, 2])
+#        
+# 
 
-submission_info_tab <- submission_info_tab %>% mutate(c_id = str_match(ReportedPhenotypeInfo, "(C\\d+):")[, 2])
-       
 ## filter only those variants that need consensus call and find final call in submission table
-entries_for_cc <- clinvar_results %>%
-  filter(Stars == "Needs Resolving", na.rm = TRUE) 
+entries_for_cc <- clinvar_results %>% filter(Stars == "Needs Resolving", na.rm = TRUE) 
+# entries_for_cc <- entries_for_cc %>% left_join(submission_info_tab, by="c_id") %>% mutate(final_call=submission_info_tab$ClinicalSignificance)
 
-entries_for_cc <- entries_for_cc %>% inner_join(submission_info_tab, by="c_id") %>% mutate(final_call=submission_info_tab$ClinicalSignificance)
 
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP call must also go to intervar
 additional_intervar_cases <- clinvar_results %>% filter(Stars == "1", final_call!="Benign",final_call!="Pathogenic", final_call != "Likely_benign",final_call!="Likeley_pathogenic")
@@ -147,12 +134,14 @@ intervar_results    <-  read_tsv(input_intervar_file, comment = "#", col_names =
                                                                                    "dbscSNV_ADA_SCORE","dbscSNV_RF_SCORE","Interpro_domain	AAChange.knownGene","rmsk","MetaSVM_score","Freq_gnomAD_genome_POPs",
                                                                                    "OMIM","Phenotype_MIM","OrphaNumber","Orpha	Otherinfo"))
 
-## autopvs1 results and file
-autopvs1_results    <-  read_tsv(input_autopvs1_file, comment = "#", col_names = c("vcf_id","SYMBOL","Feature","trans_name","consequence","strength_raw","strength","criterion"))
-
 ## add column "vcf_id" to intervar results in order to match with autopvs1 and clinvar table
 intervar_results <- intervar_results %>%
-                    mutate(vcf_id = str_remove_all(paste (Chr,"-",Start,"-",Ref,"-",Alt), " "))
+  mutate(vcf_id = str_remove_all(paste ("chr",Chr,"-",Start,"-",Ref,"-",Alt), " ")) %>% filter(vcf_id %in% clinvar_results$vcf_id)
+
+
+## autopvs1 results and file
+autopvs1_results    <-  read_tsv(input_autopvs1_file, comment = "#", col_names = c("id","SYMBOL","Feature","trans_name","consequence","strength_raw","strength","criterion")) %>%
+mutate(vcf_id = str_remove_all(paste ("chr",id), " "))
 
 ## join all three tables together based on variant id that need intervar run
 combined_tab_for_intervar <- autopvs1_results %>%
@@ -168,9 +157,9 @@ combined_tab_for_intervar <- autopvs1_results %>%
   mutate( evidenceBS = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sBS\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>%
   mutate( evidenceBP = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sBP\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>%
 
-  ## if PVS1=0, take intervar call as final call
-  mutate(final_call = if_else(evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2], "recalculate")) %>%
-
+  ## indicate if recalculated 
+  mutate(adjusted_call = if_else(evidencePVS1 == 0, "No", "Yes")) %>%  
+  
   ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
   #if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
   mutate(evidencePVS1 = if_else( (criterion == "NF1" | criterion == "SS1" |
@@ -178,36 +167,38 @@ combined_tab_for_intervar <- autopvs1_results %>%
                                    criterion == "DUP1" | criterion == "IC1") & evidencePVS1 == 1, "1", evidencePVS1)) %>%
 
   #if criterion is NF3|NF5|SS3|SS5|SS8|SS10|DEL8|DEL6|DEL10|DUP3|IC2 then PVS1 = 0; PS = PS+1
-  mutate(evidencePVS1 = if_else(  (criterion == "NF3"  | criterion == "NF5" |
+  mutate(evidencePS =  if_else(   (criterion == "NF3"  | criterion == "NF5" |
+                                     criterion == "SS3" | criterion == "SS5" |
+                                     criterion == "SS8" | criterion =="SS10" |
+                                     criterion =="DEL8" | criterion =="DEL6" |
+                                     criterion =="DEL10" | criterion =="DUP3" |
+                                     criterion =="IC2") & evidencePVS1 == 1, as.numeric(evidencePS)+1, as.double(evidencePS))) %>%
+  
+   mutate(evidencePVS1 = if_else(  (criterion == "NF3"  | criterion == "NF5" |
                                    criterion == "SS3" | criterion == "SS5" |
                                    criterion == "SS8" | criterion =="SS10" |
                                    criterion =="DEL8" | criterion =="DEL6" |
                                    criterion =="DEL10" | criterion =="DUP3" |
                                    criterion =="IC2") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
 
-  mutate(evidencePS =  if_else(   (criterion == "NF3"  | criterion == "NF5" |
-                                  criterion == "SS3" | criterion == "SS5" |
-                                  criterion == "SS8" | criterion =="SS10" |
-                                  criterion =="DEL8" | criterion =="DEL6" |
-                                  criterion =="DEL10" | criterion =="DUP3" |
-                                  criterion =="IC2") & evidencePVS1 == 1, as.numeric(evidencePS)+1, as.double(evidencePS))) %>%
-
   #if criterion is NF6|SS6|SS9|DEL7|DEL11|IC3 then PVS1 = 0; PM = PM+1;
+  mutate(evidencePM =   if_else( (criterion == "NF6" | criterion == "SS6" |
+                                    criterion == "SS9" | criterion == "DEL7" |
+                                    criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, as.numeric(evidencePM)+1, as.double(evidencePM))) %>%
+  
   mutate(evidencePVS1 = if_else( (criterion == "NF6" | criterion == "SS6" |
                                   criterion == "SS9" | criterion == "DEL7" |
                                   criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
 
-  mutate(evidencePM =   if_else( (criterion == "NF6" | criterion == "SS6" |
-                                  criterion == "SS9" | criterion == "DEL7" |
-                                  criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, as.numeric(evidencePM)+1, as.double(evidencePM))) %>%
+  
 
   #if criterion is IC4 then PVS1 = 0; PP = PP+1;
-  mutate(evidencePVS1 = if_else((criterion == "IC4") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
   mutate(evidencePP   = if_else((criterion == "IC4") & evidencePVS1 == 1, as.numeric(evidencePP)+1, as.double(evidencePP))) %>%
-
+  mutate(evidencePVS1 = if_else((criterion == "IC4") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
+  
   #if criterion is na then PVS1 = 0;
-  mutate(evidencePVS1 = if_else( (criterion == "na") & evidencePVS1 == 1, 0, as.double(evidencePVS1)))
-
+  mutate(evidencePVS1 = if_else( (criterion == "na") & evidencePVS1 == 1, 0, as.double(evidencePVS1))) %>%
+  
 ## add new call based on new re-calculated scores (New ClinSig)
 # Pathogenic - Criteria 1
 # (i) 1 Very strong (PVS1) AND
@@ -215,8 +206,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
 # (b) ≥2 Moderate (PM1–PM6) OR
 # (c) 1 Moderate (PM1–PM6) and 1 supporting (PP1–PP5) OR
 # (d) ≥2 Supporting (PP1–PP5)
-combined_tab_for_intervar <- combined_tab_for_intervar %>%
-  mutate(final_call = if_else( (evidencePVS1 == 1) &
+mutate(final_call = if_else( (evidencePVS1   == 1) &
                                (evidencePS   >= 1) |
                                (evidencePM   >=2 ) |
                                (evidencePM   >= 1 & evidencePP ==1) |
@@ -257,22 +247,33 @@ combined_tab_for_intervar <- combined_tab_for_intervar %>%
   mutate(final_call = if_else( (evidenceBA1 == 1) |
                              (evidenceBS   >= 2), "Pathogenic", "Uncertain significance")) %>%
 
-  # Likely Benign
+# Likely Benign
 # (i) 1 Strong (BS1–BS4) and 1 supporting (BP1– BP7) OR
 # (ii) ≥2 Supporting (BP1–BP7)
   mutate(final_call = if_else( (evidenceBS == 1 & evidenceBP == 1) |
-                             (evidenceBP   >= 2), "Pathogenic", "Uncertain significance"))
+                             (evidenceBP   >= 2), "Pathogenic", "Uncertain significance")) %>% 
+  
+
+  ## if PVS1=0, take intervar call as final call or leave as is
+  mutate(final_call = if_else(evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2], final_call)) 
+  
 
 # Uncertain significance
 # (i) non of the criteria were met.
 # (ii) Benign and pathogenic are contradictory.
 
 ## merge tables together (clinvar and intervar) and write to file
-master_tab <- full_join(clinvar_results,intervar_results, by= "vcf_id" )
-write.table(master_tab, output_tab_file, append = FALSE, sep = "\t", dec = ".",
+master_tab <- full_join(clinvar_results,combined_tab_for_intervar,  by= "vcf_id" ) 
+write.table(master_tab, output_tab_file, append = FALSE, sep = "\t", dec = ".",row.names = FALSE, quote = FALSE, col.names = TRUE)
+
+## dev version
+output_tab_dev_file  <- file.path(analysis_dir, "annotations_report.abridged.dev.tsv")
+
+results_tab_dev <- master_tab %>% select(vcf_id,gnomad_af, variant_depth, variant_af, Stars, `InterVar: InterVar and Evidence`,evidencePVS1,evidencePS,evidencePM,evidencePP,evidencePP, evidenceBA1, evidenceBS, evidenceBP, adjusted_call, final_call.y)
+write.table(results_tab_dev, output_tab_dev_file, append = FALSE, sep = "\t", dec = ".",
             row.names = FALSE, quote = FALSE, col.names = TRUE)
 
 ## abridged version
-results_tab_abridged <- master_tab %>% select(vcf_id,Gene.ensGene,gnomad_af, variant_depth, variant_af, final_call)
+results_tab_abridged <- master_tab %>% select(vcf_id,Gene.ensGene,gnomad_af, variant_depth, variant_af, Stars, `InterVar: InterVar and Evidence`,adjusted_call, final_call.y)
 write.table(results_tab_abridged, output_tab_abr_file, append = FALSE, sep = "\t", dec = ".",
            row.names = FALSE, quote = FALSE, col.names = TRUE)
