@@ -99,7 +99,7 @@ kREGEX_CLINVAR='clinvar[_/][0-9]{8}' # note use of [0-9] to avoid \d
 ## wget clinvar file if workflow type is non-cavaita/"user" and its specified, otherwise use default clinvar db
 if [[ $clinvar_version =~ $kREGEX_CLINVAR ]]
 then
-  # echo "wget -l 3 $ftp_path -P input/, wait = TRUE"
+   echo "wget -l 3 $ftp_path -P input/, wait = TRUE"
 else
   echo "ERROR: clinvar format error, must provide clinvar version (ie. clinvar_20211225) to download"
   exit 1;
