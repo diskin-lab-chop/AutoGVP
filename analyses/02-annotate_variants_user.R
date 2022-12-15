@@ -72,7 +72,7 @@ output_tab_file <- file.path(analysis_dir, "annotations_report.tsv")
 output_tab_abr_file  <- file.path(analysis_dir, "annotations_report.abridged.tsv")
 
 ## make vcf dataframe and add vcf_if column 
-vcf_df  <-  vroom(input_vcf_file, comment = "#",delim="\t", col_names = c("CHROM","POS","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = FALSE) 
+vcf_df  <-  vroom(input_vcf_file, comment = "#",delim="\t", col_names = c("CHROM","POS","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = FALSE) %>%
             %>% mutate(vcf_id= str_remove_all(paste (CHROM,"-",POS,"-",REF,"-",ALT), " ")) ## add vcf id column
 
 ## add clinvar table to this (INFO)
