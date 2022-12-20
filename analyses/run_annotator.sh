@@ -31,14 +31,18 @@ usage() {
   echo "  -h    Display usage information."
   1>&2; exit 1; }
 
-## default values for options
+## default values for arguments
 clinvar_version="clinvar_20211225"
 genomAD_AF_filter=0.001
 variant_depth_filter=15
 variant_AF=.2
+prefix="sample" ## prefix or sample name that will be used for output files
 
-while getopts ":v:i:a:w:g:f:v:r:c:h" arg; do
+while getopts ":p:v:i:a:w:g:f:v:r:c:h" arg; do
     case "$arg" in
+        p) # prefix
+          prefix="$OPTARG"
+          ;;
         v) # vcf file
           vcf_file="$OPTARG"
           ;;
@@ -73,73 +77,59 @@ while getopts ":v:i:a:w:g:f:v:r:c:h" arg; do
     esac
 done
 
+## check to see if workflow is either "cavatica" or "user"
 if [[ -z ${workflow_type} ]]
 then
   echo "ERROR: require -w option ('cavatica' or 'user')"
   exit 1;
 fi
 
-## if cavatica worklflow save gnomad variable as "gnomad_3_1_1_AF_non_cancer"
+## if cavatica worklflow, save gnomad variable as "gnomad_3_1_1_AF_non_cancer" and run cmd
 if [ "$workflow_type" == 'cavatica' ]
 then
   gnomad_var="gnomad_3_1_1_AF_non_cancer"
-fi
-
-
-## retrieve clinvar vcf if specified and download to input folder
-# generate full path to download
-ftp_path="ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2022/"$clinvar_version".vcf.gz"
-kREGEX_CLINVAR='clinvar[_/][0-9]{8}' # note use of [0-9] to avoid \d
-
-## wget clinvar file if workflow type is non-cavaita/"user" and its specified, otherwise use default clinvar db
-if [[ $clinvar_version =~ $kREGEX_CLINVAR ]]
-then
-  ##check to see if ftp path for clinvar version exists and if so, get it
-  if [[ `wget -S --spider $ftp_path 2>&1 | grep 'Remote file exists.'` ]]; then exit_status=$?; fi
-  if [[ $exit_status == 0 ]];
-  then
-    echo "wget -l 3 $ftp_path -P input/ wait = TRUE"
-  else
-    echo "ERROR: clinVar file $ftp_path does note exist, try again..."
-    exit 1;
-  fi
-else
-  echo "ERROR: clinvar format error, must provide clinvar version (ie. clinvar_20211225) to download"
-  exit 1;
-fi
-
-## check to see gnomad variable option entered if workflow is "user"
-if [[ "$workflow_type" == 'user' && -z ${gnomad_var} ]]
-then
-  echo "ERROR: if workflow type is of type 'user', must provide -g gnomAD_var (ie. 'gnomAD_genome_ALL') ";
-  exit 1;
-fi
-
-## print params and values
-# echo "vcf = $vcf_file"
-# echo "intervar = $intervar_file"
-# echo "autopvs1 = $autopvs1_file"
-# echo "workflow_type = $workflow_type"
-# echo "gnomad_var= $gnomad_var"
-# echo "genomAD_AF_filter= $genomAD_AF_filter"
-# echo "variant_depth_filter = $variant_depth_filter"
-# echo "variant_AF = $variant_AF"
-# echo "workflow_type = $workflow_type"
-
-## if workflow is cavatica run Rscript with this cmd
-if [ "$workflow_type" == 'cavatica' ]
-then
   ## check if file exists and then call R script
   if [[ -f "$vcf_file" && -f "$intervar_file"  && -f "$autopvs1_file" ]];
   then
-    echo "cmd: Rscript 01-annotate_variants.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af $variant_AF"
-    Rscript 01-annotate_variants.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af $variant_AF
+    date
+    echo "cmd: Rscript 01-annotate_variants.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af $variant_AF --sample_name $prefix"
+    #Rscript 01-annotate_variants.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af $variant_AF
   else
     echo "error: files do not exist."
     exit 1
   fi
 else
-  ## run autopvs1 and save output to input folder
+## retrieve clinvar vcf if specified and download to input folder
+# generate full path to download
+  ftp_path="ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2022/"$clinvar_version".vcf.gz"
+  kREGEX_CLINVAR='clinvar[_/][0-9]{8}' # note use of [0-9] to avoid \d
 
-  echo "Rscript 02-annotate_variants_user.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --clinvar $clinvar_version --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af variant_AF"
+  ## wget clinvar file if workflow type is non-cavaita/"user" and its specified, otherwise use default clinvar db
+  if [[ $clinvar_version =~ $kREGEX_CLINVAR && $workflow_type == 'user' ]]
+  then
+    ## check to see if ftp path for clinvar version exists and if so, get it
+    if [[ `wget -S --spider $ftp_path 2>&1 | grep 'Remote file exists.'` ]]; then exit_status=$?; fi
+    if [[ $exit_status == 0 ]];
+    then
+      echo "wget -l 3 $ftp_path -P input/ wait = TRUE"
+    else
+      echo "ERROR: clinVar file $ftp_path does note exist, try again..."
+      exit 1;
+    fi
+  else
+    echo "ERROR: clinvar format error, must provide clinvar version (ie. clinvar_20211225) to download"
+    exit 1;
+  fi
+
+  ## check to see gnomad variable option entered if workflow is "user"
+  if [[ "$workflow_type" == 'user' && -z ${gnomad_var} ]]
+  then
+    echo "ERROR: if workflow type is of type 'user', must provide -g gnomAD_var (ie. 'gnomAD_genome_ALL') ";
+    exit 1;
+  fi
+
+  ## run autopvs1 and save output to input folder
+  echo "python3 ../autopvs1/autoPVS1_from_VEP_vcf.py --genome_version hg38 --vep_vcf input/BS_XCA92FF3_ad_hoc_genotyping.CGP.filtered.deNovo.vep.vcf > $prefix".vcf.vep""
+  echo "Rscript 02-annotate_variants_user.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --clinvar $clinvar_version --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af variant_AF --sample_name $prefix"
 fi
+date
