@@ -44,7 +44,9 @@ option_list <- list(
   make_option(c("--variant_depth"), type = "integer",default = 15,
               help = "variant depth filter"),
   make_option(c("--variant_af"), type = "numeric", default = .2,
-             help = "variant AF cut-off")) 
+             help = "variant AF cut-off"),
+  make_option(c("--sample_name"), type = "character", default = "sample",
+            help = "sample name")) 
 
 opt <- parse_args(OptionParser(option_list = option_list))
 
@@ -52,16 +54,16 @@ opt <- parse_args(OptionParser(option_list = option_list))
 input_clinVar_file  <-  opt$vcf
 input_intervar_file <- opt$intervar
 input_autopvs1_file <- opt$autopvs1
-clinvar_ver = opt$clinvar
-
+clinvar_ver <- opt$clinvar
+sample_name <- opt$sample_name
 
 ## filters for gnomAD
 filter_gnomad_var    <- opt$gnomad_variable
 filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
 
-output_tab_file <- file.path(analysis_dir, "annotations_report.tsv") 
-output_tab_abr_file  <- file.path(analysis_dir, "annotations_report.abridged.tsv")
+output_tab_file <- file.path(analysis_dir, paste0(sample_name, "_annotations_report.tsv")) 
+output_tab_abr_file  <- file.path(analysis_dir, paste0(sample_name,"_annotations_report.abridged.tsv"))
 
 
 # ## function for gnomAD, variant af and depth filtering 
@@ -72,6 +74,9 @@ output_tab_abr_file  <- file.path(analysis_dir, "annotations_report.abridged.tsv
 #   mutate(variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL"))
 #   return(clinvar_vcf)
 # }
+
+## allocate more memory capacity
+Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
 ## retrieve and store clinVar input file into table data.table::fread()
 clinVar_results  <-  vroom(input_clinVar_file, comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = FALSE)
@@ -89,7 +94,7 @@ clinVar_results <- clinVar_results %>%
 ## add column "vcf_id" to clinVar results in order to cross-reference with intervar and autopvs1 table
 clinvar_results <- clinVar_results %>%
   mutate(c_id = str_match(INFO, "MedGen:(C\\d+);")[, 2]) %>% 
-  mutate(vcf_id= str_remove_all(paste ("chr",CHROM,"-",START,"-",REF,"-",ALT), " "),
+  mutate(vcf_id= str_remove_all(paste (CHROM,"-",START,"-",REF,"-",ALT), " "),
          ## add star annotations to clinVar results table based on filters // ## default version
          Stars = ifelse(grepl('CLNREVSTAT\\=criteria_provided,_single_submitter', INFO), "1",
                  ifelse(grepl('CLNREVSTAT\\=criteria_provided,_multiple_submitters', INFO), "2",
@@ -128,7 +133,7 @@ entries_for_intervar <- clinvar_results %>%
 vcf_to_run_intervar <- entries_for_intervar$vcf_id
 
 ## retrieve and store interVar output file into table
-intervar_results    <-  read_tsv(input_intervar_file, comment = "#", col_names = c("Chr","Start","End","Ref","Alt","Ref.Gene","Func.refGene",
+intervar_results    <-  vroom(input_intervar_file, comment = "#", col_names = c("Chr","Start","End","Ref","Alt","Ref.Gene","Func.refGene",
                                                                                    "ExonicFunc.refGene","Gene.ensGene","avsnp147","AAChange.ensGene","AAChange.refGene","clinvar: Clinvar","InterVar: InterVar and Evidence",
                                                                                    "Freq_gnomAD_genome_ALL","Freq_esp6500siv2_all","Freq_1000g2015aug_all","CADD_raw","CADD_phred","SIFT_score","GERP++_RS","phyloP46way_placental",
                                                                                    "dbscSNV_ADA_SCORE","dbscSNV_RF_SCORE","Interpro_domain	AAChange.knownGene","rmsk","MetaSVM_score","Freq_gnomAD_genome_POPs",
@@ -190,7 +195,6 @@ combined_tab_for_intervar <- autopvs1_results %>%
                                   criterion == "SS9" | criterion == "DEL7" |
                                   criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
 
-  
 
   #if criterion is IC4 then PVS1 = 0; PP = PP+1;
   mutate(evidencePP   = if_else((criterion == "IC4") & evidencePVS1 == 1, as.numeric(evidencePP)+1, as.double(evidencePP))) %>%
@@ -263,11 +267,11 @@ mutate(final_call = if_else( (evidencePVS1   == 1) &
 # (ii) Benign and pathogenic are contradictory.
 
 ## merge tables together (clinvar and intervar) and write to file
-master_tab <- full_join(clinvar_results,combined_tab_for_intervar,  by= "vcf_id" ) 
+master_tab <- full_join(clinvar_results,combined_tab_for_intervar,  by= "vcf_id" ) %>% select(-final_call.x)
 write.table(master_tab, output_tab_file, append = FALSE, sep = "\t", dec = ".",row.names = FALSE, quote = FALSE, col.names = TRUE)
 
 ## dev version
-output_tab_dev_file  <- file.path(analysis_dir, "annotations_report.abridged.dev.tsv")
+output_tab_dev_file  <- file.path(analysis_dir, paste0(sample_name,"_annotations_report.abridged.dev.tsv"))
 
 results_tab_dev <- master_tab %>% select(vcf_id,gnomad_af, variant_depth, variant_af, Stars, `InterVar: InterVar and Evidence`,evidencePVS1,evidencePS,evidencePM,evidencePP,evidencePP, evidenceBA1, evidenceBS, evidenceBP, adjusted_call, final_call.y)
 write.table(results_tab_dev, output_tab_dev_file, append = FALSE, sep = "\t", dec = ".",
