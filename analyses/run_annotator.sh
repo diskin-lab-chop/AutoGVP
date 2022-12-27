@@ -99,8 +99,9 @@ then
     exit 1
   fi
 else
-## retrieve clinvar vcf if specified and download to input folder
-# generate full path to download
+  
+  ## retrieve clinvar vcf if specified and download to input folder
+  # generate full path to download
   ftp_path="ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2022/"$clinvar_version".vcf.gz"
   kREGEX_CLINVAR='clinvar[_/][0-9]{8}' # note use of [0-9] to avoid \d
 
@@ -129,7 +130,13 @@ else
   fi
 
   ## run autopvs1 and save output to input folder
-  echo "python3 ../autopvs1/autoPVS1_from_VEP_vcf.py --genome_version hg38 --vep_vcf input/BS_XCA92FF3_ad_hoc_genotyping.CGP.filtered.deNovo.vep.vcf > $prefix".vcf.vep""
-  echo "Rscript 02-annotate_variants_user.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --clinvar $clinvar_version --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af variant_AF --sample_name $prefix"
+  # check to see if hg38 exists, if not then download and unzip
+  if [[ -f "data/hg38.fa"]]
+    echo "python3 ../autopvs1/autoPVS1_from_VEP_vcf.py --genome_version hg38 --vep_vcf $vcf_file  > $prefix".vcf.vep""
+    echo "Rscript 02-annotate_variants_user.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --clinvar $clinvar_version --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af variant_AF --sample_name $prefix"
+  else
+    echo "wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz -P data/ wait=TRUE && gunzip data/hg38.fa.gz"
+    echo "python3 ../autopvs1/autoPVS1_from_VEP_vcf.py --genome_version hg38 --vep_vcf $vcf_file  > $prefix".vcf.vep""
+    echo "Rscript 02-annotate_variants_user.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --clinvar $clinvar_version --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af variant_AF --sample_name $prefix"
+  fi
 fi
-date
