@@ -22,22 +22,25 @@ usage() {
   echo "  -v    vcf file"
   echo "  -i    intervar results file"
   echo "  -a    autopvs1 results file"
-  echo "  -w    workflow type, must be either "cavatica" or "user""
+  echo "  -w    workflow type, must be either 'cavatica' or 'user'"
   echo "  -g    gnomAD variable, default: gnomad_3_1_1_AF_non_cancer if -w is 'cavatica'"
-  echo "  -f    gnomAD allele frequency filter, default: 0.001)"
+  echo "  -f    gnomAD allele frequency filter (default: 0.001)"
   echo "  -v    variant depth filter (default: 15)"
-  echo "  -r    variant_AF <variant allele frequency, default: 0.2"
+  echo "  -r    variant_AF <variant allele frequency (default: 0.2)"
   echo "  -c    clinvar version (default: clinvar_20211225)"
+  echo "  -p    prefix for output file naming (default: 'sample')"
+
   echo "  -h    Display usage information."
   1>&2; exit 1; }
 
-## default values for arguments
+## default values for arguments (will be overwritten if arg passed)
 clinvar_version="clinvar_20211225"
 genomAD_AF_filter=0.001
 variant_depth_filter=15
 variant_AF=.2
-prefix="sample" ## prefix or sample name that will be used for output files
+prefix="sample"
 
+## get and save arguments
 while getopts ":p:v:i:a:w:g:f:v:r:c:h" arg; do
     case "$arg" in
         p) # prefix
@@ -88,18 +91,19 @@ fi
 if [ "$workflow_type" == 'cavatica' ]
 then
   gnomad_var="gnomad_3_1_1_AF_non_cancer"
-  ## check if file exists and then call R script
+
+  ## check if files exists and then call R script
   if [[ -f "$vcf_file" && -f "$intervar_file"  && -f "$autopvs1_file" ]];
   then
     date
-    echo "cmd: Rscript 01-annotate_variants.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af $variant_AF --sample_name $prefix"
+    echo "Rscript 01-annotate_variants.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af $variant_AF --sample_name $prefix"
     #Rscript 01-annotate_variants.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af $variant_AF
   else
     echo "error: files do not exist."
     exit 1
   fi
 else
-  
+
   ## retrieve clinvar vcf if specified and download to input folder
   # generate full path to download
   ftp_path="ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2022/"$clinvar_version".vcf.gz"
@@ -131,7 +135,8 @@ else
 
   ## run autopvs1 and save output to input folder
   # check to see if hg38 exists, if not then download and unzip
-  if [[ -f "data/hg38.fa"]]
+  if [ -f "data/hg38.fa" ]
+  then
     echo "python3 ../autopvs1/autoPVS1_from_VEP_vcf.py --genome_version hg38 --vep_vcf $vcf_file  > $prefix".vcf.vep""
     echo "Rscript 02-annotate_variants_user.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --clinvar $clinvar_version --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af variant_AF --sample_name $prefix"
   else

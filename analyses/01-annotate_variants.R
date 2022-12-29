@@ -13,6 +13,7 @@
 #                                       --gnomad_af <numeric>
 #                                       --variant_depth <integer>
 #                                       --variant_af <numeric>
+#                                       --sample_name <character>
 ################################################################################
 
 suppressPackageStartupMessages({
@@ -62,39 +63,37 @@ filter_gnomad_var    <- opt$gnomad_variable
 filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
 
+## output files
 output_tab_file <- file.path(analysis_dir, paste0(sample_name, "_annotations_report.tsv")) 
 output_tab_abr_file  <- file.path(analysis_dir, paste0(sample_name,"_annotations_report.abridged.tsv"))
-
-
-# ## function for gnomAD, variant af and depth filtering 
-# gnomad_filtering <- function(clinvar_vcf) {
-#   clinvar_vcf <- clinvar_vcf %>% 
-#   mutate(variant_depth = if_else( as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])  > filter_variant_depth, "PASS","FAIL")) %>% 
-#   mutate(gnomad_af     = if_else( as.numeric( str_match(INFO, "gnomad_3_1_1_AF_non_cancer\\=(0\\.\\d+)\\;")[,2])  > filter_variant_af, "PASS","FAIL")) %>% 
-#   mutate(variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL"))
-#   return(clinvar_vcf)
-# }
+output_tab_dev_file  <- file.path(analysis_dir, paste0(sample_name,"_annotations_report.abridged.dev.tsv"))
 
 ## allocate more memory capacity
 Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
+## function for filtering
+##gnomAD, variant af and depth filtering 
+gnomad_filtering <- function(clinvar_vcf) {
+  clinvar_vcf <- clinvar_vcf %>% 
+                  mutate(variant_depth = if_else( as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])  > filter_variant_depth, "PASS","FAIL")) %>% 
+                  mutate(gnomad_af     = if_else( as.numeric( str_match(INFO, "gnomad_3_1_1_AF_non_cancer\\=(0\\.\\d+)\\;")[,2])  > filter_variant_af, "PASS","FAIL")) %>% 
+                  mutate(variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL"))
+  return(clinvar_vcf)
+}
+
 ## retrieve and store clinVar input file into table data.table::fread()
-clinVar_results  <-  vroom(input_clinVar_file, comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = FALSE)
+vcf_input <-  vroom(input_clinVar_file, comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = FALSE)
 
 ## filter for gnomad, read depth and AF
-#clinVar_results <- gnomad_filtering(clinVar_results)
+vcf_clinvar <- gnomad_filtering(vcf_input)
 
-## gnomAD, variant af and depth filtering 
-clinVar_results <- clinVar_results %>% 
-   mutate(variant_depth = if_else( as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])  > filter_variant_depth, "PASS","FAIL")) %>% 
-   mutate(gnomad_af     = if_else( as.numeric( str_match(INFO, "gnomad_3_1_1_AF_non_cancer\\=(0\\.\\d+)\\;")[,2])  > filter_variant_af, "PASS","FAIL")) %>% 
-   mutate(variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL"))
-
+print(vcf_clinvar$gnomad_af, quote = TRUE, row.names = TRUE) 
 
 ## add column "vcf_id" to clinVar results in order to cross-reference with intervar and autopvs1 table
-clinvar_results <- clinVar_results %>%
+clinvar_results <- vcf_clinvar %>%
   mutate(c_id = str_match(INFO, "MedGen:(C\\d+);")[, 2]) %>% 
   mutate(vcf_id= str_remove_all(paste (CHROM,"-",START,"-",REF,"-",ALT), " "),
+         
          ## add star annotations to clinVar results table based on filters // ## default version
          Stars = ifelse(grepl('CLNREVSTAT\\=criteria_provided,_single_submitter', INFO), "1",
                  ifelse(grepl('CLNREVSTAT\\=criteria_provided,_multiple_submitters', INFO), "2",
@@ -102,20 +101,21 @@ clinvar_results <- clinVar_results %>%
                  ifelse(grepl('CLNREVSTAT\\=practice_guideline', INFO), "4",
                  ifelse(grepl('CLNREVSTAT\\=criteria_provided,_conflicting_interpretations', INFO), "Needs Resolving", "0")
                                       )))),
+         
           ## extract the calls and put in own column
          final_call = str_match(INFO, "CLNSIG\\=(\\w+)\\;")[, 2])
 
 ## retrieve and store submissions input file // running out of memory issues
-# input_submissions_file_path = file.path(input_dir, "submission_summary.txt")
+#input_submissions_file_path = file.path(input_dir, "submission_summary.txt")
 #  
-# submission_info_tab  <-  vroom(input_submissions_file_path, comment = "#",delim="\t", 
-#                                col_names = c("VariationID","ClinicalSignificance","DateLastEvaluated","Description","SubmittedPhenotypeInfo","ReportedPhenotypeInfo",
-#                                              "ReviewStatus","CollectionMethod","OriginCounts","Submitter","SCV","SubmittedGeneSymbol","ExplanationOfInterpretation"), 
-#                                show_col_types = FALSE)
-# 
-# submission_info_tab <- submission_info_tab %>% mutate(c_id = str_match(ReportedPhenotypeInfo, "(C\\d+):")[, 2])
-#        
-# 
+#submission_info_tab  <-  vroom(input_submissions_file_path, comment = "#",delim="\t", 
+#                               col_names = c("VariationID","ClinicalSignificance","DateLastEvaluated","Description","SubmittedPhenotypeInfo","ReportedPhenotypeInfo",
+#                                             "ReviewStatus","CollectionMethod","OriginCounts","Submitter","SCV","SubmittedGeneSymbol","ExplanationOfInterpretation"), 
+#                               show_col_types = FALSE)
+#
+#submission_info_tab <- submission_info_tab %>% mutate(c_id = str_match(ReportedPhenotypeInfo, "(C\\d+):")[, 2])
+        
+ 
 
 ## filter only those variants that need consensus call and find final call in submission table
 entries_for_cc <- clinvar_results %>% filter(Stars == "Needs Resolving", na.rm = TRUE) 
@@ -142,7 +142,6 @@ intervar_results    <-  vroom(input_intervar_file, comment = "#", col_names = c(
 ## add column "vcf_id" to intervar results in order to match with autopvs1 and clinvar table
 intervar_results <- intervar_results %>%
   mutate(vcf_id = str_remove_all(paste ("chr",Chr,"-",Start,"-",Ref,"-",Alt), " ")) %>% filter(vcf_id %in% clinvar_results$vcf_id)
-
 
 ## autopvs1 results and file
 autopvs1_results    <-  read_tsv(input_autopvs1_file, comment = "#", col_names = c("id","SYMBOL","Feature","trans_name","consequence","strength_raw","strength","criterion")) %>%
@@ -270,9 +269,7 @@ mutate(final_call = if_else( (evidencePVS1   == 1) &
 master_tab <- full_join(clinvar_results,combined_tab_for_intervar,  by= "vcf_id" ) %>% select(-final_call.x)
 write.table(master_tab, output_tab_file, append = FALSE, sep = "\t", dec = ".",row.names = FALSE, quote = FALSE, col.names = TRUE)
 
-## dev version
-output_tab_dev_file  <- file.path(analysis_dir, paste0(sample_name,"_annotations_report.abridged.dev.tsv"))
-
+## write to output files
 results_tab_dev <- master_tab %>% select(vcf_id,gnomad_af, variant_depth, variant_af, Stars, `InterVar: InterVar and Evidence`,evidencePVS1,evidencePS,evidencePM,evidencePP,evidencePP, evidenceBA1, evidenceBS, evidenceBP, adjusted_call, final_call.y)
 write.table(results_tab_dev, output_tab_dev_file, append = FALSE, sep = "\t", dec = ".",
             row.names = FALSE, quote = FALSE, col.names = TRUE)
@@ -281,3 +278,4 @@ write.table(results_tab_dev, output_tab_dev_file, append = FALSE, sep = "\t", de
 results_tab_abridged <- master_tab %>% select(vcf_id,Gene.ensGene,gnomad_af, variant_depth, variant_af, Stars, `InterVar: InterVar and Evidence`,adjusted_call, final_call.y)
 write.table(results_tab_abridged, output_tab_abr_file, append = FALSE, sep = "\t", dec = ".",
            row.names = FALSE, quote = FALSE, col.names = TRUE)
+
