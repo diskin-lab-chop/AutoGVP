@@ -71,15 +71,12 @@ input_intervar_file <- "/Users/naqvia/Documents/GitHub/pathogenicity-assessment/
 input_vcf_file      <- "/Users/naqvia/Documents/GitHub/pathogenicity-assessment/analyses/input/testing_010423_VEP.vcf"
 input_autopvs1_file      <- "/Users/naqvia/Documents/GitHub/pathogenicity-assessment/analyses/input/test.vcf.vep.autopvs1.tsv"
 sample_name <-  "test"
-
 gnomad_variable <- "Freq_gnomAD_genome_ALL" 
 gnomad_af <- 0.001
-
-## or testing only
 filter_variant_depth = 15
 
 ## output files
-output_tab_file <- file.path(analysis_dir, paste0(sample_name, "_annotations_report.tsv")) 
+output_tab_file      <- file.path(analysis_dir, paste0(sample_name, "_annotations_report.tsv")) 
 output_tab_abr_file  <- file.path(analysis_dir, paste0(sample_name,"_annotations_report.abridged.tsv"))
 output_tab_dev_file  <- file.path(analysis_dir, paste0(sample_name,"_annotations_report.abridged.dev.tsv"))
 
@@ -105,7 +102,7 @@ clinvar_anno_vcf_df  <- vroom(input_clinVar_file, comment = "#", delim="\t", col
                                               ifelse(grepl('CLNREVSTAT\\=criteria_provided,_multiple_submitters', INFO), "2",
                                                      ifelse(grepl('CLNREVSTAT\\=reviewed_by_expert_panel', INFO), "3",
                                                             ifelse(grepl('CLNREVSTAT\\=practice_guideline', INFO), "4",
-                                                                   ifelse(grepl('CLNREVSTAT\\=criteria_provided,_conflicting_interpretations', INFO), "Needs Resolving", "0")
+                                                                   ifelse(grepl('CLNREVSTAT\\=criteria_provided,_conflicting_interpretations', INFO), "1NR", "0")
                                                             )))),
                                ## extract the calls and put in own column
                                final_call = str_match(INFO, "CLNSIG\\=(\\w+)\\;")[, 2])
@@ -115,15 +112,15 @@ clinvar_anno_vcf_df  <- vroom(input_clinVar_file, comment = "#", delim="\t", col
 clinvar_anti_join_vcf_df  <- anti_join(vcf_df, clinvar_anno_vcf_df, by="vcf_id")
 
 ## retrieve and store clinVar input file into table data.table::fread()
-input_submissions_file_path = file.path(input_dir, "submission_summary.txt")
+#input_submissions_file_path = file.path(input_dir, "submission_summary.txt")
  
-submission_info_df  <-  vroom(input_submissions_file_path, comment = "#",delim="\t", 
+#submission_info_df  <-  vroom(input_submissions_file_path, comment = "#",delim="\t", 
                                 col_names = c("VariationID","ClinicalSignificance","DateLastEvaluated","Description","SubmittedPhenotypeInfo","ReportedPhenotypeInfo",
                                               "ReviewStatus","CollectionMethod","OriginCounts","Submitter","SCV","SubmittedGeneSymbol","ExplanationOfInterpretation"), 
                                 show_col_types = FALSE) %>% mutate(c_id = str_match(ReportedPhenotypeInfo, "C(\\d+):")[, 2]) ## add c_id column to match clinvar vcf
 
 ## filter only those variants that need consensus call and find final call in submission table
-entries_for_cc <-  filter(clinvar_anno_vcf_df, Stars == "Needs Resolving", na.rm = TRUE)  
+entries_for_cc <-  filter(clinvar_anno_vcf_df, Stars == "1NR", na.rm = TRUE)  
 #entries_for_cc <- entries_for_cc %>% left_join(submission_info_tab, by="c_id") %>% mutate(final_call=submission_info_tab$ClinicalSignificance)
 
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP call must also go to intervar
@@ -145,6 +142,15 @@ clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws 
   #apply gnomad_af filters  
   #mutate(gnomad_af = if_else( as.numeric(gnomAD_genome_ALL) > filter_variant_af, "PASS", "FAIL" )) %>%
   
+  ## add column for individual scores that will be re-calculated if we need to adjust using autoPVS1 result
+  mutate(evidencePVS1 = str_match(`InterVar: InterVar and Evidence`, "PVS1\\=(\\d+)\\s")[, 2]) %>%
+  mutate(evidenceBA1 = str_match(`InterVar: InterVar and Evidence`, "BA1\\=(\\d+)\\s")[, 2]) %>%
+  mutate( evidencePS = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sPS\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>%
+  mutate( evidencePM = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sPM\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>%
+  mutate( evidencePP = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sPP\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>%
+  mutate( evidenceBS = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sBS\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>%
+  mutate( evidenceBP = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sBP\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>%
+  
   ## merge dataframe with clinvar_anno_vcf_df above
   full_join(clinvar_anno_vcf_df, by="vcf_id") 
 
@@ -155,19 +161,11 @@ autopvs1_results    <-  read_tsv(input_autopvs1_file, col_names = TRUE) %>%
 ## join all three tables together based on variant id that need intervar run
 combined_tab_for_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by="vcf_id") %>%
-  filter(vcf_id %in% entries_for_intervar$vcf_id) %>% select(vcf_id,`InterVar: InterVar and Evidence`, criterion) %>% 
+  filter(vcf_id %in% entries_for_intervar$vcf_id) %>% select(vcf_id,`InterVar: InterVar and Evidence`, criterion, evidencePVS1, evidenceBA1, evidencePS, evidencePM, evidencePP, evidenceBS, evidenceBP) %>% 
   
-  ## add column for individual scores that will be re-calculated if we need to adjust using autoPVS1 result
-  mutate(evidencePVS1 = str_match(`InterVar: InterVar and Evidence`, "PVS1\\=(\\d+)\\s")[, 2]) %>%
-  mutate(evidenceBA1 = str_match(`InterVar: InterVar and Evidence`, "BA1\\=(\\d+)\\s")[, 2]) %>%
-  mutate( evidencePS = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sPS\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>%
-  mutate( evidencePM = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sPM\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>%
-  mutate( evidencePP = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sPP\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>%
-  mutate( evidenceBS = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sBS\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>%
-  mutate( evidenceBP = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sBP\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>%
   
   ## indicate if recalculated 
-  mutate(intervar_adjusted_call = if_else(evidencePVS1 == 0, "No", "Yes")) %>%  
+  mutate(intervar_adjusted_call = if_else( (evidencePVS1 == 0), "No", "Yes")) %>%  
   
   ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
   #if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
@@ -270,12 +268,22 @@ combined_tab_for_intervar <- autopvs1_results %>%
 # (ii) Benign and pathogenic are contradictory.
 
 ## merge tables together (clinvar and intervar) and write to file
-master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar,  by= "vcf_id" ) 
-master_tab <- master_tab %>% mutate(intervar_adjusted_call = coalesce(intervar_adjusted_call, "not_adjusted")) %>% mutate(Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`))
+master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar,clinvar_anti_join_vcf_df,  by= "vcf_id" ) 
+master_tab <- master_tab %>% mutate(intervar_adjusted_call = coalesce(intervar_adjusted_call, "not_adjusted")) %>% 
+                             mutate(evidencePVS1 = coalesce(as.double(evidencePVS1.x, evidencePVS1.y) )) %>%
+                             mutate(evidenceBA1 = coalesce(as.double(evidenceBA1.x, evidenceBA1.y) )) %>% 
+                             mutate(evidencePS = coalesce(as.double(evidencePS.x, evidencePS.y) )) %>% 
+                             mutate(evidencePM = coalesce(as.double(evidencePM.x, evidencePM.y) )) %>% 
+                             mutate(evidencePP = coalesce(as.double(evidencePP.x, evidencePP.y) )) %>% 
+                             mutate(evidenceBS = coalesce(as.double(evidenceBS.x, evidenceBS.y) )) %>% 
+                             mutate(evidenceBP = coalesce(as.double(evidenceBP.x, evidenceBP.y) )) %>% 
+                             mutate(Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`))
 
 ## replace second final call with the second one because we did not use interVar results
 master_tab$final_call.y[master_tab$intervar_adjusted_call == "not_adjusted"] <- master_tab$final_call.x
-master_tab <- select(master_tab, -final_call.x)  %>%  mutate(gnomad_af = if_else( as.double( gnomad_variable > gnomad_af, "PASS","FAIL"))) 
+master_tab <- select(master_tab, -final_call.x) 
+
+#filter  %>%  mutate(gnomad_af = if_else( as.double(master_tab$Freq_gnomAD_genome_ALL > gnomad_af, "PASS","FAIL"))) 
 
 write.table(master_tab, output_tab_file, append = FALSE, sep = "\t", dec = ".",row.names = FALSE, quote = FALSE, col.names = TRUE)
 
