@@ -34,7 +34,7 @@ bash run_annotator.sh -h
 - Read in user inputted clinVar file
 - Create `vcf_id` (chr and position)
 - Annotate stars based on `CLNREVSTAT`*
-- Report and save significant call if Stars are not 0 or 1 and not B/P/LB/LP
+- Report and save significant call if Stars are not 0 or 1 and not B/P/LB/LP/VUS
 - Identify variants that are ambiguous (“criteria_provided,_conflicting_interpretations’), generate table to then check against submission file
 - Identify variants that need further annotations or possible re-adjustment (Stars 0 or 1)
 - Retrieve and store interVar results file into table and create vcf_id
