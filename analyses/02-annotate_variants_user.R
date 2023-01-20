@@ -108,14 +108,46 @@ clinvar_anno_vcf_df  <- vroom(input_clinVar_file, comment = "#", delim="\t", col
                                ## extract the calls and put in own column
                                final_call = str_match(INFO, "CLNSIG\\=(\\w+)\\;")[, 2])
 
+## if conflicting intrep. take the call with most calls in CLNSIGCONF field
+for(i in 1:nrow(clinvar_anno_vcf_df)) {
+  entry <- clinvar_anno_vcf_df[i,]
+  if(entry$Stars != "1NR")
+  {
+    next;
+  }
+  
+  conf_section <-str_match(entry$INFO, "CLNSIGCONF\\=.+\\;CLNVC")  ## part to parse and count calls
+  call_names <- c("Pathogenic","Likely_pathogenic","Benign","Likely_benign","Uncertain_significance")
 
+  P  <-  (str_match(conf_section, "Pathogenic\\((\\d+)\\)")[,2])
+  LP <-  (str_match(conf_section, "Likely_pathogenic\\((\\d+)\\)")[,2])
+  B  <-  (str_match(conf_section, "Benign\\((\\d+)\\)")[,2])
+  LB <-  (str_match(conf_section, "Likely_benign\\((\\d+)\\)")[,2])
+  U  <-  (str_match(conf_section, "Uncertain_significance\\((\\d+)\\)")[,2])
+
+  ## make vector out of possible calls to get max 
+  calls          <- c(P,LP,B,LB,U)
+
+  if ( length( which( calls == max(calls,na.rm = TRUE) ) ) > 1 )
+  {
+    next;
+  }
+
+  highest_ind    <- which.max(calls)
+  consensus_call <- call_names[highest_ind]
+  
+
+  
+  clinvar_anno_vcf_df[i,]$final_call = consensus_call
+}
+  
 ## store variants without clinvar info
 clinvar_anti_join_vcf_df  <- anti_join(vcf_df, clinvar_anno_vcf_df, by="vcf_id")
 
 ## retrieve and store clinVar input file into table data.table::fread()
 #input_submissions_file_path = file.path(input_dir, "submission_summary.txt")
  
-#submission_info_df  <-  vroom(input_submissions_file_path, comment = "#",delim="\t", 
+# submission_info_df  <-  vroom(input_submissions_file_path, comment = "#",delim="\t", 
 #                                col_names = c("VariationID","ClinicalSignificance","DateLastEvaluated","Description","SubmittedPhenotypeInfo","ReportedPhenotypeInfo",
 #                                              "ReviewStatus","CollectionMethod","OriginCounts","Submitter","SCV","SubmittedGeneSymbol","ExplanationOfInterpretation"), 
 #                               show_col_types = FALSE) %>% mutate(c_id = str_match(ReportedPhenotypeInfo, "C(\\d+):")[, 2]) ## add c_id column to match clinvar vcf
@@ -222,7 +254,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
                                       (evidenceBS   >= 2), "Benign",
                                 ifelse( (evidenceBS == 1 & evidenceBP == 1) |
                                         (evidenceBP   >= 2), "Likely Benign",  
-                                  ifelse( evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],"Uncertiain Signficance")
+                                  ifelse( evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],"Uncertiain Signficance"))))))))
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar,clinvar_anti_join_vcf_df,  by= "vcf_id" ) 
@@ -236,7 +268,7 @@ master_tab <- master_tab %>% mutate(intervar_adjusted_call = coalesce(intervar_a
                              mutate(evidenceBP = coalesce(as.double(evidenceBP.x, evidenceBP.y) )) %>% 
                              mutate(Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`)) %>% 
   
-                             #replace second final call with the second one because we did not use interVar results
+                             # replace second final call with the second one because we did not use interVar results
                              mutate(final_call.x = if_else(intervar_adjusted_call=="No" & Stars=="0", final_call.y, final_call.x))  
 
 ## combine final calls into one choosing the appropriate final call                             
