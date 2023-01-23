@@ -145,12 +145,12 @@ for(i in 1:nrow(clinvar_anno_vcf_df)) {
 clinvar_anti_join_vcf_df  <- anti_join(vcf_df, clinvar_anno_vcf_df, by="vcf_id")
 
 ## retrieve and store clinVar input file into table data.table::fread()
-#input_submissions_file_path = file.path(input_dir, "submission_summary.txt")
- 
+# input_submissions_file_path = file.path(input_dir, "submission_summary.txt.gz")
+#  
 # submission_info_df  <-  vroom(input_submissions_file_path, comment = "#",delim="\t", 
-#                                col_names = c("VariationID","ClinicalSignificance","DateLastEvaluated","Description","SubmittedPhenotypeInfo","ReportedPhenotypeInfo",
-#                                              "ReviewStatus","CollectionMethod","OriginCounts","Submitter","SCV","SubmittedGeneSymbol","ExplanationOfInterpretation"), 
-#                               show_col_types = FALSE) %>% mutate(c_id = str_match(ReportedPhenotypeInfo, "C(\\d+):")[, 2]) ## add c_id column to match clinvar vcf
+#                                 col_names = c("VariationID","ClinicalSignificance","DateLastEvaluated","Description","SubmittedPhenotypeInfo","ReportedPhenotypeInfo",
+#                                               "ReviewStatus","CollectionMethod","OriginCounts","Submitter","SCV","SubmittedGeneSymbol","ExplanationOfInterpretation"), 
+#                                show_col_types = FALSE) %>% mutate(c_id = str_match(ReportedPhenotypeInfo, "C(\\d+):")[, 2]) ## add c_id column to match clinvar vcf
 
 ## filter only those variants that need consensus call and find final call in submission table
 entries_for_cc <-  filter(clinvar_anno_vcf_df, Stars == "1NR", na.rm = TRUE)  
