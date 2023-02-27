@@ -19,10 +19,12 @@ inputs:
   annovar_nastring: { type: 'string?', doc: "character used to represent missing values", default: '.' }
   annovar_otherinfo: { type: 'boolean?', doc: "print out otherinfo (information after fifth column in queryfile)", default: true }
   annovar_threads: { type: 'int?', doc: "Num threads to use to process filter inputs", default: 8 }
+  annovar_vcfinput: { type: 'boolean?', doc: "Annotate vcf and generate output file as vcf", default: false }
   intervar_db: { type: File, doc: "InterVar Database from git repo + mim_genes.txt" }
   intervar_db_str: { type: string, doc: "Name of dir created when intervar db is un-tarred" }
 outputs:
   intervar_classification: { type: File, outputSource: intervar_classify/intervar_scored}
+  annovar_vcfoutput: { type: 'File?', outputSource: run_annovar/vcf_output}
 
 steps:
   convert_to_annovar:
@@ -44,7 +46,8 @@ steps:
       nastring: annovar_nastring
       otherinfo: annovar_otherinfo
       threads: annovar_threads
-    out: [annovar_txt]
+      vcfinput: annovar_vcfinput
+    out: [annovar_txt, vcf_output]
   intervar_classify:
     run: ../tools/intervar.cwl
     in:
