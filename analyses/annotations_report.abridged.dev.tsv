@@ -1,0 +1,297 @@
+vcf_id	gnomad_af	variant_depth	variant_af	Stars	InterVar: InterVar and Evidence	evidencePVS1	evidencePS	evidencePM	evidencePP	evidenceBA1	evidenceBS	evidenceBP	adjusted_call	final_call.y
+chr17-276257-C-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-276418-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-276910-C-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-277094-G-T	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-277773-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-277962-C-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-278598-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-279332-C-T	FAIL	PASS	PASS	0	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	0	1	0	No	Uncertain significance
+chr17-279434-T-C	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-279592-A-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-279594-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-279666-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-279914-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-279930-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-280333-A-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-280342-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-280815-C-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-281506-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-281644-C-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-281725-C-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-281918-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-281965-T-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-282127-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-282226-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-282271-G-A	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-282354-T-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-282366-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-282537-C-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-282549-G-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-282769-G-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-283203-C-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-283320-G-A	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-283342-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-283601-C-G	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-283988-C-T	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-284053-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-284110-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-284391-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-284631-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-284640-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-285289-G-A	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-285307-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-285336-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-285733-G-A	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-286199-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-286376-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-286584-G-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-286606-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-286673-C-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-286847-G-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-286907-G-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-286913-T-TCTCTCTCCACCATCAGACCTCGCACC	FAIL	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-286925-G-A	FAIL	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-286939-C-T	FAIL	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-286941-T-C	NA	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-286953-G-A	PASS	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-287071-T-A	NA	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-289254-C-T	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-289543-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-289566-A-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-289956-C-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-290062-A-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-290241-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-290279-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-290910-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-291222-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-291244-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-291359-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-292131-T-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-293477-C-G	PASS	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-293751-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-293754-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-293891-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-293905-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-294041-A-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-294081-G-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-294154-G-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-294329-T-C	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-294657-A-AT	NA	FAIL	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-295300-C-T	NA	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-295365-G-A	FAIL	PASS	FAIL	0	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	0	1	0	No	Uncertain significance
+chr17-295810-A-T	NA	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-296156-G-A	NA	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-297092-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-297477-T-C	PASS	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-298435-C-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-298542-C-CA	PASS	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-298696-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-298712-A-AAC	PASS	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-298720-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-298796-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-299311-T-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-299381-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-299423-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-299726-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-299792-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-299805-C-T	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-299875-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-300024-C-T	PASS	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-300037-A-C	FAIL	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-301003-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-301557-G-T	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-301589-A-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-301865-A-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-302495-C-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-302571-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-302875-G-C	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-303350-C-T	FAIL	PASS	PASS	0	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	0	0	0	No	Uncertain significance
+chr17-303377-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-304433-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-304650-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=1 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	Yes	Benign
+chr17-304675-G-A	FAIL	PASS	PASS	0	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	0	0	0	No	Uncertain significance
+chr17-304914-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-304932-A-G	PASS	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-305306-C-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-305407-G-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-305703-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-305847-T-C	NA	PASS	FAIL	0	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	0	0	0	No	Uncertain significance
+chr17-305851-T-C	NA	PASS	FAIL	0	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	0	1	0	No	Uncertain significance
+chr17-305855-T-C	NA	PASS	FAIL	0	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	0	0	0	No	Uncertain significance
+chr17-305859-T-C	NA	PASS	FAIL	0	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	0	0	0	No	Uncertain significance
+chr17-305862-T-C	NA	PASS	FAIL	0	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	0	0	0	No	Uncertain significance
+chr17-306024-A-AT	PASS	FAIL	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-306310-C-G	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-307584-G-A	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-308486-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-309451-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-309625-A-G	PASS	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-310791-G-C	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-311645-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-314675-T-C	NA	PASS	FAIL	0	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 1, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	1	0	0	0	0	No	Uncertain significance
+chr17-314711-G-GA	FAIL	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-314723-C-T	PASS	PASS	FAIL	0	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 1, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	1	0	0	0	0	No	Uncertain significance
+chr17-314728-C-CTTTAGTCCCTGTGACTCCACCTCCATTGATT	NA	PASS	FAIL	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-314736-T-C	FAIL	PASS	PASS	0	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 1, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	1	0	0	0	0	No	Uncertain significance
+chr17-314743-T-C	NA	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-314822-T-C	NA	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-314910-A-T	NA	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-314922-G-A	NA	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-314924-C-T	NA	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-314929-C-G	NA	PASS	PASS	0	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	0	1	0	No	Uncertain significance
+chr17-315377-G-A	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-315409-G-A	NA	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-315456-C-T	NA	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-315472-T-C	NA	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-315524-G-GTCCCTGTGACCCCACCTCCATTGACCTGTAA	NA	PASS	FAIL	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-315585-G-C	NA	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-315612-C-A	NA	FAIL	PASS	0	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 1, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	1	0	0	0	0	No	Uncertain significance
+chr17-315618-C-T	NA	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-315763-T-G	NA	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-315774-G-C	NA	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-315785-T-C	NA	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-315794-G-T	NA	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-315945-C-T	PASS	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-316107-T-C	NA	PASS	FAIL	0	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	0	0	0	No	Uncertain significance
+chr17-316110-C-G	NA	PASS	FAIL	0	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	0	1	0	No	Uncertain significance
+chr17-316459-C-T	NA	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-316629-C-G	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-317393-G-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-317608-T-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-317818-A-C	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-318154-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-319019-G-A	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-320472-C-CA	FAIL	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-321198-G-A	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-321307-T-G	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 1, 0, 0, 1, 0]	0	0	0	0	1	1	2	No	Benign
+chr17-321346-C-A	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 1, 0, 0, 1, 0]	0	0	0	0	1	1	2	No	Benign
+chr17-321853-C-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-322651-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-322892-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-323061-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-324061-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-324330-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-324690-T-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-324707-G-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-324709-A-AT	PASS	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-324710-C-CTAT	FAIL	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-324710-C-CTATCTATCTATCTAT	FAIL	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-324829-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-324870-C-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-325772-T-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-326506-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-327568-G-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-329605-T-G	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-331132-G-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-331207-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-331290-A-AGG	PASS	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-331291-A-AGCCAAATGCTGCAGAGATGAAGGGAGATGAAAG	PASS	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-331683-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 1, 0, 0, 1, 0]	0	0	0	0	1	1	2	No	Benign
+chr17-332713-C-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-332713-C-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-332829-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-332829-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-335230-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-335236-C-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-335292-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-335547-C-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-335651-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-336127-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-336465-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-337122-A-AT	PASS	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-337362-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-338167-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-338318-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-338429-G-GC	NA	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-340371-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-340431-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-341416-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-342250-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-342251-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-342347-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-342544-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-343397-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-343804-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-343931-C-CCATCAT	PASS	FAIL	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-345677-C-T	PASS	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-348093-TAAA-T	PASS	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-348093-T-TA	FAIL	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-348173-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-348281-A-C	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-348283-C-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-348535-G-GA	PASS	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-348636-C-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-348907-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-350042-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-350328-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-351061-A-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-351209-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-352417-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-353102-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-353140-C-CA	PASS	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-353214-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-353665-C-T	NA	PASS	FAIL	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-353668-G-A	NA	PASS	FAIL	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-353671-A-G	NA	PASS	FAIL	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-354346-C-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-354346-C-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-354437-C-CCA	FAIL	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-354968-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-354968-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-355139-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-355139-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-355264-A-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-355264-A-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-355274-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-355274-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-355662-T-A	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-355662-T-A	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-355663-T-C	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-355663-T-C	FAIL	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-355674-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-355674-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-355691-C-T	PASS	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-355691-C-T	PASS	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-355701-T-A	PASS	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-355701-T-A	PASS	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-355702-T-C	PASS	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-355702-T-C	PASS	FAIL	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-356814-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-356814-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-356968-G-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-356968-G-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-357086-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-357086-G-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-357171-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-357171-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-357827-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-357827-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-357923-C-CT	FAIL	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-358213-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-358213-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-358431-C-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-358431-C-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-358545-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-358545-A-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-359608-C-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-359608-C-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-359684-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-359684-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-359705-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-359705-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-359705-T-TC	PASS	PASS	PASS	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+chr17-359813-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-359813-T-C	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-359817-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-359817-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-359852-T-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-359852-T-G	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-360023-C-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-360023-C-A	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-360232-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-360232-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-360289-C-T	PASS	PASS	PASS	0	InterVar: Benign PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 0, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	0	0	1	1	0	No	Benign
+chr17-360290-C-T	PASS	FAIL	PASS	0	InterVar: Benign PVS1=1 PS=[0, 2, 0, 0, 0] PM=[0, 0, 2, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	1	2	2	0	1	1	0	Yes	Uncertain significance
+chr17-360291-C-T	PASS	FAIL	PASS	0	InterVar: Benign PVS1=1 PS=[0, 2, 0, 0, 0] PM=[0, 0, 2, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	2	3	0	1	1	0	Yes	Benign
+chr17-360293-C-T	PASS	FAIL	PASS	0	InterVar: Benign PVS1=1 PS=[0, 2, 0, 0, 0] PM=[0, 0, 2, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=1 BS=[1, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	2	2	1	1	1	0	Yes	Benign

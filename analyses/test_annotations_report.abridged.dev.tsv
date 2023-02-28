@@ -1,0 +1,10 @@
+vcf_id	Stars	Intervar_evidence	evidencePVS1	evidencePS	evidencePM	evidencePP	evidenceBA1	evidenceBS	evidenceBP	intervar_adjusted_call	final_call.y
+chr11-119312057-C-A	NA	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[0, 1, 0, 0, 0, 0, 0] PP=[0, 0, 1, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	1	1	0	0	0	No	Uncertain significance
+chr10-75029109-G-A	0	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[1, 1, 0, 0, 0, 0, 0] PP=[0, 0, 1, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[1, 0, 0, 0, 0, 0, 0, 0]	0	0	2	1	0	0	1	No	Uncertain significance
+chr11-119278209-T-C	1NR	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[1, 1, 0, 0, 0, 0, 0] PP=[0, 0, 1, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	2	1	0	0	0	not_adjusted	NA
+chr22-20987536-G-A	1	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[1, 1, 0, 0, 0, 0, 0] PP=[0, 0, 1, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	2	1	0	0	0	No	Uncertain significance
+chr2-39022786-T-G	3	InterVar: Likely pathogenic PVS1=0 PS=[0, 0, 0, 0, 0] PM=[1, 1, 0, 0, 0, 0, 0] PP=[0, 0, 1, 0, 1, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	2	2	0	0	0	not_adjusted	Likely_pathogenic
+chr17-7675109-T-C	1NR	InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[1, 1, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	0	0	2	0	0	0	0	not_adjusted	Conflicting_interpretations_of_pathogenicity
+chr3-10046722-TAGTA-T	1	InterVar: Likely pathogenic PVS1=1 PS=[0, 0, 0, 0, 0] PM=[0, 1, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	1	0	1	0	0	0	0	Yes	Likely pathogenic
+chr16-67659993-G--	NA	InterVar: Likely pathogenic PVS1=1 PS=[0, 0, 0, 0, 0] PM=[0, 1, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	1	0	1	0	0	0	0	not_adjusted	Uncertain_significance
+chr20-44621148-C-T	NA	InterVar: Pathogenic PVS1=1 PS=[0, 0, 0, 0, 0] PM=[0, 1, 0, 0, 0, 0, 0] PP=[0, 0, 1, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]	1	0	1	1	0	0	0	Yes	Pathogenic
