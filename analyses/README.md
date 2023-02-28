@@ -15,26 +15,30 @@ docker exec -ti pathogenecity_anno bash
 ```
 
 ## How to Run
-### test input data
+
+
+### Run annotation scripts (example)
+#### cavatica version ####
+##### specific input (eg. test input) #####
 ```
 input/*vcf
 input/*intervar
 input/*autopvs1.tsv (cavatica)
 ```
-
-### Run annotation scripts (example)
 ```
 bash run_annotator.sh -v input/BS_test_ad_hoc_genotyping.CGP.filtered.deNovo.vep.chr17_test.vcf -i input/BS_test_ad_hoc_annovar_humandb_hg38_intervar.hg38_multianno.chr17_test.txt.intervar -a input/BS_test_ad_hoc_annovar_humandb_hg38_intervar.chr17_test.autopvs1.tsv -w cavatica
-
-## for user/non-cavatica run-
-Pre-requisites:
-VCF with VEP run and annovar run with --vcfinput flag
-clinvar.vcf.gz
-variant_summary.txt.gz
-
+bash run_annotator.sh -h
+```
+#### user/non-cavatica version ####
+##### specific input #####
+ ```
+VCF with VEP  
+annovar run with --vcfinput flag
+files: clinvar.vcf.gz, variant_summary.txt.gz
+```
+```
 bash run_annotator.sh -v input/testing_010423_VEP.vcf -i input/testing_010423_intervar.hg38_multianno.txt.intervar.txt -a input/testing_011323.autopvs1.txt -w user -g Freq_gnomAD_genome_ALL
 
-bash run_annotator.sh -h
 ```
 ## Workflow chart  
 ![workflow](https://github.com/diskin-lab-chop/pathogenicity-assessment/blob/annotations/analyses/germline-pathogenecity_flow.png)
