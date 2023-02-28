@@ -105,9 +105,11 @@ then
 else
 
   ## retrieve clinvar vcf if specified and download to input folder
+
   # generate full path to download
   ftp_path="ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2022/"$clinvar_version".vcf.gz"
   kREGEX_CLINVAR='clinvar[_/][0-9]{8}' # note use of [0-9] to avoid \d
+  clinvar_version="input/clinvar.vcf.gz" ## default/latest version
 
   ## wget clinvar file if workflow type is non-cavaita/"user" and its specified, otherwise use default clinvar db
   if [[ $clinvar_version =~ $kREGEX_CLINVAR && $workflow_type == 'user' ]]
@@ -122,9 +124,10 @@ else
       exit 1;
     fi
   else
-    echo "ERROR: clinvar format error, must provide clinvar version (ie. clinvar_20211225) to download"
-    exit 1;
+    echo "ERROR: clinvar format error, must provide clinvar version (ie. clinvar_20211225) to download, using default"
+    #exit 1;
   fi
+
 
   ## check to see gnomad variable option entered if workflow is "user"
   if [[ "$workflow_type" == 'user' && -z ${gnomad_var} ]]
@@ -138,7 +141,7 @@ else
   if [ -f "data/hg38.fa" ]
   then
     echo "python3 ../autopvs1/autoPVS1_from_VEP_vcf.py --genome_version hg38 --vep_vcf $vcf_file  > $prefix".vcf.vep""
-    echo "Rscript 02-annotate_variants_user.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --clinvar $clinvar_version --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af variant_AF --sample_name $prefix"
+    Rscript 02-annotate_variants_user.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --clinvar $clinvar_version --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af variant_AF --sample_name $prefix
   else
     echo "wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz -P data/ wait=TRUE && gunzip data/hg38.fa.gz"
     echo "python3 ../autopvs1/autoPVS1_from_VEP_vcf.py --genome_version hg38 --vep_vcf $vcf_file  > $prefix".vcf.vep""
