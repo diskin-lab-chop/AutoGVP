@@ -70,7 +70,7 @@ filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
 
 ## for testing purposes 
-#input_clinVar_file  <- "/Users/naqvia/Documents/GitHub/pathogenicity-assessment/analyses/input/clinvar.vcf.gz" 
+input_clinVar_file  <- file.path(input_dir,"clinvar_20230218.vcf.gz") # /Users/naqvia/Documents/GitHub/pathogenicity-assessment/analyses/input/clinvar.vcf.gz" 
 #input_intervar_file <- "/Users/naqvia/Documents/GitHub/pathogenicity-assessment/analyses/input/testing_010423_intervar.hg38_multianno.txt.intervar.txt"
 #input_vcf_file      <- "/Users/naqvia/Documents/GitHub/pathogenicity-assessment/analyses/input/testing_010423_VEP.vcf"
 #input_autopvs1_file <- "/Users/naqvia/Documents/GitHub/pathogenicity-assessment/analyses/input/testing_011323.autopvs1.txt"
@@ -146,7 +146,7 @@ for(i in 1:nrow(clinvar_anno_vcf_df)) {
 clinvar_anti_join_vcf_df  <- anti_join(vcf_df, clinvar_anno_vcf_df, by="vcf_id")
 
 ## retrieve and store clinVar input file into table data.table::fread()
-input_submissions_file_path = file.path(input_dir, "variant_summary.txt.gz")
+input_submissions_file_path = file.path(input_dir, "variant_summary_2023-02.txt.gz")
   
 submission_info_df  <-  vroom(input_submissions_file_path, comment = "#",delim="\t", 
                                  col_names = c("AlleleID","Type","Name","GeneID","GeneSymbol","HGNC_ID","ClinicalSignificance","ClinSigSimple",
