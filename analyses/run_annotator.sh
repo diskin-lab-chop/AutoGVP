@@ -141,11 +141,11 @@ else
   # check to see if hg38 exists, if not then download and unzip
   if [ -f "data/hg38.fa" ]
   then
-    echo "python3 ../autopvs1/autoPVS1_from_VEP_vcf.py --genome_version hg38 --vep_vcf $vcf_file  > $prefix".vcf.vep""
+    python3 ../autopvs1/autoPVS1_from_VEP_vcf.py --genome_version hg38 --vep_vcf $vcf_file  > $prefix".vcf.vep
     Rscript 02-annotate_variants_user.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --clinvar $clinvar_version --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af variant_AF --sample_name $prefix
   else
-    echo "wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz -P data/ wait=TRUE && gunzip data/hg38.fa.gz"
-    echo "python3 ../autopvs1/autoPVS1_from_VEP_vcf.py --genome_version hg38 --vep_vcf $vcf_file  > $prefix".vcf.vep""
-    echo "Rscript 02-annotate_variants_user.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --clinvar $clinvar_version --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af variant_AF --sample_name $prefix"
+    wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz -P data/ wait=TRUE && gunzip data/hg38.fa.gz
+    python3 ../autopvs1/autoPVS1_from_VEP_vcf.py --genome_version hg38 --vep_vcf $vcf_file  > $prefix".vcf.vep
+    Rscript 02-annotate_variants_user.R --vcf $vcf_file --intervar $intervar_file --autopvs1 $autopvs1_file --clinvar $clinvar_version --gnomad_variable $gnomad_var --gnomad_af $genomAD_AF_filter --variant_depth $variant_depth_filter --variant_af variant_AF --sample_name $prefix
   fi
 fi

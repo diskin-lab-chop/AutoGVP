@@ -41,6 +41,8 @@ option_list <- list(
               help = "input autopvs1 file"),
   make_option(c("--clinvar"), type = "character",
               help = "specific clinVar file (format: clinvar_20211225.vcf.gz)"), ## https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2022clinvar_20211225.vcf.gz 
+  make_option(c("--submission"), type = "character",
+              help = "specific submission file (format: variant_summary_2023-02.txt.gz)"),
   make_option(c("--gnomad_variable"), type = "character",default = "Freq_gnomAD_genome_ALL",
               help = "gnomAD variable"),
   make_option(c("--gnomad_af"), type = "numeric", default = 0.001,
@@ -63,6 +65,9 @@ input_intervar_file <- opt$intervar
 input_autopvs1_file <- opt$autopvs1
 input_vcf_file <- opt$vcf
 sample_name <- opt$sample_name
+input_submission_file  <-  opt$submission
+
+
 
 ## filters for gnomAD
 filter_gnomad_var    <- opt$gnomad_variable
@@ -146,9 +151,9 @@ for(i in 1:nrow(clinvar_anno_vcf_df)) {
 clinvar_anti_join_vcf_df  <- anti_join(vcf_df, clinvar_anno_vcf_df, by="vcf_id")
 
 ## retrieve and store clinVar input file into table data.table::fread()
-input_submissions_file_path = file.path(input_dir, "variant_summary_2023-02.txt.gz")
+#input_submissions_file_path = file.path(input_dir, "variant_summary_2023-02.txt.gz")
   
-submission_info_df  <-  vroom(input_submissions_file_path, comment = "#",delim="\t", 
+submission_info_df  <-  vroom(input_submission_file, comment = "#",delim="\t", 
                                  col_names = c("AlleleID","Type","Name","GeneID","GeneSymbol","HGNC_ID","ClinicalSignificance","ClinSigSimple",
                                                "LastEvaluated","RS# (dbSNP)","nsv/esv (dbVar)", "RCVaccession","PhenotypeIDS","PhenotypeList","Origin",  
                                                "OriginSimple","Assembly","ChromosomeAccession","Chromosome","Start","Stop","ReferenceAllele","AlternateAllele",
