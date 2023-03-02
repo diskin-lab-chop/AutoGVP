@@ -70,7 +70,7 @@ filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
 
 ## for testing purposes 
-input_clinVar_file  <- file.path(input_dir,"clinvar_20230218.vcf.gz") # /Users/naqvia/Documents/GitHub/pathogenicity-assessment/analyses/input/clinvar.vcf.gz" 
+#input_clinVar_file  <- file.path(input_dir,"clinvar_20230218.vcf.gz") # /Users/naqvia/Documents/GitHub/pathogenicity-assessment/analyses/input/clinvar.vcf.gz" 
 #input_intervar_file <- "/Users/naqvia/Documents/GitHub/pathogenicity-assessment/analyses/input/testing_010423_intervar.hg38_multianno.txt.intervar.txt"
 #input_vcf_file      <- "/Users/naqvia/Documents/GitHub/pathogenicity-assessment/analyses/input/testing_010423_VEP.vcf"
 #input_autopvs1_file <- "/Users/naqvia/Documents/GitHub/pathogenicity-assessment/analyses/input/testing_011323.autopvs1.txt"

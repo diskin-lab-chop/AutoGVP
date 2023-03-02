@@ -27,7 +27,7 @@ usage() {
   echo "  -f    gnomAD allele frequency filter (default: 0.001)"
   echo "  -v    variant depth filter (default: 15)"
   echo "  -r    variant_AF <variant allele frequency (default: 0.2)"
-  echo "  -c    clinvar version (default: clinvar_20211225)"
+  echo "  -c    clinvar file path (default: clinvar_20230218.vcf.gz)"
   echo "  -p    prefix for output file naming (default: 'sample')"
 
   echo "  -h    Display usage information."
@@ -109,24 +109,25 @@ else
   # generate full path to download
   ftp_path="ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2022/"$clinvar_version".vcf.gz"
   kREGEX_CLINVAR='clinvar[_/][0-9]{8}' # note use of [0-9] to avoid \d
-  clinvar_version="input/clinvar.vcf.gz" ## default/latest version
+  
+  #clinvar_version="input/clinvar.vcf.gz" ## default/latest version
 
   ## wget clinvar file if workflow type is non-cavaita/"user" and its specified, otherwise use default clinvar db
-  if [[ $clinvar_version =~ $kREGEX_CLINVAR && $workflow_type == 'user' ]]
-  then
+  #if [[ $clinvar_version =~ $kREGEX_CLINVAR && $workflow_type == 'user' ]]
+  #then
     ## check to see if ftp path for clinvar version exists and if so, get it
-    if [[ `wget -S --spider $ftp_path 2>&1 | grep 'Remote file exists.'` ]]; then exit_status=$?; fi
-    if [[ $exit_status == 0 ]];
-    then
-      echo "wget -l 3 $ftp_path -P input/ wait = TRUE"
-    else
-      echo "ERROR: clinVar file $ftp_path does note exist, try again..."
-      exit 1;
-    fi
-  else
-    echo "ERROR: clinvar format error, must provide clinvar version (ie. clinvar_20211225) to download, using default"
+   # if [[ `wget -S --spider $ftp_path 2>&1 | grep 'Remote file exists.'` ]]; then exit_status=$?; fi
+   # if [[ $exit_status == 0 ]];
+   # then
+    #  echo "wget -l 3 $ftp_path -P input/ wait = TRUE"
+    #else
+     # echo "ERROR: clinVar file $ftp_path does note exist, try again..."
+      #exit 1;
+   # fi
+  #else
+   # echo "ERROR: clinvar format error, must provide clinvar version (ie. clinvar_20211225) to download, using default"
     #exit 1;
-  fi
+  #fi
 
 
   ## check to see gnomad variable option entered if workflow is "user"
