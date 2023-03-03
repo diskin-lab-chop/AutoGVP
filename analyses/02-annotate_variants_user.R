@@ -75,15 +75,20 @@ filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
 
 ## for testing purposes 
-#input_clinVar_file  <- file.path(input_dir,"clinvar_20230218.vcf.gz") # /Users/naqvia/Documents/GitHub/pathogenicity-assessment/analyses/input/clinvar.vcf.gz" 
-#input_intervar_file <- "/Users/naqvia/Documents/GitHub/pathogenicity-assessment/analyses/input/testing_010423_intervar.hg38_multianno.txt.intervar.txt"
-#input_vcf_file      <- "/Users/naqvia/Documents/GitHub/pathogenicity-assessment/analyses/input/testing_010423_VEP.vcf"
-#input_autopvs1_file <- "/Users/naqvia/Documents/GitHub/pathogenicity-assessment/analyses/input/testing_011323.autopvs1.txt"
+input_clinVar_file  <- file.path(input_dir,"clinvar_20211225.vcf.gz")
+input_intervar_file <- file.path(input_dir,"testing_010423_intervar.hg38_multianno.txt.intervar") 
+input_multianno_file <- file.path(input_dir, "testing_010423.hg38_multianno.txt")
 
-#sample_name <-  "test"
-#gnomad_variable <- "Freq_gnomAD_genome_ALL" 
-#gnomad_af <- 0.001
-#filter_variant_depth = 15
+input_vcf_file      <- file.path(input_dir,"testing_010423_VEP.vcf") 
+input_autopvs1_file <- file.path(input_dir,"testing_010423_autopvs1.txt")
+input_submission_file <- file.path(input_dir,"variant_summary.txt.gz")
+
+
+
+sample_name <-  "test"
+gnomad_variable <- "Freq_gnomAD_genome_ALL" 
+gnomad_af <- 0.001
+filter_variant_depth = 15
 
 ## output files
 output_tab_file      <- file.path(analysis_dir, paste0(sample_name, "_annotations_report.tsv")) 
@@ -151,8 +156,7 @@ for(i in 1:nrow(clinvar_anno_vcf_df)) {
 clinvar_anti_join_vcf_df  <- anti_join(vcf_df, clinvar_anno_vcf_df, by="vcf_id")
 
 ## retrieve and store clinVar input file into table data.table::fread()
-#input_submissions_file_path = file.path(input_dir, "variant_summary_2023-02.txt.gz")
-  
+
 submission_info_df  <-  vroom(input_submission_file, comment = "#",delim="\t", 
                                  col_names = c("AlleleID","Type","Name","GeneID","GeneSymbol","HGNC_ID","ClinicalSignificance","ClinSigSimple",
                                                "LastEvaluated","RS# (dbSNP)","nsv/esv (dbVar)", "RCVaccession","PhenotypeIDS","PhenotypeList","Origin",  
@@ -168,7 +172,7 @@ submission_info_df  <-  vroom(input_submission_file, comment = "#",delim="\t",
 ## filter only those variants that need consensus call and find final call in submission table
 entries_for_cc <-  filter(clinvar_anno_vcf_df, Stars == "1NR", final_call !="Benign",final_call !="Pathogenic", final_call != "Likely_benign",final_call !="Likely_pathogenic", final_call != "Uncertain_significance")
 
-test<- right_join(submission_info_df,entries_for_cc, by="vcf_id")
+#test<- right_join(submission_info_df,entries_for_cc, by="vcf_id")
                  
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 additional_intervar_cases <-  filter(clinvar_anno_vcf_df, Stars == "1", final_call!="Benign",final_call!="Pathogenic", final_call != "Likely_benign",final_call!="Likely_pathogenic", final_call != "Uncertain_significance")
@@ -179,14 +183,16 @@ entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0", na.rm = TRUE) 
 ## get vcf ids that need intervar run
 vcf_to_run_intervar <- entries_for_intervar$vcf_id
 
+## get multianno file
+multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>% 
+                    mutate(vcf_id= str_remove_all(paste (Chr,"-",Otherinfo5,"-",Otherinfo7,"-",Otherinfo8), " ")) 
+  
 ## add intervar table
-test <- vroom("/Users/naqvia/Downloads/_1_clinvar_input_test.hg38_multianno.txt",delim="\t",trim_ws = TRUE, col_names = TRUE )
-clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>% 
-  rename("Chr" = `#Chr`) %>% 
-  
-  #add vcf id column
-  mutate(vcf_id= str_remove_all(paste ("chr",Chr,"-",Otherinfo5,"-",Otherinfo7,"-",Otherinfo8), " ")) %>% 
-  
+clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) 
+clinvar_anno_intervar_vcf_df <- merge(multianno_df,clinvar_anno_intervar_vcf_df ) 
+clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%  
+                                #select(vcf_id,`InterVar: InterVar and Evidence`, Ref.Gene,Func.refGene,ExonicFunc.refGene) %>% 
+
   ## add column for individual scores that will be re-calculated if we need to adjust using autoPVS1 result
   mutate(evidencePVS1 = str_match(`InterVar: InterVar and Evidence`, "PVS1\\=(\\d+)\\s")[, 2]) %>%
   mutate(evidenceBA1 = str_match(`InterVar: InterVar and Evidence`, "BA1\\=(\\d+)\\s")[, 2]) %>%
