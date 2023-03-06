@@ -155,7 +155,6 @@ for(i in 1:nrow(clinvar_anno_vcf_df)) {
 ## store variants without clinvar info
 clinvar_anti_join_vcf_df  <- anti_join(vcf_df, clinvar_anno_vcf_df, by="vcf_id")
 
-## retrieve and store clinVar input file into table data.table::fread()
 
 submission_info_df  <-  vroom(input_submission_file, comment = "#",delim="\t", 
                                  col_names = c("AlleleID","Type","Name","GeneID","GeneSymbol","HGNC_ID","ClinicalSignificance","ClinSigSimple",
@@ -171,8 +170,7 @@ submission_info_df  <-  vroom(input_submission_file, comment = "#",delim="\t",
 
 ## filter only those variants that need consensus call and find final call in submission table
 entries_for_cc <-  filter(clinvar_anno_vcf_df, Stars == "1NR", final_call !="Benign",final_call !="Pathogenic", final_call != "Likely_benign",final_call !="Likely_pathogenic", final_call != "Uncertain_significance")
-
-#test<- right_join(submission_info_df,entries_for_cc, by="vcf_id")
+entries_for_cc <- right_join(submission_info_df,entries_for_cc, by="vcf_id")
                  
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 additional_intervar_cases <-  filter(clinvar_anno_vcf_df, Stars == "1", final_call!="Benign",final_call!="Pathogenic", final_call != "Likely_benign",final_call!="Likely_pathogenic", final_call != "Uncertain_significance")
@@ -189,7 +187,7 @@ multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_nam
   
 ## add intervar table
 clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) 
-clinvar_anno_intervar_vcf_df <- merge(multianno_df,clinvar_anno_intervar_vcf_df ) 
+clinvar_anno_intervar_vcf_df <- mutate(multianno_df,clinvar_anno_intervar_vcf_df )  %>% select(vcf_id,`InterVar: InterVar and Evidence`, Ref.Gene,Func.refGene,ExonicFunc.refGene)
 clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%  
                                 #select(vcf_id,`InterVar: InterVar and Evidence`, Ref.Gene,Func.refGene,ExonicFunc.refGene) %>% 
 
@@ -279,7 +277,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
                                   ifelse( evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],"Uncertiain Signficance"))))))))
 
 ## merge tables together (clinvar and intervar) and write to file
-master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar,clinvar_anti_join_vcf_df,  by= "vcf_id" ) 
+master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar,entries_for_cc,  by= "vcf_id" ) 
 master_tab <- master_tab %>% mutate(intervar_adjusted_call = coalesce(intervar_adjusted_call, "Not adjusted, clinVar")) %>% 
                              mutate(evidencePVS1 = coalesce(as.double(evidencePVS1.x, evidencePVS1.y) )) %>%
                              mutate(evidenceBA1 = coalesce(as.double(evidenceBA1.x, evidenceBA1.y) )) %>% 
