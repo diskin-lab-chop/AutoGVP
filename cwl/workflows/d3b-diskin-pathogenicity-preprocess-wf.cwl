@@ -23,6 +23,7 @@ inputs:
   annovar_nastring: { type: 'string?', doc: "character used to represent missing values", default: '.' }
   annovar_otherinfo: { type: 'boolean?', doc: "print out otherinfo (information after fifth column in queryfile)", default: true }
   annovar_threads: { type: 'int?', doc: "Num threads to use to process filter inputs", default: 8 }
+  annovar_vcfinput: { type: 'boolean?', doc: "Annotate vcf and generate output file as vcf", default: false }
   intervar_db: { type: File, doc: "InterVar Database from git repo + mim_genes.txt" }
   intervar_db_str: { type: 'string?', doc: "Name of dir created when intervar db is un-tarred", default: "intervardb" }
   # autoPVS1
@@ -32,7 +33,7 @@ inputs:
 outputs:
   intervar_classification: { type: File, outputSource: run_intervar/intervar_classification}
   autopvs1_tsv: { type: File, outputSource: run_autopvs1/autopvs1_tsv }
-
+  annovar_vcfoutput: { type: 'File?', outputSource: run_intervar/annovar_vcfoutput}
 steps:
   run_intervar:
     run: intervar_classificatiion_wf.cwl
@@ -47,9 +48,10 @@ steps:
         annovar_nastring: annovar_nastring
         annovar_otherinfo: annovar_otherinfo
         annovar_threads: annovar_threads
+        annovar_vcfinput: annovar_vcfinput
         intervar_db: intervar_db
         intervar_db_str: intervar_db_str
-    out: [intervar_classification]
+    out: [intervar_classification, annovar_vcfoutput]
 
   run_autopvs1:
     run: ../tools/autopvs1.cwl

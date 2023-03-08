@@ -45,5 +45,8 @@ inputs:
     default: true, inputBinding: {position: 2, prefix: "--otherinfo" } }
   threads: { type: 'int?', doc: "Num threads to use to process filter inputs",
     default: 8, inputBinding: { position: 2, prefix: "--thread"} }
+  vcfinput: { type: 'boolean?', doc: "Annotate vcf", default: false,
+    inputBinding: {position: 2, prefix: "--vcfinput" } }  
 outputs:
   annovar_txt: { type: File, outputBinding: { glob: '*_multianno.txt'} }
+  vcf_output: { type: 'File?', outputBinding: { glob: '*.vcf'} }
