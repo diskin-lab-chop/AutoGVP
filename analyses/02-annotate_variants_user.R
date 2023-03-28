@@ -1,5 +1,5 @@
 ################################################################################
-# 01-annotate_variants.R
+# 01-annotate_variants_user.R
 # written by Ammar Naqvi
 #
 # This script annotates variants based on clinVar, and recomputes score and calls 
@@ -82,7 +82,7 @@ input_intervar_file <- file.path(input_dir,"testing_010423_intervar.hg38_multian
 input_multianno_file <- file.path(input_dir, "testing_010423.hg38_multianno.txt")
 input_vcf_file      <- file.path(input_dir,"testing_010423_VEP.vcf") 
 input_autopvs1_file <- file.path(input_dir,"testing_010423_autopvs1.txt")
-input_submission_file <- file.path(input_dir,"variant_summary.txt.gz")
+input_submission_file <- file.path(input_dir,"variant_summary.txt")
 input_summary_submission_file <- file.path(input_dir,"submission_summary.txt")
 
 sample_name <-  "test"
@@ -169,16 +169,19 @@ submission_summary_df <- vroom(input_summary_submission_file, comment = "#",deli
                             slice(1) %>%
                             ungroup
 
-submission_info_df  <-  vroom(input_submission_file, comment = "#",delim="\t", 
+
+submission_info_df  <-  vroom(input_submission_file, comment = "#",delim="\t",
                                  col_names = c("AlleleID","Type","Name","GeneID","GeneSymbol",
-                                               "HGNC_ID","ClinicalSignificance","ClinSigSimple","LastEvaluated","RS# (dbSNP)",	
-                                               "nsv/esv (dbVar)",	"RCVaccession","PhenotypeIDS","PhenotypeList","Origin","OriginSimple",
+                                               "HGNC_ID","ClinicalSignificance","ClinSigSimple","LastEvaluated","RS#",	
+                                               "nsv/esv",	"RCVaccession","PhenotypeIDS","PhenotypeList","Origin","OriginSimple",
                                                "Assembly","ChromosomeAccession","Chromosome",	"Start",	
                                                "Stop","ReferenceAllele","AlternateAllele",	
                                                "Cytogenetic","ReviewStatus", "NumberSubmitters","Guidelines","TestedInGTR",
                                                "OtherIDs", "SubmitterCategories",	"VariationID",	"PositionVCF",	
-                                               "ReferenceAlleleVCF",	"AlternateAlleleVCF"),
-                                 show_col_types = FALSE) %>% 
+                                               "ReferenceAlleleVCF","AlternateAlleleVCF"),
+                                col_types = c(ReferenceAlleleVCF = "c",AlternateAlleleVCF= "c",PositionVCF="i"),
+                                 show_col_types = TRUE) %>% 
+  
                              #add vcf id column  
                              mutate(vcf_id= str_remove_all(paste ("chr",Chromosome,"-",PositionVCF,"-",ReferenceAlleleVCF,"-",AlternateAlleleVCF), " ")) %>% 
                              mutate(VariationID=as.double(noquote(VariationID)))
@@ -189,7 +192,7 @@ submission_info_df  <-  vroom(input_submission_file, comment = "#",delim="\t",
 submission_final_df <- inner_join(submission_summary_df,submission_info_df, by="VariationID" )
 
 
-## filter only those variants that need consensus call and find final call in submission table
+## filter only those variants that need consensus call and find  call in submission table
 entries_for_cc <-  filter(clinvar_anno_vcf_df, Stars == "1NR", final_call !="Benign",final_call !="Pathogenic", final_call != "Likely_benign",final_call !="Likely_pathogenic", final_call != "Uncertain_significance")
 entries_for_cc_in_submission <- inner_join(submission_final_df,entries_for_cc, by="vcf_id") %>% mutate(final_call=ClinicalSignificance.x) %>% 
                                 select(vcf_id,ClinicalSignificance.x,final_call) %>% rename("ClinicalSignificance"=ClinicalSignificance.x)
