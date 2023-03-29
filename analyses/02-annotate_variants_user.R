@@ -80,22 +80,6 @@ filter_gnomad_var    <- opt$gnomad_variable
 filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
 
-### for testing purposes only ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### 
-# input_clinVar_file  <- file.path(input_dir,"clinvar_20211225.vcf.gz")
-# input_intervar_file <- file.path(input_dir,"testing_010423_intervar.hg38_multianno.txt.intervar")
-# input_multianno_file <- file.path(input_dir, "testing_010423.hg38_multianno.txt")
-# input_vcf_file      <- file.path(input_dir,"testing_010423_VEP.vcf")
-# input_autopvs1_file <- file.path(input_dir,"testing_010423_autopvs1.txt")
-# input_submission_file <- file.path(input_dir,"variant_summary.txt")
-# input_summary_submission_file <- file.path(input_dir,"submission_summary.txt")
-# 
-# sample_name <-  "test"
-# gnomad_variable <- "Freq_gnomAD_genome_ALL"
-# gnomad_af <- 0.001
-# filter_variant_depth = 15
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### 
-
-
 ## output files
 output_tab_file      <- file.path(analysis_dir, paste0(sample_name,".annotations_report.tsv")) 
 output_tab_abr_file  <- file.path(analysis_dir, paste0(sample_name,".annotations_report.abridged.tsv"))
