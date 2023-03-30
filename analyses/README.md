@@ -16,6 +16,29 @@ docker exec -ti pathogenecity_anno bash
 
 ## How to Run
 
+### Pre-requisite
+1. Download ClinVar database
+bash download_db_files.sh
+```
+If specific date of ClinVar dataset is needed use archive site and download clinvar, submission_summary and variant_summary
+Example: 
+wget ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2023/clinvar_20230218.vcf.gz
+wget ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/archive/variant_summary_2023-02.txt.gz
+wget ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/archive/submission_summary_2023-03.txt.gz
+```
+Unzip variant summary and submission summary files
+```
+
+2. VEP annotated VCF
+```
+example:
+vep --offline --cache --dir_cache $VEP_CACHEDIR --fasta $VEP_CACHEDIR/GRCh38.fa --refseq --use_given_ref --species homo_sapiens --assembly GRCh38 --fork 1 --hgvs --hgvsg --canonical --symbol --distance 0 --exclude_predicted --flag_pick --lookup_ref --force --input_file testing_010423.vcf --output_file testing_010423_VEP.vcf --format vcf --vcf --no_stats --numbers
+```
+3. InterVar annotation 
+https://github.com/WGLab/InterVar
+4. AutoPVS1 annotation
+https://github.com/JiguangPeng/autopvs1
+
 
 ### Run annotation scripts (example)
 #### cavatica version ####
@@ -37,13 +60,12 @@ multianno file (input/*testing_010423.hg38_multianno.txt)
 intervar file (input/*intervar.hg38_multianno.txt.intervar)
 autopvs1 file (input/*autopvs1.txt)
 
-**required db files**: input/clinvar.vcf.gz, input/variant_summary.txt.gz (can retrieve with download script run)
+**required db files**: input/clinvar.vcf.gz, input/variant_summary.txt.gz, input/submission_summary.txt.gz (can retrieve with download script run)
 ```
 
 ##### run #####
 ```
-bash download_db_files.sh 
-Rscript 02-annotate_variants_user.R --vcf input/testing_010423_VEP.vcf --multianno input/testing_010423.hg38_multianno.txt --intervar input/testing_010423_intervar.hg38_multianno.txt.intervar --autopvs1 input/testing_010423_autopvs1.txt --clinvar input/clinvar_20211225.vcf.gz --sample_name SRRT0182 --submission input/variant_summary.txt --submission_summary input/submission_summary.txt 
+Rscript 02-annotate_variants_user.R --vcf input/testing_010423_VEP.vcf --multianno input/testing_010423.hg38_multianno.txt --intervar input/testing_010423_intervar.hg38_multianno.txt.intervar --autopvs1 input/testing_010423_autopvs1.txt --clinvar input/clinvar_20211225.vcf.gz --submission input/variant_summary.txt --submission_summary input/submission_summary.txt --sample_name SRRT0182
 ```
 
 ## Workflow chart  
