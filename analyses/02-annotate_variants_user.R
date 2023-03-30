@@ -1,14 +1,16 @@
 ################################################################################
-# 01-annotate_variants_user.R
+# 02-annotate_variants_user.R
 # written by Ammar Naqvi
 #
 # This script annotates variants based on clinVar, and recomputes score and calls 
 # for intervar and autoPVS1
 #
-# usage: Rscript 01-annotate_variants_user.R --vcf <vcf file> 
+# usage: Rscript 02-annotate_variants_user.R --vcf <VEP annotated vcf file> 
 #                                       --intervar <intervar file> 
 #                                       --autopvs1 <autopvs1 file>
-#                                       --clinvar  'yyyymmdd'
+#                                       --clinvar  <e.g. clinvar_20211225.vcf.gz>
+#                                       --submission <variant_summary file>
+#                                       --submission_summary <submission_summary file>
 #                                       --gnomad_variable 'gnomad_3_1_1_AF_non_cancer'
 #                                       --gnomad_af <numeric>
 #                                       --variant_depth <integer>
