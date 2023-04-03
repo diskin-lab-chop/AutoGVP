@@ -43,7 +43,7 @@ autopvs1 file (input/*autopvs1.txt)
 ##### run #####
 ```
 bash download_db_files.sh 
-Rscript 02-annotate_variants_user.R --vcf input/testing_010423_VEP.vcf --multianno input/testing_010423.hg38_multianno.txt --intervar input/testing_010423_intervar.hg38_multianno.txt.intervar --autopvs1 input/testing_010423_autopvs1.txt --clinvar input/clinvar_20211225.vcf.gz --sample_name SRRT0182 --submission input/variant_summary.txt --submission_summary input/submission_summary.txt 
+Rscript 02-annotate_variants_user.R --vcf input/testing_010423_VEP.vcf --multianno input/testing_010423.hg38_multianno.txt --intervar input/testing_010423_intervar.hg38_multianno.txt.intervar --autopvs1 input/testing_010423_autopvs1.txt --clinvar input/clinvar_20211225.vcf.gz --output SRRT0182 --submission input/variant_summary.txt --submission_summary input/submission_summary.txt 
 ```
 
 ## Workflow chart  
