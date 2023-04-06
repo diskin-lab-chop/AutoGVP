@@ -83,21 +83,6 @@ filter_gnomad_var    <- opt$gnomad_variable
 filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
 
-## for testing purposes only ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
-input_clinVar_file  <- file.path(input_dir,"clinvar_20220403.vcf.gz")
-input_intervar_file <- file.path(input_dir,"testing_010423_intervar.hg38_multianno.txt.intervar")
-input_multianno_file <- file.path(input_dir, "testing_010423.hg38_multianno.txt")
-input_vcf_file      <- file.path(input_dir,"testing_010423_VEP.vcf")
-input_autopvs1_file <- file.path(input_dir,"testing_010423_autopvs1.txt")
-input_submission_file <- file.path(input_dir,"variant_summary.txt")
-input_summary_submission_file <- file.path(input_dir,"submission_summary.txt")
-
-sample_name <-  "test"
-gnomad_variable <- "Freq_gnomAD_genome_ALL"
-gnomad_af <- 0.001
-filter_variant_depth = 15
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### 
-
 ## output files
 output_tab_file      <- file.path(analysis_dir, paste0(output_name,".annotations_report.tsv")) 
 output_tab_abr_file  <- file.path(analysis_dir, paste0(output_name,".annotations_report.abridged.tsv"))
@@ -108,7 +93,8 @@ Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
 ## make vcf dataframe and add vcf_if column 
 vcf_df  <-  vroom(input_vcf_file, comment = "#",delim="\t", col_names = c("CHROM","POS","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), trim_ws = TRUE, show_col_types = FALSE) %>%
-            mutate(vcf_id= str_remove_all(paste (CHROM,"-",POS,"-",REF,"-",ALT), " ")) ## add vcf id column
+            mutate(vcf_id= str_remove_all(paste (CHROM,"-",POS,"-",REF,"-",ALT), " ")) %>% 
+            mutate(vcf_id = str_replace_all(vcf_id, "chr", ""))  ## add vcf id column
 
 ## add clinvar table to this (INFO)
 clinvar_anno_vcf_df  <- vroom(input_clinVar_file, comment = "#", delim="\t", col_names = c("CHROM","POS","ID","REF","ALT","QUAL","FILTER","INFO"),trim_ws = TRUE, show_col_types = FALSE) %>%
@@ -116,8 +102,8 @@ clinvar_anno_vcf_df  <- vroom(input_clinVar_file, comment = "#", delim="\t", col
                          #add vcf id column  
                          mutate(vcf_id= str_remove_all(paste (CHROM,"-",POS,"-",REF,"-",ALT), " ")) %>% 
                          semi_join(vcf_df, by="vcf_id") %>%  
-                         str_remove_all(vcf_id, "chr") %>% 
-                        
+                         mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) %>% 
+
                          #add star annotations to clinVar results table based on filters // ## default version
                          mutate(Stars = ifelse(grepl('CLNREVSTAT\\=criteria_provided,_single_submitter', INFO), "1",
                                               ifelse(grepl('CLNREVSTAT\\=criteria_provided,_multiple_submitters', INFO), "2",
@@ -197,7 +183,7 @@ submission_info_df  <-  vroom(input_submission_file, comment = "#",delim="\t",
   
                              #add vcf id column  
                              mutate(vcf_id= str_remove_all(paste (Chromosome,"-",PositionVCF,"-",ReferenceAlleleVCF,"-",AlternateAlleleVCF), " ")) %>% 
-                             str_remove_all(vcf_id, "chr") %>% 
+                             mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) %>% 
                              mutate(VariationID=as.double(noquote(VariationID)))
                                 
 ## join submission files to ensure we have vcf id to match with other tables
@@ -220,8 +206,8 @@ vcf_to_run_intervar <- entries_for_intervar$vcf_id
 ## get multianno file
 multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>% 
                     mutate(vcf_id= str_remove_all(paste (Chr,"-",Otherinfo5,"-",Otherinfo7,"-",Otherinfo8), " ")) %>% 
-                    str_remove_all(vcf_id, "chr")
-  
+                    mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) 
+
 ## add intervar table
 clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) 
 clinvar_anno_intervar_vcf_df <- mutate(multianno_df,clinvar_anno_intervar_vcf_df )  %>% dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, Ref.Gene,Func.refGene,ExonicFunc.refGene)
@@ -248,7 +234,7 @@ clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%  anti_join(entr
 ## autopvs1 results and file
 autopvs1_results    <-  read_tsv(input_autopvs1_file, col_names = TRUE) %>%
   mutate(vcf_id = str_remove_all(paste (vcf_id), " ")) %>% 
-  str_remove_all(vcf_id, "chr")
+  mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) 
 
 ## join all three tables together based on variant id that need intervar run
 combined_tab_for_intervar <- autopvs1_results %>%
@@ -358,6 +344,6 @@ write.table(results_tab_dev, output_tab_dev_file, append = FALSE, sep = "\t", de
             row.names = FALSE, quote = FALSE, col.names = TRUE)
 
 # abridged version
-results_tab_abridged <- master_tab %>% dplyr::select(vcf_id, Ref.Gene,Func.refGene,ExonicFunc.refGene, Stars, Intervar_evidence,intervar_adjusted_call,final_call)
+results_tab_abridged <- master_tab %>% dplyr::select(vcf_id, Ref.Gene, Stars, Intervar_evidence,intervar_adjusted_call,final_call)
 write.table(results_tab_abridged, output_tab_abr_file, append = FALSE, sep = "\t", dec = ".",
             row.names = FALSE, quote = FALSE, col.names = TRUE)
