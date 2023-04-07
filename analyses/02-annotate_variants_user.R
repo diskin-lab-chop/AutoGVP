@@ -154,7 +154,10 @@ if(summary_level == "T")
 } 
 
 ## store variants without clinvar info
-clinvar_anti_join_vcf_df  <- anti_join(vcf_df, clinvar_anno_vcf_df, by="vcf_id")
+clinvar_anti_join_vcf_df  <- anti_join(vcf_df, clinvar_anno_vcf_df, by="vcf_id") %>%
+                             mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) %>% 
+                             mutate(CHROM = str_replace_all(CHROM, "chr", ""))  %>% 
+                             rename(rs_id = ID)
 
 ## get latest calls from submission files 
 submission_summary_df <- vroom(input_summary_submission_file, comment = "#",delim="\t", 
@@ -196,6 +199,9 @@ entries_for_cc_in_submission <- inner_join(submission_final_df,entries_for_cc, b
                  
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 additional_intervar_cases <-  filter(clinvar_anno_vcf_df, Stars == "1", final_call!="Benign",final_call!="Pathogenic", final_call != "Likely_benign",final_call!="Likely_pathogenic", final_call != "Uncertain_significance")
+
+
+clinvar_anti_join_vcf_df <- clinvar_anti_join_vcf_df %>% mutate(QUAL = as.character(QUAL))
 
 ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
 entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0", na.rm = TRUE) %>% bind_rows((additional_intervar_cases)) %>% bind_rows(clinvar_anti_join_vcf_df)
