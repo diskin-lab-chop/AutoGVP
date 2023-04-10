@@ -91,6 +91,21 @@ output_tab_dev_file  <- file.path(analysis_dir, paste0(output_name,".annotations
 ## allocate more memory capacity
 Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
+### for testing purposes only ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### 
+# input_clinVar_file  <- file.path(input_dir,"clinvar.vcf.gz")
+# input_intervar_file <- file.path(input_dir,"RMS_intervar_test.txt")
+# input_multianno_file <- file.path(input_dir, "RMS_multianno_test.txt")
+# input_vcf_file      <- file.path(input_dir,"RMS_VEP_test.vcf")
+# input_autopvs1_file <- file.path(input_dir,"RMS_autopvs1_test.txt")
+# input_submission_file <- file.path(input_dir,"variant_summary.txt")
+# input_summary_submission_file <- file.path(input_dir,"submission_summary.txt")
+# 
+# sample_name <-  "test"
+# gnomad_variable <- "Freq_gnomAD_genome_ALL"
+# gnomad_af <- 0.001
+# filter_variant_depth = 15
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### 
+
 ## make vcf dataframe and add vcf_if column 
 vcf_df  <-  vroom(input_vcf_file, comment = "#",delim="\t", col_names = c("CHROM","POS","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), trim_ws = TRUE, show_col_types = FALSE) %>%
             mutate(vcf_id= str_remove_all(paste (CHROM,"-",POS,"-",REF,"-",ALT), " ")) %>% 
@@ -212,10 +227,26 @@ vcf_to_run_intervar <- entries_for_intervar$vcf_id
 ## get multianno file
 multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>% 
                     mutate(vcf_id= str_remove_all(paste (Chr,"-",Otherinfo5,"-",Otherinfo7,"-",Otherinfo8), " ")) %>% 
-                    mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) 
+                    mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) %>% 
+                    group_by(vcf_id) %>%
+                    arrange(vcf_id) %>%
+                    filter(row_number()==1) %>% 
+                    ungroup
 
 ## add intervar table
-clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) 
+clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = TRUE, comment="##") %>% 
+                                  slice(-1) %>% 
+                                  mutate(var_id= str_remove_all(paste (`#Chr`,"-",Start), " ")) %>% 
+                                  group_by(var_id) %>%
+                                  arrange(var_id) %>%
+                                  filter(row_number()==1) %>% 
+                                  ungroup
+
+if( tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df) ) { 
+  stop("intervar and multianno files of diff lengths") 
+  }
+
+
 clinvar_anno_intervar_vcf_df <- mutate(multianno_df,clinvar_anno_intervar_vcf_df )  %>% dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, Ref.Gene,Func.refGene,ExonicFunc.refGene)
 
 ## populate consensus call variants with invervar info
