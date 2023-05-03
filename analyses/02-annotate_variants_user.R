@@ -83,20 +83,12 @@ filter_gnomad_var    <- opt$gnomad_variable
 filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
 
-## output files
-output_tab_file      <- file.path(analysis_dir, paste0(output_name,".annotations_report.tsv")) 
-output_tab_abr_file  <- file.path(analysis_dir, paste0(output_name,".annotations_report.abridged.tsv"))
-output_tab_dev_file  <- file.path(analysis_dir, paste0(output_name,".annotations_report.abridged.dev.tsv"))
-
-## allocate more memory capacity
-Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
-
 ### for testing purposes only ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### 
 # input_clinVar_file  <- file.path(input_dir,"clinvar.vcf.gz")
-# input_intervar_file <- file.path(input_dir,"RMS_intervar_test.txt")
-# input_multianno_file <- file.path(input_dir, "RMS_multianno_test.txt")
-# input_vcf_file      <- file.path(input_dir,"RMS_VEP_test.vcf")
-# input_autopvs1_file <- file.path(input_dir,"RMS_autopvs1_test.txt")
+# input_intervar_file <- file.path(input_dir,"RMS_hg38_selected_InterVar.hg38_multianno.txt.intervar")
+# input_multianno_file <- file.path(input_dir, "RMS_selected.hg38_multianno.txt")
+# input_vcf_file      <- file.path(input_dir,"RMS_hg38_selected_VEP_anntoated.vcf")
+# input_autopvs1_file <- file.path(input_dir,"RMS_hg38_selected_autopvs1.txt")
 # input_submission_file <- file.path(input_dir,"variant_summary.txt")
 # input_summary_submission_file <- file.path(input_dir,"submission_summary.txt")
 # 
@@ -105,6 +97,14 @@ Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 # gnomad_af <- 0.001
 # filter_variant_depth = 15
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### 
+
+## output files
+output_tab_file      <- file.path(analysis_dir, paste0(output_name,".annotations_report.tsv")) 
+output_tab_abr_file  <- file.path(analysis_dir, paste0(output_name,".annotations_report.abridged.tsv"))
+output_tab_dev_file  <- file.path(analysis_dir, paste0(output_name,".annotations_report.abridged.dev.tsv"))
+
+## allocate more memory capacity
+Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
 ## make vcf dataframe and add vcf_if column 
 vcf_df  <-  vroom(input_vcf_file, comment = "#",delim="\t", col_names = c("CHROM","POS","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), trim_ws = TRUE, show_col_types = FALSE) %>%
@@ -127,7 +127,7 @@ clinvar_anno_vcf_df  <- vroom(input_clinVar_file, comment = "#", delim="\t", col
                                                                    ifelse(grepl('CLNREVSTAT\\=criteria_provided,_conflicting_interpretations', INFO), "1NR", "0")
                                                             )))),
                                ## extract the calls and put in own column
-                               final_call = str_match(INFO, "CLNSIG\\=(\\w+)\\;")[, 2])
+                               final_call = str_match(INFO, "CLNSIG\\=(\\w+([\\/\\|]\\w+)*)\\;")[, 2])
 
 ## if conflicting intrep. take the call with most calls in CLNSIGCONF field
 for(i in 1:nrow(clinvar_anno_vcf_df)) {
@@ -187,16 +187,8 @@ submission_summary_df <- vroom(input_summary_submission_file, comment = "#",deli
                             ungroup
 
 
-submission_info_df  <-  vroom(input_submission_file, comment = "#",delim="\t",
-                                 col_names = c("AlleleID","Type","Name","GeneID","GeneSymbol",
-                                               "HGNC_ID","ClinicalSignificance","ClinSigSimple","LastEvaluated","RS#",	
-                                               "nsv/esv",	"RCVaccession","PhenotypeIDS","PhenotypeList","Origin","OriginSimple",
-                                               "Assembly","ChromosomeAccession","Chromosome",	"Start",	
-                                               "Stop","ReferenceAllele","AlternateAllele",	
-                                               "Cytogenetic","ReviewStatus", "NumberSubmitters","Guidelines","TestedInGTR",
-                                               "OtherIDs", "SubmitterCategories",	"VariationID",	"PositionVCF",	
-                                               "ReferenceAlleleVCF","AlternateAlleleVCF"),
-                                col_types = c(ReferenceAlleleVCF = "c",AlternateAlleleVCF= "c",PositionVCF="i"),
+submission_info_df  <-  vroom(input_submission_file, delim="\t",
+                              col_types = c(ReferenceAlleleVCF = "c",AlternateAlleleVCF= "c",PositionVCF="i",VariationID="n" ),
                                  show_col_types = FALSE) %>% 
   
                              #add vcf id column  
@@ -224,7 +216,7 @@ entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0", na.rm = TRUE) 
 ## get vcf ids that need intervar run
 vcf_to_run_intervar <- entries_for_intervar$vcf_id
 
-## get multianno file
+## get multianno file to add by correct vcf_id
 multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>% 
                     mutate(vcf_id= str_remove_all(paste (Chr,"-",Otherinfo5,"-",Otherinfo7,"-",Otherinfo8), " ")) %>% 
                     mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) %>% 
@@ -234,25 +226,27 @@ multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_nam
                     ungroup
 
 ## add intervar table
-clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = TRUE, comment="##") %>% 
-                                  slice(-1) %>% 
-                                  mutate(var_id= str_remove_all(paste (`#Chr`,"-",Start), " ")) %>% 
+clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = TRUE) %>% 
+                                  #slice(-1) %>% 
+                                  mutate(var_id= str_remove_all(paste (`#Chr`,"-",Start,"-",End,"-",Ref,"-",Alt), " ")) %>% 
                                   group_by(var_id) %>%
                                   arrange(var_id) %>%
                                   filter(row_number()==1) %>% 
                                   ungroup
 
-if( tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df) ) { 
+## exit if the total number of variants differ in these two tables to ensure we annotate with the correct vcf so we can match back to clinVar and other tables
+if( tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df) ) {
   stop("intervar and multianno files of diff lengths") 
-  }
+}
 
-
+## combine the intervar and multianno tables by the appropriate vcf id
 clinvar_anno_intervar_vcf_df <- mutate(multianno_df,clinvar_anno_intervar_vcf_df )  %>% dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, Ref.Gene,Func.refGene,ExonicFunc.refGene)
 
 ## populate consensus call variants with invervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df,entries_for_cc_in_submission, by="vcf_id") %>% 
                                             dplyr::select(vcf_id,`InterVar: InterVar and Evidence`,Ref.Gene,Func.refGene,ExonicFunc.refGene) %>% 
                                             dplyr::rename("Intervar_evidence"=`InterVar: InterVar and Evidence`)
+
 
 clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%  anti_join(entries_for_cc_in_submission, by="vcf_id") %>%
   ## add column for individual scores that will be re-calculated if we need to adjust using autoPVS1 result
@@ -268,7 +262,7 @@ clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%  anti_join(entr
   ## merge dataframe with clinvar_anno_vcf_df above
   full_join(clinvar_anno_vcf_df, by="vcf_id") 
 
-## autopvs1 results and file
+## autopvs1 results
 autopvs1_results    <-  read_tsv(input_autopvs1_file, col_names = TRUE) %>%
   mutate(vcf_id = str_remove_all(paste (vcf_id), " ")) %>% 
   mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) 
@@ -334,12 +328,12 @@ combined_tab_for_intervar <- autopvs1_results %>%
                                                     (evidencePS==1 & evidencePP >=2 ) |
                                                     (evidencePM >= 3) |
                                                     (evidencePM ==2 & evidencePP>=2 ) |
-                                                    (evidencePM == 1 & evidencePP>=4), "Likely Pathogenic",
+                                                    (evidencePM == 1 & evidencePP>=4), "Likely_pathogenic",
                                                     ifelse( (evidenceBA1 == 1) |
                                                             (evidenceBS   >= 2), "Benign",
                                                             ifelse( (evidenceBS == 1 & evidenceBP == 1) |
-                                                                    (evidenceBP   >= 2), "Likely Benign",  
-                                                                    ifelse( evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],"Uncertiain Signficance"))))))))
+                                                                    (evidenceBP   >= 2), "Likely_benign",  
+                                                                    ifelse( evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],"Uncertain_significance"))))))))
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar, by="vcf_id" ) 
