@@ -83,20 +83,20 @@ filter_gnomad_var    <- opt$gnomad_variable
 filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
 
-### for testing purposes only ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### 
-# input_clinVar_file  <- file.path(input_dir,"clinvar.vcf.gz")
-# input_intervar_file <- file.path(input_dir,"RMS_hg38_selected_InterVar.hg38_multianno.txt.intervar")
-# input_multianno_file <- file.path(input_dir, "RMS_selected.hg38_multianno.txt")
-# input_vcf_file      <- file.path(input_dir,"RMS_hg38_selected_VEP_anntoated.vcf")
-# input_autopvs1_file <- file.path(input_dir,"RMS_hg38_selected_autopvs1.txt")
-# input_submission_file <- file.path(input_dir,"variant_summary.txt")
-# input_summary_submission_file <- file.path(input_dir,"submission_summary.txt")
-# 
-# sample_name <-  "test"
-# gnomad_variable <- "Freq_gnomAD_genome_ALL"
-# gnomad_af <- 0.001
-# filter_variant_depth = 15
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### 
+## for testing purposes only ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+input_clinVar_file  <- file.path(input_dir,"clinvar.vcf.gz")
+input_intervar_file <- file.path(input_dir,"RMS_hg38_selected_InterVar.hg38_multianno.txt.intervar")
+input_multianno_file <- file.path(input_dir, "RMS_selected.hg38_multianno.txt")
+input_vcf_file      <- file.path(input_dir,"RMS_hg38_selected_VEP_anntoated.vcf")
+input_autopvs1_file <- file.path(input_dir,"RMS_hg38_selected_autopvs1.txt")
+input_submission_file <- file.path(input_dir,"variant_summary.txt")
+input_summary_submission_file <- file.path(input_dir,"submission_summary.txt")
+
+sample_name <-  "test"
+gnomad_variable <- "Freq_gnomAD_genome_ALL"
+gnomad_af <- 0.001
+filter_variant_depth = 15
+## ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 
 ## output files
 output_tab_file      <- file.path(analysis_dir, paste0(output_name,".annotations_report.tsv")) 
@@ -127,7 +127,9 @@ clinvar_anno_vcf_df  <- vroom(input_clinVar_file, comment = "#", delim="\t", col
                                                                    ifelse(grepl('CLNREVSTAT\\=criteria_provided,_conflicting_interpretations', INFO), "1NR", "0")
                                                             )))),
                                ## extract the calls and put in own column
-                               final_call = str_match(INFO, "CLNSIG\\=(\\w+([\\/\\|]\\w+)*)\\;")[, 2])
+                               #final_call = str_match(INFO, "CLNSIG\\=(\\w+([\\/\\|]\\w+)*)\\;")[, 2])
+                               final_call = str_match(INFO, "CLNSIG\\=(\\w+)(\\|]\\w+)*\\;")[, 2])
+
 
 ## if conflicting intrep. take the call with most calls in CLNSIGCONF field
 for(i in 1:nrow(clinvar_anno_vcf_df)) {
@@ -171,8 +173,8 @@ if(summary_level == "T")
 ## store variants without clinvar info
 clinvar_anti_join_vcf_df  <- anti_join(vcf_df, clinvar_anno_vcf_df, by="vcf_id") %>%
                              mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) %>% 
-                             mutate(CHROM = str_replace_all(CHROM, "chr", ""))  %>% 
-                             rename(rs_id = ID)
+                             mutate(CHROM = str_replace_all(CHROM, "chr", ""))   %>% 
+                             dplyr::rename(rs_id = ID)
 
 ## get latest calls from submission files 
 submission_summary_df <- vroom(input_summary_submission_file, comment = "#",delim="\t", 
@@ -206,6 +208,7 @@ entries_for_cc_in_submission <- inner_join(submission_final_df,entries_for_cc, b
                  
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 additional_intervar_cases <-  filter(clinvar_anno_vcf_df, Stars == "1", final_call!="Benign",final_call!="Pathogenic", final_call != "Likely_benign",final_call!="Likely_pathogenic", final_call != "Uncertain_significance")
+additional_intervar_cases <-  filter(clinvar_anno_vcf_df, final_call!="Benign",final_call!="Pathogenic", final_call != "Likely_benign",final_call!="Likely_pathogenic", final_call != "Uncertain_significance")
 
 
 clinvar_anti_join_vcf_df <- clinvar_anti_join_vcf_df %>% mutate(QUAL = as.character(QUAL))
@@ -335,6 +338,11 @@ combined_tab_for_intervar <- autopvs1_results %>%
                                                                     (evidenceBP   >= 2), "Likely_benign",  
                                                                     ifelse( evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],"Uncertain_significance"))))))))
 
+
+
+
+# | entry$final_call !="Pathogenic" |entry$final_call != "Likely_benign"| entry$final_call !="Likely_pathogenic"| entry$final_call != "Uncertain_significance "
+
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar, by="vcf_id" ) 
 master_tab <- master_tab %>% mutate(intervar_adjusted_call = coalesce(intervar_adjusted_call, "Not adjusted, clinVar")) %>% 
@@ -364,17 +372,40 @@ master_tab  <- full_join(master_tab,entries_for_cc_in_submission, by="vcf_id") %
                mutate(Intervar_evidence = coalesce(Intervar_evidence.y, Intervar_evidence.x)) %>%
                mutate(Ref.Gene = coalesce(Ref.Gene.y, Ref.Gene.x)) 
   
-                
+
+
 ## write to output files
 # master version with all columns
 # write.table(master_tab, output_tab_file, append = FALSE, sep = "\t", dec = ".",row.names = FALSE, quote = FALSE, col.names = TRUE)
 
 # development version 
-results_tab_dev <- master_tab %>% dplyr::select(vcf_id, Stars, Intervar_evidence, evidencePVS1,evidencePS,evidencePM,evidencePP,evidencePP, evidenceBA1, evidenceBS, evidenceBP, intervar_adjusted_call, final_call)
-write.table(results_tab_dev, output_tab_dev_file, append = FALSE, sep = "\t", dec = ".",
+#results_tab_dev <- master_tab %>% dplyr::select(vcf_id, Stars, Intervar_evidence, evidencePVS1,evidencePS,evidencePM,evidencePP,evidencePP, evidenceBA1, evidenceBS, evidenceBP, intervar_adjusted_call, final_call)
+#write.table(results_tab_dev, output_tab_dev_file, append = FALSE, sep = "\t", dec = ".",
             row.names = FALSE, quote = FALSE, col.names = TRUE)
 
 # abridged version
 results_tab_abridged <- master_tab %>% dplyr::select(vcf_id, Ref.Gene, Stars, Intervar_evidence,intervar_adjusted_call,final_call)
+
+## if conflicting intrep. take the call with most calls in CLNSIGCONF field
+for(i in 1:nrow(results_tab_abridged)) {
+  entry <- results_tab_abridged[i,]
+  if(is.na(entry$final_call ) ) 
+  {
+    
+    new_call <- str_match(results_tab_abridged[i,]$Intervar_evidence, "InterVar\\:\\s(\\w+\\s\\w+)*")[,2]
+    results_tab_abridged[i,]$final_call = new_call
+    #print (results_tab_abridged[i,]$final_call)
+  }
+}
+
+results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Likely benign", "Likely_benign"))
+results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Uncertain significance", "Uncertain_significance"))
+results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Benign PVS1", "Benign"))
+results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Pathogenic PVS1","Pathogenic"))
+results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Likely pathogenic","Likely_pathogenic"))
+
+
+
+
 write.table(results_tab_abridged, output_tab_abr_file, append = FALSE, sep = "\t", dec = ".",
             row.names = FALSE, quote = FALSE, col.names = TRUE)
