@@ -383,7 +383,7 @@ master_tab  <- full_join(master_tab,entries_for_cc_in_submission, by="vcf_id") %
 #            row.names = FALSE, quote = FALSE, col.names = TRUE)
 
 # abridged version
-results_tab_abridged <- master_tab %>% dplyr::select(vcf_id, Ref.Gene, Stars, Intervar_evidence,intervar_adjusted_call,final_call)
+results_tab_abridged <- master_tab %>% dplyr::select(vcf_id, Ref.Gene, Stars, Intervar_evidence,intervar_adjusted_call,ID, final_call)
 
 ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
 for(i in 1:nrow(results_tab_abridged)) {
@@ -393,7 +393,7 @@ for(i in 1:nrow(results_tab_abridged)) {
      && entry$final_call != "Uncertain_significance"  &&  entry$final_call !="Benign"  
      &&  entry$final_call !="Uncertain significance"  &&  entry$final_call !="Likely benign") )
   {
-    print (results_tab_abridged[i,]$final_call)
+    #print (results_tab_abridged[i,]$final_call)
     
     new_call <- str_match(results_tab_abridged[i,]$Intervar_evidence, "InterVar\\:\\s(\\w+\\s\\w+)*")[,2]
     results_tab_abridged[i,]$final_call = new_call
