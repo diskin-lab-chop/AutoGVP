@@ -385,7 +385,7 @@ master_tab  <- full_join(master_tab,entries_for_cc_in_submission, by="vcf_id") %
 # abridged version
 results_tab_abridged <- master_tab %>% dplyr::select(vcf_id, Ref.Gene, Stars, Intervar_evidence,intervar_adjusted_call,final_call)
 
-## if conflicting intrep. take the call with most calls in CLNSIGCONF field
+## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
 for(i in 1:nrow(results_tab_abridged)) {
   entry <- results_tab_abridged[i,]
   if(is.na(entry$final_call) || (entry$final_call !="Pathogenic" && 
@@ -400,13 +400,12 @@ for(i in 1:nrow(results_tab_abridged)) {
   }
 }
 
+## fix spelling and nomenclature inconsistencies
 results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Likely benign", "Likely_benign"))
 results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Uncertain significance", "Uncertain_significance"))
 results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Benign PVS1", "Benign"))
 results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Pathogenic PVS1","Pathogenic"))
 results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Likely pathogenic","Likely_pathogenic"))
-
-
 
 
 write.table(results_tab_abridged, output_tab_abr_file, append = FALSE, sep = "\t", dec = ".",
