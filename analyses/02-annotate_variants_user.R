@@ -341,7 +341,6 @@ combined_tab_for_intervar <- autopvs1_results %>%
 
 
 
-# | entry$final_call !="Pathogenic" |entry$final_call != "Likely_benign"| entry$final_call !="Likely_pathogenic"| entry$final_call != "Uncertain_significance "
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar, by="vcf_id" ) 
@@ -381,7 +380,7 @@ master_tab  <- full_join(master_tab,entries_for_cc_in_submission, by="vcf_id") %
 # development version 
 #results_tab_dev <- master_tab %>% dplyr::select(vcf_id, Stars, Intervar_evidence, evidencePVS1,evidencePS,evidencePM,evidencePP,evidencePP, evidenceBA1, evidenceBS, evidenceBP, intervar_adjusted_call, final_call)
 #write.table(results_tab_dev, output_tab_dev_file, append = FALSE, sep = "\t", dec = ".",
-            row.names = FALSE, quote = FALSE, col.names = TRUE)
+#            row.names = FALSE, quote = FALSE, col.names = TRUE)
 
 # abridged version
 results_tab_abridged <- master_tab %>% dplyr::select(vcf_id, Ref.Gene, Stars, Intervar_evidence,intervar_adjusted_call,final_call)
@@ -389,12 +388,15 @@ results_tab_abridged <- master_tab %>% dplyr::select(vcf_id, Ref.Gene, Stars, In
 ## if conflicting intrep. take the call with most calls in CLNSIGCONF field
 for(i in 1:nrow(results_tab_abridged)) {
   entry <- results_tab_abridged[i,]
-  if(is.na(entry$final_call ) ) 
+  if(is.na(entry$final_call) || (entry$final_call !="Pathogenic" && 
+     entry$final_call != "Likely_benign" &&  entry$final_call !="Likely_pathogenic"
+     && entry$final_call != "Uncertain_significance"  &&  entry$final_call !="Benign"  
+     &&  entry$final_call !="Uncertain significance"  &&  entry$final_call !="Likely benign") )
   {
+    print (results_tab_abridged[i,]$final_call)
     
     new_call <- str_match(results_tab_abridged[i,]$Intervar_evidence, "InterVar\\:\\s(\\w+\\s\\w+)*")[,2]
     results_tab_abridged[i,]$final_call = new_call
-    #print (results_tab_abridged[i,]$final_call)
   }
 }
 
