@@ -83,21 +83,6 @@ filter_gnomad_var    <- opt$gnomad_variable
 filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
 
-## for testing purposes only ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
-input_clinVar_file  <- file.path(input_dir,"clinvar.vcf.gz")
-input_intervar_file <- file.path(input_dir,"RMS_hg38_selected_InterVar.hg38_multianno.txt.intervar")
-input_multianno_file <- file.path(input_dir, "RMS_selected.hg38_multianno.txt")
-input_vcf_file      <- file.path(input_dir,"RMS_hg38_selected_VEP_anntoated.vcf")
-input_autopvs1_file <- file.path(input_dir,"RMS_hg38_selected_autopvs1.txt")
-input_submission_file <- file.path(input_dir,"variant_summary.txt")
-input_summary_submission_file <- file.path(input_dir,"submission_summary.txt")
-
-sample_name <-  "test"
-gnomad_variable <- "Freq_gnomAD_genome_ALL"
-gnomad_af <- 0.001
-filter_variant_depth = 15
-## ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
-
 ## output files
 output_tab_file      <- file.path(analysis_dir, paste0(output_name,".annotations_report.tsv")) 
 output_tab_abr_file  <- file.path(analysis_dir, paste0(output_name,".annotations_report.abridged.tsv"))
@@ -207,7 +192,7 @@ entries_for_cc_in_submission <- inner_join(submission_final_df,entries_for_cc, b
                                 dplyr::select(vcf_id,ClinicalSignificance.x,final_call) %>% dplyr::rename("ClinicalSignificance"=ClinicalSignificance.x)
                  
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
-#additional_intervar_cases <-  filter(clinvar_anno_vcf_df, Stars == "1", final_call!="Benign",final_call!="Pathogenic", final_call != "Likely_benign",final_call!="Likely_pathogenic", final_call != "Uncertain_significance")
+## modified: any cases that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 additional_intervar_cases <-  filter(clinvar_anno_vcf_df, final_call!="Benign",final_call!="Pathogenic", final_call != "Likely_benign",final_call!="Likely_pathogenic", final_call != "Uncertain_significance")
 
 
@@ -371,17 +356,6 @@ master_tab  <- full_join(master_tab,entries_for_cc_in_submission, by="vcf_id") %
                mutate(Intervar_evidence = coalesce(Intervar_evidence.y, Intervar_evidence.x)) %>%
                mutate(Ref.Gene = coalesce(Ref.Gene.y, Ref.Gene.x)) 
   
-
-
-## write to output files
-# master version with all columns
-# write.table(master_tab, output_tab_file, append = FALSE, sep = "\t", dec = ".",row.names = FALSE, quote = FALSE, col.names = TRUE)
-
-# development version 
-#results_tab_dev <- master_tab %>% dplyr::select(vcf_id, Stars, Intervar_evidence, evidencePVS1,evidencePS,evidencePM,evidencePP,evidencePP, evidenceBA1, evidenceBS, evidenceBP, intervar_adjusted_call, final_call)
-#write.table(results_tab_dev, output_tab_dev_file, append = FALSE, sep = "\t", dec = ".",
-#            row.names = FALSE, quote = FALSE, col.names = TRUE)
-
 # abridged version
 results_tab_abridged <- master_tab %>% dplyr::select(vcf_id, Ref.Gene, Stars, Intervar_evidence,intervar_adjusted_call,ID, final_call)
 
@@ -393,8 +367,7 @@ for(i in 1:nrow(results_tab_abridged)) {
      && entry$final_call != "Uncertain_significance"  &&  entry$final_call !="Benign"  
      &&  entry$final_call !="Uncertain significance"  &&  entry$final_call !="Likely benign") )
   {
-    #print (results_tab_abridged[i,]$final_call)
-    
+   
     new_call <- str_match(results_tab_abridged[i,]$Intervar_evidence, "InterVar\\:\\s(\\w+\\s\\w+)*")[,2]
     results_tab_abridged[i,]$final_call = new_call
   }
@@ -407,6 +380,6 @@ results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(fin
 results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Pathogenic PVS1","Pathogenic"))
 results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Likely pathogenic","Likely_pathogenic"))
 
-
+# write out to file
 write.table(results_tab_abridged, output_tab_abr_file, append = FALSE, sep = "\t", dec = ".",
             row.names = FALSE, quote = FALSE, col.names = TRUE)
