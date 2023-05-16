@@ -301,26 +301,26 @@ combined_tab_for_intervar <- autopvs1_results %>%
   mutate(evidencePVS1 = if_else( (criterion == "na") & evidencePVS1 == 1, 0, as.double(evidencePVS1))) %>%
   
   ## adjust variables based on given rules described in README
-  mutate(final_call = ifelse( (evidencePVS1)   == 1 &
-                              ((evidencePS   >= 1) |
+  mutate(final_call = ifelse( (evidencePVS1   == 1) &
+                              ( (evidencePS   >= 1) |
                                (evidencePM   >=2 ) |
                                (evidencePM   >= 1 & evidencePP ==1) |
-                               (evidencePP   >=2 ) ), "Pathogenic",
+                               (evidencePP   >=2 ) ) , "Pathogenic",
                             ifelse( (evidencePVS1   == 1 & evidencePS >= 2), "Pathogenic",
-                                    ifelse( (evidencePVS1)   == 1 & (evidencePS == 1 &
-                                            (evidencePM   >= 3) |
+                                    ifelse( (evidencePVS1   == 1) &  ( (evidencePS == 1 &
+                                            evidencePM   >= 3) |
                                             (evidencePM   ==2 & evidencePP >=2 ) |
-                                            (evidencePM == 1 & evidencePP >=4 ) ), "Pathogenic",
+                                            (evidencePM == 1 & evidencePP >=4 ) ) , "Pathogenic",
                                             ifelse( (evidencePVS1 == 1 & evidencePM == 1) |
                                                     (evidencePS==1 & evidencePM >= 1) |
                                                     (evidencePS==1 & evidencePP >=2 ) |
                                                     (evidencePM >= 3) |
                                                     (evidencePM ==2 & evidencePP>=2 ) |
-                                                    (evidencePM == 1 & evidencePP>=4), "Likely_pathogenic",
+                                                    (evidencePM == 1 & evidencePP>=4) , "Likely_pathogenic",
                                                     ifelse( (evidenceBA1 == 1) |
                                                             (evidenceBS   >= 2), "Benign",
                                                             ifelse( (evidenceBS == 1 & evidenceBP == 1) |
-                                                                    (evidenceBP   >= 2), "Likely_benign",  
+                                                                    (evidenceBP   >= 2) , "Likely_benign",  
                                                                     ifelse( evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],"Uncertain_significance"))))))))
 
 
@@ -378,7 +378,8 @@ results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(fin
 results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Uncertain significance", "Uncertain_significance"))
 results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Benign PVS1", "Benign"))
 results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Pathogenic PVS1","Pathogenic"))
-results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Likely pathogenic","Likely_pathogenic"))
+results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Likely pathogenic","Likely_pathogenic")) %>% distinct()
+
 
 # write out to file
 write.table(results_tab_abridged, output_tab_abr_file, append = FALSE, sep = "\t", dec = ".",
