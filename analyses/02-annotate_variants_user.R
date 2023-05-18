@@ -101,7 +101,7 @@ clinvar_anno_vcf_df  <- vroom(input_clinVar_file, comment = "#", delim="\t", col
 
                          #add vcf id column  
                          mutate(vcf_id= str_remove_all(paste (CHROM,"-",POS,"-",REF,"-",ALT), " ")) %>% 
-                         #semi_join(vcf_df, by="vcf_id") %>%  
+                         semi_join(vcf_df, by="vcf_id") %>%  
                          mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) %>% 
 
                          #add star annotations to clinVar results table based on filters // ## default version
