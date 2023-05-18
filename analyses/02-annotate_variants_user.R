@@ -101,7 +101,7 @@ clinvar_anno_vcf_df  <- vroom(input_clinVar_file, comment = "#", delim="\t", col
 
                          #add vcf id column  
                          mutate(vcf_id= str_remove_all(paste (CHROM,"-",POS,"-",REF,"-",ALT), " ")) %>% 
-                         semi_join(vcf_df, by="vcf_id") %>%  
+                         #semi_join(vcf_df, by="vcf_id") %>%  
                          mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) %>% 
 
                          #add star annotations to clinVar results table based on filters // ## default version
@@ -111,10 +111,8 @@ clinvar_anno_vcf_df  <- vroom(input_clinVar_file, comment = "#", delim="\t", col
                                                             ifelse(grepl('CLNREVSTAT\\=practice_guideline', INFO), "4",
                                                                    ifelse(grepl('CLNREVSTAT\\=criteria_provided,_conflicting_interpretations', INFO), "1NR", "0")
                                                             )))),
-                               ## extract the calls and put in own column
-                               #final_call = str_match(INFO, "CLNSIG\\=(\\w+([\\/\\|]\\w+)*)\\;")[, 2])
-                               final_call = str_match(INFO, "CLNSIG\\=(\\w+)(\\|]\\w+)*\\;")[, 2])
-
+                                ## extract the calls and put in own column
+                               final_call = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2])
 
 ## if conflicting intrep. take the call with most calls in CLNSIGCONF field
 for(i in 1:nrow(clinvar_anno_vcf_df)) {
