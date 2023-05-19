@@ -258,9 +258,9 @@ combined_tab_for_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by="vcf_id") %>% 
   dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id) %>% dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, criterion, evidencePVS1, evidenceBA1, evidencePS, evidencePM, evidencePP, evidenceBS, evidenceBP) %>% 
 
-  ## indicate if recalculated 
-  mutate(intervar_adjusted_call = if_else( (evidencePVS1 == 0), "No", "Yes")) %>%  
-  
+## indicate if recalculated 
+   mutate(intervar_adjusted_call = if_else( (evidencePVS1 == 0), "No", "Yes"))  %>% 
+
   ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
   #if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
   mutate(evidencePVS1 = if_else( (criterion == "NF1" | criterion == "SS1" |
@@ -298,8 +298,10 @@ combined_tab_for_intervar <- autopvs1_results %>%
   #if criterion is na then PVS1 = 0;
   mutate(evidencePVS1 = if_else( (criterion == "na") & evidencePVS1 == 1, 0, as.double(evidencePVS1))) %>%
   
+    
   ## adjust variables based on given rules described in README
-  mutate(final_call = ifelse( (evidencePVS1   == 1) &
+  mutate(final_call = ifelse( (evidencePVS1 == 0), str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],
+                        ifelse( (evidencePVS1   == 1) &
                               ( (evidencePS   >= 1) |
                                (evidencePM   >=2 ) |
                                (evidencePM   >= 1 & evidencePP ==1) |
@@ -319,11 +321,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
                                                             (evidenceBS   >= 2), "Benign",
                                                             ifelse( (evidenceBS == 1 & evidenceBP == 1) |
                                                                     (evidenceBP   >= 2) , "Likely_benign",  
-                                                                    ifelse( evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],"Uncertain_significance"))))))))
-
-
-
-
+                                                                    ifelse( evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],"Uncertain_significance")))))))))
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar, by="vcf_id" ) 
