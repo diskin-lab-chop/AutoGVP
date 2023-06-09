@@ -46,7 +46,7 @@ option_list <- list(
   make_option(c("--autopvs1"), type = "character",
               help = "input autopvs1 file"),
   make_option(c("--clinvar"), type = "character",
-              help = "specific clinVar file (format: clinvar_20211225.vcf.gz)"), ## https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2022clinvar_20211225.vcf.gz 
+              help = "specific clinVar file (format: clinvar_yyyymmdd.vcf.gz)"), ## https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2022clinvar_20211225.vcf.gz 
   make_option(c("--submission"), type = "character",
               help = "specific submission file (format: variant_summary_2023-02.txt.gz)"),
   make_option(c("--submission_summary"), type = "character",

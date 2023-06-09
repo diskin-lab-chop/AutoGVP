@@ -9,7 +9,7 @@
 # usage: Rscript 01-annotate_variants_CAVATICA_input.R --vcf <vcf file> 
 #                                       --intervar <intervar file> 
 #                                       --autopvs1 <autopvs1 file>
-#                                       --clinvar  'yyyymmdd'
+#                                       --clinvar  'clinvar_yyyymmdd.vcf.gz'
 #                                       --submission <variant_summary file>
 #                                       --submission_summary <submission_summary file>
 #                                       --gnomad_variable 'gnomad_3_1_1_AF_non_cancer'
