@@ -16,7 +16,7 @@
 #                                       --gnomad_af <numeric>
 #                                       --variant_depth <integer>
 #                                       --variant_af <numeric>
-#                                       --summary_level_vcf <numeric>
+#                                       --summary_level_vcf <character>
 #                                       --output <string>
 ################################################################################
 
@@ -59,7 +59,7 @@ option_list <- list(
               help = "variant depth filter"),
   make_option(c("--variant_af"), type = "numeric", default = .2,
               help = "variant AF cut-off"),
-  make_option(c("--summary_level"), type = "character", default = "F",
+  make_option(c("--summary_level_vcf"), type = "character", default = "F",
               help = "summary_level T/F"),
   make_option(c("--output"), type = "character", default = "out",
               help = "output name")) 
