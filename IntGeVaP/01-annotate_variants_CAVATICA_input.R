@@ -38,7 +38,7 @@ input_dir   <- file.path(analysis_dir, "input/cavatica-ver")
 # parse parameters     
 option_list <- list(
   make_option(c("--vcf"), type = "character",
-              help = "Input vcf file with clinVar annotations"),
+              help = "Input vcf file with VEP annotations"),
   make_option(c("--intervar"), type = "character",
               help = "input intervar file"),
   make_option(c("--multianno"), type = "character",
