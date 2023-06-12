@@ -58,7 +58,7 @@ Rscript 01-annotate_variants_custom_input.R --vcf input/testing_010423_VEP.vcf -
 ```
 
 ## Workflow chart  
-![workflow](readme_figs/germline-pathogenecity_flow.png)
+![workflow](readme_figs/germline-pathogenecity_flow.pdf)
 
 ## Step by step workflow (_-w cavatica workflow_)
 - Read in user inputted clinVar file
