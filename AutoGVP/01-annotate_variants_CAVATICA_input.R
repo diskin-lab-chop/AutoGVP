@@ -10,7 +10,7 @@
 #                                       --intervar <intervar file> 
 #                                       --autopvs1 <autopvs1 file>
 #                                       --clinvar  'clinvar_yyyymmdd.vcf.gz'
-#                                       --submission <variant_summary file>
+#                                       --variant_summary <variant_summary file>
 #                                       --submission_summary <submission_summary file>
 #                                       --gnomad_variable 'gnomad_3_1_1_AF_non_cancer'
 #                                       --gnomad_af <numeric>
@@ -47,8 +47,8 @@ option_list <- list(
               help = "input autopvs1 file"),
   make_option(c("--clinvar"), type = "character",
               help = "specific clinVar file (format: clinvar_20211225.vcf.gz)"), ## https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2022clinvar_20211225.vcf.gz 
-  make_option(c("--submission"), type = "character",
-              help = "specific submission file (format: variant_summary_2023-02.txt.gz)"),
+  make_option(c("--variant_summary"), type = "character",
+              help = "variant_summary file (format: variant_summary_2023-02.txt)"),
   make_option(c("--submission_summary"), type = "character",
               help = "specific submission summary file (format: submission_summary.txt)"),
   make_option(c("--gnomad_variable"), type = "character",default = "Freq_gnomAD_genome_ALL",
@@ -71,7 +71,9 @@ input_clinVar_file  <-  opt$vcf
 input_intervar_file <- opt$intervar
 input_autopvs1_file <- opt$autopvs1
 clinvar_ver <- opt$clinvar
-sample_name <- opt$sample_name
+sample_name <- opt$output
+input_submission_file  <-  opt$submission_summary
+input_variant_summary <- opt$variant_summary
 
 ## filters for gnomAD
 filter_gnomad_var    <- opt$gnomad_variable
@@ -173,7 +175,7 @@ submission_summary_df <- vroom(input_summary_submission_file, comment = "#",deli
                               ungroup
   
   
-submission_info_df  <-  vroom(input_submission_file, delim="\t",
+submission_info_df  <-  vroom(input_variant_summary, delim="\t",
                               col_types = c(ReferenceAlleleVCF = "c",AlternateAlleleVCF= "c",PositionVCF="i",VariationID="n" ),
                               show_col_types = FALSE) %>% 
     
