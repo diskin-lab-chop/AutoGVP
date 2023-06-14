@@ -2,7 +2,7 @@
 Jung Kim, Ammar S. Naqvi, Rebecca Kaufman, Miguel A. Brown, Ryan J. Corbett, Zhuangzhuang Geng, Zalman Vaksman, Phillip B. Storm, Adam C. Resnick, Jo Lynne Rokita, Douglas R. Stewart, Sharon J. Diskin
 
 ## Workflow chart  
-![workflow](readme_figs/germline-pathogenecity_flow.png)
+![workflow](figures/germline-pathogenecity_flow.png)
 
 ## Step by step workflow (_-w cavatica workflow_)
 - Read in user inputted clinVar file
