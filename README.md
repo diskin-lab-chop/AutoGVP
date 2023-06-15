@@ -31,14 +31,12 @@ This workflow currently annotates variants with ClinVar (2022-05-07).
 3. Run AutoGVP.
 
 AutoGVP Requirements (recommended to place all in the `input/` folder):
-```
 - VEP-, ANNOVAR-, and ClinVar annotated VCF file (`*VEP.vcf`)
 - ANNOVAR multianno file (`*hg38_multianno.txt`)
 - InterVar file (`*intervar.hg38_multianno.txt.intervar`)
 - AutoPVS1 file (`*autopvs1.txt`)
 - `variant_summary.txt`
 - `submission_summary.txt.gz` (can retrieve with `download_db_files.sh`)
-```
 Note: the variant_summary and submission_summary files need to be uncompressed.
 
 Example run:
