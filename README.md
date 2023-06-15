@@ -138,11 +138,7 @@ Likely pathogenic
 Benign
         (i) 1 Stand-alone (BA1) OR
         (ii) ≥2 Strong (BS1–BS4)
-
-Benign
-        (i) 1 Stand-alone (BA1) OR
-        (ii) ≥2 Strong (BS1–BS4)
-
+        
 Likely Benign
         (i) 1 Strong (BS1–BS4) and 1 supporting (BP1– BP7) OR
         (ii) ≥2 Supporting (BP1–BP7)
