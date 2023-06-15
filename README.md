@@ -4,22 +4,6 @@ Jung Kim, Ammar S. Naqvi, Rebecca Kaufman, Miguel A. Brown, Ryan J. Corbett, Zhu
 ## AutoGVP Workflow  
 ![workflow](figures/germline-pathogenecity_flow.png)
 
-## Step by step workflow (_-w cavatica workflow_)
-- Read in user inputted clinVar file
-- Create `vcf_id` (chr and position)
-- Annotate stars based on `CLNREVSTAT`*
-- Report and save significant call if Stars are not 0 or 1 and not B/P/LB/LP/VUS
-- Identify variants that are ambiguous (“criteria_provided,_conflicting_interpretations’), generate table to then check against submission file
-- Identify variants that need further annotations or possible re-adjustment (Stars 0 or 1)
-- Retrieve and store interVar results file into table and create vcf_id
-- Retrieve and store corresponding autopvs1 results file into table and create vcf_id
-- Merge interVar and autopvs1 tables by matching vcf_ids
-- Create columns for `evidencePVS1`, `evidencePS`, `evidencePM`, `evidencePP`, `evidenceBP`, `evidencePM` and `evidenceBA1` (variables that may need re-adjusting) by parsing InterVar: InterVar and Evidence column
-- Indicate if there needs to be recalculation (if `evidencePVS1` == 1)
-- If not, take interVar significant call as final_call
-- Go through entries and adjust evidence variables above based on criterion*
-- Report final call based on recalculated evidence variables
-
 ## Docker set-up
 
 ### docker pull and run
@@ -47,12 +31,14 @@ This workflow currently annotates variants with ClinVar (2022-05-07).
 3. Run AutoGVP.
 
 AutoGVP Requirements (recommended to place all in the `input/` folder):
+```
 - VEP-, ANNOVAR-, and ClinVar annotated VCF file (`*VEP.vcf`)
 - ANNOVAR multianno file (`*hg38_multianno.txt`)
 - InterVar file (`*intervar.hg38_multianno.txt.intervar`)
 - AutoPVS1 file (`*autopvs1.txt`)
 - `variant_summary.txt`
 - `submission_summary.txt.gz` (can retrieve with `download_db_files.sh`)
+```
 Note: the variant_summary and submission_summary files need to be uncompressed.
 
 Example run:
@@ -91,6 +77,22 @@ bash download_db_files.sh
 ```r
 Rscript 01-annotate_variants_custom_input.R --vcf input/testing_010423_VEP.vcf --multianno input/testing_010423.hg38_multianno.txt --intervar input/testing_010423_intervar.hg38_multianno.txt.intervar --autopvs1 input/testing_010423_autopvs1.txt --clinvar input/clinvar_20211225.vcf.gz --output SRRT0182 --submission input/variant_summary.txt --submission_summary input/submission_summary.txt
 ```
+
+### Step by step workflow
+1. Read in ClinVar file
+2. Create `vcf_id` (chr and position)
+3. Annotate stars based on `CLNREVSTAT`*
+4. Report and save significant call if Stars are not 0 or 1 and not B/P/LB/LP/VUS
+5. Identify variants that are ambiguous (`criteria_provided,_conflicting_interpretations`), generate table to then check against submission file
+6. Identify variants that need further annotations or possible re-adjustment (Stars 0 or 1)
+7. Retrieve and store interVar results file into table and create vcf_id
+8. Retrieve and store corresponding autopvs1 results file into table and create vcf_id
+9. Merge interVar and autopvs1 tables by matching vcf_ids
+10. Create columns for `evidencePVS1`, `evidencePS`, `evidencePM`, `evidencePP`, `evidenceBP`, `evidencePM` and `evidenceBA1` (variables that may need re-adjusting) by parsing InterVar: InterVar and Evidence column
+11. Indicate if there needs to be recalculation (if `evidencePVS1` == 1)
+12. If not, take interVar significant call as final_call
+13. Go through entries and adjust evidence variables above based on criterion*
+14. Report final call based on recalculated evidence variables
 
 #### Annotating Stars
 ```
