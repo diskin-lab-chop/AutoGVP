@@ -36,7 +36,7 @@ AutoGVP Requirements (recommended to place all in the `input/` folder):
 - InterVar file (`*intervar.hg38_multianno.txt.intervar`)
 - AutoPVS1 file (`*autopvs1.txt`)
 - `variant_summary.txt`
-- `submission_summary.txt.gz` (can retrieve with `download_db_files.sh`)
+- `submission_summary.txt` (can retrieve with `download_db_files.sh`)
 Note: the variant_summary and submission_summary files need to be uncompressed.
 
 Example run:
@@ -50,22 +50,23 @@ Rscript 01-annotate_variants_custom_input.R --vcf <*.vcf> --multianno <*multiann
 
 ### Custom (non-CAVATICA) input ###
 1. Annotate the germline VCF with VEP.
-2. Run ANNOVAR with InterVar with the following options (to create the VCF input for AutoGVP).
+2. Run ANNOVAR with the following options (to create the VCF input for AutoGVP):
 ```perl
 perl table_annovar.pl input/test_hg38_selected_VEP_annotated.vcf hg38 --buildver hg38 --out test_hg38_selected --remove --protocol gnomad211_exome,gnomad211_genome --operation f,f --vcfinput
 ```
-3. Run AutoPVS1.
-4. Optional: VCF annotation with ClinVar. If not done by the user, ClinVar file is required input to AutoGVP.
+3. Run InterVar with the following command:
+4. Run AutoPVS1.
+4. Optional: provide a ClinVar VCF file. If not supplied by the user, the most recent ClinVar file will be downloaded with `download_db_files.sh` and used in AutoGVP.
 4. Run AutoGVP.
 
 AutoGVP Requirements (recommended to place all in the `input/` folder):
-- VEP- and ANNOVAR-annotated VCF (`*VEP.vcf`)
+- VEP-annotated VCF (`*VEP.vcf`)
 - ANNOVAR file (`*hg38_multianno.txt`)
 - InterVar file (`*intervar.hg38_multianno.txt.intervar`)
 - AutoPVS1 file (`*autopvs1.txt`)
-- ClinVar VCF (`clinvar_yyyymmdd.vcf.gz`; optional)
+- ClinVar VCF (`clinvar_yyyymmdd.vcf.gz` optional user input or `clinvar.vcf.gz` will be downloaded with `download_db_files.sh`)
 - `variant_summary.txt`
-- `submission_summary.txt.gz` (can retrieve with `download_db_files.sh`)
+- `submission_summary.txt` (can retrieve with `download_db_files.sh`)
 Note: the variant_summary and submission_summary files need to be uncompressed.
 
 Example run:
@@ -78,7 +79,7 @@ Rscript 01-annotate_variants_custom_input.R --vcf input/testing_010423_VEP.vcf -
 
 ### Step by step workflow
 1. Read in ClinVar file
-2. Create `vcf_id` (chr and position)
+2. Create `vcf_id` (CHR, POS, REF, ALT)
 3. Annotate stars based on `CLNREVSTAT`*
 4. Report and save significant call if Stars are not 0 or 1 and not B/P/LB/LP/VUS
 5. Identify variants that are ambiguous (`criteria_provided,_conflicting_interpretations`), generate table to then check against submission file
@@ -94,11 +95,11 @@ Rscript 01-annotate_variants_custom_input.R --vcf input/testing_010423_VEP.vcf -
 
 #### Annotating Stars
 ```
-1 = 'criteria_provided,_single_submitter'
+1 = 'criteria_provided,_single_submitter','Needs resolving'
 2 = 'criteria_provided,_multiple_submitters'
 3 = 'reviewed_by_expert_panel'
 4 = 'practice_guideline'
-0/Need resolving = 'criteria_provided,_conflicting_interpretations'
+0 = 'criteria_provided,_conflicting_interpretations'
 ```
 
 #### Re-calculation adjustments
