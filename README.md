@@ -55,6 +55,9 @@ Rscript 01-annotate_variants_custom_input.R --vcf <*.vcf> --multianno <*multiann
 perl table_annovar.pl input/test_hg38_selected_VEP_annotated.vcf hg38 --buildver hg38 --out test_hg38_selected --remove --protocol gnomad211_exome,gnomad211_genome --operation f,f --vcfinput
 ```
 3. Run InterVar with the following command:
+```python
+python InterVar.py -b hg38 -i input/test_hg38_selected_VEP_annotated.vcf --input_type=VCF -o test_hg38_selected
+```
 4. Run AutoPVS1.
 4. Optional: provide a ClinVar VCF file. If not supplied by the user, the most recent ClinVar file will be downloaded with `download_db_files.sh` and used in AutoGVP.
 4. Run AutoGVP.
