@@ -244,7 +244,7 @@ entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_
 
 clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%  anti_join(entries_for_cc_in_submission, by="vcf_id") %>%
   ## add column for individual scores that will be re-calculated if we need to adjust using autoPVS1 result
-  ## note: ignore PP5 score
+  ## note: ignore PP5/BP6 score
   mutate(evidencePVS1 = str_match(`InterVar: InterVar and Evidence`, "PVS1\\=(\\d+)\\s")[, 2]) %>%
   mutate(evidenceBA1 = str_match(`InterVar: InterVar and Evidence`, "BA1\\=(\\d+)\\s")[, 2]) %>%
   mutate( evidencePS = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sPS\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>%
