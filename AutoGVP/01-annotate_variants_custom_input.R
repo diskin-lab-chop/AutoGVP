@@ -1,14 +1,15 @@
 ################################################################################
-# 02-annotate_variants_user.R
+# 01-annotate_variants_custom_input.R
 # written by Ammar Naqvi & refactored by Saksham Phul
 #
 # This script annotates variants based on clinVar and integrates a modified 
 # version of InterVar that involves adjustments of calls based on ACMG-AMP 
 # guidelines
 #
-# usage: Rscript 01-annotate_variants_user.R --vcf <VEP annotated vcf file> 
+# usage: Rscript 01-annotate_variants_custom_input.R --vcf <VEP annotated vcf file> 
 #                                       --intervar <intervar file> 
 #                                       --autopvs1 <autopvs1 file>
+#                                       --multianno <multianno file>
 #                                       --clinvar  <e.g. clinvar_20211225.vcf.gz>
 #                                       --variant_summary <variant_summary file>
 #                                       --submission_summary <submission_summary file>
@@ -92,7 +93,7 @@ output_tab_dev_file  <- file.path(analysis_dir, paste0(output_name,".annotations
 Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
 address_ambiguous_calls <- function(results_tab_abridged)
-{  ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
+{ ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
     for(i in 1:nrow(results_tab_abridged)) {
       entry <- results_tab_abridged[i,]
       if(is.na(entry$final_call) || (entry$final_call !="Pathogenic" && 
@@ -105,42 +106,41 @@ address_ambiguous_calls <- function(results_tab_abridged)
         results_tab_abridged[i,]$final_call = new_call
       }
     }
-return(results_tab_abridged)
+  return(results_tab_abridged)
 }
 
 address_conflicting_intrep <- function(clinvar_anno_vcf_df)
-{
-## if conflicting intrep. take the call with most calls in CLNSIGCONF field
-for(i in 1:nrow(clinvar_anno_vcf_df)) {
-  entry <- clinvar_anno_vcf_df[i,]
-  if(entry$Stars != "1NR")
-  {
-    next;
-  }
-  
-  conf_section <-str_match(entry$INFO, "CLNSIGCONF\\=.+\\;CLNVC")  ## part to parse and count calls
-  call_names <- c("Pathogenic","Likely_pathogenic","Benign","Likely_benign","Uncertain_significance")
+{ ## if conflicting intrep. take the call with most calls in CLNSIGCONF field
+    for(i in 1:nrow(clinvar_anno_vcf_df)) {
+      entry <- clinvar_anno_vcf_df[i,]
+      if(entry$Stars != "1NR")
+      {
+        next;
+      }
+      
+      conf_section <-str_match(entry$INFO, "CLNSIGCONF\\=.+\\;CLNVC")  ## part to parse and count calls
+      call_names <- c("Pathogenic","Likely_pathogenic","Benign","Likely_benign","Uncertain_significance")
 
-  P  <-  (str_match(conf_section, "Pathogenic\\((\\d+)\\)")[,2])
-  LP <-  (str_match(conf_section, "Likely_pathogenic\\((\\d+)\\)")[,2])
-  B  <-  (str_match(conf_section, "Benign\\((\\d+)\\)")[,2])
-  LB <-  (str_match(conf_section, "Likely_benign\\((\\d+)\\)")[,2])
-  U  <-  (str_match(conf_section, "Uncertain_significance\\((\\d+)\\)")[,2])
+      P  <-  (str_match(conf_section, "Pathogenic\\((\\d+)\\)")[,2])
+      LP <-  (str_match(conf_section, "Likely_pathogenic\\((\\d+)\\)")[,2])
+      B  <-  (str_match(conf_section, "Benign\\((\\d+)\\)")[,2])
+      LB <-  (str_match(conf_section, "Likely_benign\\((\\d+)\\)")[,2])
+      U  <-  (str_match(conf_section, "Uncertain_significance\\((\\d+)\\)")[,2])
 
-  ## make vector out of possible calls to get max 
-  calls          <- c(P,LP,B,LB,U)
+      ## make vector out of possible calls to get max 
+      calls          <- c(P,LP,B,LB,U)
 
-  if ( length( which( calls == max(calls,na.rm = TRUE) ) ) > 1 )
-  {
-    next;
-  }
+      if ( length( which( calls == max(calls,na.rm = TRUE) ) ) > 1 )
+      {
+        next;
+      }
 
-  highest_ind    <- which.max(calls)
-  consensus_call <- call_names[highest_ind]
-  
-  clinvar_anno_vcf_df[i,]$final_call = consensus_call
-}
-return(clinvar_anno_vcf_df)
+      highest_ind    <- which.max(calls)
+      consensus_call <- call_names[highest_ind]
+      
+      clinvar_anno_vcf_df[i,]$final_call = consensus_call
+    }
+  return(clinvar_anno_vcf_df)
 }
 
 ## make vcf dataframe and add vcf_if column 
@@ -197,7 +197,6 @@ submission_summary_df <- vroom(input_submission_file, comment = "#",delim="\t",
   arrange(ClinicalSignificance) %>%
   dplyr::slice(1) %>%
   ungroup
-
 
 submission_info_df  <-  vroom(input_variant_summary, delim="\t",
                               col_types = c(ReferenceAlleleVCF = "c",AlternateAlleleVCF= "c",PositionVCF="i",VariationID="n" ),
@@ -294,7 +293,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
   dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id) %>%
   dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, criterion, evidencePVS1, evidenceBA1, evidencePS, evidencePM, evidencePP, evidenceBS, evidenceBP) %>% 
   ## indicate if recalculated 
-  mutate(
+  dplyr::mutate(
     intervar_adjusted_call = if_else( evidencePVS1 == 0, "No", "Yes"),
   ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
   #if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
@@ -361,7 +360,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar, by="vcf_id" ) 
 master_tab <- master_tab %>% 
-  mutate(
+  dplyr::mutate(
     intervar_adjusted_call = coalesce(intervar_adjusted_call, "Not adjusted, clinVar"),
     evidencePVS1 = coalesce(as.double(evidencePVS1.x, evidencePVS1.y) ),
     evidenceBA1 = coalesce(as.double(evidenceBA1.x, evidenceBA1.y) ), 
@@ -376,7 +375,7 @@ master_tab <- master_tab %>%
     )  
 
 ## combine final calls into one choosing the appropriate final call                             
-master_tab <- master_tab %>% mutate(final_call = coalesce(final_call.x, final_call.y))
+master_tab <- master_tab %>% dplyr::mutate(final_call = coalesce(final_call.x, final_call.y))
 
 ## remove older columns
 master_tab <- master_tab %>% dplyr::select(-c (evidencePVS1.x,evidencePVS1.y,evidenceBA1.x, evidenceBA1.y, evidencePS.x, evidencePS.y, evidencePM.x, evidencePM.y, evidencePP.x, evidencePP.y, evidenceBS.x, evidenceBS.y, evidenceBP.x, evidenceBP.y,
@@ -384,9 +383,9 @@ master_tab <- master_tab %>% dplyr::select(-c (evidencePVS1.x,evidencePVS1.y,evi
 
 ## reformat columns
 master_tab  <- full_join(master_tab,entries_for_cc_in_submission, by="vcf_id") %>% 
-  mutate(final_call = coalesce(final_call.y, final_call.x)) %>% 
+  dplyr::mutate(final_call = coalesce(final_call.y, final_call.x)) %>% 
   full_join(entries_for_cc_in_submission_w_intervar, by="vcf_id") %>%
-  mutate(
+  dplyr::mutate(
     Intervar_evidence = coalesce(Intervar_evidence.y, Intervar_evidence.x),
     Ref.Gene = coalesce(Ref.Gene.y, Ref.Gene.x)
     )
@@ -398,7 +397,7 @@ results_tab_abridged <- address_ambiguous_calls(results_tab_abridged)
 
 ## fix spelling and nomenclature inconsistencies
 results_tab_abridged <- results_tab_abridged %>% 
-      mutate(
+      dplyr::mutate(
         final_call = replace(final_call, final_call == "Likely benign", "Likely_benign"),
         final_call = replace(final_call, final_call == "Uncertain significance", "Uncertain_significance"),
         final_call = replace(final_call, final_call == "Benign PVS1", "Benign"),
