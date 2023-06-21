@@ -356,19 +356,24 @@ master_tab  <- full_join(master_tab,entries_for_cc_in_submission, by="vcf_id") %
 # abridged version
 results_tab_abridged <- master_tab %>% dplyr::select(vcf_id, Ref.Gene, Stars, Intervar_evidence,intervar_adjusted_call,ID, final_call)
 
-## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
-for(i in 1:nrow(results_tab_abridged)) {
-  entry <- results_tab_abridged[i,]
-  if(is.na(entry$final_call) || (entry$final_call !="Pathogenic" && 
-                                 entry$final_call != "Likely_benign" &&  entry$final_call !="Likely_pathogenic"
-                                 && entry$final_call != "Uncertain_significance"  &&  entry$final_call !="Benign"  
-                                 &&  entry$final_call !="Uncertain significance"  &&  entry$final_call !="Likely benign") )
-  {
-    
-    new_call <- str_match(results_tab_abridged[i,]$Intervar_evidence, "InterVar\\:\\s(\\w+\\s\\w+)*")[,2]
-    results_tab_abridged[i,]$final_call = new_call
-  }
+address_ambiguous_calls <- function(results_tab_abridged)
+{  ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
+    for(i in 1:nrow(results_tab_abridged)) {
+      entry <- results_tab_abridged[i,]
+      if(is.na(entry$final_call) || (entry$final_call !="Pathogenic" && 
+                                    entry$final_call != "Likely_benign" &&  entry$final_call !="Likely_pathogenic"
+                                    && entry$final_call != "Uncertain_significance"  &&  entry$final_call !="Benign"  
+                                    &&  entry$final_call !="Uncertain significance"  &&  entry$final_call !="Likely benign") )
+      {
+        
+        new_call <- str_match(results_tab_abridged[i,]$Intervar_evidence, "InterVar\\:\\s(\\w+\\s\\w+)*")[,2]
+        results_tab_abridged[i,]$final_call = new_call
+      }
+    }
+return(results_tab_abridged)
 }
+
+results_tab_abridged <- address_ambiguous_calls(results_tab_abridged)
 
 ## fix spelling and nomenclature inconsistencies
 results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Likely benign", "Likely_benign"))
