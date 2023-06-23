@@ -4,20 +4,28 @@ Jung Kim, Ammar S. Naqvi, Rebecca Kaufman, Miguel A. Brown, Ryan J. Corbett, Dan
 ## AutoGVP Workflow  
 <img src="https://github.com/diskin-lab-chop/pathogenicity-assessment/blob/b461f6248ea3bd472d646d3dd39445b616fa9295/figures/germline-pathogenecity_flow.png" align="center" width = "600">
 
+## Clone the AutoGVP repository
+```bash
+git clone https://github.com/diskin-lab-chop/AutoGVP.git
+```
+
 ## Docker set-up
 
-### docker pull and run
+### docker pull
 ```bash
 docker pull pgc-images.sbgenomics.com/naqvia/germline-pathogenicity-assessment:latest
-docker run --platform linux/amd64 --name pathogenecity_anno -d -v $PWD:/home/rstudio/pathogenecity-assessment pgc-images.sbgenomics.com/naqvia/germline-pathogenicity-assessment:latest
-
+```
+cd to your clone of `AutoGVP`
+### docker run
+```
+docker run --platform linux/amd64 --name pathogenecity_anno -d -v $PWD:/home/rstudio/AutoGVP pgc-images.sbgenomics.com/naqvia/germline-pathogenicity-assessment:latest
 ```
 ### docker execute
 ```bash
 docker exec -ti pathogenecity_anno bash
 ```
 
-### cd to AutoGVP directory
+### cd to AutoGVP directory within docker
 ```bash
 cd /home/rstudio/AutoGVP
 ```
