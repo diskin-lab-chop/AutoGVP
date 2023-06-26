@@ -8,13 +8,12 @@ Jung Kim, Ammar S. Naqvi, Rebecca Kaufman, Miguel A. Brown, Ryan J. Corbett, Dan
 
 ### docker pull and run
 ```bash
-docker pull pgc-images.sbgenomics.com/naqvia/germline-pathogenicity-assessment:latest
-docker run --platform linux/amd64 --name pathogenecity_anno -d -v $PWD:/home/rstudio/pathogenecity-assessment pgc-images.sbgenomics.com/naqvia/germline-pathogenicity-assessment:latest
-
+docker pull pgc-images.sbgenomics.com/naqvia/autogvp:latest
+docker run --platform linux/amd64 --name autogvp -d -v $PWD:/home/rstudio/AutoGVP pgc-images.sbgenomics.com/naqvia/autogvp:latest
 ```
 ### docker execute
 ```bash
-docker exec -ti pathogenecity_anno bash
+docker exec -ti autogvp bash
 ```
 
 ### cd to AutoGVP directory
@@ -142,7 +141,7 @@ Likely pathogenic
 Benign
         (i) 1 Stand-alone (BA1) OR
         (ii) ≥2 Strong (BS1–BS4)
-        
+
 Likely Benign
         (i) 1 Strong (BS1–BS4) and 1 supporting (BP1– BP7) OR
         (ii) ≥2 Supporting (BP1–BP7)
