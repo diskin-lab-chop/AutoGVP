@@ -7,6 +7,8 @@ RUN RSPM="https://packagemanager.rstudio.com/cran/2022-10-07" \
 COPY scripts/install_bioc.r .
 COPY scripts/install_github.r .
 
+## install wget
+-RUN apt update -y && apt install -y wget 
 # install R packages
 RUN ./install_bioc.r \
     Biobase \
