@@ -16,7 +16,9 @@ git clone https://github.com/diskin-lab-chop/AutoGVP.git
 docker pull pgc-images.sbgenomics.com/naqvia/germline-pathogenicity-assessment:latest
 ```
 cd to your clone of `AutoGVP`
+
 ### docker run
+Replace <CONTAINER_NAME> with any name and run the command below:
 ```
 docker run --platform linux/amd64 --name <CONTAINER_NAME> -d -v $PWD:/home/rstudio/AutoGVP pgc-images.sbgenomics.com/naqvia/germline-pathogenicity-assessment:latest
 ```
