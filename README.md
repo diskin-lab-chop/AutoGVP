@@ -1,23 +1,33 @@
 # AutoGVP: Automated Germline Variant Pathogenicity
-Jung Kim, Ammar S. Naqvi, Rebecca Kaufman, Miguel A. Brown, Ryan J. Corbett, Daniel P. Miller, Zhuangzhuang Geng, Zalman Vaksman, Phillip B. Storm, Adam C. Resnick, Jo Lynne Rokita, Douglas R. Stewart, Sharon J. Diskin
+Jung Kim, Ammar S. Naqvi, Rebecca Kaufman, Zalman Vaksman, Miguel A. Brown, Ryan J. Corbett, Daniel P. Miller, Zhuangzhuang Geng, Phillip B. Storm, Adam C. Resnick, Jo Lynne Rokita, Douglas R. Stewart, Sharon J. Diskin
 
 ## AutoGVP Workflow  
 <img src="https://github.com/diskin-lab-chop/pathogenicity-assessment/blob/b461f6248ea3bd472d646d3dd39445b616fa9295/figures/germline-pathogenecity_flow.png" align="center" width = "600">
 
+## Clone the AutoGVP repository
+```bash
+git clone https://github.com/diskin-lab-chop/AutoGVP.git
+```
+
 ## Docker set-up
 
-### docker pull and run
+### docker pull
 ```bash
 docker pull pgc-images.sbgenomics.com/naqvia/germline-pathogenicity-assessment:latest
-docker run --platform linux/amd64 --name pathogenecity_anno -d -v $PWD:/home/rstudio/pathogenecity-assessment pgc-images.sbgenomics.com/naqvia/germline-pathogenicity-assessment:latest
+```
+cd to your clone of `AutoGVP`
 
+### docker run
+Replace <CONTAINER_NAME> with any name and run the command below:
+```
+docker run --platform linux/amd64 --name <CONTAINER_NAME> -d -v $PWD:/home/rstudio/AutoGVP pgc-images.sbgenomics.com/naqvia/germline-pathogenicity-assessment:latest
 ```
 ### docker execute
 ```bash
-docker exec -ti pathogenecity_anno bash
+docker exec -ti <CONTAINER_NAME> bash
 ```
 
-### cd to AutoGVP directory
+### cd to AutoGVP directory within docker
 ```bash
 cd /home/rstudio/AutoGVP
 ```
@@ -50,6 +60,13 @@ Rscript 01-annotate_variants_custom_input.R --vcf <*.vcf> --multianno <*multiann
 
 ### Custom (non-CAVATICA) input ###
 1. Annotate the germline VCF with VEP.
+Note: It is recommended to run VEP 104 to ensure optimal tool compatibility since AutoPVS1 hg38 uses gene symbols from VEP 104.
+Alternatively, if using VEP > 104, it is recommended to lift over the gene symbols in the `PVS1.level` file located in the AutoPVS1 data folder using this [custom python script](https://github.com/d3b-center/D3b-DGD-Collaboration/blob/main/scripts/update_gene_symbols.py) where `hgnc_tsv` is the gene name database TSV file from the monthly HGNC server [here](https://ftp.ebi.ac.uk/pub/databases/genenames/hgnc/archive/monthly/tsv/).
+Example command, with results used to replace `PVS1.level` file. 
+```python
+python3 D3b-DGD-Collaboration/scripts/update_gene_symbols.py -g hgnc_complete_set_2021-06-01.txt -f PVS1.level -z GENE level -u GENE -o results --explode_records 2> old_new.log
+```
+
 2. Run ANNOVAR with the following options (to create the VCF input for AutoGVP):
 ```perl
 perl table_annovar.pl input/test_hg38_selected_VEP_annotated.vcf hg38 --buildver hg38 --out test_hg38_selected --remove --protocol gnomad211_exome,gnomad211_genome --operation f,f --vcfinput
