@@ -45,7 +45,7 @@ Example run:
 bash download_db_files.sh
 ```
 ```r
-Rscript 01-annotate_variants_custom_input.R --vcf <*.vcf> --multianno <*multianno.txt> --intervar <*hg38_multianno.txt.intervar> --autopvs1 <*autopvs1.txt --output <output_prefex> --submission input/variant_summary.txt --submission_summary input/submission_summary.txt
+Rscript 01-annotate_variants_CAVATICA_input.R --vcf input/test-cavatica.single.vqsr.filtered.vep_105.vcf --intervar input/test-cavatica.hg38_multianno.txt.intervar --multianno input/test-cavatica.hg38_multianno.txt --variant_summary input/variant_summary.txt --submission_summary input/submission_summary.txt --autopvs1 input/test-cavatica.autopvs1.tsv 
 ```
 
 ### Custom (non-CAVATICA) input ###
@@ -142,7 +142,7 @@ Likely pathogenic
 Benign
         (i) 1 Stand-alone (BA1) OR
         (ii) ≥2 Strong (BS1–BS4)
-        
+
 Likely Benign
         (i) 1 Strong (BS1–BS4) and 1 supporting (BP1– BP7) OR
         (ii) ≥2 Supporting (BP1–BP7)
