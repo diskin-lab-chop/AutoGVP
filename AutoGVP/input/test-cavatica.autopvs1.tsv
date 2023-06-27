@@ -1,0 +1,11 @@
+vcf_id	SYMBOL	Feature	trans_name	consequence	strength_raw	strength	criterion
+1-10495-C-T	DDX11L1	NR_046018.2	not_lof	upstream_gene_variant	Unmet	Unmet	na
+1-13613-T-A	DDX11L1	NR_046018.2	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+1-13649-G-C	DDX11L1	NR_046018.2	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+1-13684-C-T	DDX11L1	NR_046018.2	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+1-13813-T-G	DDX11L1	NR_046018.2	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+1-13838-C-T	DDX11L1	NR_046018.2	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+1-14165-A-G	DDX11L1	NR_046018.2	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+1-14397-CTGT-C	WASH7P	NR_024540.1	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+1-14470-G-A	WASH7P	NR_024540.1	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+1-14591-G-A	WASH7P	NR_024540.1	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
