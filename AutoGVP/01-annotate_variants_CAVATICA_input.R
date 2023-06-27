@@ -93,9 +93,10 @@ Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 ## function for filtering
 ##gnomAD, variant af and depth filtering 
 gnomad_filtering <- function(clinvar_vcf) {
+  gnomad_var_to_match <- paste0(filter_gnomad_var,"\\=(0\\.\\d+)\\;")
   clinvar_vcf <- clinvar_vcf %>% 
                   mutate(variant_depth = if_else( as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])  > filter_variant_depth, "PASS","FAIL")) %>% 
-                  mutate(gnomad_af     = if_else( as.numeric( str_match(INFO, "gnomad_3_1_1_AF_non_cancer\\=(0\\.\\d+)\\;")[,2])  > filter_variant_af, "PASS","FAIL")) %>% 
+                  mutate(gnomad_af     = if_else( as.numeric( str_match(INFO, gnomad_var_to_match)[,2])  > filter_variant_af, "PASS","FAIL")) %>% 
                   mutate(variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL"))
   return(clinvar_vcf)
 }
