@@ -18,11 +18,11 @@ docker pull pgc-images.sbgenomics.com/naqvia/germline-pathogenicity-assessment:l
 cd to your clone of `AutoGVP`
 ### docker run
 ```
-docker run --platform linux/amd64 --name pathogenecity_anno -d -v $PWD:/home/rstudio/AutoGVP pgc-images.sbgenomics.com/naqvia/germline-pathogenicity-assessment:latest
+docker run --platform linux/amd64 --name <CONTAINER_NAME> -d -v $PWD:/home/rstudio/AutoGVP pgc-images.sbgenomics.com/naqvia/germline-pathogenicity-assessment:latest
 ```
 ### docker execute
 ```bash
-docker exec -ti pathogenecity_anno bash
+docker exec -ti <CONTAINER_NAME> bash
 ```
 
 ### cd to AutoGVP directory within docker
