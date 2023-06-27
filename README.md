@@ -45,7 +45,7 @@ Example run:
 bash download_db_files.sh
 ```
 ```r
-Rscript 01-annotate_variants_CAVATICA_input.R --vcf input/test-cavatica.single.vqsr.filtered.vep_105.vcf --intervar input/test-cavatica.hg38_multianno.txt.intervar --multianno input/test-cavatica.hg38_multianno.txt --variant_summary input/variant_summary.txt --submission_summary input/submission_summary.txt --autopvs1 input/test-cavatica.autopvs1.tsv 
+Rscript 01-annotate_variants_CAVATICA_input.R --vcf input/test-cavatica.with_clinvar.vcf --intervar input/test-cavatica.hg38_multianno.txt.intervar --multianno input/test-cavatica.hg38_multianno.txt --variant_summary input/variant_summary.txt --submission_summary input/submission_summary.txt --autopvs1 input/test-cavatica.autopvs1.tsv 
 ```
 
 ### Custom (non-CAVATICA) input ###
