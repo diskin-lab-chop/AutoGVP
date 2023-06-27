@@ -87,7 +87,6 @@ output_tab_file <- file.path(analysis_dir, paste0(sample_name, "_annotations_rep
 output_tab_abr_file  <- file.path(analysis_dir, paste0(sample_name,"_annotations_report.abridged.tsv"))
 output_tab_dev_file  <- file.path(analysis_dir, paste0(sample_name,"_annotations_report.abridged.dev.tsv"))
 
-
 ## allocate more memory capacity
 Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
@@ -176,7 +175,6 @@ submission_summary_df <- vroom(input_summary_submission_file, comment = "#",deli
                               dplyr::slice(1) %>%
                               ungroup
   
-  
 submission_info_df  <-  vroom(input_variant_summary, delim="\t",
                               col_types = c(ReferenceAlleleVCF = "c",AlternateAlleleVCF= "c",PositionVCF="i",VariationID="n" ),
                               show_col_types = FALSE) %>% 
@@ -213,15 +211,15 @@ vcf_to_run_intervar <- entries_for_intervar$vcf_id
 
 ## get multianno file to add  correct vcf_id in intervar table
 
-multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, show_col_types = TRUE,col_names = c("Chr","Start","End","Ref","Alt","Other","Other2","Other3")) %>% 
-  mutate(vcf_id= str_remove_all(paste (Chr,"-",Start,"-",End,"-",Ref,"-",Alt), " ")) %>% 
+multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>% 
+  mutate(vcf_id= str_remove_all(paste (Chr,"-",Otherinfo5,"-",Otherinfo7,"-",Otherinfo8), " ")) %>% 
   mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) %>% 
   group_by(vcf_id) %>%
   arrange(vcf_id) %>%
   filter(row_number()==1) %>% 
   ungroup
 
-## retrieve and store interVar output file into table
+## add intervar table
 clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = TRUE) %>% 
   #slice(-1) %>% 
   mutate(var_id= str_remove_all(paste (`#Chr`,"-",Start,"-",End,"-",Ref,"-",Alt), " ")) %>% 
@@ -230,9 +228,10 @@ clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws 
   filter(row_number()==1) %>% 
   ungroup
 
+
 ## exit if the total number of variants differ in these two tables to ensure we annotate with the correct vcf so we can match back to clinVar and other tables
 if( tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df) ) {
-  #stop("intervar and multianno files of diff lengths") 
+  stop("intervar and multianno files of diff lengths") 
 }
 
 ## combine the intervar and multianno tables by the appropriate vcf id
@@ -258,7 +257,7 @@ clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%  anti_join(entr
   full_join(clinvar_anno_vcf_df, by="vcf_id") 
 
 ## autopvs1 results
-autopvs1_results    <-  read_tsv(input_autopvs1_file, col_names = TRUE) %>%
+autopvs1_results    <-  vroom(input_autopvs1_file, col_names = TRUE) %>%
   mutate(vcf_id = str_remove_all(paste (vcf_id), " ")) %>% 
   mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) 
 ## join all three tables together based on variant id that need intervar run
