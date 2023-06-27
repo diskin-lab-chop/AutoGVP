@@ -1,2 +1,12 @@
+# ignore DS_Store files
 .DS_store
 */.DS_store
+
+# ignore data download files
+AutoGVP/input/clinvar.vcf.gz
+AutoGVP/input/submission_summary.txt
+AutoGVP/input/variant_summary.txt
+
+# ignore results files
+test_062723.annotations_report.abridged.tsv
+
