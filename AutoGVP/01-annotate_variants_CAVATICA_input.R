@@ -83,9 +83,9 @@ filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
 
 ## output files
-output_tab_file <- file.path(analysis_dir, paste0(sample_name, "_annotations_report.tsv")) 
-output_tab_abr_file  <- file.path(analysis_dir, paste0(sample_name,"_annotations_report.abridged.tsv"))
-output_tab_dev_file  <- file.path(analysis_dir, paste0(sample_name,"_annotations_report.abridged.dev.tsv"))
+output_tab_file <- file.path(analysis_dir, paste0("results/",sample_name, "_annotations_report.tsv")) 
+output_tab_abr_file  <- file.path(analysis_dir, paste0("results/",sample_name,"_annotations_report.abridged.tsv"))
+output_tab_dev_file  <- file.path(analysis_dir, paste0("results/",sample_name,"_annotations_report.abridged.dev.tsv"))
 
 ## allocate more memory capacity
 Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
@@ -236,11 +236,11 @@ if( tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df) ) {
 }
 
 ## combine the intervar and multianno tables by the appropriate vcf id
-clinvar_anno_intervar_vcf_df <- mutate(multianno_df,clinvar_anno_intervar_vcf_df )  %>% dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, Ref.Gene,Func.refGene,ExonicFunc.refGene)
+clinvar_anno_intervar_vcf_df <- mutate(multianno_df,clinvar_anno_intervar_vcf_df )  %>% dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, Ref.Gene,Func.refGene,ExonicFunc.refGene, AAChange.refGene)
 
 ## populate consensus call variants with invervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df,entries_for_cc_in_submission, by="vcf_id") %>% 
-  dplyr::select(vcf_id,`InterVar: InterVar and Evidence`,Ref.Gene,Func.refGene,ExonicFunc.refGene) %>% 
+  dplyr::select(vcf_id,`InterVar: InterVar and Evidence`,Ref.Gene,Func.refGene,Func.refGene,ExonicFunc.refGene, AAChange.refGene) %>% 
   dplyr::rename("Intervar_evidence"=`InterVar: InterVar and Evidence`)
 
 clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%  anti_join(entries_for_cc_in_submission, by="vcf_id") %>%
@@ -264,7 +264,7 @@ autopvs1_results    <-  vroom(input_autopvs1_file, col_names = TRUE) %>%
 ## join all three tables together based on variant id that need intervar run
 combined_tab_for_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by="vcf_id") %>% 
-  dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id) %>% dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, criterion, evidencePVS1, evidenceBA1, evidencePS, evidencePM, evidencePP, evidenceBS, evidenceBP) %>% 
+  dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id) %>% dplyr::select(vcf_id, Func.refGene,,ExonicFunc.refGene, AAChange.refGene ,`InterVar: InterVar and Evidence`, criterion, evidencePVS1, evidenceBA1, evidencePS, evidencePM, evidencePP, evidenceBS, evidenceBP) %>% 
   
   ## indicate if recalculated 
   mutate(intervar_adjusted_call = if_else( (evidencePVS1 == 0), "No", "Yes"))  %>% 
@@ -361,7 +361,7 @@ master_tab  <- full_join(master_tab,entries_for_cc_in_submission, by="vcf_id") %
   mutate(Ref.Gene = coalesce(Ref.Gene.y, Ref.Gene.x)) 
 
 # abridged version
-results_tab_abridged <- master_tab %>% dplyr::select(vcf_id, Ref.Gene, Stars, Intervar_evidence,intervar_adjusted_call,ID, final_call)
+results_tab_abridged <- master_tab %>% dplyr::select(vcf_id, Ref.Gene, Func.refGene,ExonicFunc.refGene, AAChange.refGene, Stars, Intervar_evidence,intervar_adjusted_call,ID, final_call)
 
 ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
 for(i in 1:nrow(results_tab_abridged)) {
