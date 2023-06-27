@@ -13,14 +13,14 @@ git clone https://github.com/diskin-lab-chop/AutoGVP.git
 
 ### docker pull
 ```bash
-docker pull pgc-images.sbgenomics.com/naqvia/germline-pathogenicity-assessment:latest
+docker pull pgc-images.sbgenomics.com/naqvia/autogvp:latest
 ```
 cd to your clone of `AutoGVP`
 
 ### docker run
 Replace <CONTAINER_NAME> with any name and run the command below:
 ```
-docker run --platform linux/amd64 --name <CONTAINER_NAME> -d -v $PWD:/home/rstudio/AutoGVP pgc-images.sbgenomics.com/naqvia/germline-pathogenicity-assessment:latest
+docker run --platform linux/amd64 --name <CONTAINER_NAME> -d -v $PWD:/home/rstudio/AutoGVP pgc-images.sbgenomics.com/naqvia/autogvp:latest
 ```
 ### docker execute
 ```bash
@@ -159,7 +159,7 @@ Likely pathogenic
 Benign
         (i) 1 Stand-alone (BA1) OR
         (ii) ≥2 Strong (BS1–BS4)
-        
+
 Likely Benign
         (i) 1 Strong (BS1–BS4) and 1 supporting (BP1– BP7) OR
         (ii) ≥2 Supporting (BP1–BP7)
