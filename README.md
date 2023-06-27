@@ -15,10 +15,6 @@ git clone https://github.com/diskin-lab-chop/AutoGVP.git
 ```bash
 docker pull pgc-images.sbgenomics.com/naqvia/autogvp:latest
 ```
-### docker execute
-```bash
-docker exec -ti autogvp bash
-```
 cd to your clone of `AutoGVP`
 
 ### docker run
