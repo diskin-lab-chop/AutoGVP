@@ -6,7 +6,9 @@
 AutoGVP/input/clinvar.vcf.gz
 AutoGVP/input/submission_summary.txt
 AutoGVP/input/variant_summary.txt
+AutoGVP/input/test_062723.annotations_report.abridged.tsv
 
 # ignore results files
-test_062723.annotations_report.abridged.tsv
+AutoGVP/test_062723.annotations_report.abridged.tsv
+
 
