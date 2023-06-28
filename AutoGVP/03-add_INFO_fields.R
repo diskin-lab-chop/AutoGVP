@@ -54,12 +54,7 @@ vcfR_df <- read.vcfR(vcf_file, verbose = FALSE )
 INFO_df <- INFO2df(vcfR_df)
 
 
-## combine new columns with abridged/summary table
+## combine new columns with abridged/summary table and write to file
 vcf_added_columns_df <- cbind(input_tab,INFO_df) %>% 
-                        dplyr::rename("Hugo_Symbol"=Ref.Gene)
-                        
-
-# write out to file
-vcf_added_columns_df <- input_tab %>%
-                        bind_cols(INFO_df) %>%
+                        dplyr::rename("Hugo_Symbol"=Ref.Gene) %>% 
                         write_tsv(output_tab_file)
