@@ -35,6 +35,12 @@ suppressPackageStartupMessages({
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "AutoGVP")
 input_dir   <- file.path(analysis_dir, "input")
+results_dir <- file.path(root_dir, "results")
+
+#create results directory if it does not exist
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
 
 #parse parameters
 option_list <- list(
@@ -86,7 +92,7 @@ filter_variant_af    <- opt$variant_af
 
 ## output files
 output_tab_file      <- file.path(analysis_dir, paste0(output_name,".annotations_report.tsv")) 
-output_tab_abr_file  <- file.path(analysis_dir, paste0(output_name,".annotations_report.abridged.tsv"))
+output_tab_abr_file  <- paste0(output_name,".annotations_report.abridged.tsv")
 output_tab_dev_file  <- file.path(analysis_dir, paste0(output_name,".annotations_report.abridged.dev.tsv"))
 
 ## allocate more memory capacity
@@ -407,6 +413,11 @@ results_tab_abridged <- results_tab_abridged %>%
         ) %>% 
       distinct()
 
-# write out to file
-results_tab_abridged %>%
-write_tsv(file.path(results_dir, output_tab_abr_file))
+# write output to file in results folder
+results_tab_abridged %>% 
+write_tsv(
+  file.path(results_dir, output_tab_abr_file),
+  append = FALSE, 
+  quote = 'none', 
+  col_names = TRUE
+)
