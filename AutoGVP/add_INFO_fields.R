@@ -1,5 +1,5 @@
 ################################################################################
-# add_INFO_fields.R
+# 03-add_INFO_fields.R
 # written by Ammar Naqvi
 #
 # This script annotates INFO column variables with variants that have been 
@@ -44,6 +44,8 @@ vcf_file   <- opt$vcf_file
 output_prefix <- opt$out_prefix
 
 output_tab_file  <- file.path(results_dir, paste0(output_prefix,"_annotations_report.full.tsv"))
+vcf_file = "/Users/naqvia/Documents/GitHub/pathogenicity-assessment/AutoGVP/input/test-INFO_script.vcf"
+
 
 input_tab <- vroom(input_tab, show_col_types = TRUE)
 vcfR_df <- read.vcfR(vcf_file, verbose = FALSE )
@@ -51,8 +53,11 @@ vcfR_df <- read.vcfR(vcf_file, verbose = FALSE )
 ## get INFO fields and convert to df for each variable
 INFO_df <- INFO2df(vcfR_df)
 
+
 ## combine new columns with abridged/summary table
-vcf_added_columns_df <- cbind(input_tab,INFO_df)
+vcf_added_columns_df <- cbind(input_tab,INFO_df) %>% 
+                        dplyr::rename("Hugo_Symbol"=Ref.Gene)
+                        
 
 # write out to file
 write.table(vcf_added_columns_df,output_tab_file, append = FALSE, sep = "\t", dec = ".",
