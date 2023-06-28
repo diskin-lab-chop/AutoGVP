@@ -408,4 +408,5 @@ results_tab_abridged <- results_tab_abridged %>%
       distinct()
 
 # write out to file
-write.table(results_tab_abridged, output_tab_abr_file, append = FALSE, sep = "\t", dec = ".", row.names = FALSE, quote = FALSE, col.names = TRUE)
+results_tab_abridged %>%
+write_tsv(file.path(results_dir, output_tab_abr_file))
