@@ -67,13 +67,16 @@ option_list <- list(
 opt <- parse_args(OptionParser(option_list = option_list))
 
 ## get input files from parameters (reqd)
-input_clinVar_file  <-  opt$vcf
+input_vcf_file  <-  opt$vcf
 input_intervar_file <- opt$intervar
 input_autopvs1_file <- opt$autopvs1
 clinvar_ver <- opt$clinvar
 sample_name <- opt$output
 input_submission_file  <-  opt$submission_summary
 input_variant_summary <- opt$variant_summary
+summary_level <- opt$summary_level_vcf
+input_summary_submission_file <- opt$submission_summary
+input_multianno_file <- opt$multianno
 
 ## filters for gnomAD
 filter_gnomad_var    <- opt$gnomad_variable
