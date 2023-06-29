@@ -38,14 +38,10 @@ option_list <- list(
 
 opt <- parse_args(OptionParser(option_list = option_list))
 
-## get input files from parameters (reqd)
+## get input files from parameters 
 input_tab  <- opt$input_table
 vcf_file   <- opt$vcf_file
 output_prefix <- opt$out_prefix
-
-output_tab_file  <- file.path(results_dir, paste0(output_prefix,"_annotations_report.full.tsv"))
-vcf_file = "/Users/naqvia/Documents/GitHub/pathogenicity-assessment/AutoGVP/input/test-INFO_script.vcf"
-
 
 input_tab <- vroom(input_tab, show_col_types = TRUE)
 vcfR_df <- read.vcfR(vcf_file, verbose = FALSE )
