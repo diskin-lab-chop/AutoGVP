@@ -55,14 +55,14 @@ Example run:
 bash download_db_files.sh
 ```
 ```r
-Rscript 01-annotate_variants_custom_input.R --vcf <*.vcf> --multianno <*multianno.txt> --intervar <*hg38_multianno.txt.intervar> --autopvs1 <*autopvs1.txt --output <output_prefex> --variant_summary input/variant_summary.txt --submission_summary input/submission_summary.txt
+Rscript 01-annotate_variants_CAVATICA_input.R --vcf input/test-cavatica.vcf --multianno test-cavatica.hg38_multianno.txt --intervar test-cavatica.hg38_multianno.txt.intervar --autopvs1 test-cavatica.autopvs1.tsv --output out --variant_summary input/variant_summary.txt --submission_summary input/submission_summary.txt
 ```
 
 ### Custom (non-CAVATICA) input ###
 1. Annotate the germline VCF with [VEP](https://github.com/Ensembl/ensembl-vep).
 Note: It is recommended to run VEP 104 to ensure optimal tool compatibility since AutoPVS1 hg38 uses gene symbols from VEP 104.
 Alternatively, if using VEP > 104, it is recommended to lift over the gene symbols in the `PVS1.level` file located in the AutoPVS1 data folder using this [custom python script](https://github.com/d3b-center/D3b-DGD-Collaboration/blob/main/scripts/update_gene_symbols.py) where `hgnc_tsv` is the gene name database TSV file from the monthly HGNC server [here](https://ftp.ebi.ac.uk/pub/databases/genenames/hgnc/archive/monthly/tsv/).
-Example command, with results used to replace `PVS1.level` file. 
+Example command, with results used to replace `PVS1.level` file.
 ```python
 python3 D3b-DGD-Collaboration/scripts/update_gene_symbols.py -g hgnc_complete_set_2021-06-01.txt -f PVS1.level -z GENE level -u GENE -o results --explode_records 2> old_new.log
 ```
