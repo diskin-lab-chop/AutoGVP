@@ -32,7 +32,7 @@ suppressPackageStartupMessages({
 ## set up directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "AutoGVP")
-input_dir   <- file.path(analysis_dir, "input/cavatica-ver")
+input_dir   <- file.path(analysis_dir, "input")
 
 # parse parameters     
 # parse parameters     
@@ -70,10 +70,12 @@ opt <- parse_args(OptionParser(option_list = option_list))
 input_clinVar_file  <-  opt$vcf
 input_intervar_file <- opt$intervar
 input_autopvs1_file <- opt$autopvs1
+input_multianno_file <- opt$multianno
 clinvar_ver <- opt$clinvar
 sample_name <- opt$output
-input_submission_file  <-  opt$submission_summary
+input_summary_submission_file  <-  opt$submission_summary
 input_variant_summary <- opt$variant_summary
+summary_level <- opt$summary_level_vcf
 
 ## filters for gnomAD
 filter_gnomad_var    <- opt$gnomad_variable
@@ -81,10 +83,9 @@ filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
 
 ## output files
-output_tab_file <- file.path(analysis_dir, paste0(sample_name, "_annotations_report.tsv")) 
-output_tab_abr_file  <- file.path(analysis_dir, paste0(sample_name,"_annotations_report.abridged.tsv"))
-output_tab_dev_file  <- file.path(analysis_dir, paste0(sample_name,"_annotations_report.abridged.dev.tsv"))
-
+output_tab_file <- file.path(analysis_dir, paste0("results/",sample_name, "_annotations_report.tsv")) 
+output_tab_abr_file  <- file.path(analysis_dir, paste0("results/",sample_name,"_annotations_report.abridged.tsv"))
+output_tab_dev_file  <- file.path(analysis_dir, paste0("results/",sample_name,"_annotations_report.abridged.dev.tsv"))
 
 ## allocate more memory capacity
 Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
@@ -92,15 +93,16 @@ Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 ## function for filtering
 ##gnomAD, variant af and depth filtering 
 gnomad_filtering <- function(clinvar_vcf) {
+  gnomad_var_to_match <- paste0(filter_gnomad_var,"\\=(0\\.\\d+)\\;")
   clinvar_vcf <- clinvar_vcf %>% 
                   mutate(variant_depth = if_else( as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])  > filter_variant_depth, "PASS","FAIL")) %>% 
-                  mutate(gnomad_af     = if_else( as.numeric( str_match(INFO, "gnomad_3_1_1_AF_non_cancer\\=(0\\.\\d+)\\;")[,2])  > filter_variant_af, "PASS","FAIL")) %>% 
+                  mutate(gnomad_af     = if_else( as.numeric( str_match(INFO, gnomad_var_to_match)[,2])  > filter_variant_af, "PASS","FAIL")) %>% 
                   mutate(variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL"))
   return(clinvar_vcf)
 }
 
 ## retrieve and store clinVar input file into table data.table::fread()
-vcf_input <-  vroom(input_vcf_file, comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = TRUE)
+vcf_input <-  vroom(input_clinVar_file, comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = TRUE)
 
 ## filter for gnomad, read depth and AF
 vcf_clinvar <- gnomad_filtering(vcf_input)
@@ -174,7 +176,6 @@ submission_summary_df <- vroom(input_summary_submission_file, comment = "#",deli
                               dplyr::slice(1) %>%
                               ungroup
   
-  
 submission_info_df  <-  vroom(input_variant_summary, delim="\t",
                               col_types = c(ReferenceAlleleVCF = "c",AlternateAlleleVCF= "c",PositionVCF="i",VariationID="n" ),
                               show_col_types = FALSE) %>% 
@@ -210,17 +211,16 @@ entries_for_intervar <- clinvar_anno_vcf_df %>%
 vcf_to_run_intervar <- entries_for_intervar$vcf_id
 
 ## get multianno file to add  correct vcf_id in intervar table
-#input_multianno_file = "7aefaa8b-3dbe-4fe2-afb1-6f95d132ec87.hg38_multianno.6489.vcf"
 
-multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, show_col_types = TRUE,col_names = c("Chr","Start","End","Ref","Alt","Other","Other2","Other3")) %>% 
-  mutate(vcf_id= str_remove_all(paste (Chr,"-",Start,"-",End,"-",Ref,"-",Alt), " ")) %>% 
+multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>% 
+  mutate(vcf_id= str_remove_all(paste (Chr,"-",Otherinfo5,"-",Otherinfo7,"-",Otherinfo8), " ")) %>% 
   mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) %>% 
   group_by(vcf_id) %>%
   arrange(vcf_id) %>%
   filter(row_number()==1) %>% 
   ungroup
 
-## retrieve and store interVar output file into table
+## add intervar table
 clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = TRUE) %>% 
   #slice(-1) %>% 
   mutate(var_id= str_remove_all(paste (`#Chr`,"-",Start,"-",End,"-",Ref,"-",Alt), " ")) %>% 
@@ -229,17 +229,18 @@ clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws 
   filter(row_number()==1) %>% 
   ungroup
 
+
 ## exit if the total number of variants differ in these two tables to ensure we annotate with the correct vcf so we can match back to clinVar and other tables
 if( tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df) ) {
   stop("intervar and multianno files of diff lengths") 
 }
 
 ## combine the intervar and multianno tables by the appropriate vcf id
-clinvar_anno_intervar_vcf_df <- mutate(multianno_df,clinvar_anno_intervar_vcf_df )  %>% dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, Ref.Gene,Func.refGene,ExonicFunc.refGene)
+clinvar_anno_intervar_vcf_df <- mutate(multianno_df,clinvar_anno_intervar_vcf_df )  %>% dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, Ref.Gene,Func.refGene,ExonicFunc.refGene, AAChange.refGene)
 
 ## populate consensus call variants with invervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df,entries_for_cc_in_submission, by="vcf_id") %>% 
-  dplyr::select(vcf_id,`InterVar: InterVar and Evidence`,Ref.Gene,Func.refGene,ExonicFunc.refGene) %>% 
+  dplyr::select(vcf_id,`InterVar: InterVar and Evidence`,Ref.Gene,Func.refGene,Func.refGene,ExonicFunc.refGene, AAChange.refGene) %>% 
   dplyr::rename("Intervar_evidence"=`InterVar: InterVar and Evidence`)
 
 clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%  anti_join(entries_for_cc_in_submission, by="vcf_id") %>%
@@ -257,13 +258,13 @@ clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%  anti_join(entr
   full_join(clinvar_anno_vcf_df, by="vcf_id") 
 
 ## autopvs1 results
-autopvs1_results    <-  read_tsv(input_autopvs1_file, col_names = TRUE) %>%
+autopvs1_results    <-  vroom(input_autopvs1_file, col_names = TRUE) %>%
   mutate(vcf_id = str_remove_all(paste (vcf_id), " ")) %>% 
   mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) 
 ## join all three tables together based on variant id that need intervar run
 combined_tab_for_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by="vcf_id") %>% 
-  dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id) %>% dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, criterion, evidencePVS1, evidenceBA1, evidencePS, evidencePM, evidencePP, evidenceBS, evidenceBP) %>% 
+  dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id) %>% dplyr::select(vcf_id, Func.refGene,,ExonicFunc.refGene, AAChange.refGene ,`InterVar: InterVar and Evidence`, criterion, evidencePVS1, evidenceBA1, evidencePS, evidencePM, evidencePP, evidenceBS, evidenceBP) %>% 
   
   ## indicate if recalculated 
   mutate(intervar_adjusted_call = if_else( (evidencePVS1 == 0), "No", "Yes"))  %>% 
@@ -360,7 +361,7 @@ master_tab  <- full_join(master_tab,entries_for_cc_in_submission, by="vcf_id") %
   mutate(Ref.Gene = coalesce(Ref.Gene.y, Ref.Gene.x)) 
 
 # abridged version
-results_tab_abridged <- master_tab %>% dplyr::select(vcf_id, Ref.Gene, Stars, Intervar_evidence,intervar_adjusted_call,ID, final_call)
+results_tab_abridged <- master_tab %>% dplyr::select(vcf_id, Ref.Gene, Func.refGene,ExonicFunc.refGene, AAChange.refGene, Stars, Intervar_evidence,intervar_adjusted_call,ID, final_call)
 
 ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
 for(i in 1:nrow(results_tab_abridged)) {

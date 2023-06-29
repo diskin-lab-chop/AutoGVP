@@ -55,6 +55,7 @@ Example run:
 bash download_db_files.sh
 ```
 ```r
+
 Rscript 01-annotate_variants_CAVATICA_input.R --vcf input/test-cavatica.vcf --multianno test-cavatica.hg38_multianno.txt --intervar test-cavatica.hg38_multianno.txt.intervar --autopvs1 test-cavatica.autopvs1.tsv --output out --variant_summary input/variant_summary.txt --submission_summary input/submission_summary.txt
 ```
 
