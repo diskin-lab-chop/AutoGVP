@@ -341,11 +341,11 @@ combined_tab_for_intervar <- autopvs1_results %>%
   
   ## adjust variables based on given rules described in README
     final_call = ifelse( (evidencePVS1 == 0), str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],
-                              ifelse( (evidencePVS1   == 1) &
+                              ifelse( (evidencePVS1   == 1 &
                                         ( (evidencePS   >= 1) |
                                             (evidencePM   >=2 ) |
                                             (evidencePM   >= 1 & evidencePP ==1) |
-                                            (evidencePP   >=2 ) ) , "Pathogenic",
+                                            (evidencePP   >=2 ) )) , "Pathogenic",
                                       ifelse( (evidencePVS1   == 1 & evidencePS >= 2), "Pathogenic",
                                               ifelse( (evidencePVS1   == 1) &  ( (evidencePS == 1 &
                                                                                     evidencePM   >= 3) |
