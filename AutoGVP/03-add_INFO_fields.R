@@ -51,9 +51,7 @@ vcfR_df <- read.vcfR(vcf_file, verbose = FALSE )
 ## get INFO fields and convert to df for each variable
 INFO_df <- INFO2df(vcfR_df)
 
-
 ## combine new columns with abridged/summary table and write to file
 vcf_added_columns_df <- cbind(input_tab,INFO_df) %>% 
                         dplyr::rename("Hugo_Symbol"=Ref.Gene) %>% 
                         write_tsv(output_tab_file)
-
