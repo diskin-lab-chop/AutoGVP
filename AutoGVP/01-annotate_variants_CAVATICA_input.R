@@ -102,7 +102,7 @@ gnomad_filtering <- function(clinvar_vcf) {
 }
 
 ## retrieve and store clinVar input file into table data.table::fread()
-vcf_input <-  vroom("/Users/naqvia/Documents/GitHub/pathogenicity-assessment/AutoGVP/input/test-cavatica.single.vqsr.filtered.vep_105.vcf", comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = TRUE)
+vcf_input <-  vroom(input_clinVar_file, comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = TRUE)
 
 ## filter for gnomad, read depth and AF
 vcf_clinvar <- gnomad_filtering(vcf_input)
