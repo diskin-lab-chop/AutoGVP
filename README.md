@@ -69,11 +69,11 @@ python3 D3b-DGD-Collaboration/scripts/update_gene_symbols.py -g hgnc_complete_se
 
 2. Run [ANNOVAR](https://annovar.openbioinformatics.org/en/latest/) with the following options (to create the VCF input for AutoGVP):
 ```perl
-perl table_annovar.pl input/test_062723_VEP.vcf hg38 --buildver hg38 --out test_062723_VEP --remove --protocol gnomad211_exome,gnomad211_genome --operation f,f --vcfinput
+perl table_annovar.pl input/test_VEP.vcf hg38 --buildver hg38 --out test_VEP --remove --protocol gnomad211_exome,gnomad211_genome --operation f,f --vcfinput
 ```
 3. Run [InterVar](https://github.com/WGLab/InterVar) with the following command:
 ```python
-python InterVar.py -b hg38 -i input/test_062723_VEP.vcf --input_type=VCF -o test_062723_VEP
+python InterVar.py -b hg38 -i input/test_VEP.vcf --input_type=VCF -o test_VEP
 ```
 4. Run [AutoPVS1 v2.0](https://github.com/JiguangPeng/autopvs1/releases/tag/v2.0).
 5.  Optional: provide a ClinVar VCF file. If not supplied by the user, the most recent ClinVar file will be downloaded with `download_db_files.sh` and used in AutoGVP.
@@ -94,7 +94,7 @@ Example run:
 bash download_db_files.sh
 ```
 ```r
-Rscript 01-annotate_variants_custom_input.R --vcf input/test_062723_VEP.vcf --multianno input/test_062723_VEP.hg38_multianno.txt --intervar input/test_062723_VEP.hg38_multianno.txt.intervar --autopvs1 input/test_062723_autopvs1.txt --clinvar input/clinvar.vcf.gz --output test_062723 --variant_summary input/variant_summary.txt --submission_summary input/submission_summary.txt
+Rscript 01-annotate_variants_custom_input.R --vcf input/test_VEP.vcf --multianno input/test_VEP.hg38_multianno.txt --intervar input/test_VEP.hg38_multianno.txt.intervar --autopvs1 input/test_autopvs1.txt --clinvar input/clinvar.vcf.gz --output test --variant_summary input/variant_summary.txt --submission_summary input/submission_summary.txt
 ```
 
 ### Step by step workflow
