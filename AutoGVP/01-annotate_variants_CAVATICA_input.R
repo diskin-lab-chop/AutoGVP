@@ -92,12 +92,15 @@ Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
 ## function for filtering
 ##gnomAD, variant af and depth filtering 
-gnomad_filtering <- function(clinvar_vcf) {
+gnomad_filtering <- function(clinvar_vcf) 
+{
   gnomad_var_to_match <- paste0(filter_gnomad_var,"\\=(0\\.\\d+)\\;")
   clinvar_vcf <- clinvar_vcf %>% 
-                  mutate(variant_depth = if_else( as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])  > filter_variant_depth, "PASS","FAIL")) %>% 
-                  mutate(gnomad_af     = if_else( as.numeric( str_match(INFO, gnomad_var_to_match)[,2])  > filter_variant_af, "PASS","FAIL")) %>% 
-                  mutate(variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL"))
+                  dplyr::mutate(
+                    variant_depth = if_else( as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])  > filter_variant_depth, "PASS","FAIL"),
+                    gnomad_af     = if_else( as.numeric( str_match(INFO, gnomad_var_to_match)[,2])  > filter_variant_af, "PASS","FAIL"),
+                    variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL")
+                    )
   return(clinvar_vcf)
 }
 
@@ -111,56 +114,66 @@ vcf_clinvar <- gnomad_filtering(vcf_input)
 
 ## add column "vcf_id" to clinVar results in order to cross-reference with intervar and autopvs1 table
 clinvar_anno_vcf_df <- vcf_clinvar %>%
-  mutate(vcf_id= str_remove_all(paste (CHROM,"-",START,"-",REF,"-",ALT), " ")) %>% 
-  mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) %>% 
-  
-  #add star annotations to clinVar results table based on filters // ## default version
-  mutate(Stars = ifelse(grepl('CLNREVSTAT\\=criteria_provided,_single_submitter', INFO), "1",
+  dplyr::mutate(
+    vcf_id= str_remove_all(paste (CHROM,"-",START,"-",REF,"-",ALT), " "),
+    vcf_id = str_replace_all(vcf_id, "chr", ""),
+    #add star annotations to clinVar results table based on filters // ## default version
+    Stars = ifelse(grepl('CLNREVSTAT\\=criteria_provided,_single_submitter', INFO), "1",
                   ifelse(grepl('CLNREVSTAT\\=criteria_provided,_multiple_submitters', INFO), "2",
                     ifelse(grepl('CLNREVSTAT\\=reviewed_by_expert_panel', INFO), "3",
                       ifelse(grepl('CLNREVSTAT\\=practice_guideline', INFO), "4",
                         ifelse(grepl('CLNREVSTAT\\=criteria_provided,_conflicting_interpretations', INFO), "1NR", "0")
                                )))),
-                ## extract the calls and put in own column
-                final_call = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2])
-  
+    ## extract the calls and put in own column
+    final_call = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
+  )
+
+address_conflicting_intrep <- function(clinvar_anno_vcf_df)  
+{## if conflicting intrep. take the call with most calls in CLNSIGCONF field
+    for(i in 1:nrow(clinvar_anno_vcf_df)) 
+    {
+      entry <- clinvar_anno_vcf_df[i,]
+      if(entry$Stars != "1NR")
+      {
+        next;
+      }
+      
+      conf_section <-str_match(entry$INFO, "CLNSIGCONF\\=.+\\;CLNVC")  ## part to parse and count calls
+      call_names <- c("Pathogenic","Likely_pathogenic","Benign","Likely_benign","Uncertain_significance")
+        
+      P  <-  (str_match(conf_section, "Pathogenic\\((\\d+)\\)")[,2])
+      LP <-  (str_match(conf_section, "Likely_pathogenic\\((\\d+)\\)")[,2])
+      B  <-  (str_match(conf_section, "Benign\\((\\d+)\\)")[,2])
+      LB <-  (str_match(conf_section, "Likely_benign\\((\\d+)\\)")[,2])
+      U  <-  (str_match(conf_section, "Uncertain_significance\\((\\d+)\\)")[,2])
+        
+      ## make vector out of possible calls to get max 
+      calls          <- c(P,LP,B,LB,U)
+        
+      if ( length( which( calls == max(calls,na.rm = TRUE) ) ) > 1 )
+      {
+        next;
+      }
+      
+      highest_ind    <- which.max(calls)
+      consensus_call <- call_names[highest_ind]
+        
+      clinvar_anno_vcf_df[i,]$final_call = consensus_call  
+    }
+  return(clinvar_anno_vcf_df)  
+} 
+
 ## if conflicting intrep. take the call with most calls in CLNSIGCONF field
-for(i in 1:nrow(clinvar_anno_vcf_df)) {
-  entry <- clinvar_anno_vcf_df[i,]
-  if(entry$Stars != "1NR")
-  {
-    next;
-  }
-  
-  conf_section <-str_match(entry$INFO, "CLNSIGCONF\\=.+\\;CLNVC")  ## part to parse and count calls
-  call_names <- c("Pathogenic","Likely_pathogenic","Benign","Likely_benign","Uncertain_significance")
-    
-  P  <-  (str_match(conf_section, "Pathogenic\\((\\d+)\\)")[,2])
-  LP <-  (str_match(conf_section, "Likely_pathogenic\\((\\d+)\\)")[,2])
-  B  <-  (str_match(conf_section, "Benign\\((\\d+)\\)")[,2])
-  LB <-  (str_match(conf_section, "Likely_benign\\((\\d+)\\)")[,2])
-  U  <-  (str_match(conf_section, "Uncertain_significance\\((\\d+)\\)")[,2])
-    
-  ## make vector out of possible calls to get max 
-  calls          <- c(P,LP,B,LB,U)
-    
-  if ( length( which( calls == max(calls,na.rm = TRUE) ) ) > 1 )
-  {
-    next;
-  }
-  
-  highest_ind    <- which.max(calls)
-  consensus_call <- call_names[highest_ind]
-    
-  clinvar_anno_vcf_df[i,]$final_call = consensus_call  
-}
-  
+clinvar_anno_vcf_df <- address_conflicting_intrep(clinvar_anno_vcf_df)
+
 ## filters (gnomAD, variant_depth, variant AF if applicable)
 if(summary_level == "T")
 {
   clinvar_anno_vcf_df %>%  if_else( as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])  > filter_variant_depth, "PASS","FAIL") %>% 
-  mutate(gnomad_af     = if_else( as.numeric( str_match(INFO, "gnomad_3_1_1_AF_non_cancer\\=(0\\.\\d+)\\;")[,2])  > filter_variant_af, "PASS","FAIL")) %>% 
-  mutate(variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL"))
+  dplyr::mutate(
+    gnomad_af     = if_else( as.numeric( str_match(INFO, "gnomad_3_1_1_AF_non_cancer\\=(0\\.\\d+)\\;")[,2])  > filter_variant_af, "PASS","FAIL"),
+    variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL")
+    )
 } 
   
 
@@ -181,9 +194,11 @@ submission_info_df  <-  vroom(input_variant_summary, delim="\t",
                               show_col_types = FALSE) %>% 
     
     #add vcf id column  
-    mutate(vcf_id= str_remove_all(paste (Chromosome,"-",PositionVCF,"-",ReferenceAlleleVCF,"-",AlternateAlleleVCF), " ")) %>% 
-    mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) %>% 
-    mutate(VariationID=as.double(noquote(VariationID)))
+    mutate(
+      vcf_id= str_remove_all(paste (Chromosome,"-",PositionVCF,"-",ReferenceAlleleVCF,"-",AlternateAlleleVCF), " "),
+      vcf_id = str_replace_all(vcf_id, "chr", ""),
+      VariationID=as.double(noquote(VariationID))
+      )
   
   ## join submission files to ensure we have vcf id to match with other tables
   submission_final_df <- inner_join(submission_summary_df,submission_info_df, by="VariationID" )
@@ -213,8 +228,10 @@ vcf_to_run_intervar <- entries_for_intervar$vcf_id
 ## get multianno file to add  correct vcf_id in intervar table
 
 multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>% 
-  mutate(vcf_id= str_remove_all(paste (Chr,"-",Otherinfo5,"-",Otherinfo7,"-",Otherinfo8), " ")) %>% 
-  mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) %>% 
+  mutate(
+    vcf_id= str_remove_all(paste (Chr,"-",Otherinfo5,"-",Otherinfo7,"-",Otherinfo8), " "),
+    vcf_id = str_replace_all(vcf_id, "chr", "")
+    ) %>% 
   group_by(vcf_id) %>%
   arrange(vcf_id) %>%
   filter(row_number()==1) %>% 
@@ -246,69 +263,73 @@ entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_
 clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%  anti_join(entries_for_cc_in_submission, by="vcf_id") %>%
   ## add column for individual scores that will be re-calculated if we need to adjust using autoPVS1 result
   ## note: ignore PP5/BP6 score
-  mutate(evidencePVS1 = str_match(`InterVar: InterVar and Evidence`, "PVS1\\=(\\d+)\\s")[, 2]) %>%
-  mutate(evidenceBA1 = str_match(`InterVar: InterVar and Evidence`, "BA1\\=(\\d+)\\s")[, 2]) %>%
-  mutate( evidencePS = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sPS\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>%
-  mutate( evidencePM = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sPM\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>%
-  mutate( evidencePP = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sPP\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))[-5])) ) %>%
-  mutate( evidenceBS = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sBS\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))))     ) %>%
-  mutate( evidenceBP = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sBP\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))[-6])) ) %>%
-  
+  mutate(
+    evidencePVS1 = str_match(`InterVar: InterVar and Evidence`, "PVS1\\=(\\d+)\\s")[, 2], 
+    evidenceBA1 = str_match(`InterVar: InterVar and Evidence`, "BA1\\=(\\d+)\\s")[, 2],
+    evidencePS = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sPS\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ","))))),
+    evidencePM = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sPM\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ","))))),
+    evidencePP = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sPP\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))[-5])),
+    evidenceBS = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sBS\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ","))))),
+    evidenceBP = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sBP\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))[-6])) 
+  ) %>%
   ## merge dataframe with clinvar_anno_vcf_df above
   full_join(clinvar_anno_vcf_df, by="vcf_id") 
 
 ## autopvs1 results
 autopvs1_results    <-  vroom(input_autopvs1_file, col_names = TRUE) %>%
-  mutate(vcf_id = str_remove_all(paste (vcf_id), " ")) %>% 
-  mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) 
+  mutate(
+    vcf_id = str_remove_all(paste (vcf_id), " "),
+    vcf_id = str_replace_all(vcf_id, "chr", "")
+    ) 
 ## join all three tables together based on variant id that need intervar run
 combined_tab_for_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by="vcf_id") %>% 
   dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id) %>% dplyr::select(vcf_id, Func.refGene,,ExonicFunc.refGene, AAChange.refGene ,`InterVar: InterVar and Evidence`, criterion, evidencePVS1, evidenceBA1, evidencePS, evidencePM, evidencePP, evidenceBS, evidenceBP) %>% 
   
   ## indicate if recalculated 
-  mutate(intervar_adjusted_call = if_else( (evidencePVS1 == 0), "No", "Yes"))  %>% 
+  mutate(
+    intervar_adjusted_call = if_else( (evidencePVS1 == 0), "No", "Yes"),
   
   ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
   #if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
-  mutate(evidencePVS1 = if_else( (criterion == "NF1" | criterion == "SS1" |
+    evidencePVS1 = if_else( (criterion == "NF1" | criterion == "SS1" |
                                     criterion == "DEL1" | criterion == "DEL2" |
-                                    criterion == "DUP1" | criterion == "IC1") & evidencePVS1 == 1, "1", evidencePVS1)) %>%
+                                    criterion == "DUP1" | criterion == "IC1") & evidencePVS1 == 1, "1", evidencePVS1),
   
   #if criterion is NF3|NF5|SS3|SS5|SS8|SS10|DEL8|DEL6|DEL10|DUP3|IC2 then PVS1 = 0; PS = PS+1
-  mutate(evidencePS =  if_else(   (criterion == "NF3"  | criterion == "NF5" |
+    evidencePS =  if_else(   (criterion == "NF3"  | criterion == "NF5" |
                                      criterion == "SS3" | criterion == "SS5" |
                                      criterion == "SS8" | criterion =="SS10" |
                                      criterion =="DEL8" | criterion =="DEL6" |
                                      criterion =="DEL10" | criterion =="DUP3" |
-                                     criterion =="IC2") & evidencePVS1 == 1, as.numeric(evidencePS)+1, as.double(evidencePS))) %>%
+                                     criterion =="IC2") & evidencePVS1 == 1, as.numeric(evidencePS)+1, as.double(evidencePS)),
   
-  mutate(evidencePVS1 = if_else(  (criterion == "NF3"  | criterion == "NF5" |
+    evidencePVS1 = if_else(  (criterion == "NF3"  | criterion == "NF5" |
                                      criterion == "SS3" | criterion == "SS5" |
                                      criterion == "SS8" | criterion =="SS10" |
                                      criterion =="DEL8" | criterion =="DEL6" |
                                      criterion =="DEL10" | criterion =="DUP3" |
-                                     criterion =="IC2") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
+                                     criterion =="IC2") & evidencePVS1 == 1, "0", evidencePVS1),
   
   #if criterion is NF6|SS6|SS9|DEL7|DEL11|IC3 then PVS1 = 0; PM = PM+1;
-  mutate(evidencePM =   if_else( (criterion == "NF6" | criterion == "SS6" |
+    evidencePM =   if_else( (criterion == "NF6" | criterion == "SS6" |
                                     criterion == "SS9" | criterion == "DEL7" |
-                                    criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, as.numeric(evidencePM)+1, as.double(evidencePM))) %>%
+                                    criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, as.numeric(evidencePM)+1, as.double(evidencePM)),
   
-  mutate(evidencePVS1 = if_else( (criterion == "NF6" | criterion == "SS6" |
+    evidencePVS1 = if_else( (criterion == "NF6" | criterion == "SS6" |
                                     criterion == "SS9" | criterion == "DEL7" |
-                                    criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
+                                    criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, "0", evidencePVS1),
   
   #if criterion is IC4 then PVS1 = 0; PP = PP+1;
-  mutate(evidencePP   = if_else((criterion == "IC4") & evidencePVS1 == 1, as.numeric(evidencePP)+1, as.double(evidencePP))) %>%
-  mutate(evidencePVS1 = if_else((criterion == "IC4") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
+    evidencePP   = if_else((criterion == "IC4") & evidencePVS1 == 1, as.numeric(evidencePP)+1, as.double(evidencePP)),
+    evidencePVS1 = if_else((criterion == "IC4") & evidencePVS1 == 1, "0", evidencePVS1),
   
   #if criterion is na then PVS1 = 0;
-  mutate(evidencePVS1 = if_else( (criterion == "na") & evidencePVS1 == 1, 0, as.double(evidencePVS1))) %>%
+    evidencePVS1 = if_else( (criterion == "na") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
   
   
   ## adjust variables based on given rules described in README
-  mutate(final_call = ifelse( (evidencePVS1 == 0), str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],
+    final_call = ifelse( (evidencePVS1 == 0), str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],
                               ifelse( (evidencePVS1   == 1) &
                                         ( (evidencePS   >= 1) |
                                             (evidencePM   >=2 ) |
@@ -329,22 +350,25 @@ combined_tab_for_intervar <- autopvs1_results %>%
                                                                         (evidenceBS   >= 2), "Benign",
                                                                       ifelse( (evidenceBS == 1 & evidenceBP == 1) |
                                                                                 (evidenceBP   >= 2) , "Likely_benign",  
-                                                                              ifelse( evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],"Uncertain_significance")))))))))
+                                                                              ifelse( evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],"Uncertain_significance"))))))))
+  )
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar, by="vcf_id" ) 
 master_tab <- master_tab %>% mutate(intervar_adjusted_call = coalesce(intervar_adjusted_call, "Not adjusted, clinVar")) %>% 
-  mutate(evidencePVS1 = coalesce(as.double(evidencePVS1.x, evidencePVS1.y) )) %>%
-  mutate(evidenceBA1 = coalesce(as.double(evidenceBA1.x, evidenceBA1.y) )) %>% 
-  mutate(evidencePS = coalesce(as.double(evidencePS.x, evidencePS.y) )) %>% 
-  mutate(evidencePM = coalesce(as.double(evidencePM.x, evidencePM.y) )) %>% 
-  mutate(evidencePP = coalesce(as.double(evidencePP.x, evidencePP.y) )) %>% 
-  mutate(evidenceBS = coalesce(as.double(evidenceBS.x, evidenceBS.y) )) %>% 
-  mutate(evidenceBP = coalesce(as.double(evidenceBP.x, evidenceBP.y) )) %>% 
-  mutate(Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`)) %>% 
+  mutate(
+    evidencePVS1 = coalesce(as.double(evidencePVS1.x, evidencePVS1.y) ),
+    evidenceBA1 = coalesce(as.double(evidenceBA1.x, evidenceBA1.y) ), 
+    evidencePS = coalesce(as.double(evidencePS.x, evidencePS.y) ), 
+    evidencePM = coalesce(as.double(evidencePM.x, evidencePM.y) ), 
+    evidencePP = coalesce(as.double(evidencePP.x, evidencePP.y) ), 
+    evidenceBS = coalesce(as.double(evidenceBS.x, evidenceBS.y) ), 
+    evidenceBP = coalesce(as.double(evidenceBP.x, evidenceBP.y) ), 
+    Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`),
   
   # replace second final call with the second one because we did not use interVar results
-  mutate(final_call.x = if_else(intervar_adjusted_call=="No" & Stars=="0", final_call.y, final_call.x))  
+    final_call.x = if_else(intervar_adjusted_call=="No" & Stars=="0", final_call.y, final_call.x)
+  )  
 
 ## combine final calls into one choosing the appropriate final call                             
 master_tab <- master_tab %>% mutate(final_call = coalesce(final_call.x, final_call.y))
@@ -357,8 +381,10 @@ master_tab <- master_tab %>% dplyr::select(-c (evidencePVS1.x,evidencePVS1.y,evi
 master_tab  <- full_join(master_tab,entries_for_cc_in_submission, by="vcf_id") %>% 
   mutate(final_call = coalesce(final_call.y, final_call.x)) %>% 
   full_join(entries_for_cc_in_submission_w_intervar, by="vcf_id") %>%
-  mutate(Intervar_evidence = coalesce(Intervar_evidence.y, Intervar_evidence.x)) %>%
-  mutate(Ref.Gene = coalesce(Ref.Gene.y, Ref.Gene.x)) 
+  mutate(
+    Intervar_evidence = coalesce(Intervar_evidence.y, Intervar_evidence.x),
+    Ref.Gene = coalesce(Ref.Gene.y, Ref.Gene.x)
+    ) 
 
 # abridged version
 results_tab_abridged <- master_tab %>% dplyr::select(vcf_id, Ref.Gene, Func.refGene,ExonicFunc.refGene, AAChange.refGene, Stars, Intervar_evidence,intervar_adjusted_call,ID, final_call)
@@ -378,11 +404,15 @@ for(i in 1:nrow(results_tab_abridged)) {
 }
 
 ## fix spelling and nomenclature inconsistencies
-results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Likely benign", "Likely_benign"))
-results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Uncertain significance", "Uncertain_significance"))
-results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Benign PVS1", "Benign"))
-results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Pathogenic PVS1","Pathogenic"))
-results_tab_abridged <- results_tab_abridged %>% mutate(final_call = replace(final_call, final_call == "Likely pathogenic","Likely_pathogenic")) %>% distinct()
+results_tab_abridged <- results_tab_abridged %>% 
+    mutate(
+      final_call = replace(final_call, final_call == "Likely benign", "Likely_benign"),
+      final_call = replace(final_call, final_call == "Uncertain significance", "Uncertain_significance"),
+      final_call = replace(final_call, final_call == "Benign PVS1", "Benign"),
+      final_call = replace(final_call, final_call == "Pathogenic PVS1","Pathogenic"),
+      final_call = replace(final_call, final_call == "Likely pathogenic","Likely_pathogenic")
+      ) %>% 
+    distinct()
 
 
 # write out to file
