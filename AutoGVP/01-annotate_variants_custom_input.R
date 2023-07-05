@@ -344,7 +344,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
                               ifelse( (evidencePVS1   == 1 &
                                       ( (evidencePS   >= 1) |
                                         (evidencePM   >=2 ) |
-                                        (evidencePM   >= 1 & evidencePP ==1) |
+                                        (evidencePM   >= 1 & evidencePP ==2) |
                                         (evidencePP   >=2 ) )) , "Pathogenic",
                                       ifelse( (evidencePVS1       == 1 & evidencePS >= 2), "Pathogenic",
                                               ifelse( (evidencePS == 1 &
