@@ -1,6 +1,6 @@
 ################################################################################
 # 01-annotate_variants_CAVATICA_input.R
-# written by Ammar Naqvi
+# written by Ammar Naqvi & refactored by Saksham Phul
 #
 # This script annotates variants based on clinVar and integrates a modified 
 # version of InterVar that involves adjustments of calls based on ACMG-AMP 
@@ -33,8 +33,13 @@ suppressPackageStartupMessages({
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "AutoGVP")
 input_dir   <- file.path(analysis_dir, "input")
+results_dir <- file.path(root_dir, "results")
 
-# parse parameters     
+#create results directory if it does not exist
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+
 # parse parameters     
 option_list <- list(
   make_option(c("--vcf"), type = "character",
@@ -76,6 +81,7 @@ sample_name <- opt$output
 input_summary_submission_file  <-  opt$submission_summary
 input_variant_summary <- opt$variant_summary
 summary_level <- opt$summary_level_vcf
+output_name   <- opt$output
 
 ## filters for gnomAD
 filter_gnomad_var    <- opt$gnomad_variable
@@ -84,14 +90,13 @@ filter_variant_af    <- opt$variant_af
 
 ## output files
 output_tab_file <- file.path(analysis_dir, paste0("results/",sample_name, "_annotations_report.tsv")) 
-output_tab_abr_file  <- file.path(analysis_dir, paste0("results/",sample_name,"_annotations_report.abridged.tsv"))
+output_tab_abr_file  <- paste0(output_name,".cavatica_input.annotations_report.abridged.tsv")
 output_tab_dev_file  <- file.path(analysis_dir, paste0("results/",sample_name,"_annotations_report.abridged.dev.tsv"))
 
 ## allocate more memory capacity
 Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
-## function for filtering
-##gnomAD, variant af and depth filtering 
+## function for filtering gnomAD, variant af and depth filtering 
 gnomad_filtering <- function(clinvar_vcf) 
 {
   gnomad_var_to_match <- paste0(filter_gnomad_var,"\\=(0\\.\\d+)\\;")
@@ -103,30 +108,6 @@ gnomad_filtering <- function(clinvar_vcf)
                     )
   return(clinvar_vcf)
 }
-
-## retrieve and store clinVar input file into table data.table::fread()
-vcf_input <-  vroom(input_clinVar_file, comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = TRUE)
-
-## filter for gnomad, read depth and AF
-vcf_clinvar <- gnomad_filtering(vcf_input)
-
-#print(vcf_clinvar$gnomad_af, quote = TRUE, row.names = TRUE) 
-
-## add column "vcf_id" to clinVar results in order to cross-reference with intervar and autopvs1 table
-clinvar_anno_vcf_df <- vcf_clinvar %>%
-  dplyr::mutate(
-    vcf_id= str_remove_all(paste (CHROM,"-",START,"-",REF,"-",ALT), " "),
-    vcf_id = str_replace_all(vcf_id, "chr", ""),
-    #add star annotations to clinVar results table based on filters // ## default version
-    Stars = ifelse(grepl('CLNREVSTAT\\=criteria_provided,_single_submitter', INFO), "1",
-                  ifelse(grepl('CLNREVSTAT\\=criteria_provided,_multiple_submitters', INFO), "2",
-                    ifelse(grepl('CLNREVSTAT\\=reviewed_by_expert_panel', INFO), "3",
-                      ifelse(grepl('CLNREVSTAT\\=practice_guideline', INFO), "4",
-                        ifelse(grepl('CLNREVSTAT\\=criteria_provided,_conflicting_interpretations', INFO), "1NR", "0")
-                               )))),
-    ## extract the calls and put in own column
-    final_call = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
-  )
 
 address_conflicting_intrep <- function(clinvar_anno_vcf_df)  
 {## if conflicting intrep. take the call with most calls in CLNSIGCONF field
@@ -161,7 +142,47 @@ address_conflicting_intrep <- function(clinvar_anno_vcf_df)
       clinvar_anno_vcf_df[i,]$final_call = consensus_call  
     }
   return(clinvar_anno_vcf_df)  
-} 
+}
+
+address_ambiguous_calls <- function(results_tab_abridged)
+{ ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
+    for(i in 1:nrow(results_tab_abridged)) 
+    {
+      entry <- results_tab_abridged[i,]
+      if(is.na(entry$final_call) || (entry$final_call !="Pathogenic" && 
+                                    entry$final_call != "Likely_benign" &&  entry$final_call !="Likely_pathogenic"
+                                    && entry$final_call != "Uncertain_significance"  &&  entry$final_call !="Benign"  
+                                    &&  entry$final_call !="Uncertain significance"  &&  entry$final_call !="Likely benign") )
+      {
+        
+        new_call <- str_match(results_tab_abridged[i,]$Intervar_evidence, "InterVar\\:\\s(\\w+\\s\\w+)*")[,2]
+        results_tab_abridged[i,]$final_call = new_call
+      }
+    }
+  return(results_tab_abridged)
+}
+
+## retrieve and store clinVar input file into table data.table::fread()
+vcf_input <-  vroom(input_clinVar_file, comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = TRUE)
+
+## filter for gnomad, read depth and AF
+vcf_clinvar <- gnomad_filtering(vcf_input)
+
+## add column "vcf_id" to clinVar results in order to cross-reference with intervar and autopvs1 table
+clinvar_anno_vcf_df <- vcf_clinvar %>%
+  dplyr::mutate(
+    vcf_id= str_remove_all(paste (CHROM,"-",START,"-",REF,"-",ALT), " "),
+    vcf_id = str_replace_all(vcf_id, "chr", ""),
+    #add star annotations to clinVar results table based on filters // ## default version
+    Stars = ifelse(grepl('CLNREVSTAT\\=criteria_provided,_single_submitter', INFO), "1",
+                  ifelse(grepl('CLNREVSTAT\\=criteria_provided,_multiple_submitters', INFO), "2",
+                    ifelse(grepl('CLNREVSTAT\\=reviewed_by_expert_panel', INFO), "3",
+                      ifelse(grepl('CLNREVSTAT\\=practice_guideline', INFO), "4",
+                        ifelse(grepl('CLNREVSTAT\\=criteria_provided,_conflicting_interpretations', INFO), "1NR", "0")
+                               )))),
+    ## extract the calls and put in own column
+    final_call = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
+  )
 
 ## if conflicting intrep. take the call with most calls in CLNSIGCONF field
 clinvar_anno_vcf_df <- address_conflicting_intrep(clinvar_anno_vcf_df)
@@ -176,7 +197,6 @@ if(summary_level == "T")
     )
 } 
   
-
 ## get latest calls from submission files 
 submission_summary_df <- vroom(input_summary_submission_file, comment = "#",delim="\t", 
                                col_names = c("VariationID","ClinicalSignificance","DateLastEvaluated",       
@@ -194,7 +214,7 @@ submission_info_df  <-  vroom(input_variant_summary, delim="\t",
                               show_col_types = FALSE) %>% 
     
     #add vcf id column  
-    mutate(
+    dplyr::mutate(
       vcf_id= str_remove_all(paste (Chromosome,"-",PositionVCF,"-",ReferenceAlleleVCF,"-",AlternateAlleleVCF), " "),
       vcf_id = str_replace_all(vcf_id, "chr", ""),
       VariationID=as.double(noquote(VariationID))
@@ -228,7 +248,7 @@ vcf_to_run_intervar <- entries_for_intervar$vcf_id
 ## get multianno file to add  correct vcf_id in intervar table
 
 multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>% 
-  mutate(
+  dplyr::mutate(
     vcf_id= str_remove_all(paste (Chr,"-",Otherinfo5,"-",Otherinfo7,"-",Otherinfo8), " "),
     vcf_id = str_replace_all(vcf_id, "chr", "")
     ) %>% 
@@ -240,7 +260,7 @@ multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_nam
 ## add intervar table
 clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = TRUE) %>% 
   #slice(-1) %>% 
-  mutate(var_id= str_remove_all(paste (`#Chr`,"-",Start,"-",End,"-",Ref,"-",Alt), " ")) %>% 
+  dplyr::mutate(var_id= str_remove_all(paste (`#Chr`,"-",Start,"-",End,"-",Ref,"-",Alt), " ")) %>% 
   group_by(var_id) %>%
   arrange(var_id) %>%
   filter(row_number()==1) %>% 
@@ -253,7 +273,7 @@ if( tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df) ) {
 }
 
 ## combine the intervar and multianno tables by the appropriate vcf id
-clinvar_anno_intervar_vcf_df <- mutate(multianno_df,clinvar_anno_intervar_vcf_df )  %>% dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, Ref.Gene,Func.refGene,ExonicFunc.refGene, AAChange.refGene)
+clinvar_anno_intervar_vcf_df <- dplyr::mutate(multianno_df,clinvar_anno_intervar_vcf_df )  %>% dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, Ref.Gene,Func.refGene,ExonicFunc.refGene, AAChange.refGene)
 
 ## populate consensus call variants with invervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df,entries_for_cc_in_submission, by="vcf_id") %>% 
@@ -263,7 +283,7 @@ entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_
 clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%  anti_join(entries_for_cc_in_submission, by="vcf_id") %>%
   ## add column for individual scores that will be re-calculated if we need to adjust using autoPVS1 result
   ## note: ignore PP5/BP6 score
-  mutate(
+  dplyr::mutate(
     evidencePVS1 = str_match(`InterVar: InterVar and Evidence`, "PVS1\\=(\\d+)\\s")[, 2], 
     evidenceBA1 = str_match(`InterVar: InterVar and Evidence`, "BA1\\=(\\d+)\\s")[, 2],
     evidencePS = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sPS\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ","))))),
@@ -277,7 +297,7 @@ clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%  anti_join(entr
 
 ## autopvs1 results
 autopvs1_results    <-  vroom(input_autopvs1_file, col_names = TRUE) %>%
-  mutate(
+  dplyr::mutate(
     vcf_id = str_remove_all(paste (vcf_id), " "),
     vcf_id = str_replace_all(vcf_id, "chr", "")
     ) 
@@ -287,7 +307,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
   dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id) %>% dplyr::select(vcf_id, Func.refGene,,ExonicFunc.refGene, AAChange.refGene ,`InterVar: InterVar and Evidence`, criterion, evidencePVS1, evidenceBA1, evidencePS, evidencePM, evidencePP, evidenceBS, evidenceBP) %>% 
   
   ## indicate if recalculated 
-  mutate(
+  dplyr::mutate(
     intervar_adjusted_call = if_else( (evidencePVS1 == 0), "No", "Yes"),
   
   ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
@@ -355,8 +375,8 @@ combined_tab_for_intervar <- autopvs1_results %>%
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar, by="vcf_id" ) 
-master_tab <- master_tab %>% mutate(intervar_adjusted_call = coalesce(intervar_adjusted_call, "Not adjusted, clinVar")) %>% 
-  mutate(
+master_tab <- master_tab %>% dplyr::mutate(intervar_adjusted_call = coalesce(intervar_adjusted_call, "Not adjusted, clinVar")) %>% 
+  dplyr::mutate(
     evidencePVS1 = coalesce(as.double(evidencePVS1.x, evidencePVS1.y) ),
     evidenceBA1 = coalesce(as.double(evidenceBA1.x, evidenceBA1.y) ), 
     evidencePS = coalesce(as.double(evidencePS.x, evidencePS.y) ), 
@@ -371,7 +391,7 @@ master_tab <- master_tab %>% mutate(intervar_adjusted_call = coalesce(intervar_a
   )  
 
 ## combine final calls into one choosing the appropriate final call                             
-master_tab <- master_tab %>% mutate(final_call = coalesce(final_call.x, final_call.y))
+master_tab <- master_tab %>% dplyr::mutate(final_call = coalesce(final_call.x, final_call.y))
 
 ## remove older columns
 master_tab <- master_tab %>% dplyr::select(-c (evidencePVS1.x,evidencePVS1.y,evidenceBA1.x, evidenceBA1.y, evidencePS.x, evidencePS.y, evidencePM.x, evidencePM.y, evidencePP.x, evidencePP.y, evidenceBS.x, evidenceBS.y, evidenceBP.x, evidenceBP.y,
@@ -379,9 +399,9 @@ master_tab <- master_tab %>% dplyr::select(-c (evidencePVS1.x,evidencePVS1.y,evi
 
 ## reformat columns
 master_tab  <- full_join(master_tab,entries_for_cc_in_submission, by="vcf_id") %>% 
-  mutate(final_call = coalesce(final_call.y, final_call.x)) %>% 
+  dplyr::mutate(final_call = coalesce(final_call.y, final_call.x)) %>% 
   full_join(entries_for_cc_in_submission_w_intervar, by="vcf_id") %>%
-  mutate(
+  dplyr::mutate(
     Intervar_evidence = coalesce(Intervar_evidence.y, Intervar_evidence.x),
     Ref.Gene = coalesce(Ref.Gene.y, Ref.Gene.x)
     ) 
@@ -390,22 +410,11 @@ master_tab  <- full_join(master_tab,entries_for_cc_in_submission, by="vcf_id") %
 results_tab_abridged <- master_tab %>% dplyr::select(vcf_id, Ref.Gene, Func.refGene,ExonicFunc.refGene, AAChange.refGene, Stars, Intervar_evidence,intervar_adjusted_call,ID, final_call)
 
 ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
-for(i in 1:nrow(results_tab_abridged)) {
-  entry <- results_tab_abridged[i,]
-  if(is.na(entry$final_call) || (entry$final_call !="Pathogenic" && 
-                                 entry$final_call != "Likely_benign" &&  entry$final_call !="Likely_pathogenic"
-                                 && entry$final_call != "Uncertain_significance"  &&  entry$final_call !="Benign"  
-                                 &&  entry$final_call !="Uncertain significance"  &&  entry$final_call !="Likely benign") )
-  {
-    
-    new_call <- str_match(results_tab_abridged[i,]$Intervar_evidence, "InterVar\\:\\s(\\w+\\s\\w+)*")[,2]
-    results_tab_abridged[i,]$final_call = new_call
-  }
-}
+results_tab_abridged <- address_ambiguous_calls(results_tab_abridged)
 
 ## fix spelling and nomenclature inconsistencies
 results_tab_abridged <- results_tab_abridged %>% 
-    mutate(
+    dplyr::mutate(
       final_call = replace(final_call, final_call == "Likely benign", "Likely_benign"),
       final_call = replace(final_call, final_call == "Uncertain significance", "Uncertain_significance"),
       final_call = replace(final_call, final_call == "Benign PVS1", "Benign"),
@@ -416,5 +425,10 @@ results_tab_abridged <- results_tab_abridged %>%
 
 
 # write out to file
-write.table(results_tab_abridged, output_tab_abr_file, append = FALSE, sep = "\t", dec = ".",
-            row.names = FALSE, quote = FALSE, col.names = TRUE)
+results_tab_abridged %>% 
+write_tsv(
+  file.path(results_dir, output_tab_abr_file),
+  append = FALSE, 
+  quote = 'none', 
+  col_names = TRUE
+)
