@@ -91,9 +91,9 @@ filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
 
 ## output files
-output_tab_file      <- file.path(analysis_dir, paste0(output_name,".annotations_report.tsv")) 
+output_tab_file      <- file.path(analysis_dir, paste0(output_name,".custom_input.annotations_report.tsv")) 
 output_tab_abr_file  <- paste0(output_name,".custom_input.annotations_report.abridged.tsv")
-output_tab_dev_file  <- file.path(analysis_dir, paste0(output_name,".annotations_report.abridged.dev.tsv"))
+output_tab_dev_file  <- file.path(analysis_dir, paste0(output_name,".custom_input.annotations_report.abridged.dev.tsv"))
 
 ## allocate more memory capacity
 Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
