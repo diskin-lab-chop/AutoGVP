@@ -56,7 +56,7 @@ option_list <- list(
               help = "variant_summary file (format: variant_summary_2023-02.txt)"),
   make_option(c("--submission_summary"), type = "character",
               help = "specific submission summary file (format: submission_summary.txt)"),
-  make_option(c("--gnomad_variable"), type = "character",default = "Freq_gnomAD_genome_ALL",
+  make_option(c("--gnomad_variable"), type = "character",default = "gnomad_3_1_1_AF_non_cancer",
               help = "gnomAD variable"),
   make_option(c("--gnomad_af"), type = "numeric", default = 0.001,
               help = "genomAD AF filter"),
@@ -84,9 +84,10 @@ summary_level <- opt$summary_level_vcf
 output_name   <- opt$output
 
 ## filters for gnomAD
-filter_gnomad_var    <- opt$gnomad_variable
+gnomad_variable    <- opt$gnomad_variable
 filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
+filter_gnomad_af    <- opt$gnomad_af
 
 ## output files
 output_tab_abr_file  <- paste0(output_name,".cavatica_input.annotations_report.abridged.tsv")
@@ -97,13 +98,18 @@ Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 ## function for filtering gnomAD, variant af and depth filtering 
 gnomad_filtering <- function(clinvar_vcf) 
 {
-  gnomad_var_to_match <- paste0(filter_gnomad_var,"\\=(0\\.\\d+)\\;")
+  gnomad_var_to_match <- paste0(gnomad_variable,"\\=(0\\.\\d+)\\;")
+
   clinvar_vcf <- clinvar_vcf %>% 
                   dplyr::mutate(
-                    variant_depth = if_else( as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])  > filter_variant_depth, "PASS","FAIL"),
-                    gnomad_af     = if_else( as.numeric( str_match(INFO, gnomad_var_to_match)[,2])  > filter_variant_af, "PASS","FAIL"),
-                    variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL")
+                    variant_depth = as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2]),
+                    gnomad_af     = as.numeric( str_match(INFO, gnomad_var_to_match)[,2]),
+                    #variant_af    = as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) 
                     )
+  clinvar_vcf <- clinvar_vcf %>% dplyr::filter(variant_depth > filter_variant_depth & gnomad_af > filter_gnomad_af) 
+  #print(filter_variant_depth)
+  #print(filter_gnomad_af)
+  
   return(clinvar_vcf)
 }
 
@@ -161,7 +167,7 @@ address_ambiguous_calls <- function(results_tab_abridged)
 }
 
 ## retrieve and store clinVar input file into table data.table::fread()
-vcf_input <-  vroom(input_clinVar_file, comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = TRUE)
+vcf_input <-  vroom("/Users/naqvia/Documents/GitHub/pathogenicity-assessment/AutoGVP/input/test-cavatica.vcf", comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = TRUE)
 
 ## filter for gnomad, read depth and AF
 vcf_clinvar <- gnomad_filtering(vcf_input)
@@ -185,15 +191,6 @@ clinvar_anno_vcf_df <- vcf_clinvar %>%
 ## if conflicting intrep. take the call with most calls in CLNSIGCONF field
 clinvar_anno_vcf_df <- address_conflicting_intrep(clinvar_anno_vcf_df)
 
-## filters (gnomAD, variant_depth, variant AF if applicable)
-if(summary_level == "T")
-{
-  clinvar_anno_vcf_df %>%  if_else( as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])  > filter_variant_depth, "PASS","FAIL") %>% 
-  dplyr::mutate(
-    gnomad_af     = if_else( as.numeric( str_match(INFO, "gnomad_3_1_1_AF_non_cancer\\=(0\\.\\d+)\\;")[,2])  > filter_variant_af, "PASS","FAIL"),
-    variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL")
-    )
-} 
   
 ## get latest calls from submission files 
 submission_summary_df <- vroom(input_summary_submission_file, comment = "#",delim="\t", 
@@ -233,7 +230,7 @@ additional_intervar_cases <-  filter(clinvar_anno_vcf_df, final_call!="Benign",f
   
 ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
 entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0", na.rm = TRUE) %>% 
-  bind_rows((additional_intervar_cases)) #%>% bind_rows(clinvar_anti_join_vcf_df)
+  bind_rows((additional_intervar_cases)) 
 
 ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
 entries_for_intervar <- clinvar_anno_vcf_df %>%
@@ -244,7 +241,6 @@ entries_for_intervar <- clinvar_anno_vcf_df %>%
 vcf_to_run_intervar <- entries_for_intervar$vcf_id
 
 ## get multianno file to add  correct vcf_id in intervar table
-
 multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>% 
   dplyr::mutate(
     vcf_id= str_remove_all(paste (Chr,"-",Otherinfo5,"-",Otherinfo7,"-",Otherinfo8), " "),
@@ -253,7 +249,7 @@ multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_nam
   group_by(vcf_id) %>%
   arrange(vcf_id) %>%
   filter(row_number()==1) %>% 
-  ungroup
+  ungroup 
 
 ## add intervar table
 clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = TRUE) %>% 
@@ -271,7 +267,9 @@ if( tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df) ) {
 }
 
 ## combine the intervar and multianno tables by the appropriate vcf id
-clinvar_anno_intervar_vcf_df <- dplyr::mutate(multianno_df,clinvar_anno_intervar_vcf_df )  %>% dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, Ref.Gene,Func.refGene,ExonicFunc.refGene, AAChange.refGene)
+clinvar_anno_intervar_vcf_df <- dplyr::mutate(multianno_df,clinvar_anno_intervar_vcf_df ) %>% 
+                                dplyr::filter(!vcf_id %in% clinvar_anno_vcf_df$vcf_id) %>% 
+                                dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, Ref.Gene,Func.refGene,ExonicFunc.refGene, AAChange.refGene)
 
 ## populate consensus call variants with invervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df,entries_for_cc_in_submission, by="vcf_id") %>% 
@@ -298,7 +296,9 @@ autopvs1_results    <-  vroom(input_autopvs1_file, col_names = TRUE) %>%
   dplyr::mutate(
     vcf_id = str_remove_all(paste (vcf_id), " "),
     vcf_id = str_replace_all(vcf_id, "chr", "")
-    ) 
+    ) %>% 
+  dplyr::filter(!vcf_id %in% clinvar_anno_vcf_df$vcf_id)
+ 
 ## join all three tables together based on variant id that need intervar run
 combined_tab_for_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by="vcf_id") %>% 
