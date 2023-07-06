@@ -378,7 +378,7 @@ master_tab <- master_tab %>%
     evidenceBS = coalesce(as.double(evidenceBS.x, evidenceBS.y) ),
     evidenceBP = coalesce(as.double(evidenceBP.x, evidenceBP.y) ),
     Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`),
-  # replace second final call with the first one because we did not use interVar results
+  # replace first final call with the second one when Stars = 0
     final_call.x = if_else(Stars=="0", final_call.y, final_call.x)
     )  
 
