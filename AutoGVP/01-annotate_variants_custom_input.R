@@ -302,6 +302,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
   ## indicate if recalculated 
   dplyr::mutate(
     intervar_adjusted_call = if_else( evidencePVS1 == 0, "No", "Yes"),
+    
   ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
   #if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
     evidencePVS1 = if_else( (criterion == "NF1" | criterion == "SS1" |
@@ -349,7 +350,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
                                       ifelse( (evidencePVS1       == 1 & evidencePS >= 2), "Pathogenic",
                                               ifelse( (evidencePS == 1 &
                                                       (evidencePM >= 3 |
-                                                      (evidencePM ==2 & evidencePP >=2 ) |
+                                                      (evidencePM ==2 & evidencePP >=1 ) |
                                                       (evidencePM == 1 & evidencePP >=4 )) ) , "Pathogenic",
                                                       ifelse( (evidencePVS1 == 1 & evidencePM == 1) |
                                                                 (evidencePS==1 & evidencePM >= 1) |
@@ -377,8 +378,8 @@ master_tab <- master_tab %>%
     evidenceBS = coalesce(as.double(evidenceBS.x, evidenceBS.y) ),
     evidenceBP = coalesce(as.double(evidenceBP.x, evidenceBP.y) ),
     Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`),
-  # replace second final call with the second one because we did not use interVar results
-    final_call.x = if_else(intervar_adjusted_call=="No" & Stars=="0", final_call.y, final_call.x)
+  # replace second final call with the first one because we did not use interVar results
+    final_call.x = if_else(Stars=="0", final_call.y, final_call.x)
     )  
 
 ## combine final calls into one choosing the appropriate final call                             
