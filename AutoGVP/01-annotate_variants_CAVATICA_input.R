@@ -107,8 +107,6 @@ gnomad_filtering <- function(clinvar_vcf)
                     #variant_af    = as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) 
                     )
   clinvar_vcf <- clinvar_vcf %>% dplyr::filter(variant_depth > filter_variant_depth & gnomad_af > filter_gnomad_af) 
-  #print(filter_variant_depth)
-  #print(filter_gnomad_af)
   
   return(clinvar_vcf)
 }
@@ -172,6 +170,7 @@ vcf_input <-  vroom("/Users/naqvia/Documents/GitHub/pathogenicity-assessment/Aut
 ## filter for gnomad, read depth and AF
 vcf_clinvar <- gnomad_filtering(vcf_input)
 
+
 ## add column "vcf_id" to clinVar results in order to cross-reference with intervar and autopvs1 table
 clinvar_anno_vcf_df <- vcf_clinvar %>%
   dplyr::mutate(
@@ -187,6 +186,7 @@ clinvar_anno_vcf_df <- vcf_clinvar %>%
     ## extract the calls and put in own column
     final_call = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
   )
+
 
 ## if conflicting intrep. take the call with most calls in CLNSIGCONF field
 clinvar_anno_vcf_df <- address_conflicting_intrep(clinvar_anno_vcf_df)
@@ -221,7 +221,7 @@ submission_info_df  <-  vroom(input_variant_summary, delim="\t",
   ## filter only those variants that need consensus call and find  call in submission table
   entries_for_cc <-  filter(clinvar_anno_vcf_df, Stars == "1NR", final_call !="Benign",final_call !="Pathogenic", final_call != "Likely_benign",final_call !="Likely_pathogenic", final_call != "Uncertain_significance")
   entries_for_cc_in_submission <- inner_join(submission_final_df,entries_for_cc, by="vcf_id") %>% dplyr::mutate(final_call=ClinicalSignificance.x) %>% 
-    dplyr::select(vcf_id,ClinicalSignificance.x,final_call) %>% dplyr::rename("ClinicalSignificance"=ClinicalSignificance.x)
+  dplyr::select(vcf_id,ClinicalSignificance.x,final_call) %>% dplyr::rename("ClinicalSignificance"=ClinicalSignificance.x)
   
   
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
@@ -268,8 +268,9 @@ if( tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df) ) {
 
 ## combine the intervar and multianno tables by the appropriate vcf id
 clinvar_anno_intervar_vcf_df <- dplyr::mutate(multianno_df,clinvar_anno_intervar_vcf_df ) %>% 
-                                dplyr::filter(!vcf_id %in% clinvar_anno_vcf_df$vcf_id) %>% 
                                 dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, Ref.Gene,Func.refGene,ExonicFunc.refGene, AAChange.refGene)
+
+clinvar_anno_intervar_vcf_df <- semi_join(clinvar_anno_intervar_vcf_df, clinvar_anno_vcf_df, by = "vcf_id") 
 
 ## populate consensus call variants with invervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df,entries_for_cc_in_submission, by="vcf_id") %>% 
@@ -296,9 +297,10 @@ autopvs1_results    <-  vroom(input_autopvs1_file, col_names = TRUE) %>%
   dplyr::mutate(
     vcf_id = str_remove_all(paste (vcf_id), " "),
     vcf_id = str_replace_all(vcf_id, "chr", "")
-    ) %>% 
-  dplyr::filter(!vcf_id %in% clinvar_anno_vcf_df$vcf_id)
- 
+    ) 
+  
+autopvs1_results <- semi_join(autopvs1_results, clinvar_anno_vcf_df, by = "vcf_id") 
+  
 ## join all three tables together based on variant id that need intervar run
 combined_tab_for_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by="vcf_id") %>% 
