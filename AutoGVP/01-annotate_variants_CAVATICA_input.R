@@ -181,7 +181,7 @@ address_ambiguous_calls <- function(results_tab_abridged)
 }
 
 ## retrieve and store clinVar input file into table data.table::fread()
-vcf_input <-  vroom("/Users/naqvia/Documents/GitHub/pathogenicity-assessment/AutoGVP/input/test-cavatica.vcf", comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = TRUE)
+vcf_input <-  vroom(input_clinVar_file, comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = TRUE)
 
 ## read depth filtering
 vcf_clinvar <- variant_depth_filtering(vcf_input)
