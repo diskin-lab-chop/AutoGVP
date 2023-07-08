@@ -102,12 +102,12 @@ variant_depth_filtering <- function(clinvar_vcf)
   
   clinvar_vcf <- clinvar_vcf %>% 
     dplyr::mutate(
-      variant_depth = as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2]),
+      variant_depth = as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])
     )
   
   clinvar_vcf <- clinvar_vcf %>% 
     dplyr::filter(variant_depth >= filter_variant_depth) 
-  
+
   return(clinvar_vcf)
 }
 
@@ -118,8 +118,7 @@ gnomad_filtering <- function(clinvar_vcf)
 
   clinvar_vcf <- clinvar_vcf %>% 
                   dplyr::mutate(
-                    #variant_depth = as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2]),
-                    gnomad_af     = as.numeric( str_match(INFO, gnomad_var_to_match)[,2]),
+                    gnomad_af     = as.numeric( str_match(INFO, gnomad_var_to_match)[,2])
                     )
   
   clinvar_vcf <- clinvar_vcf %>% 
