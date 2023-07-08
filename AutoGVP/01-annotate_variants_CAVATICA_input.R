@@ -250,7 +250,7 @@ multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_nam
   group_by(vcf_id) %>%
   arrange(vcf_id) %>%
   filter(row_number()==1) %>% 
-  ungroup 
+  ungroup()
 
 ## add intervar table
 clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = TRUE) %>% 
