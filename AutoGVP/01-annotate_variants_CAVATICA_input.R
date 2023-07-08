@@ -56,11 +56,11 @@ option_list <- list(
               help = "variant_summary file (format: variant_summary_2023-02.txt)"),
   make_option(c("--submission_summary"), type = "character",
               help = "specific submission summary file (format: submission_summary.txt)"),
-  make_option(c("--gnomad_variable"), type = "character",default = "gnomad_3_1_1_AF_non_cancer",
+  make_option(c("--gnomad_variable"), type = "character",
               help = "gnomAD variable"),
   make_option(c("--gnomad_af"), type = "numeric", default = 0.001,
               help = "genomAD AF filter"),
-  make_option(c("--variant_depth"), type = "integer",default = 15,
+  make_option(c("--variant_depth"), type = "integer",default = 8,
               help = "variant depth filter"),
   make_option(c("--variant_af"), type = "numeric", default = .2,
               help = "variant AF cut-off"),
@@ -95,19 +95,35 @@ output_tab_abr_file  <- paste0(output_name,".cavatica_input.annotations_report.a
 ## allocate more memory capacity
 Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
-## function for filtering gnomAD, variant af and depth filtering 
+## function for variant depth
+variant_depth_filtering <- function(clinvar_vcf) 
+{
+  gnomad_var_to_match <- paste0(gnomad_variable,"\\=(0\\.\\d+)\\;")
+  
+  clinvar_vcf <- clinvar_vcf %>% 
+    dplyr::mutate(
+      variant_depth = as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2]),
+    )
+  
+  clinvar_vcf <- clinvar_vcf %>% 
+    dplyr::filter(variant_depth >= filter_variant_depth) 
+  
+  return(clinvar_vcf)
+}
+
+## function for filtering gnomAD 
 gnomad_filtering <- function(clinvar_vcf) 
 {
   gnomad_var_to_match <- paste0(gnomad_variable,"\\=(0\\.\\d+)\\;")
 
   clinvar_vcf <- clinvar_vcf %>% 
                   dplyr::mutate(
-                    variant_depth = as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2]),
+                    #variant_depth = as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2]),
                     gnomad_af     = as.numeric( str_match(INFO, gnomad_var_to_match)[,2]),
-                    #variant_af    = as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) 
                     )
+  
   clinvar_vcf <- clinvar_vcf %>% 
-  dplyr::filter(variant_depth >= filter_variant_depth & gnomad_af >= filter_gnomad_af) 
+  dplyr::filter(gnomad_af >= filter_gnomad_af) 
   
   return(clinvar_vcf)
 }
@@ -168,10 +184,15 @@ address_ambiguous_calls <- function(results_tab_abridged)
 ## retrieve and store clinVar input file into table data.table::fread()
 vcf_input <-  vroom("/Users/naqvia/Documents/GitHub/pathogenicity-assessment/AutoGVP/input/test-cavatica.vcf", comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = TRUE)
 
-## filter for gnomad, read depth and AF
-vcf_clinvar <- gnomad_filtering(vcf_input)
+## read depth filtering
+vcf_clinvar <- variant_depth_filtering(vcf_input)
 
+## gnomad filtering if variable is specified
+if (length(gnomad_variable)) {
+  vcf_clinvar <- gnomad_filtering(vcf_input)
+} 
 
+print(vcf_clinvar)
 ## add column "vcf_id" to clinVar results in order to cross-reference with intervar and autopvs1 table
 clinvar_anno_vcf_df <- vcf_clinvar %>%
   dplyr::mutate(
