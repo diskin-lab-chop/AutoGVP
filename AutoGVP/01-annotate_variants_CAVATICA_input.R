@@ -106,7 +106,8 @@ gnomad_filtering <- function(clinvar_vcf)
                     gnomad_af     = as.numeric( str_match(INFO, gnomad_var_to_match)[,2]),
                     #variant_af    = as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) 
                     )
-  clinvar_vcf <- clinvar_vcf %>% dplyr::filter(variant_depth > filter_variant_depth & gnomad_af > filter_gnomad_af) 
+  clinvar_vcf <- clinvar_vcf %>% 
+  dplyr::filter(variant_depth >= filter_variant_depth & gnomad_af >= filter_gnomad_af) 
   
   return(clinvar_vcf)
 }
