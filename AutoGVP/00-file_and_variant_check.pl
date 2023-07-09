@@ -105,10 +105,10 @@ while(<FIL>)
 close(FIL);
 
 if ($multianno_file=~/gz/){
-  open(FIL, "gunzip -c  $multianno_file |") || die("Cannot Open File $vcf_file")
+  open(FIL, "gunzip -c  $multianno_file |") || die("Cannot Open File $multianno_file")
 }
 else{
-  open(FIL,$multianno_file) || die("Cannot Open File $vcf_file");
+  open(FIL,$multianno_file) || die("Cannot Open File $multianno_file");
 }
 while(<FIL>)
 {
@@ -125,10 +125,10 @@ while(<FIL>)
 close(FIL);
 
 if ($autopvs1_file=~/gz/){
-  open(FIL, "gunzip -c  $autopvs1_file |") || die("Cannot Open File $vcf_file")
+  open(FIL, "gunzip -c  $autopvs1_file |") || die("Cannot Open File $autopvs1_file")
 }
 else{
-  open(FIL,$autopvs1_file) || die("Cannot Open File $vcf_file");
+  open(FIL,$autopvs1_file) || die("Cannot Open File $autopvs1_file");
 }
 while(<FIL>)
 {
