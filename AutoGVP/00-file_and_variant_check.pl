@@ -26,26 +26,26 @@ else{
 }
 
 ## check to see if input files all exist
-if (glob($dir_to_check."/*.vcf")) {
+if (glob($dir_to_check."/*.vcf*")) {
   print "vcf file exists...\n";
-  $vcf_file_check = $dir_to_check."/*.vcf";
+  $vcf_file_check = $dir_to_check."/*.vcf*";
 
 }
 else {
   die("FAIL: vcf file does not exist\n");
 }
 
-if (glob($dir_to_check."/*.intervar")) {
+if (glob($dir_to_check."/*.intervar*")) {
   print "intervar file exists...\n";
-  $intervar_file_check = $dir_to_check."/*.intervar";
+  $intervar_file_check = $dir_to_check."/*.intervar*";
 }
 else {
   die("FAIL: intervar file does not exist\n");
 }
 
-if (glob($dir_to_check."/*hg38_multianno.txt")) {
+if (glob($dir_to_check."/*hg38_multianno*")) {
   print "multianno file exists...\n";
-  $multianno_file_check = $dir_to_check."/*hg38_multianno.txt";
+  $multianno_file_check = $dir_to_check."/*hg38_multianno*";
 }
 else {
   die("FAIL: multianno file does not exist\n");
@@ -53,19 +53,13 @@ else {
 
 if (glob($dir_to_check."/*autopvs1.txt")) {
   print "autopvs1 file exists...\n";
-  $autopvs1_file_check = $dir_to_check."/*autopvs1.txt";
+  $autopvs1_file_check = $dir_to_check."/*autopvs1*";
 
 }
 else {
   die("FAIL: autopvs1 file does not exist\n");
 }
 
-if (glob($dir_to_check."/*clinvar*")) {
-  print "clinvar file exists...\n";
-}
-else {
-  die("FAIL: clinvar file does not exist\n");
-}
 
 if (glob($dir_to_check."/*variant_summary*")) {
   print "variant_summary file exists...\n";
@@ -91,7 +85,12 @@ my %vcf_variants;
 my %multianno_variants;
 my %autopvs1_variants;
 
-open(FIL,$vcf_file) || die("Cannot Open File $vcf_file");
+if ($vcf_file=~/gz/){
+  open(FIL, "gunzip -c  $vcf_file |") || die("Cannot Open File $vcf_file")
+}
+else{
+  open(FIL,$vcf_file) || die("Cannot Open File $vcf_file");
+}
 while(<FIL>)
 {
   chomp;
@@ -100,13 +99,17 @@ while(<FIL>)
   my $chr = $cols[0];
   my $start = $cols[1];
   my $loc = $chr."-".$start;
-
   $vcf_variants{$loc} = $loc;
 
 }
 close(FIL);
 
-open(FIL,$multianno_file) || die("Cannot Open File $vcf_file");
+if ($multianno_file=~/gz/){
+  open(FIL, "gunzip -c  $multianno_file |") || die("Cannot Open File $vcf_file")
+}
+else{
+  open(FIL,$multianno_file) || die("Cannot Open File $vcf_file");
+}
 while(<FIL>)
 {
   chomp;
@@ -117,12 +120,16 @@ while(<FIL>)
   my $chr = $cols[25];
   my $start = $cols[26];
   my $loc = $chr."-".$start;
-
   $multianno_variants{$loc} = $loc;
 }
 close(FIL);
 
-open(FIL,$autopvs1_file) || die("Cannot Open File $vcf_file");
+if ($autopvs1_file=~/gz/){
+  open(FIL, "gunzip -c  $autopvs1_file |") || die("Cannot Open File $vcf_file")
+}
+else{
+  open(FIL,$autopvs1_file) || die("Cannot Open File $vcf_file");
+}
 while(<FIL>)
 {
   chomp;
