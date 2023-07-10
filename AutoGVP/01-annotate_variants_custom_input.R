@@ -365,6 +365,8 @@ combined_tab_for_intervar <- autopvs1_results %>%
   )
   
 
+)
+
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar, by="vcf_id" ) 
 master_tab <- master_tab %>% 
