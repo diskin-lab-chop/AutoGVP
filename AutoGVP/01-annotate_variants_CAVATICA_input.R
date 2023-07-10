@@ -56,11 +56,11 @@ option_list <- list(
               help = "variant_summary file (format: variant_summary_2023-02.txt)"),
   make_option(c("--submission_summary"), type = "character",
               help = "specific submission summary file (format: submission_summary.txt)"),
-  make_option(c("--gnomad_variable"), type = "character",
-              help = "gnomAD variable"),
-  make_option(c("--gnomad_af"), type = "numeric", default = 0.001,
-              help = "genomAD AF filter"),
-  make_option(c("--variant_depth"), type = "integer",default = 8,
+  make_option(c("--popfreq_variable"), type = "character",
+              help = "pop frequency variable"),
+  make_option(c("--filter_pop_af"), type = "numeric", default = 0.001,
+              help = "population AF filter"),
+  make_option(c("--variant_depth"), type = "integer",default = 15,
               help = "variant depth filter"),
   make_option(c("--variant_af"), type = "numeric", default = .2,
               help = "variant AF cut-off"),
@@ -84,10 +84,10 @@ summary_level <- opt$summary_level_vcf
 output_name   <- opt$output
 
 ## filters for gnomAD
-gnomad_variable    <- opt$gnomad_variable
+popfreq_variable    <- opt$popfreq_variable
 filter_variant_depth <- opt$variant_depth
 filter_variant_af    <- opt$variant_af
-filter_gnomad_af    <- opt$gnomad_af
+filter_pop_af    <- opt$filter_pop_af
 
 ## output files
 output_tab_abr_file  <- paste0(output_name,".cavatica_input.annotations_report.abridged.tsv")
@@ -98,8 +98,6 @@ Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 ## function for variant depth
 variant_depth_filtering <- function(clinvar_vcf) 
 {
-  gnomad_var_to_match <- paste0(gnomad_variable,"\\=(0\\.\\d+)\\;")
-  
   clinvar_vcf <- clinvar_vcf %>% 
     dplyr::mutate(
       variant_depth = as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])
@@ -112,17 +110,17 @@ variant_depth_filtering <- function(clinvar_vcf)
 }
 
 ## function for filtering gnomAD 
-gnomad_filtering <- function(clinvar_vcf) 
+popfreq_filtering <- function(clinvar_vcf) 
 {
-  gnomad_var_to_match <- paste0(gnomad_variable,"\\=(0\\.\\d+)\\;")
+  popfreq_regex_match <- paste0(popfreq_variable,"\\=(0\\.\\d+)\\;")
 
   clinvar_vcf <- clinvar_vcf %>% 
                   dplyr::mutate(
-                    gnomad_af     = as.numeric( str_match(INFO, gnomad_var_to_match)[,2])
+                    popfreq_af     = as.numeric( str_match(INFO, popfreq_regex_match)[,2])
                     )
   
   clinvar_vcf <- clinvar_vcf %>% 
-  dplyr::filter(gnomad_af >= filter_gnomad_af) 
+  dplyr::filter(popfreq_af >= filter_pop_af) 
   
   return(clinvar_vcf)
 }
@@ -181,17 +179,16 @@ address_ambiguous_calls <- function(results_tab_abridged)
 }
 
 ## retrieve and store clinVar input file into table data.table::fread()
-vcf_input <-  vroom(input_clinVar_file, comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = TRUE)
+vcf_input <-  vroom(input_clinVar_file, comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = FALSE)
 
 ## read depth filtering
 vcf_clinvar <- variant_depth_filtering(vcf_input)
 
 ## gnomad filtering if variable is specified
-if (length(gnomad_variable)) {
-  vcf_clinvar <- gnomad_filtering(vcf_input)
+if (length(popfreq_variable)) {
+  vcf_clinvar <- popfreq_filtering(vcf_input)
 } 
 
-print(vcf_clinvar)
 ## add column "vcf_id" to clinVar results in order to cross-reference with intervar and autopvs1 table
 clinvar_anno_vcf_df <- vcf_clinvar %>%
   dplyr::mutate(
