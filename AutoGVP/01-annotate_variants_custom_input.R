@@ -341,8 +341,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
     evidencePVS1 = if_else( (criterion == "na") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
   
   ## adjust variables based on given rules described in README
-    final_call = #ifelse( (evidencePVS1 == 0), "Uncertain_significance",
-                              ifelse( (evidencePVS1   == 1 &
+    final_call = ifelse( (evidencePVS1   == 1 &
                                       ( (evidencePS   >= 1) |
                                         (evidencePM   >=2 ) |
                                         (evidencePM   >= 1 & evidencePP ==2) |
