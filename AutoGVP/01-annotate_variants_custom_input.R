@@ -300,6 +300,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
   ## indicate if recalculated 
   dplyr::mutate(
     intervar_adjusted_call = if_else( evidencePVS1 == 0, "No", "Yes"),
+    
   ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
   #if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
     evidencePVS1 = if_else( (criterion == "NF1" | criterion == "SS1" |
@@ -338,17 +339,16 @@ combined_tab_for_intervar <- autopvs1_results %>%
     evidencePVS1 = if_else( (criterion == "na") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
   
   ## adjust variables based on given rules described in README
-    final_call = ifelse( (evidencePVS1 == 0), str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],
-                              ifelse( (evidencePVS1   == 1) &
-                                        ( (evidencePS   >= 1) |
-                                            (evidencePM   >=2 ) |
-                                            (evidencePM   >= 1 & evidencePP ==1) |
-                                            (evidencePP   >=2 ) ) , "Pathogenic",
-                                      ifelse( (evidencePVS1   == 1 & evidencePS >= 2), "Pathogenic",
-                                              ifelse( (evidencePVS1   == 1) &  ( (evidencePS == 1 &
-                                                                                    evidencePM   >= 3) |
-                                                                                   (evidencePM   ==2 & evidencePP >=2 ) |
-                                                                                   (evidencePM == 1 & evidencePP >=4 ) ) , "Pathogenic",
+    final_call = ifelse( (evidencePVS1   == 1 &
+                                      ( (evidencePS   >= 1) |
+                                        (evidencePM   >=2 ) |
+                                        (evidencePM   >= 1 & evidencePP ==2) |
+                                        (evidencePP   >=2 ) )) , "Pathogenic",
+                                      ifelse( (evidencePVS1       == 1 & evidencePS >= 2), "Pathogenic",
+                                              ifelse( (evidencePS == 1 &
+                                                      (evidencePM >= 3 |
+                                                      (evidencePM ==2 & evidencePP >=1 ) |
+                                                      (evidencePM == 1 & evidencePP >=4 )) ) , "Pathogenic",
                                                       ifelse( (evidencePVS1 == 1 & evidencePM == 1) |
                                                                 (evidencePS==1 & evidencePM >= 1) |
                                                                 (evidencePS==1 & evidencePP >=2 ) |
@@ -356,11 +356,13 @@ combined_tab_for_intervar <- autopvs1_results %>%
                                                                 (evidencePM ==2 & evidencePP>=2 ) |
                                                                 (evidencePM == 1 & evidencePP>=4) , "Likely_pathogenic",
                                                               ifelse( (evidenceBA1 == 1) |
-                                                                        (evidenceBS   >= 2), "Benign",
+                                                                      (evidenceBS   >= 2), "Benign",
                                                                       ifelse( (evidenceBS == 1 & evidenceBP == 1) |
-                                                                                (evidenceBP   >= 2) , "Likely_benign",  
-                                                                              ifelse( evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],"Uncertain_significance"))))))))
+                                                                              (evidenceBP   >= 2) , "Likely_benign",  "Uncertain_significance"))))) )
   )
+  
+
+)
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar, by="vcf_id" ) 
@@ -375,8 +377,8 @@ master_tab <- master_tab %>%
     evidenceBS = coalesce(as.double(evidenceBS.x, evidenceBS.y) ),
     evidenceBP = coalesce(as.double(evidenceBP.x, evidenceBP.y) ),
     Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`),
-  # replace second final call with the second one because we did not use interVar results
-    final_call.x = if_else(intervar_adjusted_call=="No" & Stars=="0", final_call.y, final_call.x)
+  # replace first final call with the second one when Stars = 0
+    final_call.x = if_else(Stars=="0", final_call.y, final_call.x)
     )  
 
 ## combine final calls into one choosing the appropriate final call                             
