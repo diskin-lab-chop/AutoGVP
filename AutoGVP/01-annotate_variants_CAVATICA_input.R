@@ -424,6 +424,19 @@ results_tab_abridged <- master_tab %>%
                          "CLNSIG", "CLNREVSTAT", "Stars", 
                          "Intervar_evidence", "intervar_adjusted_call", "ID", "final_call")))
 
+## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
+results_tab_abridged <- address_ambiguous_calls(results_tab_abridged)
+
+## fix spelling and nomenclature inconsistencies
+results_tab_abridged <- results_tab_abridged %>% 
+  dplyr::mutate(
+    final_call = replace(final_call, final_call == "Likely benign", "Likely_benign"),
+    final_call = replace(final_call, final_call == "Uncertain significance", "Uncertain_significance"),
+    final_call = replace(final_call, final_call == "Benign PVS1", "Benign"),
+    final_call = replace(final_call, final_call == "Pathogenic PVS1","Pathogenic"),
+    final_call = replace(final_call, final_call == "Likely pathogenic","Likely_pathogenic")
+  ) %>% 
+  distinct()
 
 # write out to file
 results_tab_abridged %>% 

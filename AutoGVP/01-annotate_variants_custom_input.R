@@ -413,6 +413,26 @@ results_tab_abridged <- master_tab %>%
                          "CLNSIG", "CLNREVSTAT", "Stars", 
                          "Intervar_evidence", "intervar_adjusted_call", "ID", "final_call")))
 
+results_tab_abridged <- address_ambiguous_calls(results_tab_abridged)
+
+## fix spelling and nomenclature inconsistencies
+results_tab_abridged <- results_tab_abridged %>% 
+  dplyr::mutate(
+    final_call = replace(final_call, final_call == "Likely benign", "Likely_benign"),
+    final_call = replace(final_call, final_call == "Uncertain significance", "Uncertain_significance"),
+    final_call = replace(final_call, final_call == "Benign PVS1", "Benign"),
+    final_call = replace(final_call, final_call == "Pathogenic PVS1","Pathogenic"),
+    final_call = replace(final_call, final_call == "Likely pathogenic","Likely_pathogenic")
+  ) %>% 
+  distinct()
+
+## add column indicating final call source
+results_tab_abridged <- results_tab_abridged %>%
+  dplyr::mutate(Reasoning_for_call = case_when(
+    intervar_adjusted_call == "Not adjusted, clinVar" ~ "ClinVar",
+    TRUE ~ "Intervar"
+  ))
+
 # write output to file in results folder
 results_tab_abridged %>% 
 write_tsv(
