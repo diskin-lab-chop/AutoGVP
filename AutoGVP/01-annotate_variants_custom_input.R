@@ -241,7 +241,7 @@ multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_nam
     vcf_id = str_replace_all(vcf_id, "chr", "")
     ) %>% 
   group_by(vcf_id) %>%
-  arrange(vcf_id) %>%
+  arrange(Chr, Start) %>%
   filter(row_number()==1) %>% 
   ungroup
 
@@ -250,7 +250,7 @@ clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws 
   #slice(-1) %>% 
   dplyr::mutate(var_id= str_remove_all(paste (`#Chr`,"-",Start,"-",End,"-",Ref,"-",Alt), " ")) %>% 
   group_by(var_id) %>%
-  arrange(var_id) %>%
+  arrange(`#Chr`, Start) %>%
   filter(row_number()==1) %>% 
   ungroup
 
