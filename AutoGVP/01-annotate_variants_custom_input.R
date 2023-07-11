@@ -260,11 +260,16 @@ if( tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df) ) {
 }
 
 ## combine the intervar and multianno tables by the appropriate vcf id
-clinvar_anno_intervar_vcf_df <- dplyr::mutate(multianno_df,clinvar_anno_intervar_vcf_df )  %>% dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, Ref.Gene,Func.refGene,ExonicFunc.refGene)
+clinvar_anno_intervar_vcf_df <- dplyr::mutate(multianno_df,clinvar_anno_intervar_vcf_df )  %>% 
+  dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, 
+                Gene.refGene, Ref.Gene,Func.refGene,ExonicFunc.refGene, AAChange.refGene,
+                CLNSIG, CLNREVSTAT)
 
 ## populate consensus call variants with invervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df,entries_for_cc_in_submission, by="vcf_id") %>% 
-  dplyr::select(vcf_id,`InterVar: InterVar and Evidence`,Ref.Gene,Func.refGene,ExonicFunc.refGene) %>% 
+  dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, 
+                Gene.refGene, Ref.Gene,Func.refGene,ExonicFunc.refGene, AAChange.refGene,
+                CLNSIG, CLNREVSTAT) %>% 
   dplyr::rename("Intervar_evidence"=`InterVar: InterVar and Evidence`)
 
 
@@ -296,7 +301,10 @@ autopvs1_results    <-  read_tsv(input_autopvs1_file, col_names = TRUE) %>%
 combined_tab_for_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by="vcf_id") %>% 
   dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id) %>%
-  dplyr::select(vcf_id,`InterVar: InterVar and Evidence`, criterion, evidencePVS1, evidenceBA1, evidencePS, evidencePM, evidencePP, evidenceBS, evidenceBP) %>% 
+  dplyr::select(vcf_id, Gene.refGene, Ref.Gene,Func.refGene,ExonicFunc.refGene, AAChange.refGene,
+                CLNSIG, CLNREVSTAT, 
+                `InterVar: InterVar and Evidence`, consequence, criterion, evidencePVS1, 
+                evidenceBA1, evidencePS, evidencePM, evidencePP, evidenceBS, evidenceBP) %>% 
   ## indicate if recalculated 
   dplyr::mutate(
     intervar_adjusted_call = if_else( evidencePVS1 == 0, "No", "Yes"),
@@ -392,11 +400,22 @@ master_tab  <- full_join(master_tab,entries_for_cc_in_submission, by="vcf_id") %
   full_join(entries_for_cc_in_submission_w_intervar, by="vcf_id") %>%
   dplyr::mutate(
     Intervar_evidence = coalesce(Intervar_evidence.y, Intervar_evidence.x),
-    Ref.Gene = coalesce(Ref.Gene.y, Ref.Gene.x)
+    Ref.Gene = coalesce(Ref.Gene.y, Ref.Gene.x),
+    Ref.Gene = coalesce(Ref.Gene.y, Ref.Gene.x),
+    Gene.refGene = coalesce(Gene.refGene.y, Gene.refGene.x),
+    Func.refGene = coalesce(Func.refGene.y, Func.refGene.x),
+    ExonicFunc.refGene = coalesce(ExonicFunc.refGene.y, ExonicFunc.refGene.x),
+    AAChange.refGene = coalesce(AAChange.refGene.y, AAChange.refGene.x),
+    CLNSIG = coalesce(CLNSIG.y, CLNSIG.x),
+    CLNREVSTAT = coalesce(CLNREVSTAT.y, CLNREVSTAT.x)
     )
 
 # abridged version
-results_tab_abridged <- master_tab %>% dplyr::select(vcf_id, Ref.Gene, Stars, Intervar_evidence,intervar_adjusted_call,ID, final_call)
+results_tab_abridged <- master_tab %>% dplyr::select(vcf_id, 
+                                                     Gene.refGene, Ref.Gene,Func.refGene,ExonicFunc.refGene, AAChange.refGene,
+                                                     consequence, criterion,
+                                                     CLNSIG, CLNREVSTAT, Stars, 
+                                                     Intervar_evidence,intervar_adjusted_call,ID, final_call)
 
 results_tab_abridged <- address_ambiguous_calls(results_tab_abridged)
 
@@ -410,6 +429,13 @@ results_tab_abridged <- results_tab_abridged %>%
         final_call = replace(final_call, final_call == "Likely pathogenic","Likely_pathogenic")
         ) %>% 
       distinct()
+
+## add column indicating final call source
+results_tab_abridged <- results_tab_abridged %>%
+  dplyr::mutate(Reasoning_for_call = case_when(
+    intervar_adjusted_call == "Not adjusted, clinVar" ~ "ClinVar",
+    TRUE ~ "Intervar"
+  ))
 
 # write output to file in results folder
 results_tab_abridged %>% 
