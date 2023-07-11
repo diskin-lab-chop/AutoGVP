@@ -11,7 +11,7 @@ COPY scripts/install_bioc.r .
 COPY scripts/install_github.r .
 
 ## install wget
-RUN apt update -y && apt install -y wget bzip2 && apt install -y bcftools 
+RUN apt update -y && apt install -y wget bzip2 && apt install -y bcftools
 
 # install R packages
 RUN ./install_bioc.r \
