@@ -241,7 +241,7 @@ multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_nam
     vcf_id = str_replace_all(vcf_id, "chr", "")
     ) %>% 
   group_by(vcf_id) %>%
-  arrange(vcf_id) %>%
+  arrange(Chr, Start) %>%
   filter(row_number()==1) %>% 
   ungroup
 
@@ -250,7 +250,7 @@ clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws 
   #slice(-1) %>% 
   dplyr::mutate(var_id= str_remove_all(paste (`#Chr`,"-",Start,"-",End,"-",Ref,"-",Alt), " ")) %>% 
   group_by(var_id) %>%
-  arrange(var_id) %>%
+  arrange(`#Chr`, Start) %>%
   filter(row_number()==1) %>% 
   ungroup
 
@@ -346,7 +346,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
     #if criterion is na then PVS1 = 0;
     evidencePVS1 = if_else( (criterion == "na") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
   
-  ## adjust variables based on given rules described in README
+    ## adjust variables based on given rules described in README
     final_call = ifelse( (evidencePVS1   == 1 &
                                       ( (evidencePS   >= 1) |
                                         (evidencePM   >=2 ) |
@@ -368,7 +368,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
                                                                       ifelse( (evidenceBS == 1 & evidenceBP == 1) |
                                                                               (evidenceBP   >= 2) , "Likely_benign",  "Uncertain_significance"))))) )
   )
-)
+
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar, by="vcf_id" ) 
