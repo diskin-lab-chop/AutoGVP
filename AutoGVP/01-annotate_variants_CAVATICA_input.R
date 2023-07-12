@@ -307,28 +307,30 @@ combined_tab_for_intervar <- autopvs1_results %>%
   
   
   ## adjust variables based on given rules described in README
-  mutate(final_call = ifelse( (evidencePVS1 == 0), str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],
-                              ifelse( (evidencePVS1   == 1) &
-                                        ( (evidencePS   >= 1) |
-                                            (evidencePM   >=2 ) |
-                                            (evidencePM   >= 1 & evidencePP ==1) |
-                                            (evidencePP   >=2 ) ) , "Pathogenic",
-                                      ifelse( (evidencePVS1   == 1 & evidencePS >= 2), "Pathogenic",
-                                              ifelse( (evidencePVS1   == 1) &  ( (evidencePS == 1 &
-                                                                                    evidencePM   >= 3) |
-                                                                                   (evidencePM   ==2 & evidencePP >=2 ) |
-                                                                                   (evidencePM == 1 & evidencePP >=4 ) ) , "Pathogenic",
-                                                      ifelse( (evidencePVS1 == 1 & evidencePM == 1) |
-                                                                (evidencePS==1 & evidencePM >= 1) |
-                                                                (evidencePS==1 & evidencePP >=2 ) |
-                                                                (evidencePM >= 3) |
-                                                                (evidencePM ==2 & evidencePP>=2 ) |
-                                                                (evidencePM == 1 & evidencePP>=4) , "Likely_pathogenic",
-                                                              ifelse( (evidenceBA1 == 1) |
-                                                                        (evidenceBS   >= 2), "Benign",
-                                                                      ifelse( (evidenceBS == 1 & evidenceBP == 1) |
-                                                                                (evidenceBP   >= 2) , "Likely_benign",  
-                                                                              ifelse( evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],"Uncertain_significance")))))))))
+  final_call = ifelse( (evidencePVS1   == 1 &
+                          ( (evidencePS   >= 1) |
+                              (evidencePM   >=2 ) |
+                              (evidencePM   >= 1 & evidencePP ==2) |
+                              (evidencePP   >=2 ) )) , "Pathogenic",
+                       ifelse( (evidencePVS1       == 1 & evidencePS >= 2), "Pathogenic",
+                               ifelse( (evidencePS == 1 &
+                                          (evidencePM >= 3 |
+                                             (evidencePM ==2 & evidencePP >=1 ) |
+                                             (evidencePM == 1 & evidencePP >=4 )) ) , "Pathogenic",
+                                       ifelse( (evidencePVS1 == 1 & evidencePM == 1) |
+                                                 (evidencePS==1 & evidencePM >= 1) |
+                                                 (evidencePS==1 & evidencePP >=2 ) |
+                                                 (evidencePM >= 3) |
+                                                 (evidencePM ==2 & evidencePP>=2 ) |
+                                                 (evidencePM == 1 & evidencePP>=4) , "Likely_pathogenic",
+                                               ifelse( (evidenceBA1 == 1) |
+                                                         (evidenceBS   >= 2), "Benign",
+                                                       ifelse( (evidenceBS == 1 & evidenceBP == 1) |
+                                                                 (evidenceBP   >= 2) , "Likely_benign",  "Uncertain_significance"))))) )
+)
+
+
+)
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar, by="vcf_id" ) 
