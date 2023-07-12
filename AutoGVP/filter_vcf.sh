@@ -3,7 +3,7 @@ vcf_file=$1
 exp_args=("$@")
 
 ## get vcf filename
-vcf_filtered_file=$1."filtered.vcf"
+vcf_filtered_file=${vcf_file%.vcf*}."filtered.vcf"
 
 echo "vcf file: $vcf_file ";
 
