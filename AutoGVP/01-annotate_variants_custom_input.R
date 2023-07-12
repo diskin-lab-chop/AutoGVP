@@ -346,7 +346,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
     #if criterion is na then PVS1 = 0;
     evidencePVS1 = if_else( (criterion == "na") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
   
-  ## adjust variables based on given rules described in README
+    ## adjust variables based on given rules described in README
     final_call = ifelse( (evidencePVS1   == 1 &
                                       ( (evidencePS   >= 1) |
                                         (evidencePM   >=2 ) |
@@ -368,7 +368,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
                                                                       ifelse( (evidenceBS == 1 & evidenceBP == 1) |
                                                                               (evidenceBP   >= 2) , "Likely_benign",  "Uncertain_significance"))))) )
   )
-)
+
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar, by="vcf_id" ) 

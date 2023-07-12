@@ -355,7 +355,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
   mutate(evidencePVS1 = if_else((criterion == "IC4") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
   
   #if criterion is na then PVS1 = 0;
-  mutate(evidencePVS1 = if_else( (criterion == "na") & evidencePVS1 == 1, 0, as.double(evidencePVS1))) %>%
+  mutate(evidencePVS1 = if_else( (criterion == "na") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
   
   
   ## adjust variables based on given rules described in README
@@ -379,9 +379,6 @@ combined_tab_for_intervar <- autopvs1_results %>%
                                                          (evidenceBS   >= 2), "Benign",
                                                        ifelse( (evidenceBS == 1 & evidenceBP == 1) |
                                                                  (evidenceBP   >= 2) , "Likely_benign",  "Uncertain_significance"))))) )
-)
-
-
 )
 
 ## merge tables together (clinvar and intervar) and write to file
