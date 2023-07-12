@@ -362,8 +362,6 @@ combined_tab_for_intervar <- autopvs1_results %>%
                                                                       ifelse( (evidenceBS == 1 & evidenceBP == 1) |
                                                                               (evidenceBP   >= 2) , "Likely_benign",  "Uncertain_significance"))))) )
   )
-  
-
 )
 
 ## merge tables together (clinvar and intervar) and write to file
