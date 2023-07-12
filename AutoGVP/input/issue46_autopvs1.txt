@@ -1,0 +1,4 @@
+vcf_id	SYMBOL	Feature	trans_name	consequence	strength_raw	strength	criterion
+1-149784224-C-T	H2BC18	NM_001161334.2	not_lof	intron_variant	Unmet	Unmet	na
+2-97250149-G-GC	ANKRD36	NM_001354587.1	NM_001354587.1	frameshift	Moderate	Unset	NF6
+7-152248171-G-A	KMT2C	NM_170606.3	NM_170606.3	nonsense	VeryStrong	Unset	NF1

@@ -382,7 +382,8 @@ combined_tab_for_intervar <- autopvs1_results %>%
                                                                          ifelse( evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],"Uncertain_significance"))))))))
   ) %>%
   dplyr::select(vcf_id, starts_with("evidence"),
-                ends_with("evidence"), ends_with("call"))
+                ends_with("evidence"), ends_with("call"),
+                consequence, criterion)
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar, by="vcf_id" ) 
@@ -437,6 +438,14 @@ results_tab_abridged <- results_tab_abridged %>%
     final_call = replace(final_call, final_call == "Likely pathogenic","Likely_pathogenic")
   ) %>% 
   distinct()
+
+## add column indicating final call source
+results_tab_abridged <- results_tab_abridged %>%
+  dplyr::mutate(Reasoning_for_call = case_when(
+    intervar_adjusted_call == "Not adjusted, clinVar" ~ "ClinVar",
+    TRUE ~ "Intervar"
+  ))
+
 
 # write out to file
 results_tab_abridged %>% 
