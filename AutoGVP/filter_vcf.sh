@@ -15,7 +15,7 @@ cmd="bcftools filter -i 'INFO/AF <=0.01' $vcf_file | bcftools filter -i 'INFO/DP
 ## loop through args for other user-defined filters
 for i in "${exp_args[@]:1}"; do
   #echo filtering for... $i
-  cmd+=" | bcftools filter -i "$i
+  cmd+=" | bcftools filter -i '$i'"
   cmd+=" $vcf_file "
   #echo $cmd
 done
