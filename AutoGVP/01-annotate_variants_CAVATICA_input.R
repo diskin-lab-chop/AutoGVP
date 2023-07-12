@@ -318,72 +318,71 @@ combined_tab_for_intervar <- autopvs1_results %>%
                          "InterVar: InterVar and Evidence", "consequence", "criterion", "evidencePVS1", 
                          "evidenceBA1", "evidencePS", "evidencePM", "evidencePP", "evidenceBS", "evidenceBP"))) %>% 
   ## indicate if recalculated 
-  dplyr::mutate(
-    intervar_adjusted_call = if_else( evidencePVS1 == 0, "No", "Yes"),
-    ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
-    #if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
-    evidencePVS1 = if_else( (criterion == "NF1" | criterion == "SS1" |
-                               criterion == "DEL1" | criterion == "DEL2" |
-                               criterion == "DUP1" | criterion == "IC1") & evidencePVS1 == 1, "1", evidencePVS1),
-    
-    #if criterion is NF3|NF5|SS3|SS5|SS8|SS10|DEL8|DEL6|DEL10|DUP3|IC2 then PVS1 = 0; PS = PS+1
-    evidencePS =  if_else(   (criterion == "NF3"  | criterion == "NF5" |
-                                criterion == "SS3" | criterion == "SS5" |
-                                criterion == "SS8" | criterion =="SS10" |
-                                criterion =="DEL8" | criterion =="DEL6" |
-                                criterion =="DEL10" | criterion =="DUP3" |
-                                criterion =="IC2") & evidencePVS1 == 1, as.numeric(evidencePS)+1, as.double(evidencePS)),
-    
-    evidencePVS1 = if_else(  (criterion == "NF3"  | criterion == "NF5" |
-                                criterion == "SS3" | criterion == "SS5" |
-                                criterion == "SS8" | criterion =="SS10" |
-                                criterion =="DEL8" | criterion =="DEL6" |
-                                criterion =="DEL10" | criterion =="DUP3" |
-                                criterion =="IC2") & evidencePVS1 == 1, "0", evidencePVS1),
-    
-    #if criterion is NF6|SS6|SS9|DEL7|DEL11|IC3 then PVS1 = 0; PM = PM+1;
-    evidencePM =   if_else( (criterion == "NF6" | criterion == "SS6" |
-                               criterion == "SS9" | criterion == "DEL7" |
-                               criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, as.numeric(evidencePM)+1, as.double(evidencePM)),
-    
-    evidencePVS1 = if_else( (criterion == "NF6" | criterion == "SS6" |
-                               criterion == "SS9" | criterion == "DEL7" |
-                               criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, "0", evidencePVS1),
-    
-    #if criterion is IC4 then PVS1 = 0; PP = PP+1;
-    evidencePP   = if_else((criterion == "IC4") & evidencePVS1 == 1, as.numeric(evidencePP)+1, as.double(evidencePP)),
-    evidencePVS1 = if_else((criterion == "IC4") & evidencePVS1 == 1, "0", evidencePVS1),
-    
-    #if criterion is na then PVS1 = 0;
-    evidencePVS1 = if_else( (criterion == "na") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
-    
-    ## adjust variables based on given rules described in README
-    final_call = ifelse( (evidencePVS1 == 0), str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],
-                         ifelse( (evidencePVS1   == 1) &
-                                   ( (evidencePS   >= 1) |
-                                       (evidencePM   >=2 ) |
-                                       (evidencePM   >= 1 & evidencePP ==1) |
-                                       (evidencePP   >=2 ) ) , "Pathogenic",
-                                 ifelse( (evidencePVS1   == 1 & evidencePS >= 2), "Pathogenic",
-                                         ifelse( (evidencePVS1   == 1) &  ( (evidencePS == 1 &
-                                                                               evidencePM   >= 3) |
-                                                                              (evidencePM   ==2 & evidencePP >=2 ) |
-                                                                              (evidencePM == 1 & evidencePP >=4 ) ) , "Pathogenic",
-                                                 ifelse( (evidencePVS1 == 1 & evidencePM == 1) |
-                                                           (evidencePS==1 & evidencePM >= 1) |
-                                                           (evidencePS==1 & evidencePP >=2 ) |
-                                                           (evidencePM >= 3) |
-                                                           (evidencePM ==2 & evidencePP>=2 ) |
-                                                           (evidencePM == 1 & evidencePP>=4) , "Likely_pathogenic",
-                                                         ifelse( (evidenceBA1 == 1) |
-                                                                   (evidenceBS   >= 2), "Benign",
-                                                                 ifelse( (evidenceBS == 1 & evidenceBP == 1) |
-                                                                           (evidenceBP   >= 2) , "Likely_benign",  
-                                                                         ifelse( evidencePVS1 == 0, str_match(`InterVar: InterVar and Evidence`, "InterVar\\:\\s+(.+?(?=\\sPVS))")[, 2],"Uncertain_significance"))))))))
-  ) %>%
-  dplyr::select(vcf_id, starts_with("evidence"),
-                ends_with("evidence"), ends_with("call"),
-                consequence, criterion)
+  mutate(intervar_adjusted_call = if_else( (evidencePVS1 == 0), "No", "Yes"))  %>% 
+  
+  ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
+  #if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
+  mutate(evidencePVS1 = if_else( (criterion == "NF1" | criterion == "SS1" |
+                                    criterion == "DEL1" | criterion == "DEL2" |
+                                    criterion == "DUP1" | criterion == "IC1") & evidencePVS1 == 1, "1", evidencePVS1)) %>%
+  
+  #if criterion is NF3|NF5|SS3|SS5|SS8|SS10|DEL8|DEL6|DEL10|DUP3|IC2 then PVS1 = 0; PS = PS+1
+  mutate(evidencePS =  if_else(   (criterion == "NF3"  | criterion == "NF5" |
+                                     criterion == "SS3" | criterion == "SS5" |
+                                     criterion == "SS8" | criterion =="SS10" |
+                                     criterion =="DEL8" | criterion =="DEL6" |
+                                     criterion =="DEL10" | criterion =="DUP3" |
+                                     criterion =="IC2") & evidencePVS1 == 1, as.numeric(evidencePS)+1, as.double(evidencePS))) %>%
+  
+  mutate(evidencePVS1 = if_else(  (criterion == "NF3"  | criterion == "NF5" |
+                                     criterion == "SS3" | criterion == "SS5" |
+                                     criterion == "SS8" | criterion =="SS10" |
+                                     criterion =="DEL8" | criterion =="DEL6" |
+                                     criterion =="DEL10" | criterion =="DUP3" |
+                                     criterion =="IC2") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
+  
+  #if criterion is NF6|SS6|SS9|DEL7|DEL11|IC3 then PVS1 = 0; PM = PM+1;
+  mutate(evidencePM =   if_else( (criterion == "NF6" | criterion == "SS6" |
+                                    criterion == "SS9" | criterion == "DEL7" |
+                                    criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, as.numeric(evidencePM)+1, as.double(evidencePM))) %>%
+  
+  mutate(evidencePVS1 = if_else( (criterion == "NF6" | criterion == "SS6" |
+                                    criterion == "SS9" | criterion == "DEL7" |
+                                    criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
+  
+  #if criterion is IC4 then PVS1 = 0; PP = PP+1;
+  mutate(evidencePP   = if_else((criterion == "IC4") & evidencePVS1 == 1, as.numeric(evidencePP)+1, as.double(evidencePP))) %>%
+  mutate(evidencePVS1 = if_else((criterion == "IC4") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
+  
+  #if criterion is na then PVS1 = 0;
+  mutate(evidencePVS1 = if_else( (criterion == "na") & evidencePVS1 == 1, 0, as.double(evidencePVS1))) %>%
+  
+  
+  ## adjust variables based on given rules described in README
+  final_call = ifelse( (evidencePVS1   == 1 &
+                          ( (evidencePS   >= 1) |
+                              (evidencePM   >=2 ) |
+                              (evidencePM   >= 1 & evidencePP ==2) |
+                              (evidencePP   >=2 ) )) , "Pathogenic",
+                       ifelse( (evidencePVS1       == 1 & evidencePS >= 2), "Pathogenic",
+                               ifelse( (evidencePS == 1 &
+                                          (evidencePM >= 3 |
+                                             (evidencePM ==2 & evidencePP >=1 ) |
+                                             (evidencePM == 1 & evidencePP >=4 )) ) , "Pathogenic",
+                                       ifelse( (evidencePVS1 == 1 & evidencePM == 1) |
+                                                 (evidencePS==1 & evidencePM >= 1) |
+                                                 (evidencePS==1 & evidencePP >=2 ) |
+                                                 (evidencePM >= 3) |
+                                                 (evidencePM ==2 & evidencePP>=2 ) |
+                                                 (evidencePM == 1 & evidencePP>=4) , "Likely_pathogenic",
+                                               ifelse( (evidenceBA1 == 1) |
+                                                         (evidenceBS   >= 2), "Benign",
+                                                       ifelse( (evidenceBS == 1 & evidenceBP == 1) |
+                                                                 (evidenceBP   >= 2) , "Likely_benign",  "Uncertain_significance"))))) )
+)
+
+
+)
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar, by="vcf_id" ) 
