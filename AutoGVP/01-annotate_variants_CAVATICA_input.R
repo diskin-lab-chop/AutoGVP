@@ -439,6 +439,14 @@ results_tab_abridged <- results_tab_abridged %>%
   ) %>% 
   distinct()
 
+## add column indicating final call source
+results_tab_abridged <- results_tab_abridged %>%
+  dplyr::mutate(Reasoning_for_call = case_when(
+    intervar_adjusted_call == "Not adjusted, clinVar" ~ "ClinVar",
+    TRUE ~ "Intervar"
+  ))
+
+
 # write out to file
 results_tab_abridged %>% 
 write_tsv(
