@@ -58,14 +58,6 @@ option_list <- list(
               help = "variant_summary  file (format: variant_summary_2023-02.txt)"),
   make_option(c("--submission_summary"), type = "character",
               help = "specific submission summary file (format: submission_summary.txt)"),
-  make_option(c("--gnomad_variable"), type = "character",default = "Freq_gnomAD_genome_ALL",
-              help = "gnomAD variable"),
-  make_option(c("--gnomad_af"), type = "numeric", default = 0.001,
-              help = "genomAD AF filter"),
-  make_option(c("--variant_depth"), type = "integer",default = 15,
-              help = "variant depth filter"),
-  make_option(c("--variant_af"), type = "numeric", default = .2,
-              help = "variant AF cut-off"),
   make_option(c("--summary_level_vcf"), type = "character", default = "F",
               help = "summary_level T/F"),
   make_option(c("--output"), type = "character", default = "out",
@@ -85,10 +77,6 @@ input_multianno_file <- opt$multianno
 summary_level <- opt$summary_level
 output_name   <- opt$output
 
-## filters for gnomAD
-filter_gnomad_var    <- opt$gnomad_variable
-filter_variant_depth <- opt$variant_depth
-filter_variant_af    <- opt$variant_af
 
 ## output files
 output_tab_abr_file  <- paste0(output_name,".custom_input.annotations_report.abridged.tsv")
@@ -176,15 +164,6 @@ clinvar_anno_vcf_df  <- vroom(input_clinVar_file, comment = "#", delim="\t", col
 
 clinvar_anno_vcf_df <- address_conflicting_intrep(clinvar_anno_vcf_df)
 
-## filters (gnomAD, variant_depth, variant AF if applicable)
-if(summary_level == "T")
-{
-  clinvar_anno_vcf_df %>%  if_else( as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])  > filter_variant_depth, "PASS","FAIL") %>% 
-    mutate(
-      gnomad_af     = if_else( as.numeric( str_match(INFO, "gnomad_3_1_1_AF_non_cancer\\=(0\\.\\d+)\\;")[,2])  > filter_variant_af, "PASS","FAIL"), 
-      variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL")
-      )
-}
 ## store variants without clinvar info
 clinvar_anti_join_vcf_df  <- anti_join(vcf_df, clinvar_anno_vcf_df, by="vcf_id") %>%
   dplyr::mutate(
