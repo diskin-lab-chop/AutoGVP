@@ -1,10 +1,8 @@
-<!--Hi there, thanks for your contribution! Please take a moment to fill out this template to 
-facilitate the review of your pull request.-->
+<!--Hi there, thanks for your contribution! Please take a moment to fill out this template to facilitate the review of your pull request.-->
 
 ### Purpose/implementation Section
 
-#### What scientific question is your analysis addressing?
-
+#### What feature is being added or bug is being addressed?
 
 
 #### What was your approach?
@@ -24,32 +22,10 @@ facilitate the review of your pull request.-->
 #### Is there anything that you want to discuss further?
 
 
-
-#### Is the analysis in a mature enough form that the resulting figure(s) and/or table(s) are 
-ready for review?
-
-
-
-### Results
-
-#### What types of results are included (e.g., table, figure)?
-
-
-
-#### What is your summary of the results?
-
-
-
-#### Reproducibility Checklist
-
-<!-- Check all those that apply or remove this section if it is not applicable.-->
-
-- [ ] The dependencies required to run the code in this pull request have been added to the 
-project Dockerfile.
-
 #### Documentation Checklist
 
-<!-- Please review https://github.com/AlexsLemonade/OpenPBTA-analysis#documenting-your-analysis 
--->
+<!-- Please review and specify if it isn't applicable -->
 
-- [ ] The analytical code is documented and contains comments.
+- [ ] The function has examples to showcase the usage 
+- [ ] Added a vignette
+
