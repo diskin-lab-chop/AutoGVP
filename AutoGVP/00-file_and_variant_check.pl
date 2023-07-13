@@ -110,17 +110,21 @@ if ($multianno_file=~/gz/){
 else{
   open(FIL,$multianno_file) || die("Cannot Open File $multianno_file");
 }
+
 while(<FIL>)
 {
   chomp;
   next if $_=~/^#/;
   next if $_=~/Start/;
 
-  my @cols = split;
-  my $chr = $cols[25];
-  my $start = $cols[26];
-  my $loc = $chr."-".$start;
-  $multianno_variants{$loc} = $loc;
+  if($_=~/(chr\d+)\t(\d+)\t(rs\d+|\.)\t/)
+  {
+    my @cols = split;
+    my $chr = $1;
+    my $start = $2;
+    my $loc = $chr."-".$start;
+    $multianno_variants{$loc} = $loc;
+  }
 }
 close(FIL);
 
@@ -130,6 +134,7 @@ if ($autopvs1_file=~/gz/){
 else{
   open(FIL,$autopvs1_file) || die("Cannot Open File $autopvs1_file");
 }
+
 while(<FIL>)
 {
   chomp;
