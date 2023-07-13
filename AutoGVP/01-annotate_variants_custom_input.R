@@ -98,18 +98,21 @@ Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
 address_ambiguous_calls <- function(results_tab_abridged)
 { ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
-    for(i in 1:nrow(results_tab_abridged)) {
-      entry <- results_tab_abridged[i,]
-      if(is.na(entry$final_call) || (entry$final_call !="Pathogenic" && 
-                                    entry$final_call != "Likely_benign" &&  entry$final_call !="Likely_pathogenic"
-                                    && entry$final_call != "Uncertain_significance"  &&  entry$final_call !="Benign"  
-                                    &&  entry$final_call !="Uncertain significance"  &&  entry$final_call !="Likely benign") )
-      {
-        
-        new_call <- str_match(results_tab_abridged[i,]$Intervar_evidence, "InterVar\\:\\s(\\w+\\s\\w+)*")[,2]
-        results_tab_abridged[i,]$final_call = new_call
-      }
-    }
+  
+  results_tab_abridged <- results_tab_abridged %>%
+    dplyr::mutate(new_call = case_when(
+      is.na(final_call) | (final_call !="Pathogenic" & 
+                             final_call != "Likely_benign" &  final_call !="Likely_pathogenic"
+                           & final_call != "Uncertain_significance"  &  final_call !="Benign"  
+                           &  final_call !="Uncertain significance"  &  final_call !="Likely benign") ~ str_match(Intervar_evidence, "InterVar\\:\\s(\\w+\\s\\w+)*")[,2],
+      TRUE ~ NA_character_
+    )) %>%
+    dplyr::mutate(final_call = case_when(
+      !is.na(new_call) ~ new_call,
+      TRUE ~ final_call
+    )) %>%
+    dplyr::select(-new_call)
+  
   return(results_tab_abridged)
 }
 
@@ -362,7 +365,6 @@ combined_tab_for_intervar <- autopvs1_results %>%
   )
   
 
-)
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar, by="vcf_id" ) 
