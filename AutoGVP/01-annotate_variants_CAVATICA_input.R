@@ -56,14 +56,6 @@ option_list <- list(
               help = "variant_summary file (format: variant_summary_2023-02.txt)"),
   make_option(c("--submission_summary"), type = "character",
               help = "specific submission summary file (format: submission_summary.txt)"),
-  make_option(c("--gnomad_variable"), type = "character",default = "Freq_gnomAD_genome_ALL",
-              help = "gnomAD variable"),
-  make_option(c("--gnomad_af"), type = "numeric", default = 0.001,
-              help = "genomAD AF filter"),
-  make_option(c("--variant_depth"), type = "integer",default = 15,
-              help = "variant depth filter"),
-  make_option(c("--variant_af"), type = "numeric", default = .2,
-              help = "variant AF cut-off"),
   make_option(c("--summary_level_vcf"), type = "character", default = "F",
               help = "summary_level_vcf T/F"),
   make_option(c("--output"), type = "character", default = "out",
@@ -83,10 +75,6 @@ input_variant_summary <- opt$variant_summary
 summary_level <- opt$summary_level_vcf
 output_name   <- opt$output
 
-## filters for gnomAD
-filter_gnomad_var    <- opt$gnomad_variable
-filter_variant_depth <- opt$variant_depth
-filter_variant_af    <- opt$variant_af
 
 ## output files
 output_tab_abr_file  <- paste0(output_name,".cavatica_input.annotations_report.abridged.tsv")
@@ -94,18 +82,6 @@ output_tab_abr_file  <- paste0(output_name,".cavatica_input.annotations_report.a
 ## allocate more memory capacity
 Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
-## function for filtering gnomAD, variant af and depth filtering 
-gnomad_filtering <- function(clinvar_vcf) 
-{
-  gnomad_var_to_match <- paste0(filter_gnomad_var,"\\=(0\\.\\d+)\\;")
-  clinvar_vcf <- clinvar_vcf %>% 
-                  dplyr::mutate(
-                    variant_depth = if_else( as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])  > filter_variant_depth, "PASS","FAIL"),
-                    gnomad_af     = if_else( as.numeric( str_match(INFO, gnomad_var_to_match)[,2])  > filter_variant_af, "PASS","FAIL"),
-                    variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL")
-                    )
-  return(clinvar_vcf)
-}
 
 address_conflicting_intrep <- function(clinvar_anno_vcf_df)  
 {## if conflicting intrep. take the call with most calls in CLNSIGCONF field
@@ -165,11 +141,8 @@ address_ambiguous_calls <- function(results_tab_abridged)
 ## retrieve and store clinVar input file into table data.table::fread()
 vcf_input <-  vroom(input_clinVar_file, comment = "#",delim="\t", col_names = c("CHROM","START","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), show_col_types = TRUE)
 
-## filter for gnomad, read depth and AF
-vcf_clinvar <- gnomad_filtering(vcf_input)
-
 ## add column "vcf_id" to clinVar results in order to cross-reference with intervar and autopvs1 table
-clinvar_anno_vcf_df <- vcf_clinvar %>%
+clinvar_anno_vcf_df <- vcf_input %>%
   dplyr::mutate(
     vcf_id= str_remove_all(paste (CHROM,"-",START,"-",REF,"-",ALT), " "),
     vcf_id = str_replace_all(vcf_id, "chr", ""),
