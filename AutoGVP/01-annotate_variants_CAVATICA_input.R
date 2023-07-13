@@ -12,11 +12,6 @@
 #                                       --clinvar  'clinvar_yyyymmdd.vcf.gz'
 #                                       --variant_summary <variant_summary file>
 #                                       --submission_summary <submission_summary file>
-#                                       --gnomad_variable 'gnomad_3_1_1_AF_non_cancer'
-#                                       --gnomad_af <numeric>
-#                                       --variant_depth <integer>
-#                                       --variant_af <numeric>
-#                                       --summary_level_vcf <character>
 #                                       --output <string>
 ################################################################################
 
@@ -56,8 +51,6 @@ option_list <- list(
               help = "variant_summary file (format: variant_summary_2023-02.txt)"),
   make_option(c("--submission_summary"), type = "character",
               help = "specific submission summary file (format: submission_summary.txt)"),
-  make_option(c("--summary_level_vcf"), type = "character", default = "F",
-              help = "summary_level_vcf T/F"),
   make_option(c("--output"), type = "character", default = "out",
               help = "output name")) 
 
@@ -160,16 +153,6 @@ clinvar_anno_vcf_df <- vcf_input %>%
 ## if conflicting intrep. take the call with most calls in CLNSIGCONF field
 clinvar_anno_vcf_df <- address_conflicting_intrep(clinvar_anno_vcf_df)
 
-## filters (gnomAD, variant_depth, variant AF if applicable)
-if(summary_level == "T")
-{
-  clinvar_anno_vcf_df %>%  if_else( as.integer( str_match(INFO, "DP\\=(\\d+)")[, 2])  > filter_variant_depth, "PASS","FAIL") %>% 
-  dplyr::mutate(
-    gnomad_af     = if_else( as.numeric( str_match(INFO, "gnomad_3_1_1_AF_non_cancer\\=(0\\.\\d+)\\;")[,2])  > filter_variant_af, "PASS","FAIL"),
-    variant_af    = if_else(as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3]) / ( (as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,2]) ) + as.integer(str_match(Sample, ":(\\d+)\\,(\\d+)") [,3] )) > filter_variant_af, "PASS", "FAIL")
-    )
-} 
-  
 ## get latest calls from submission files 
 submission_summary_df <- vroom(input_summary_submission_file, comment = "#",delim="\t", 
                                col_names = c("VariationID","ClinicalSignificance","DateLastEvaluated",       

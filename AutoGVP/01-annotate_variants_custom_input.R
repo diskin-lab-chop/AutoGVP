@@ -13,11 +13,6 @@
 #                                       --clinvar  <e.g. clinvar_20211225.vcf.gz>
 #                                       --variant_summary <variant_summary file>
 #                                       --submission_summary <submission_summary file>
-#                                       --gnomad_variable 'gnomad_3_1_1_AF_non_cancer'
-#                                       --gnomad_af <numeric>
-#                                       --variant_depth <integer>
-#                                       --variant_af <numeric>
-#                                       --summary_level_vcf <character>
 #                                       --output <string>
 ################################################################################
 
