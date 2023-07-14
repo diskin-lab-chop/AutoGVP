@@ -202,16 +202,12 @@ entries_for_cc_in_submission <- inner_join(submission_final_df,entries_for_cc, b
 ## modified: any cases that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 additional_intervar_cases <-  filter(clinvar_anno_vcf_df, final_call!="Benign",final_call!="Pathogenic", final_call != "Likely_benign",final_call!="Likely_pathogenic", final_call != "Uncertain_significance")
 
-## remove variants that we found in the submission file that were 1NR
-additional_intervar_cases <- anti_join(additional_intervar_cases, entries_for_cc_in_submission, by='vcf_id')
-
 clinvar_anti_join_vcf_df <- clinvar_anti_join_vcf_df %>% mutate(QUAL = as.character(QUAL))
 
 ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
 entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0", na.rm = TRUE) %>% bind_rows((additional_intervar_cases)) %>% bind_rows(clinvar_anti_join_vcf_df)
 
-## get vcf ids that need intervar run
-vcf_to_run_intervar <- entries_for_intervar$vcf_id
+
 
 ## get multianno file to add by correct vcf_id
 multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>% 
@@ -254,6 +250,7 @@ entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_
   dplyr::rename("Intervar_evidence"=`InterVar: InterVar and Evidence`)
 
 
+## remove variants that we found in the submission file that were 1NR for intervar adjustment 
 clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%  anti_join(entries_for_cc_in_submission, by="vcf_id") %>%
   ## add column for individual scores that will be re-calculated if we need to adjust using autoPVS1 result
   
@@ -278,6 +275,9 @@ autopvs1_results    <-  read_tsv(input_autopvs1_file, col_names = TRUE) %>%
     vcf_id = str_replace_all(vcf_id, "chr", "")
   ) %>%
   dplyr::filter(vcf_id %in% clinvar_anno_intervar_vcf_df$vcf_id)
+
+## get vcf ids that need intervar run
+vcf_to_run_intervar <- clinvar_anno_intervar_vcf_df$vcf_id
 
 ## join all three tables together based on variant id that need intervar run
 combined_tab_for_intervar <- autopvs1_results %>%
