@@ -1,6 +1,6 @@
 ---
 name: Report an issue or bug
-about: Use this to ask a question about or report an issue with annoFuse
+about: Use this to ask a question about or report an issue with AutoGVP
 title: 'Bug:'
 labels: bug
 assignees: ''
