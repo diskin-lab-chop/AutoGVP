@@ -78,36 +78,36 @@ Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
 address_conflicting_intrep <- function(clinvar_anno_vcf_df)  
 {## if conflicting intrep. take the call with most calls in CLNSIGCONF field
-    for(i in 1:nrow(clinvar_anno_vcf_df)) 
+  for(i in 1:nrow(clinvar_anno_vcf_df)) 
+  {
+    entry <- clinvar_anno_vcf_df[i,]
+    if(entry$Stars != "1NR")
     {
-      entry <- clinvar_anno_vcf_df[i,]
-      if(entry$Stars != "1NR")
-      {
-        next;
-      }
-      
-      conf_section <-str_match(entry$INFO, "CLNSIGCONF\\=.+\\;CLNVC")  ## part to parse and count calls
-      call_names <- c("Pathogenic","Likely_pathogenic","Benign","Likely_benign","Uncertain_significance")
-        
-      P  <-  (str_match(conf_section, "Pathogenic\\((\\d+)\\)")[,2])
-      LP <-  (str_match(conf_section, "Likely_pathogenic\\((\\d+)\\)")[,2])
-      B  <-  (str_match(conf_section, "Benign\\((\\d+)\\)")[,2])
-      LB <-  (str_match(conf_section, "Likely_benign\\((\\d+)\\)")[,2])
-      U  <-  (str_match(conf_section, "Uncertain_significance\\((\\d+)\\)")[,2])
-        
-      ## make vector out of possible calls to get max 
-      calls          <- c(P,LP,B,LB,U)
-        
-      if ( length( which( calls == max(calls,na.rm = TRUE) ) ) > 1 )
-      {
-        next;
-      }
-      
-      highest_ind    <- which.max(calls)
-      consensus_call <- call_names[highest_ind]
-        
-      clinvar_anno_vcf_df[i,]$final_call = consensus_call  
+      next;
     }
+    
+    conf_section <-str_match(entry$INFO, "CLNSIGCONF\\=.+\\;CLNVC")  ## part to parse and count calls
+    call_names <- c("Pathogenic","Likely_pathogenic","Benign","Likely_benign","Uncertain_significance")
+    
+    P  <-  (str_match(conf_section, "Pathogenic\\((\\d+)\\)")[,2])
+    LP <-  (str_match(conf_section, "Likely_pathogenic\\((\\d+)\\)")[,2])
+    B  <-  (str_match(conf_section, "Benign\\((\\d+)\\)")[,2])
+    LB <-  (str_match(conf_section, "Likely_benign\\((\\d+)\\)")[,2])
+    U  <-  (str_match(conf_section, "Uncertain_significance\\((\\d+)\\)")[,2])
+    
+    ## make vector out of possible calls to get max 
+    calls          <- c(P,LP,B,LB,U)
+    
+    if ( length( which( calls == max(calls,na.rm = TRUE) ) ) > 1 )
+    {
+      next;
+    }
+    
+    highest_ind    <- which.max(calls)
+    consensus_call <- call_names[highest_ind]
+    
+    clinvar_anno_vcf_df[i,]$final_call = consensus_call  
+  }
   return(clinvar_anno_vcf_df)  
 }
 
@@ -141,17 +141,18 @@ clinvar_anno_vcf_df <- vcf_input %>%
     vcf_id = str_replace_all(vcf_id, "chr", ""),
     #add star annotations to clinVar results table based on filters // ## default version
     Stars = ifelse(grepl('CLNREVSTAT\\=criteria_provided,_single_submitter', INFO), "1",
-                  ifelse(grepl('CLNREVSTAT\\=criteria_provided,_multiple_submitters', INFO), "2",
-                    ifelse(grepl('CLNREVSTAT\\=reviewed_by_expert_panel', INFO), "3",
-                      ifelse(grepl('CLNREVSTAT\\=practice_guideline', INFO), "4",
-                        ifelse(grepl('CLNREVSTAT\\=criteria_provided,_conflicting_interpretations', INFO), "1NR", "0")
-                               )))),
+                   ifelse(grepl('CLNREVSTAT\\=criteria_provided,_multiple_submitters', INFO), "2",
+                          ifelse(grepl('CLNREVSTAT\\=reviewed_by_expert_panel', INFO), "3",
+                                 ifelse(grepl('CLNREVSTAT\\=practice_guideline', INFO), "4",
+                                        ifelse(grepl('CLNREVSTAT\\=criteria_provided,_conflicting_interpretations', INFO), "1NR", "0")
+                                 )))),
     ## extract the calls and put in own column
     final_call = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
   )
 
 ## if conflicting intrep. take the call with most calls in CLNSIGCONF field
 clinvar_anno_vcf_df <- address_conflicting_intrep(clinvar_anno_vcf_df)
+
 
 ## get latest calls from submission files 
 submission_summary_df <- vroom(input_summary_submission_file, comment = "#",delim="\t", 
@@ -160,43 +161,43 @@ submission_summary_df <- vroom(input_summary_submission_file, comment = "#",deli
                                              "ReviewStatus","CollectionMethod","OriginCounts","Submitter",
                                              "SCV","SubmittedGeneSymbol","ExplanationOfInterpretation"),
                                show_col_types = FALSE) %>% dplyr::select("VariationID","ClinicalSignificance") %>% 
-                              group_by(VariationID) %>%
-                              arrange(ClinicalSignificance) %>%
-                              dplyr::slice(1) %>%
-                              ungroup
-  
+  group_by(VariationID) %>%
+  arrange(ClinicalSignificance) %>%
+  dplyr::slice(1) %>%
+  ungroup
+
 submission_info_df  <-  vroom(input_variant_summary, delim="\t",
                               col_types = c(ReferenceAlleleVCF = "c",AlternateAlleleVCF= "c",PositionVCF="i",VariationID="n" ),
                               show_col_types = FALSE) %>% 
-    
-    #add vcf id column  
-    dplyr::mutate(
-      vcf_id= str_remove_all(paste (Chromosome,"-",PositionVCF,"-",ReferenceAlleleVCF,"-",AlternateAlleleVCF), " "),
-      vcf_id = str_replace_all(vcf_id, "chr", ""),
-      VariationID=as.double(noquote(VariationID))
-      )
   
-  ## join submission files to ensure we have vcf id to match with other tables
-  submission_final_df <- inner_join(submission_summary_df,submission_info_df, by="VariationID" )
-  
-  ## filter only those variants that need consensus call and find  call in submission table
-  entries_for_cc <-  filter(clinvar_anno_vcf_df, Stars == "1NR", final_call !="Benign",final_call !="Pathogenic", final_call != "Likely_benign",final_call !="Likely_pathogenic", final_call != "Uncertain_significance")
-  entries_for_cc_in_submission <- inner_join(submission_final_df,entries_for_cc, by="vcf_id") %>% dplyr::mutate(final_call=ClinicalSignificance.x) %>% 
-    dplyr::select(vcf_id,ClinicalSignificance.x,final_call) %>% dplyr::rename("ClinicalSignificance"=ClinicalSignificance.x)
-  
-  
+  #add vcf id column  
+  dplyr::mutate(
+    vcf_id= str_remove_all(paste (Chromosome,"-",PositionVCF,"-",ReferenceAlleleVCF,"-",AlternateAlleleVCF), " "),
+    vcf_id = str_replace_all(vcf_id, "chr", ""),
+    VariationID=as.double(noquote(VariationID))
+  )
+
+## join submission files to ensure we have vcf id to match with other tables
+submission_final_df <- inner_join(submission_summary_df,submission_info_df, by="VariationID" )
+
+## filter only those variants that need consensus call and find  call in submission table
+entries_for_cc <-  filter(clinvar_anno_vcf_df, Stars == "1NR", final_call !="Benign",final_call !="Pathogenic", final_call != "Likely_benign",final_call !="Likely_pathogenic", final_call != "Uncertain_significance")
+entries_for_cc_in_submission <- inner_join(submission_final_df,entries_for_cc, by="vcf_id") %>% dplyr::mutate(final_call=ClinicalSignificance.x) %>% 
+  dplyr::select(vcf_id,ClinicalSignificance.x,final_call) %>% dplyr::rename("ClinicalSignificance"=ClinicalSignificance.x)
+
+
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 ## modified: any cases that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 additional_intervar_cases <-  filter(clinvar_anno_vcf_df, final_call!="Benign",final_call!="Pathogenic", final_call != "Likely_benign",final_call!="Likely_pathogenic", final_call != "Uncertain_significance")
-  
+
 ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
 entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0", na.rm = TRUE) %>% 
   bind_rows((additional_intervar_cases)) #%>% bind_rows(clinvar_anti_join_vcf_df)
 
 ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
 entries_for_intervar <- clinvar_anno_vcf_df %>%
-                        filter(Stars == "0", na.rm = TRUE) %>% 
-                        bind_rows((additional_intervar_cases))
+  filter(Stars == "0", na.rm = TRUE) %>% 
+  bind_rows((additional_intervar_cases))
 
 ## get vcf ids that need intervar run
 vcf_to_run_intervar <- entries_for_intervar$vcf_id
@@ -207,7 +208,7 @@ multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_nam
   dplyr::mutate(
     vcf_id= str_remove_all(paste (Chr,"-",Otherinfo5,"-",Otherinfo7,"-",Otherinfo8), " "),
     vcf_id = str_replace_all(vcf_id, "chr", "")
-    ) %>% 
+  ) %>% 
   group_by(vcf_id) %>%
   arrange(Chr, Start) %>%
   filter(row_number()==1) %>% 
@@ -229,7 +230,9 @@ if( tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df) ) {
 }
 
 ## combine the intervar and multianno tables by the appropriate vcf id
-clinvar_anno_intervar_vcf_df <- dplyr::mutate(multianno_df,clinvar_anno_intervar_vcf_df )  %>% 
+clinvar_anno_intervar_vcf_df <- 
+  dplyr::mutate(multianno_df,clinvar_anno_intervar_vcf_df )  %>% 
+  dplyr::filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id) %>%
   dplyr::select(any_of(c("vcf_id","InterVar: InterVar and Evidence", 
                          "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
                          "CLNSIG", "CLNREVSTAT")))
@@ -264,7 +267,8 @@ autopvs1_results    <-  read_tsv(input_autopvs1_file, col_names = TRUE) %>%
   mutate(
     vcf_id = str_remove_all(paste (vcf_id), " "),
     vcf_id = str_replace_all(vcf_id, "chr", "")
-  ) 
+  ) %>%
+  dplyr::filter(vcf_id %in% clinvar_anno_intervar_vcf_df$vcf_id)
 
 ## join all three tables together based on variant id that need intervar run
 combined_tab_for_intervar <- autopvs1_results %>%
@@ -314,30 +318,30 @@ combined_tab_for_intervar <- autopvs1_results %>%
   
   #if criterion is na then PVS1 = 0;
   mutate(evidencePVS1 = if_else( (criterion == "na") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
-  
-  
-  ## adjust variables based on given rules described in README
-  final_call = ifelse( (evidencePVS1   == 1 &
-                          ( (evidencePS   >= 1) |
-                              (evidencePM   >=2 ) |
-                              (evidencePM   >= 1 & evidencePP ==2) |
-                              (evidencePP   >=2 ) )) , "Pathogenic",
-                       ifelse( (evidencePVS1       == 1 & evidencePS >= 2), "Pathogenic",
-                               ifelse( (evidencePS == 1 &
-                                          (evidencePM >= 3 |
-                                             (evidencePM ==2 & evidencePP >=1 ) |
-                                             (evidencePM == 1 & evidencePP >=4 )) ) , "Pathogenic",
-                                       ifelse( (evidencePVS1 == 1 & evidencePM == 1) |
-                                                 (evidencePS==1 & evidencePM >= 1) |
-                                                 (evidencePS==1 & evidencePP >=2 ) |
-                                                 (evidencePM >= 3) |
-                                                 (evidencePM ==2 & evidencePP>=2 ) |
-                                                 (evidencePM == 1 & evidencePP>=4) , "Likely_pathogenic",
-                                               ifelse( (evidenceBA1 == 1) |
-                                                         (evidenceBS   >= 2), "Benign",
-                                                       ifelse( (evidenceBS == 1 & evidenceBP == 1) |
-                                                                 (evidenceBP   >= 2) , "Likely_benign",  "Uncertain_significance"))))) )
-)
+         
+         
+         ## adjust variables based on given rules described in README
+         final_call = ifelse( (evidencePVS1   == 1 &
+                                 ( (evidencePS   >= 1) |
+                                     (evidencePM   >=2 ) |
+                                     (evidencePM   >= 1 & evidencePP ==2) |
+                                     (evidencePP   >=2 ) )) , "Pathogenic",
+                              ifelse( (evidencePVS1       == 1 & evidencePS >= 2), "Pathogenic",
+                                      ifelse( (evidencePS == 1 &
+                                                 (evidencePM >= 3 |
+                                                    (evidencePM ==2 & evidencePP >=1 ) |
+                                                    (evidencePM == 1 & evidencePP >=4 )) ) , "Pathogenic",
+                                              ifelse( (evidencePVS1 == 1 & evidencePM == 1) |
+                                                        (evidencePS==1 & evidencePM >= 1) |
+                                                        (evidencePS==1 & evidencePP >=2 ) |
+                                                        (evidencePM >= 3) |
+                                                        (evidencePM ==2 & evidencePP>=2 ) |
+                                                        (evidencePM == 1 & evidencePP>=4) , "Likely_pathogenic",
+                                                      ifelse( (evidenceBA1 == 1) |
+                                                                (evidenceBS   >= 2), "Benign",
+                                                              ifelse( (evidenceBS == 1 & evidenceBP == 1) |
+                                                                        (evidenceBP   >= 2) , "Likely_benign",  "Uncertain_significance"))))) )
+  )
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar[,!grepl("Gene|CLN", names(combined_tab_for_intervar))], by="vcf_id" ) 
@@ -403,9 +407,9 @@ results_tab_abridged <- results_tab_abridged %>%
 
 # write out to file
 results_tab_abridged %>% 
-write_tsv(
-  file.path(results_dir, output_tab_abr_file),
-  append = FALSE, 
-  quote = 'none', 
-  col_names = TRUE
-)
+  write_tsv(
+    file.path(results_dir, output_tab_abr_file),
+    append = FALSE, 
+    quote = 'none', 
+    col_names = TRUE
+  )

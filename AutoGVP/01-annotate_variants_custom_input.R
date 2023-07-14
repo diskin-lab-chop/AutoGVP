@@ -237,7 +237,9 @@ if( tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df) ) {
 }
 
 ## combine the intervar and multianno tables by the appropriate vcf id
-clinvar_anno_intervar_vcf_df <- dplyr::mutate(multianno_df,clinvar_anno_intervar_vcf_df )  %>% 
+clinvar_anno_intervar_vcf_df <- 
+  dplyr::mutate(multianno_df,clinvar_anno_intervar_vcf_df )  %>% 
+  dplyr::filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id) %>%
   dplyr::select(any_of(c("vcf_id","InterVar: InterVar and Evidence", 
                          "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
                          "CLNSIG", "CLNREVSTAT")))
@@ -272,7 +274,8 @@ autopvs1_results    <-  read_tsv(input_autopvs1_file, col_names = TRUE) %>%
   mutate(
     vcf_id = str_remove_all(paste (vcf_id), " "),
     vcf_id = str_replace_all(vcf_id, "chr", "")
-  ) 
+  ) %>%
+  dplyr::filter(vcf_id %in% clinvar_anno_intervar_vcf_df$vcf_id)
 
 ## join all three tables together based on variant id that need intervar run
 combined_tab_for_intervar <- autopvs1_results %>%
