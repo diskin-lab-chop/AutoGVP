@@ -202,6 +202,8 @@ entries_for_cc_in_submission <- inner_join(submission_final_df,entries_for_cc, b
 ## modified: any cases that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 additional_intervar_cases <-  filter(clinvar_anno_vcf_df, final_call!="Benign",final_call!="Pathogenic", final_call != "Likely_benign",final_call!="Likely_pathogenic", final_call != "Uncertain_significance")
 
+## remove variants that we found in the submission file that were 1NR
+additional_intervar_cases <- anti_join(additional_intervar_cases, entries_for_cc_in_submission, by='vcf_id')
 
 clinvar_anti_join_vcf_df <- clinvar_anti_join_vcf_df %>% mutate(QUAL = as.character(QUAL))
 
