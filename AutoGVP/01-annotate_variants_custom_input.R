@@ -81,18 +81,20 @@ Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
 address_ambiguous_calls <- function(results_tab_abridged)
 { ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
-  for(i in 1:nrow(results_tab_abridged)) {
-    entry <- results_tab_abridged[i,]
-    if(is.na(entry$final_call) || (entry$final_call !="Pathogenic" && 
-                                   entry$final_call != "Likely_benign" &&  entry$final_call !="Likely_pathogenic"
-                                   && entry$final_call != "Uncertain_significance"  &&  entry$final_call !="Benign"  
-                                   &&  entry$final_call !="Uncertain significance"  &&  entry$final_call !="Likely benign") )
-    {
-      
-      new_call <- str_match(results_tab_abridged[i,]$Intervar_evidence, "InterVar\\:\\s(\\w+\\s\\w+)*")[,2]
-      results_tab_abridged[i,]$final_call = new_call
-    }
-  }
+  
+  results_tab_abridged <- results_tab_abridged %>%
+    dplyr::mutate(new_call = case_when(
+      is.na(final_call) | (final_call !="Pathogenic" & 
+                             final_call != "Likely_benign" &  final_call !="Likely_pathogenic"
+                           & final_call != "Uncertain_significance"  &  final_call !="Benign"  
+                           &  final_call !="Uncertain significance"  &  final_call !="Likely benign") ~ str_match(Intervar_evidence, "InterVar\\:\\s(\\w+\\s\\w+)*")[,2],
+      TRUE ~ NA_character_
+    )) %>%
+    dplyr::mutate(final_call = case_when(
+      !is.na(new_call) ~ new_call,
+      TRUE ~ final_call
+    )) %>%
+    dplyr::select(-new_call)
   
   return(results_tab_abridged)
 }
@@ -132,14 +134,14 @@ address_conflicting_intrep <- function(clinvar_anno_vcf_df)
 }
 
 ## make vcf dataframe and add vcf_if column 
-vcf_df  <-  vroom(input_clinVar_file, comment = "#",delim="\t", col_names = c("CHROM","POS","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), trim_ws = TRUE, show_col_types = FALSE) %>%
+vcf_df  <-  vroom(input_vcf_file, comment = "#",delim="\t", col_names = c("CHROM","POS","ID","REF","ALT","QUAL","FILTER","INFO","FORMAT","Sample"), trim_ws = TRUE, show_col_types = FALSE) %>%
             mutate(
               vcf_id= str_remove_all(paste (CHROM,"-",POS,"-",REF,"-",ALT), " "), 
               vcf_id = str_replace_all(vcf_id, "chr", "")
             )
 
 ## add clinvar table to this (INFO)
-clinvar_anno_vcf_df  <- vroom("/Users/naqvia/Documents/GitHub/pathogenicity-assessment/AutoGVP/input/clinvar.vcf.gz", comment = "#", delim="\t", col_names = c("CHROM","POS","ID","REF","ALT","QUAL","FILTER","INFO"),trim_ws = TRUE, show_col_types = FALSE) %>%
+clinvar_anno_vcf_df  <- vroom(input_clinVar_file, comment = "#", delim="\t", col_names = c("CHROM","POS","ID","REF","ALT","QUAL","FILTER","INFO"),trim_ws = TRUE, show_col_types = FALSE) %>%
                          #add vcf id column  
                          mutate(vcf_id= str_remove_all(paste (CHROM,"-",POS,"-",REF,"-",ALT), " ")) %>% 
                          semi_join(vcf_df, by="vcf_id") %>%  
@@ -179,8 +181,7 @@ submission_info_df  <-  vroom(input_variant_summary, delim="\t",
                           group_by(VariationID) %>%
                           arrange(LastEvaluated) %>%
                           dplyr::slice(1) %>%
-                          ungroup %>% 
-                          dplyr::filter(vcf_id %in% clinvar_anno_intervar_vcf_df$vcf_id)
+                          ungroup()
 
 submission_summary_df <- vroom(input_submission_file, comment = "#",delim="\t", 
                               col_names = c("VariationID","ClinicalSignificance","DateLastEvaluated",       
@@ -191,8 +192,7 @@ submission_summary_df <- vroom(input_submission_file, comment = "#",delim="\t",
                               group_by(VariationID) %>%
                               arrange(ClinicalSignificance) %>%
                               dplyr::slice(1) %>%
-                              ungroup %>% 
-                              dplyr::filter(VariationID %in% submission_info_df$VariationID)
+                              ungroup()
 
 ## join submission files to ensure we have vcf id to match with other tables
 submission_final_df <- inner_join(submission_summary_df,submission_info_df, by="VariationID" )
@@ -223,7 +223,7 @@ multianno_df  <-  vroom(input_multianno_file, delim="\t",trim_ws = TRUE, col_nam
   group_by(vcf_id) %>%
   arrange(Chr, Start) %>%
   filter(row_number()==1) %>% 
-  ungroup
+  ungroup()
 
 ## add intervar table
 clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws = TRUE, col_names = TRUE, show_col_types = TRUE) %>% 
@@ -232,7 +232,7 @@ clinvar_anno_intervar_vcf_df  <-  vroom(input_intervar_file, delim="\t",trim_ws 
   group_by(var_id) %>%
   arrange(`#Chr`, Start) %>%
   filter(row_number()==1) %>% 
-  ungroup
+  ungroup()
 
 ## exit if the total number of variants differ in these two tables to ensure we annotate with the correct vcf so we can match back to clinVar and other tables
 if( tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df) ) {
@@ -290,7 +290,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
                          "InterVar: InterVar and Evidence", "consequence", "criterion", "evidencePVS1", 
                          "evidenceBA1", "evidencePS", "evidencePM", "evidencePP", "evidenceBS", "evidenceBP"))) 
 
-combined_tab_for_intervar_cc_removed <- anti_join(entries_for_cc_in_submission, by="vcf_id") %>% 
+combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_for_intervar,entries_for_cc_in_submission, by="vcf_id") %>% 
   
   ## indicate if recalculated 
   dplyr::mutate(
