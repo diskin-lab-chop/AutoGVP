@@ -277,8 +277,7 @@ autopvs1_results    <-  read_tsv(input_autopvs1_file, col_names = TRUE) %>%
   mutate(
     vcf_id = str_remove_all(paste (vcf_id), " "),
     vcf_id = str_replace_all(vcf_id, "chr", "")
-  ) #%>%
-  #dplyr::filter(vcf_id %in% clinvar_anno_intervar_vcf_df$vcf_id)
+  )
 
 ## join all three tables together based on variant id that need intervar run
 combined_tab_for_intervar <- autopvs1_results %>%
@@ -288,10 +287,9 @@ combined_tab_for_intervar <- autopvs1_results %>%
                          "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
                          "CLNSIG", "CLNREVSTAT", 
                          "InterVar: InterVar and Evidence", "consequence", "criterion", "evidencePVS1", 
-                         "evidenceBA1", "evidencePS", "evidencePM", "evidencePP", "evidenceBS", "evidenceBP"))) 
+                         "evidenceBA1", "evidencePS", "evidencePM", "evidencePP", "evidenceBS", "evidenceBP")))
 
 combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_for_intervar,entries_for_cc_in_submission, by="vcf_id") %>% 
-  
   ## indicate if recalculated 
   dplyr::mutate(
     intervar_adjusted_call = if_else( evidencePVS1 == 0, "No", "Yes"),
