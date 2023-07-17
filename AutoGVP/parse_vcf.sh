@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-vcf_file=test_VEP.vcf
+vcf_file=$1
 
 ## name output file
 vcf_parsed_file=${vcf_file%.vcf*}."parsed.vcf"
