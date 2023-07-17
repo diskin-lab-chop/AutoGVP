@@ -81,20 +81,18 @@ Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
 address_ambiguous_calls <- function(results_tab_abridged)
 { ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
-  
-  results_tab_abridged <- results_tab_abridged %>%
-    dplyr::mutate(new_call = case_when(
-      is.na(final_call) | (final_call !="Pathogenic" & 
-                             final_call != "Likely_benign" &  final_call !="Likely_pathogenic"
-                           & final_call != "Uncertain_significance"  &  final_call !="Benign"  
-                           &  final_call !="Uncertain significance"  &  final_call !="Likely benign") ~ str_match(Intervar_evidence, "InterVar\\:\\s(\\w+\\s\\w+)*")[,2],
-      TRUE ~ NA_character_
-    )) %>%
-    dplyr::mutate(final_call = case_when(
-      !is.na(new_call) ~ new_call,
-      TRUE ~ final_call
-    )) %>%
-    dplyr::select(-new_call)
+  for(i in 1:nrow(results_tab_abridged)) {
+    entry <- results_tab_abridged[i,]
+    if(is.na(entry$final_call) || (entry$final_call !="Pathogenic" && 
+                                   entry$final_call != "Likely_benign" &&  entry$final_call !="Likely_pathogenic"
+                                   && entry$final_call != "Uncertain_significance"  &&  entry$final_call !="Benign"  
+                                   &&  entry$final_call !="Uncertain significance"  &&  entry$final_call !="Likely benign") )
+    {
+      
+      new_call <- str_match(results_tab_abridged[i,]$Intervar_evidence, "InterVar\\:\\s(\\w+\\s\\w+)*")[,2]
+      results_tab_abridged[i,]$final_call = new_call
+    }
+  }
   
   return(results_tab_abridged)
 }
@@ -168,17 +166,6 @@ clinvar_anti_join_vcf_df  <- anti_join(vcf_df, clinvar_anno_vcf_df, by="vcf_id")
   dplyr::rename(rs_id = ID)
 
 ## get latest calls from submission files 
-submission_summary_df <- vroom(input_submission_file, comment = "#",delim="\t", 
-                               col_names = c("VariationID","ClinicalSignificance","DateLastEvaluated",       
-                                             "Description","SubmittedPhenotypeInfo","ReportedPhenotypeInfo",   
-                                             "ReviewStatus","CollectionMethod","OriginCounts","Submitter",
-                                             "SCV","SubmittedGeneSymbol","ExplanationOfInterpretation"),
-                               show_col_types = FALSE) %>% dplyr::select("VariationID","ClinicalSignificance") %>% 
-                                group_by(VariationID) %>%
-                                arrange(DateLastEvaluated) %>%
-                                dplyr::slice(1) %>%
-                                ungroup
-
 submission_info_df  <-  vroom(input_variant_summary, delim="\t",
                               col_types = c(ReferenceAlleleVCF = "c",AlternateAlleleVCF= "c",PositionVCF="i",VariationID="n" ),
                               show_col_types = FALSE) %>% 
@@ -192,7 +179,20 @@ submission_info_df  <-  vroom(input_variant_summary, delim="\t",
                           group_by(VariationID) %>%
                           arrange(LastEvaluated) %>%
                           dplyr::slice(1) %>%
-                          ungroup
+                          ungroup %>% 
+                          dplyr::filter(vcf_id %in% clinvar_anno_intervar_vcf_df$vcf_id)
+
+submission_summary_df <- vroom(input_submission_file, comment = "#",delim="\t", 
+                              col_names = c("VariationID","ClinicalSignificance","DateLastEvaluated",       
+                                           "Description","SubmittedPhenotypeInfo","ReportedPhenotypeInfo",   
+                                           "ReviewStatus","CollectionMethod","OriginCounts","Submitter",
+                                           "SCV","SubmittedGeneSymbol","ExplanationOfInterpretation"),
+                              show_col_types = FALSE) %>% dplyr::select("VariationID","ClinicalSignificance") %>% 
+                              group_by(VariationID) %>%
+                              arrange(ClinicalSignificance) %>%
+                              dplyr::slice(1) %>%
+                              ungroup %>% 
+                              dplyr::filter(VariationID %in% submission_info_df$VariationID)
 
 ## join submission files to ensure we have vcf id to match with other tables
 submission_final_df <- inner_join(submission_summary_df,submission_info_df, by="VariationID" )
@@ -204,13 +204,13 @@ entries_for_cc_in_submission <- inner_join(submission_final_df,entries_for_cc, b
 
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 ## modified: any cases that do NOT have the B, LB, P, LP, VUS call must also go to intervar
-additional_intervar_cases <-  filter(clinvar_anno_vcf_df, final_call!="Benign",final_call!="Pathogenic", final_call != "Likely_benign",final_call!="Likely_pathogenic", final_call != "Uncertain_significance")
+additional_intervar_cases <-  filter(clinvar_anno_vcf_df, final_call!="Benign",final_call!="Pathogenic", final_call != "Likely_benign",final_call!="Likely_pathogenic", final_call != "Uncertain_significance") %>% anti_join(entries_for_cc_in_submission,by="vcf_id")
 
 clinvar_anti_join_vcf_df <- clinvar_anti_join_vcf_df %>% mutate(QUAL = as.character(QUAL))
 
 ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
-entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0", na.rm = TRUE) %>% bind_rows((additional_intervar_cases)) %>% bind_rows(clinvar_anti_join_vcf_df) #%>% anti_join(entries_for_cc_in_submission, by="vcf_id")
-
+entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0", na.rm = TRUE) %>% bind_rows((additional_intervar_cases)) %>% bind_rows(clinvar_anti_join_vcf_df) 
+  
 ## get vcf ids that need intervar run
 vcf_to_run_intervar <- entries_for_intervar$vcf_id
 
@@ -288,8 +288,9 @@ combined_tab_for_intervar <- autopvs1_results %>%
                          "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
                          "CLNSIG", "CLNREVSTAT", 
                          "InterVar: InterVar and Evidence", "consequence", "criterion", "evidencePVS1", 
-                         "evidenceBA1", "evidencePS", "evidencePM", "evidencePP", "evidenceBS", "evidenceBP"))) %>% 
-  anti_join(entries_for_cc_in_submission, by="vcf_id") %>% 
+                         "evidenceBA1", "evidencePS", "evidencePM", "evidencePP", "evidenceBS", "evidenceBP"))) 
+
+combined_tab_for_intervar_cc_removed <- anti_join(entries_for_cc_in_submission, by="vcf_id") %>% 
   
   ## indicate if recalculated 
   dplyr::mutate(
@@ -356,7 +357,7 @@ combined_tab_for_intervar <- autopvs1_results %>%
 
 
 ## merge tables together (clinvar and intervar) and write to file
-master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar[,!grepl("Gene|CLN", names(combined_tab_for_intervar))], by="vcf_id" ) 
+master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar[,!grepl("Gene|CLN", names(combined_tab_for_intervar))], by="vcf_id" ) %>% full_join(combined_tab_for_intervar_cc_removed[,!grepl("Gene|CLN", names(combined_tab_for_intervar_cc_removed))], by="vcf_id" )
 master_tab <- master_tab %>% 
   dplyr::mutate(
     intervar_adjusted_call = coalesce(intervar_adjusted_call, "Not adjusted, clinVar"),
