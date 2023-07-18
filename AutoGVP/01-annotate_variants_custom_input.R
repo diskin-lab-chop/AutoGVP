@@ -191,7 +191,7 @@ submission_summary_df <- vroom(input_submission_file, comment = "#",delim="\t",
                               show_col_types = FALSE) %>% dplyr::select("VariationID","ClinicalSignificance") %>% 
                               group_by(VariationID) %>%
                               #arrange(ClinicalSignificance) %>%
-                              dplyr::slice(1) %>%
+                               dplyr::slice_tail(n=1)%>%
                               ungroup()
 
 ## join submission files to ensure we have vcf id to match with other tables
