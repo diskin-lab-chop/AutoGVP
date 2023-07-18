@@ -190,7 +190,7 @@ submission_summary_df <- vroom(input_submission_file, comment = "#",delim="\t",
                                            "SCV","SubmittedGeneSymbol","ExplanationOfInterpretation"),
                               show_col_types = FALSE) %>% dplyr::select("VariationID","ClinicalSignificance") %>% 
                               group_by(VariationID) %>%
-                              arrange(ClinicalSignificance) %>%
+                              #arrange(ClinicalSignificance) %>%
                               dplyr::slice(1) %>%
                               ungroup()
 
