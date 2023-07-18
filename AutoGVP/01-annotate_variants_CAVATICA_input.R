@@ -171,30 +171,36 @@ clinvar_anno_vcf_df <- address_conflicting_intrep(clinvar_anno_vcf_df)
 
 
 ## get latest calls from submission files
-submission_info_df  <-  vroom(input_variant_summary, delim="\t",
-                              col_types = c(ReferenceAlleleVCF = "c",AlternateAlleleVCF= "c",PositionVCF="i",VariationID="n" ),
-                              show_col_types = FALSE) %>%
-  
-  #add vcf id column
+submission_info_df <- vroom(input_variant_summary,
+  delim = "\t",
+  col_types = c(ReferenceAlleleVCF = "c", AlternateAlleleVCF = "c", PositionVCF = "i", VariationID = "n"),
+  show_col_types = FALSE
+) %>%
+  # add vcf id column
   dplyr::mutate(
-    vcf_id= str_remove_all(paste (Chromosome,"-",PositionVCF,"-",ReferenceAlleleVCF,"-",AlternateAlleleVCF), " "),
+    vcf_id = str_remove_all(paste(Chromosome, "-", PositionVCF, "-", ReferenceAlleleVCF, "-", AlternateAlleleVCF), " "),
     vcf_id = str_replace_all(vcf_id, "chr", ""),
-    VariationID=as.double(noquote(VariationID))
+    VariationID = as.double(noquote(VariationID))
   ) %>%
   group_by(VariationID) %>%
   arrange(LastEvaluated) %>%
-  dplyr::slice_tail(n=1) %>%
+  dplyr::slice_tail(n = 1) %>%
   ungroup()
 
-submission_summary_df <- vroom(input_submission_file, comment = "#",delim="\t",
-                               col_names = c("VariationID","ClinicalSignificance","DateLastEvaluated",
-                                             "Description","SubmittedPhenotypeInfo","ReportedPhenotypeInfo",
-                                             "ReviewStatus","CollectionMethod","OriginCounts","Submitter",
-                                             "SCV","SubmittedGeneSymbol","ExplanationOfInterpretation"),
-                               show_col_types = FALSE) %>% dplyr::select("VariationID","ClinicalSignificance") %>%
+submission_summary_df <- vroom(input_submission_file,
+  comment = "#", delim = "\t",
+  col_names = c(
+    "VariationID", "ClinicalSignificance", "DateLastEvaluated",
+    "Description", "SubmittedPhenotypeInfo", "ReportedPhenotypeInfo",
+    "ReviewStatus", "CollectionMethod", "OriginCounts", "Submitter",
+    "SCV", "SubmittedGeneSymbol", "ExplanationOfInterpretation"
+  ),
+  show_col_types = FALSE
+) %>%
+  dplyr::select("VariationID", "ClinicalSignificance") %>%
   group_by(VariationID) %>%
-  #arrange(ClinicalSignificance) %>%
-  dplyr::slice_tail(n=1)%>%
+  # arrange(ClinicalSignificance) %>%
+  dplyr::slice_tail(n = 1) %>%
   ungroup()
 
 ## join submission files to ensure we have vcf id to match with other tables
@@ -209,12 +215,14 @@ entries_for_cc_in_submission <- inner_join(submission_final_df, entries_for_cc, 
 
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 ## modified: any cases that do NOT have the B, LB, P, LP, VUS call must also go to intervar
-additional_intervar_cases <-  filter(clinvar_anno_vcf_df, final_call!="Benign",final_call!="Pathogenic", final_call != "Likely_benign",final_call!="Likely_pathogenic", final_call != "Uncertain_significance") %>% anti_join(entries_for_cc_in_submission,by="vcf_id")
+additional_intervar_cases <- filter(clinvar_anno_vcf_df, final_call != "Benign", final_call != "Pathogenic", final_call != "Likely_benign", final_call != "Likely_pathogenic", final_call != "Uncertain_significance") %>% anti_join(entries_for_cc_in_submission, by = "vcf_id")
 
 clinvar_anti_join_vcf_df <- clinvar_anti_join_vcf_df %>% mutate(QUAL = as.character(QUAL))
 
 ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
-entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0", na.rm = TRUE) %>% bind_rows((additional_intervar_cases)) %>% bind_rows(clinvar_anti_join_vcf_df)
+entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0", na.rm = TRUE) %>%
+  bind_rows((additional_intervar_cases)) %>%
+  bind_rows(clinvar_anti_join_vcf_df)
 
 ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
 entries_for_intervar <- clinvar_anno_vcf_df %>%
@@ -233,7 +241,7 @@ multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_na
   ) %>%
   group_by(vcf_id) %>%
   arrange(Chr, Start) %>%
-  filter(row_number()==1) %>%
+  filter(row_number() == 1) %>%
   ungroup()
 
 ## add intervar table
@@ -242,7 +250,7 @@ clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws
   dplyr::mutate(var_id = str_remove_all(paste(`#Chr`, "-", Start, "-", End, "-", Ref, "-", Alt), " ")) %>%
   group_by(var_id) %>%
   arrange(`#Chr`, Start) %>%
-  filter(row_number()==1) %>%
+  filter(row_number() == 1) %>%
   ungroup()
 
 
@@ -295,31 +303,33 @@ autopvs1_results <- read_tsv(input_autopvs1_file, col_names = TRUE) %>%
     vcf_id = str_replace_all(vcf_id, "chr", "")
   )
 
-clinvar_anno_intervar_vcf_df <- full_join(clinvar_anno_intervar_vcf_df,clinvar_anti_join_vcf_df, by="vcf_id")
+clinvar_anno_intervar_vcf_df <- full_join(clinvar_anno_intervar_vcf_df, clinvar_anti_join_vcf_df, by = "vcf_id")
 
 
 ## add variants that had/did not have clinVar entry for intervar run
-combined_tab_with_vcf_clinvar <-  autopvs1_results %>%
-  inner_join(clinvar_anno_intervar_vcf_df, by="vcf_id") %>%
+combined_tab_with_vcf_clinvar <- autopvs1_results %>%
+  inner_join(clinvar_anno_intervar_vcf_df, by = "vcf_id") %>%
   dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id)
 
 ## add variants that did not have clinVar entry
-combined_tab_with_vcf_anticlinvar <-  autopvs1_results %>%
-  inner_join(clinvar_anti_join_vcf_df, by="vcf_id")
+combined_tab_with_vcf_anticlinvar <- autopvs1_results %>%
+  inner_join(clinvar_anti_join_vcf_df, by = "vcf_id")
 
-combined_tab_for_intervar <- bind_rows(combined_tab_with_vcf_clinvar) %>% bind_rows(combined_tab_with_vcf_anticlinvar) %>%
-  dplyr::select(any_of(c("vcf_id",
-                         "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
-                         "CLNSIG", "CLNREVSTAT",
-                         "InterVar: InterVar and Evidence", "consequence", "criterion", "evidencePVS1",
-                         "evidenceBA1", "evidencePS", "evidencePM", "evidencePP", "evidenceBS", "evidenceBP")))
+combined_tab_for_intervar <- bind_rows(combined_tab_with_vcf_clinvar) %>%
+  bind_rows(combined_tab_with_vcf_anticlinvar) %>%
+  dplyr::select(any_of(c(
+    "vcf_id",
+    "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
+    "CLNSIG", "CLNREVSTAT",
+    "InterVar: InterVar and Evidence", "consequence", "criterion", "evidencePVS1",
+    "evidenceBA1", "evidencePS", "evidencePM", "evidencePP", "evidenceBS", "evidenceBP"
+  )))
 
 
 
-combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_for_intervar,entries_for_cc_in_submission, by="vcf_id") %>%
+combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_for_intervar, entries_for_cc_in_submission, by = "vcf_id") %>%
   ## indicate if recalculated
-  mutate(intervar_adjusted_call = if_else( (evidencePVS1 == 0), "No", "Yes"))  %>%
-
+  mutate(intervar_adjusted_call = if_else((evidencePVS1 == 0), "No", "Yes")) %>%
   ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
   # if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
   mutate(evidencePVS1 = if_else((criterion == "NF1" | criterion == "SS1" |
@@ -382,7 +392,7 @@ combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_for_intervar,entr
   )
 
 ## merge tables together (clinvar and intervar) and write to file
-master_tab <- full_join(clinvar_anno_intervar_vcf_df,combined_tab_for_intervar[,!grepl("Gene|CLN", names(combined_tab_for_intervar))], by="vcf_id" ) %>% full_join(combined_tab_for_intervar_cc_removed[,!grepl("Gene|CLN", names(combined_tab_for_intervar_cc_removed))], by="vcf_id" )
+master_tab <- full_join(clinvar_anno_intervar_vcf_df, combined_tab_for_intervar[, !grepl("Gene|CLN", names(combined_tab_for_intervar))], by = "vcf_id") %>% full_join(combined_tab_for_intervar_cc_removed[, !grepl("Gene|CLN", names(combined_tab_for_intervar_cc_removed))], by = "vcf_id")
 
 master_tab <- master_tab %>%
   dplyr::mutate(
