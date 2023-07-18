@@ -180,7 +180,7 @@ submission_info_df  <-  vroom(input_variant_summary, delim="\t",
                             ) %>% 
                           group_by(VariationID) %>%
                           arrange(LastEvaluated) %>%
-                          dplyr::slice(1) %>%
+                          dplyr::slice_tail(n=1) %>%
                           ungroup()
 
 submission_summary_df <- vroom(input_submission_file, comment = "#",delim="\t", 
