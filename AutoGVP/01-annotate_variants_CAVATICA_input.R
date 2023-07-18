@@ -272,18 +272,28 @@ autopvs1_results    <-  read_tsv(input_autopvs1_file, col_names = TRUE) %>%
   mutate(
     vcf_id = str_remove_all(paste (vcf_id), " "),
     vcf_id = str_replace_all(vcf_id, "chr", "")
-  ) %>%
-  dplyr::filter(vcf_id %in% clinvar_anno_intervar_vcf_df$vcf_id)
+  ) 
 
-## join all three tables together based on variant id that need intervar run
-combined_tab_for_intervar <- autopvs1_results %>%
+clinvar_anno_intervar_vcf_df <- full_join(clinvar_anno_intervar_vcf_df,clinvar_anti_join_vcf_df, by="vcf_id")
+
+
+## add variants that had/did not have clinVar entry for intervar run
+combined_tab_with_vcf_clinvar <-  autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by="vcf_id") %>% 
-  dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id) %>%
+  dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id)
+
+## add variants that did not have clinVar entry
+combined_tab_with_vcf_anticlinvar <-  autopvs1_results %>%
+  inner_join(clinvar_anti_join_vcf_df, by="vcf_id") 
+
+combined_tab_for_intervar <- bind_rows(combined_tab_with_vcf_clinvar) %>% bind_rows(combined_tab_with_vcf_anticlinvar) %>%
   dplyr::select(any_of(c("vcf_id", 
                          "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
                          "CLNSIG", "CLNREVSTAT", 
                          "InterVar: InterVar and Evidence", "consequence", "criterion", "evidencePVS1", 
-                         "evidenceBA1", "evidencePS", "evidencePM", "evidencePP", "evidenceBS", "evidenceBP"))) 
+                         "evidenceBA1", "evidencePS", "evidencePM", "evidencePP", "evidenceBS", "evidenceBP")))
+
+
 
 combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_for_intervar,entries_for_cc_in_submission, by="vcf_id") %>% 
   ## indicate if recalculated 
