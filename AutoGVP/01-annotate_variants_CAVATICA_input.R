@@ -174,16 +174,16 @@ clinvar_anno_vcf_df <- address_conflicting_intrep(clinvar_anno_vcf_df)
 submission_info_df  <-  vroom(input_variant_summary, delim="\t",
                               col_types = c(ReferenceAlleleVCF = "c",AlternateAlleleVCF= "c",PositionVCF="i",VariationID="n" ),
                               show_col_types = FALSE) %>%
-
+  
   #add vcf id column
   dplyr::mutate(
-    vcf_id = str_remove_all(paste(Chromosome, "-", PositionVCF, "-", ReferenceAlleleVCF, "-", AlternateAlleleVCF), " "),
+    vcf_id= str_remove_all(paste (Chromosome,"-",PositionVCF,"-",ReferenceAlleleVCF,"-",AlternateAlleleVCF), " "),
     vcf_id = str_replace_all(vcf_id, "chr", ""),
     VariationID=as.double(noquote(VariationID))
   ) %>%
   group_by(VariationID) %>%
   arrange(LastEvaluated) %>%
-  dplyr::slice(1) %>%
+  dplyr::slice_tail(n=1) %>%
   ungroup()
 
 submission_summary_df <- vroom(input_submission_file, comment = "#",delim="\t",
@@ -193,8 +193,8 @@ submission_summary_df <- vroom(input_submission_file, comment = "#",delim="\t",
                                              "SCV","SubmittedGeneSymbol","ExplanationOfInterpretation"),
                                show_col_types = FALSE) %>% dplyr::select("VariationID","ClinicalSignificance") %>%
   group_by(VariationID) %>%
-  arrange(ClinicalSignificance) %>%
-  dplyr::slice(1) %>%
+  #arrange(ClinicalSignificance) %>%
+  dplyr::slice_tail(n=1)%>%
   ungroup()
 
 ## join submission files to ensure we have vcf id to match with other tables
@@ -206,7 +206,6 @@ entries_for_cc_in_submission <- inner_join(submission_final_df, entries_for_cc, 
   dplyr::mutate(final_call = ClinicalSignificance.x) %>%
   dplyr::select(vcf_id, ClinicalSignificance.x, final_call) %>%
   dplyr::rename("ClinicalSignificance" = ClinicalSignificance.x)
-
 
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 ## modified: any cases that do NOT have the B, LB, P, LP, VUS call must also go to intervar
