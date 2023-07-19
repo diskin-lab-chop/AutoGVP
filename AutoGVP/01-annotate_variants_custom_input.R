@@ -214,7 +214,7 @@ submission_summary_df <- vroom(input_submission_file,
 ) %>%
   dplyr::select("VariationID", "ClinicalSignificance", "DateLastEvaluated") %>%
   group_by(VariationID) %>%
-  arrange(mdy(DateLastEvaluated)) %>% 
+  arrange(mdy(DateLastEvaluated)) %>%
   dplyr::slice_tail(n = 1) %>%
   ungroup()
 
@@ -224,7 +224,7 @@ submission_final_df <- inner_join(submission_summary_df, submission_info_df, by 
 ## filter only those variants that need consensus call and find  call in submission table
 entries_for_cc <- filter(clinvar_anno_vcf_df, Stars == "1NR", final_call != "Benign", final_call != "Pathogenic", final_call != "Likely_benign", final_call != "Likely_pathogenic", final_call != "Uncertain_significance")
 
-entries_for_cc_in_submission <- inner_join(submission_final_df, entries_for_cc, by = "vcf_id") %>% 
+entries_for_cc_in_submission <- inner_join(submission_final_df, entries_for_cc, by = "vcf_id") %>%
   dplyr::mutate(final_call = ClinicalSignificance.x) %>%
   dplyr::select(vcf_id, ClinicalSignificance.x, final_call) %>%
   dplyr::rename("ClinicalSignificance" = ClinicalSignificance.x)
@@ -305,7 +305,7 @@ clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>% anti_join(entri
   full_join(clinvar_anno_vcf_df, by = "vcf_id")
 
 
-## add variants not found in clinVar db  
+## add variants not found in clinVar db
 clinvar_anno_intervar_vcf_df <- full_join(clinvar_anno_intervar_vcf_df, clinvar_anti_join_vcf_df, by = "vcf_id")
 
 ## autopvs1 results
@@ -475,4 +475,3 @@ results_tab_abridged %>%
     quote = "none",
     col_names = TRUE
   )
-
