@@ -199,7 +199,7 @@ submission_info_df <- vroom(input_variant_summary,
     VariationID = as.double(noquote(VariationID))
   ) %>%
   group_by(VariationID) %>%
-  arrange(LastEvaluated) %>%
+  arrange(mdy(LastEvaluated)) %>%
   dplyr::slice_tail(n = 1) %>%
   ungroup()
 
@@ -213,9 +213,10 @@ submission_summary_df <- vroom(input_submission_file,
   ),
   show_col_types = FALSE
 ) %>%
-  dplyr::select("VariationID", "ClinicalSignificance") %>%
+  dplyr::select("VariationID", "ClinicalSignificance", "DateLastEvaluated") %>%
   group_by(VariationID) %>%
-  # arrange(ClinicalSignificance) %>%
+  arrange(mdy(DateLastEvaluated)) %>% 
+  arrange(ClinicalSignificance) %>%
   dplyr::slice_tail(n = 1) %>%
   ungroup()
 
@@ -474,3 +475,18 @@ results_tab_abridged %>%
     quote = "none",
     col_names = TRUE
   )
+
+
+
+name <- c("Jon", "Bill", "Maria", "Ben", "Tina")
+date <- c("Oct 02, 2015",
+          "Jan 17, 2019",
+          "Jan 13, 2018",
+          "Oct 17, 2022",
+          "Dec 01, 2020")
+
+df <- data.frame(name, date)
+
+
+df %>% arrange(mdy(df$date))
+
