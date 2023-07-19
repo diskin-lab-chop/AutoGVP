@@ -1,0 +1,4 @@
+vcf_id	SYMBOL	Feature	trans_name	consequence	strength_raw	strength	criterion
+18-9124950-C-T	NDUFV2	NM_021074.5	not_lof	synonymous_variant	Unmet	Unmet	na
+19-1625623-G-A	TCF3	NM_003200.5	not_lof	missense_variant	Unmet	Unmet	na
+19-6707118-G-A	C3	NM_000064.4	not_lof	missense_variant	Unmet	Unmet	na
