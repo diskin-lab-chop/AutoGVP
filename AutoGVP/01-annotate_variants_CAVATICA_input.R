@@ -401,7 +401,7 @@ combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_for_intervar, ent
   )
 
 ## merge tables together (clinvar and intervar) and write to file
-master_tab <- full_join(clinvar_anno_intervar_vcf_df, combined_tab_for_intervar[, !grepl("Gene|CLN", names(combined_tab_for_intervar))], by = "vcf_id") %>% 
+master_tab <- full_join(clinvar_anno_intervar_vcf_df, combined_tab_for_intervar[, !grepl("Gene|CLN", names(combined_tab_for_intervar))], by = "vcf_id") %>%
   full_join(combined_tab_for_intervar_cc_removed[, !grepl("Gene|CLN", names(combined_tab_for_intervar_cc_removed))], by = "vcf_id")
 
 master_tab <- master_tab %>%
@@ -421,7 +421,7 @@ master_tab <- master_tab %>%
   )
 
 ## combine final calls into one choosing the appropriate final call
-master_tab <- master_tab %>% 
+master_tab <- master_tab %>%
   dplyr::mutate(final_call = coalesce(final_call.x, final_call.y))
 
 ## remove older columns
