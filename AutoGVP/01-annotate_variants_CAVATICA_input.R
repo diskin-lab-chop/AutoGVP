@@ -181,9 +181,9 @@ clinvar_anti_join_vcf_df <- anti_join(clinvar_anno_vcf_df, clinvar_anno_vcf_df, 
 ## get latest calls from submission files
 ## get latest calls from submission files
 submission_info_df <- vroom(input_variant_summary,
-                            delim = "\t",
-                            col_types = c(ReferenceAlleleVCF = "c", AlternateAlleleVCF = "c", PositionVCF = "i", VariationID = "n"),
-                            show_col_types = FALSE
+  delim = "\t",
+  col_types = c(ReferenceAlleleVCF = "c", AlternateAlleleVCF = "c", PositionVCF = "i", VariationID = "n"),
+  show_col_types = FALSE
 ) %>%
   # add vcf id column
   dplyr::mutate(
@@ -196,14 +196,14 @@ submission_info_df <- vroom(input_variant_summary,
   ungroup()
 
 submission_summary_df <- vroom(input_submission_file,
-                               comment = "#", delim = "\t",
-                               col_names = c(
-                                 "VariationID", "ClinicalSignificance", "DateLastEvaluated",
-                                 "Description", "SubmittedPhenotypeInfo", "ReportedPhenotypeInfo",
-                                 "ReviewStatus", "CollectionMethod", "OriginCounts", "Submitter",
-                                 "SCV", "SubmittedGeneSymbol", "ExplanationOfInterpretation"
-                               ),
-                               show_col_types = FALSE
+  comment = "#", delim = "\t",
+  col_names = c(
+    "VariationID", "ClinicalSignificance", "DateLastEvaluated",
+    "Description", "SubmittedPhenotypeInfo", "ReportedPhenotypeInfo",
+    "ReviewStatus", "CollectionMethod", "OriginCounts", "Submitter",
+    "SCV", "SubmittedGeneSymbol", "ExplanationOfInterpretation"
+  ),
+  show_col_types = FALSE
 ) %>%
   dplyr::select("VariationID", "ClinicalSignificance", "DateLastEvaluated") %>%
   group_by(VariationID) %>%
