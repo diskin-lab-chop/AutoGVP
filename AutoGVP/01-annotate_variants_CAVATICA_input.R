@@ -179,10 +179,11 @@ clinvar_anti_join_vcf_df <- anti_join(clinvar_anno_vcf_df, clinvar_anno_vcf_df, 
 
 
 ## get latest calls from submission files
+## get latest calls from submission files
 submission_info_df <- vroom(input_variant_summary,
-  delim = "\t",
-  col_types = c(ReferenceAlleleVCF = "c", AlternateAlleleVCF = "c", PositionVCF = "i", VariationID = "n"),
-  show_col_types = FALSE
+                            delim = "\t",
+                            col_types = c(ReferenceAlleleVCF = "c", AlternateAlleleVCF = "c", PositionVCF = "i", VariationID = "n"),
+                            show_col_types = FALSE
 ) %>%
   # add vcf id column
   dplyr::mutate(
@@ -191,23 +192,22 @@ submission_info_df <- vroom(input_variant_summary,
     VariationID = as.double(noquote(VariationID))
   ) %>%
   group_by(VariationID) %>%
-  arrange(LastEvaluated) %>%
   dplyr::slice_tail(n = 1) %>%
   ungroup()
 
-submission_summary_df <- vroom(input_summary_submission_file,
-  comment = "#", delim = "\t",
-  col_names = c(
-    "VariationID", "ClinicalSignificance", "DateLastEvaluated",
-    "Description", "SubmittedPhenotypeInfo", "ReportedPhenotypeInfo",
-    "ReviewStatus", "CollectionMethod", "OriginCounts", "Submitter",
-    "SCV", "SubmittedGeneSymbol", "ExplanationOfInterpretation"
-  ),
-  show_col_types = FALSE
+submission_summary_df <- vroom(input_submission_file,
+                               comment = "#", delim = "\t",
+                               col_names = c(
+                                 "VariationID", "ClinicalSignificance", "DateLastEvaluated",
+                                 "Description", "SubmittedPhenotypeInfo", "ReportedPhenotypeInfo",
+                                 "ReviewStatus", "CollectionMethod", "OriginCounts", "Submitter",
+                                 "SCV", "SubmittedGeneSymbol", "ExplanationOfInterpretation"
+                               ),
+                               show_col_types = FALSE
 ) %>%
-  dplyr::select("VariationID", "ClinicalSignificance") %>%
+  dplyr::select("VariationID", "ClinicalSignificance", "DateLastEvaluated") %>%
   group_by(VariationID) %>%
-  # arrange(ClinicalSignificance) %>%
+  arrange(mdy(DateLastEvaluated)) %>%
   dplyr::slice_tail(n = 1) %>%
   ungroup()
 
@@ -216,6 +216,7 @@ submission_final_df <- inner_join(submission_summary_df, submission_info_df, by 
 
 ## filter only those variants that need consensus call and find  call in submission table
 entries_for_cc <- filter(clinvar_anno_vcf_df, Stars == "1NR", final_call != "Benign", final_call != "Pathogenic", final_call != "Likely_benign", final_call != "Likely_pathogenic", final_call != "Uncertain_significance")
+
 entries_for_cc_in_submission <- inner_join(submission_final_df, entries_for_cc, by = "vcf_id") %>%
   dplyr::mutate(final_call = ClinicalSignificance.x) %>%
   dplyr::select(vcf_id, ClinicalSignificance.x, final_call) %>%
