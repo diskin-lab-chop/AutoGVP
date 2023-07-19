@@ -199,7 +199,6 @@ submission_info_df <- vroom(input_variant_summary,
     VariationID = as.double(noquote(VariationID))
   ) %>%
   group_by(VariationID) %>%
-  arrange(mdy(LastEvaluated)) %>%
   dplyr::slice_tail(n = 1) %>%
   ungroup()
 
@@ -216,7 +215,6 @@ submission_summary_df <- vroom(input_submission_file,
   dplyr::select("VariationID", "ClinicalSignificance", "DateLastEvaluated") %>%
   group_by(VariationID) %>%
   arrange(mdy(DateLastEvaluated)) %>% 
-  arrange(ClinicalSignificance) %>%
   dplyr::slice_tail(n = 1) %>%
   ungroup()
 
@@ -225,7 +223,8 @@ submission_final_df <- inner_join(submission_summary_df, submission_info_df, by 
 
 ## filter only those variants that need consensus call and find  call in submission table
 entries_for_cc <- filter(clinvar_anno_vcf_df, Stars == "1NR", final_call != "Benign", final_call != "Pathogenic", final_call != "Likely_benign", final_call != "Likely_pathogenic", final_call != "Uncertain_significance")
-entries_for_cc_in_submission <- inner_join(submission_final_df, entries_for_cc, by = "vcf_id") %>%
+
+entries_for_cc_in_submission <- inner_join(submission_final_df, entries_for_cc, by = "vcf_id") %>% 
   dplyr::mutate(final_call = ClinicalSignificance.x) %>%
   dplyr::select(vcf_id, ClinicalSignificance.x, final_call) %>%
   dplyr::rename("ClinicalSignificance" = ClinicalSignificance.x)
@@ -306,15 +305,16 @@ clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>% anti_join(entri
   full_join(clinvar_anno_vcf_df, by = "vcf_id")
 
 
+## add variants not found in clinVar db  
+clinvar_anno_intervar_vcf_df <- full_join(clinvar_anno_intervar_vcf_df, clinvar_anti_join_vcf_df, by = "vcf_id")
+
 ## autopvs1 results
 autopvs1_results <- read_tsv(input_autopvs1_file, col_names = TRUE) %>%
   mutate(
     vcf_id = str_remove_all(paste(vcf_id), " "),
     vcf_id = str_replace_all(vcf_id, "chr", "")
-  )
-
-
-clinvar_anno_intervar_vcf_df <- full_join(clinvar_anno_intervar_vcf_df, clinvar_anti_join_vcf_df, by = "vcf_id")
+  ) %>%
+  dplyr::filter(vcf_id %in% clinvar_anno_intervar_vcf_df$vcf_id)
 
 ## add variants that had/did not have clinVar entry for intervar run
 combined_tab_with_vcf_clinvar <- autopvs1_results %>%
@@ -475,18 +475,4 @@ results_tab_abridged %>%
     quote = "none",
     col_names = TRUE
   )
-
-
-
-name <- c("Jon", "Bill", "Maria", "Ben", "Tina")
-date <- c("Oct 02, 2015",
-          "Jan 17, 2019",
-          "Jan 13, 2018",
-          "Oct 17, 2022",
-          "Dec 01, 2020")
-
-df <- data.frame(name, date)
-
-
-df %>% arrange(mdy(df$date))
 
