@@ -117,7 +117,7 @@ while(<FIL>)
   next if $_=~/^#/;
   next if $_=~/Start/;
 
-  if($_=~/(chr.+)\t(\d+)\t(rs\d+|\.)\t/)
+  if($_=~/(chr(\d+)|[XY])\t(\d+)\t(rs\d+|\.)\t/)
   {
     my @cols = split;
     my $chr = $1;
