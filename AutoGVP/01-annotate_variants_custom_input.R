@@ -278,7 +278,7 @@ clinvar_anno_intervar_vcf_df <-
     "CLNSIG", "CLNREVSTAT"
   )))
 
-## populate consensus call variants with invervar info 
+## populate consensus call variants with invervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df, entries_for_cc_in_submission, by = "vcf_id") %>%
   dplyr::select(any_of(c(
     "vcf_id", "InterVar: InterVar and Evidence",
