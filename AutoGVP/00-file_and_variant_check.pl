@@ -111,13 +111,14 @@ else{
   open(FIL,$multianno_file) || die("Cannot Open File $multianno_file");
 }
 
+
 while(<FIL>)
 {
   chomp;
   next if $_=~/^#/;
   next if $_=~/Start/;
 
-  if($_=~/(chr\d+)\t(\d+)\t(rs\d+|\.)\t/)
+  if($_=~/(chr(\d+)|[XY])\t(\d+)\t(rs\d+|\.)\t/)
   {
     my @cols = split;
     my $chr = $1;
