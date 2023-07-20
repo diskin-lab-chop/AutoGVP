@@ -1,0 +1,39 @@
+
+name: Style R scripts and Rmd notebooks
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the main branch
+on:
+  pull_request:
+    branches: [ main ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "style"
+  style:
+    runs-on: ubuntu-latest
+    container:
+      image: rocker/tidyverse:4.2
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v2
+        # What branch to commit to: the one from the pull request
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Install packages
+        run: Rscript -e "install.packages('styler')"
+
+      - name: Run styler
+        run: Rscript -e "styler::style_file(list.files(pattern = 'Rmd$|.R$', recursive = TRUE, full.names = TRUE));warnings()"
+      
+      - name: Configure Git repository
+        run: |
+          git config --global --add safe.directory /__w/AutoGVP/AutoGVP
+
+      - name: Commit style changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Apply code style changes
+          
