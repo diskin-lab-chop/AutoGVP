@@ -40,8 +40,8 @@ jobs:
       - name: Run styler on R or Rmd files that have changed
         if: steps.changed-files-R.outputs.any_changed == 'true'
         run: |
-          for file in ${{ steps.changed-files-specific.outputs.all_changed_files }}; do
-            Rscript -e "styler::style_file($file, recursive = TRUE, full.names = TRUE));warnings()"
+          for file in ${{ steps.csteps.changed-files-R.outputs.all_changed_files }}; do
+            Rscript -e "styler::style_file(list.files($file), recursive = TRUE, full.names = TRUE));warnings()"
             echo "$file was changed"
           done
 
