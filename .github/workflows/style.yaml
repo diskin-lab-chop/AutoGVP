@@ -25,26 +25,24 @@ jobs:
       - name: Install packages
         run: Rscript -e "install.packages('styler')"
 
-      - name: Get all changed R or Rmd files
-        id: changed-files-R
+      - name: Get changed files in the AutoGVP folder
+        id: changed-files-specific
         uses: tj-actions/changed-files@v37
         with:
-          files_R: |
-            R:
-              - 'Rmd$'
-              - '.R$'
+          files: AutoGVP/*.{.R$,Rmd$}
 
-      - name: List R or Rmd files that have changed
-        if: steps.changed-files-R.outputs.test_any_changed == 'true'
+      - name: Run step if any file(s) in the docs folder change
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
-          echo "One or more R files has changed"
-          echo "List all the files that have changed: ${{ steps.changed-files-R.outputs.test_all_changed_files }}"
-
+          echo "One or more files in the docs folder has changed."
+          echo "List all the files that have changed: ${{ steps.changed-files-specific.outputs.all_changed_files }}"
+      
       - name: Run styler on R or Rmd files that have changed
-        if: steps.changed-files-R.outputs.test_any_changed == 'true'
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
-          for file in ${{ steps.changed-files-R.outputs.all_changed_files }}; do
+          for file in ${{ steps.changed-files-specific.outputs.all_changed_files }}; do
             Rscript -e "styler::style_file(list.files($file), recursive = TRUE, full.names = TRUE));warnings()"
+            echo "$file was changed"
           done
 
       - name: Configure Git repository
