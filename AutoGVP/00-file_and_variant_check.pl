@@ -51,7 +51,7 @@ else {
   die("FAIL: multianno file does not exist\n");
 }
 
-if (glob($dir_to_check."/*autopvs1.txt")) {
+if (glob($dir_to_check."/*autopvs1*")) {
   print "autopvs1 file exists...\n";
   $autopvs1_file_check = $dir_to_check."/*autopvs1*";
 
@@ -118,11 +118,11 @@ while(<FIL>)
   next if $_=~/^#/;
   next if $_=~/Start/;
 
-  if($_=~/(chr(\d+)|[XY])\t(\d+)\t(rs\d+|\.)\t/)
+  if($_=~/(chr(\d+|[XY]))\t(\d+)\t(rs\d+|\.)\t/)
   {
     my @cols = split;
     my $chr = $1;
-    my $start = $2;
+    my $start = $3;
     my $loc = $chr."-".$start;
     $multianno_variants{$loc} = $loc;
   }
