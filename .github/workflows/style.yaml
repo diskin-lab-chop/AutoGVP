@@ -25,9 +25,28 @@ jobs:
       - name: Install packages
         run: Rscript -e "install.packages('styler')"
 
-      - name: Run styler
-        run: Rscript -e "styler::style_file(list.files(pattern = 'Rmd$|.R$', recursive = TRUE, full.names = TRUE));warnings()"
-      
+      - name: Get all changed R or Rmd files
+        id: changed-files-R
+        uses: tj-actions/changed-files@v37
+        with:
+          files_R: |
+            R:
+              - 'Rmd$'
+              - '.R$'
+
+      - name: List R or Rmd files that have changed
+        if: steps.changed-files-R.outputs.test_any_changed == 'true'
+        run: |
+          echo "One or more R files has changed"
+          echo "List all the files that have changed: ${{ steps.changed-files-R.outputs.test_all_changed_files }}"
+
+      - name: Run styler on R or Rmd files that have changed
+        if: steps.changed-files-R.outputs.test_any_changed == 'true'
+        run: |
+          for file in ${{ steps.changed-files-R.outputs.all_changed_files }}; do
+            Rscript -e "styler::style_file(file, recursive = TRUE, full.names = TRUE));warnings()"
+          done
+
       - name: Configure Git repository
         run: |
           git config --global --add safe.directory /__w/AutoGVP/AutoGVP
