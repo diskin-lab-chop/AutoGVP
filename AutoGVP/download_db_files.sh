@@ -3,10 +3,32 @@
 set -e
 set -o pipefail
 
-wget https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz -P input/
-wget https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/submission_summary.txt.gz -P input/
-wget https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/variant_summary.txt.gz -P input/
+# Use the OpenAUTOGVP bucket as the default.
+URL=${AUTOGVP_URL:-https://s3.amazonaws.com/d3b-openaccess-us-east-1-prd-pbta/autogvp}
+RELEASE=${AUTOGVP_RELEASE:-v20230720}
 
-## unzip summary files
-gunzip input/submission_summary.txt.gz
-gunzip input/variant_summary.txt.gz
+# Set the working directory to the directory of this file
+cd "$(dirname "${BASH_SOURCE[0]}")"
+
+# Get base directory of project
+BASEDIR="$(pwd)"
+
+# The md5sum file provides our single point of truth for which files are in a release.
+curl --create-dirs -k $URL/$RELEASE/md5sum.txt -o $BASEDIR/input/md5sum.txt -z $BASEDIR/input/md5sum.txt
+
+FILES=(`tr -s ' ' < $BASEDIR/input/md5sum.txt | cut -d ' ' -f 2`)
+
+for file in "${FILES[@]}"
+do
+  if [ ! -e "$BASEDIR/input/$file" ]
+  then
+    echo "Downloading $file"
+    curl --create-dirs -k $URL/$RELEASE/$file -o $BASEDIR/input/$file
+  fi
+done
+
+#check md5sum
+cd $BASEDIR/input
+echo "Checking MD5 hashes..."
+md5sum -c md5sum.txt
+cd $BASEDIR

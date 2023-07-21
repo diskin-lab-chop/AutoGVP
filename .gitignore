@@ -5,4 +5,9 @@
 # ignore data download files
 AutoGVP/input/clinvar.vcf.gz
 AutoGVP/input/submission_summary.txt
+AutoGVP/input/submission_summary.txt.gz
 AutoGVP/input/variant_summary.txt
+AutoGVP/input/variant_summary.txt.gz
+AutoGVP/input/md5sum.txt
+
+
