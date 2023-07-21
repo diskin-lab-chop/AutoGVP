@@ -477,5 +477,5 @@ results_tab_abridged %>%
     file.path(results_dir, output_tab_abr_file),
     append = FALSE,
     quote = "none",
-    col_names = TRUE
+    col_names =TRUE
   )
