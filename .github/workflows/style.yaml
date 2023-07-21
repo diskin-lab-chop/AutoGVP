@@ -44,7 +44,7 @@ jobs:
         if: steps.changed-files-R.outputs.test_any_changed == 'true'
         run: |
           for file in ${{ steps.changed-files-R.outputs.all_changed_files }}; do
-            Rscript -e "styler::style_file(file, recursive = TRUE, full.names = TRUE));warnings()"
+            Rscript -e "styler::style_file(list.files($file), recursive = TRUE, full.names = TRUE));warnings()"
           done
 
       - name: Configure Git repository
