@@ -338,8 +338,6 @@ combined_tab_for_intervar <- bind_rows(combined_tab_with_vcf_clinvar) %>%
 
 
 combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_for_intervar, entries_for_cc_in_submission, by = "vcf_id") %>%
-  ## indicate if recalculated
-  mutate(intervar_adjusted_call = if_else((evidencePVS1 == 0), "No", "Yes")) %>%
   ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
   # if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
   mutate(evidencePVS1 = if_else((criterion == "NF1" | criterion == "SS1" |
@@ -403,11 +401,11 @@ combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_for_intervar, ent
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df, combined_tab_for_intervar[, !grepl("Gene|CLN", names(combined_tab_for_intervar))], by = "vcf_id") %>%
-  full_join(combined_tab_for_intervar_cc_removed[, !grepl("Gene|CLN", names(combined_tab_for_intervar_cc_removed))], by = "vcf_id")
+  full_join(combined_tab_for_intervar_cc_removed[, !grepl("Gene|CLN", names(combined_tab_for_intervar_cc_removed))], by = "vcf_id") %>% 
+  distinct()
 
 master_tab <- master_tab %>%
   dplyr::mutate(
-    intervar_adjusted_call = coalesce(intervar_adjusted_call, "Not adjusted, clinVar"),
     evidencePVS1 = coalesce(as.double(evidencePVS1.x, evidencePVS1.y)),
     evidenceBA1 = coalesce(as.double(evidenceBA1.x, evidenceBA1.y)),
     evidencePS = coalesce(as.double(evidencePS.x, evidencePS.y)),
@@ -418,7 +416,7 @@ master_tab <- master_tab %>%
     Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`),
     Stars = coalesce(Stars.x, Stars.y),
     # replace second final call with the second one because we did not use interVar results
-    final_call.x = if_else(intervar_adjusted_call == "No" & Stars == "0", final_call.y, final_call.x)
+    final_call.x = if_else(evidencePVS1 == 0 & Stars == "0", final_call.y, final_call.x)
   )
 
 ## combine final calls into one choosing the appropriate final call
@@ -446,7 +444,7 @@ results_tab_abridged <- master_tab %>%
     "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
     "consequence", "criterion",
     "CLNSIG", "CLNREVSTAT", "Stars",
-    "Intervar_evidence", "intervar_adjusted_call", "ID", "final_call"
+    "Intervar_evidence", "ID", "final_call"
   )))
 
 ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
@@ -463,12 +461,12 @@ results_tab_abridged <- results_tab_abridged %>%
   ) %>%
   distinct()
 
-## add column indicating final call source
+#add column indicating final call source
 results_tab_abridged <- results_tab_abridged %>%
   dplyr::mutate(Reasoning_for_call = case_when(
-    intervar_adjusted_call == "Not adjusted, clinVar" ~ "ClinVar",
-    TRUE ~ "Intervar"
-  ))
+    Stars =="0" ~ "InterVar",
+    TRUE ~ "ClinVar"
+  )) 
 
 
 # write out to file
