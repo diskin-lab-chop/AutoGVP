@@ -186,48 +186,93 @@ clinvar_anti_join_vcf_df <- anti_join(vcf_df, clinvar_anno_vcf_df, by = "vcf_id"
   ) %>%
   dplyr::rename(rs_id = ID)
 
-## get latest calls from submission files
-submission_info_df <- vroom(input_variant_summary,
-  delim = "\t",
-  col_types = c(ReferenceAlleleVCF = "c", AlternateAlleleVCF = "c", PositionVCF = "i", VariationID = "n"),
-  show_col_types = FALSE
+## get latest calls from variant and submission summary files
+variant_summary_df <- vroom(input_variant_summary,
+                            delim = "\t",
+                            col_types = c(ReferenceAlleleVCF = "c", AlternateAlleleVCF = "c", PositionVCF = "i", VariationID = "n"),
+                            show_col_types = FALSE
 ) %>%
+  #retain only variants mapped to hg38
+  dplyr::filter(Assembly == "GRCh38" & ReferenceAlleleVCF != "na" & AlternateAlleleVCF != "na") %>%
   # add vcf id column
   dplyr::mutate(
     vcf_id = str_remove_all(paste(Chromosome, "-", PositionVCF, "-", ReferenceAlleleVCF, "-", AlternateAlleleVCF), " "),
     vcf_id = str_replace_all(vcf_id, "chr", ""),
-    VariationID = as.double(noquote(VariationID))
-  ) %>%
-  group_by(VariationID) %>%
-  dplyr::slice_tail(n = 1) %>%
-  ungroup()
+    VariationID = as.double(noquote(VariationID)),
+    LastEvaluated = case_when(
+      LastEvaluated == "-" ~ NA_character_,
+      TRUE ~ LastEvaluated
+    ))
 
 submission_summary_df <- vroom(input_submission_file,
-  comment = "#", delim = "\t",
-  col_names = c(
-    "VariationID", "ClinicalSignificance", "DateLastEvaluated",
-    "Description", "SubmittedPhenotypeInfo", "ReportedPhenotypeInfo",
-    "ReviewStatus", "CollectionMethod", "OriginCounts", "Submitter",
-    "SCV", "SubmittedGeneSymbol", "ExplanationOfInterpretation"
-  ),
-  show_col_types = FALSE
-) %>%
-  dplyr::select("VariationID", "ClinicalSignificance", "DateLastEvaluated") %>%
+                               comment = "#", delim = "\t",
+                               col_names = c(
+                                 "VariationID", "ClinicalSignificance", "DateLastEvaluated",
+                                 "Description", "SubmittedPhenotypeInfo", "ReportedPhenotypeInfo",
+                                 "ReviewStatus", "CollectionMethod", "OriginCounts", "Submitter",
+                                 "SCV", "SubmittedGeneSymbol", "ExplanationOfInterpretation"
+                               ),
+                               show_col_types = F
+)
+
+# remove submissions with missing columns (will have NA SubmittedGeneSymbol)
+submission_summary_df <- submission_summary_df[!is.na(submission_summary_df$SubmittedGeneSymbol),]
+
+# renamed date last evaluated column to match `variant_summary_df`
+submission_summary_df <- submission_summary_df %>%
+  dplyr::mutate(DateLastEvaluated = case_when(
+    DateLastEvaluated == "-" ~ NA_character_,
+    TRUE ~ DateLastEvaluated
+  ))
+
+# merge submission_summary and variant_summary info
+submission_merged_df <- submission_summary_df %>%
+  dplyr::rename("LastEvaluated" = DateLastEvaluated) %>%
+  left_join(variant_summary_df, by = c("VariationID", "LastEvaluated"))
+
+# Identify VariationIDs with no ClinSig conflicts between variant and submission summary at date last evaluated
+variants_no_conflicts <- submission_merged_df %>%
   group_by(VariationID) %>%
-  arrange(mdy(DateLastEvaluated)) %>%
+  dplyr::arrange(mdy(LastEvaluated)) %>%
+  dplyr::slice_tail(n = 1) %>%
+  ungroup() %>%
+  filter(ClinicalSignificance.x == ClinicalSignificance.y | is.na(ClinicalSignificance.y) | (grepl("Pathogenic|Likely pathogenic", ClinicalSignificance.x) & grepl("Pathogenic|Likely pathogenic", ClinicalSignificance.y)) | (grepl("Benign|Likely benign", ClinicalSignificance.x) & grepl("Benign|Likely benign", ClinicalSignificance.y)) | (grepl("Uncertain significance", ClinicalSignificance.x) & grepl("Uncertain significance", ClinicalSignificance.y)))
+
+# Identify VariationIDs with conflicting ClinSigs, but where a P-LP call has an associated phenotypeInfo
+variants_conflicts_phenoInfo <- submission_merged_df %>%
+  dplyr::filter(!VariationID %in% variants_no_conflicts$VariationID) %>%
+  dplyr::filter(ClinicalSignificance.y != ClinicalSignificance.x) %>%
+  dplyr::filter(grepl("Pathogenic|Likely pathogenic", ClinicalSignificance.x) & (!is.na(SubmittedPhenotypeInfo) | !is.na(ReportedPhenotypeInfo))) %>%
+  group_by(VariationID) %>%
+  dplyr::arrange(mdy(LastEvaluated)) %>%
   dplyr::slice_tail(n = 1) %>%
   ungroup()
 
-## join submission files to ensure we have vcf id to match with other tables
-submission_final_df <- inner_join(submission_summary_df, submission_info_df, by = "VariationID")
+# Identify VariationIDs with conflicting ClinSigs, and retain call at last data evaluated
+variants_conflicts_latest <- submission_merged_df %>%
+  dplyr::filter(!VariationID %in% c(variants_no_conflicts$VariationID, variants_conflicts_phenoInfo$VariationID)) %>%
+  dplyr::filter(ClinicalSignificance.y != ClinicalSignificance.x) %>%
+  group_by(VariationID) %>%
+  dplyr::arrange(mdy(LastEvaluated)) %>%
+  dplyr::slice_tail(n = 1) %>%
+  ungroup()
+
+# create final df and take ClinSig calls from submission summary
+submission_final_df <- variants_no_conflicts %>%
+  bind_rows(variants_conflicts_phenoInfo, variants_conflicts_latest) %>%
+  dplyr::mutate(ClinicalSignificance = ClinicalSignificance.x,
+                ReviewStatus = ReviewStatus.y) %>%
+  dplyr::select(any_of(c("VariationID", "ClinicalSignificance", "ClinicalSignificance",
+                         "LastEvaluated", "Description", "SubmittedPhenotypeInfo",
+                         "ReportedPhenotypeInfo", "ReviewStatus",
+                         "SubmittedGeneSymbol", "GeneSymbol", "vcf_id")))
 
 ## filter only those variants that need consensus call and find  call in submission table
 entries_for_cc <- filter(clinvar_anno_vcf_df, Stars == "1NR", final_call != "Benign", final_call != "Pathogenic", final_call != "Likely_benign", final_call != "Likely_pathogenic", final_call != "Uncertain_significance")
 
 entries_for_cc_in_submission <- inner_join(submission_final_df, entries_for_cc, by = "vcf_id") %>%
-  dplyr::mutate(final_call = ClinicalSignificance.x) %>%
-  dplyr::select(vcf_id, ClinicalSignificance.x, final_call) %>%
-  dplyr::rename("ClinicalSignificance" = ClinicalSignificance.x)
+  dplyr::mutate(final_call = ClinicalSignificance) %>%
+  dplyr::select(vcf_id, ClinicalSignificance, final_call)
 
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 ## modified: any cases that do NOT have the B, LB, P, LP, VUS call must also go to intervar
