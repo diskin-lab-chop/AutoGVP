@@ -176,7 +176,7 @@ clinvar_anno_vcf_df <- vroom(input_clinVar_file, comment = "#", delim = "\t", co
     final_call = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
   )
 
-#clinvar_anno_vcf_df <- address_conflicting_intrep(clinvar_anno_vcf_df)
+# clinvar_anno_vcf_df <- address_conflicting_intrep(clinvar_anno_vcf_df)
 
 ## store variants without clinvar info
 clinvar_anti_join_vcf_df <- anti_join(vcf_df, clinvar_anno_vcf_df, by = "vcf_id") %>%
@@ -403,9 +403,9 @@ combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_for_intervar, ent
 
 
 ## merge tables together (clinvar and intervar) and write to file
-master_tab <- full_join(clinvar_anno_intervar_vcf_df, combined_tab_for_intervar[, !grepl("Gene|CLN", names(combined_tab_for_intervar))], by = "vcf_id") %>% 
-              full_join(combined_tab_for_intervar_cc_removed[, !grepl("Gene|CLN", names(combined_tab_for_intervar_cc_removed))], by = "vcf_id") %>% 
-              distinct()
+master_tab <- full_join(clinvar_anno_intervar_vcf_df, combined_tab_for_intervar[, !grepl("Gene|CLN", names(combined_tab_for_intervar))], by = "vcf_id") %>%
+  full_join(combined_tab_for_intervar_cc_removed[, !grepl("Gene|CLN", names(combined_tab_for_intervar_cc_removed))], by = "vcf_id") %>%
+  distinct()
 
 
 print(master_tab)
@@ -464,12 +464,12 @@ results_tab_abridged <- results_tab_abridged %>%
   ) %>%
   distinct()
 
-#add column indicating final call source
+# add column indicating final call source
 results_tab_abridged <- results_tab_abridged %>%
   dplyr::mutate(Reasoning_for_call = case_when(
-    Stars =="0" ~ "InterVar",
+    Stars == "0" ~ "InterVar",
     TRUE ~ "ClinVar"
-  )) 
+  ))
 
 
 # write output to file in results folder

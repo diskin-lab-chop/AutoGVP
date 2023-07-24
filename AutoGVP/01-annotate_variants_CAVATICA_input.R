@@ -401,7 +401,7 @@ combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_for_intervar, ent
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- full_join(clinvar_anno_intervar_vcf_df, combined_tab_for_intervar[, !grepl("Gene|CLN", names(combined_tab_for_intervar))], by = "vcf_id") %>%
-  full_join(combined_tab_for_intervar_cc_removed[, !grepl("Gene|CLN", names(combined_tab_for_intervar_cc_removed))], by = "vcf_id") %>% 
+  full_join(combined_tab_for_intervar_cc_removed[, !grepl("Gene|CLN", names(combined_tab_for_intervar_cc_removed))], by = "vcf_id") %>%
   distinct()
 
 master_tab <- master_tab %>%
@@ -461,12 +461,12 @@ results_tab_abridged <- results_tab_abridged %>%
   ) %>%
   distinct()
 
-#add column indicating final call source
+# add column indicating final call source
 results_tab_abridged <- results_tab_abridged %>%
   dplyr::mutate(Reasoning_for_call = case_when(
-    Stars =="0" ~ "InterVar",
+    Stars == "0" ~ "InterVar",
     TRUE ~ "ClinVar"
-  )) 
+  ))
 
 
 # write out to file
