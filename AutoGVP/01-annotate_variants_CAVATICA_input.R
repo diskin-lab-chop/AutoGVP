@@ -180,11 +180,11 @@ clinvar_anti_join_vcf_df <- anti_join(clinvar_anno_vcf_df, clinvar_anno_vcf_df, 
 
 ## get latest calls from variant and submission summary files
 variant_summary_df <- vroom(input_variant_summary,
-                            delim = "\t",
-                            col_types = c(ReferenceAlleleVCF = "c", AlternateAlleleVCF = "c", PositionVCF = "i", VariationID = "n"),
-                            show_col_types = FALSE
+  delim = "\t",
+  col_types = c(ReferenceAlleleVCF = "c", AlternateAlleleVCF = "c", PositionVCF = "i", VariationID = "n"),
+  show_col_types = FALSE
 ) %>%
-  #retain only variants mapped to hg38
+  # retain only variants mapped to hg38
   dplyr::filter(Assembly == "GRCh38" & ReferenceAlleleVCF != "na" & AlternateAlleleVCF != "na") %>%
   # add vcf id column
   dplyr::mutate(
@@ -194,21 +194,22 @@ variant_summary_df <- vroom(input_variant_summary,
     LastEvaluated = case_when(
       LastEvaluated == "-" ~ NA_character_,
       TRUE ~ LastEvaluated
-    ))
+    )
+  )
 
 submission_summary_df <- vroom(input_summary_submission_file,
-                               comment = "#", delim = "\t",
-                               col_names = c(
-                                 "VariationID", "ClinicalSignificance", "DateLastEvaluated",
-                                 "Description", "SubmittedPhenotypeInfo", "ReportedPhenotypeInfo",
-                                 "ReviewStatus", "CollectionMethod", "OriginCounts", "Submitter",
-                                 "SCV", "SubmittedGeneSymbol", "ExplanationOfInterpretation"
-                               ),
-                               show_col_types = F
+  comment = "#", delim = "\t",
+  col_names = c(
+    "VariationID", "ClinicalSignificance", "DateLastEvaluated",
+    "Description", "SubmittedPhenotypeInfo", "ReportedPhenotypeInfo",
+    "ReviewStatus", "CollectionMethod", "OriginCounts", "Submitter",
+    "SCV", "SubmittedGeneSymbol", "ExplanationOfInterpretation"
+  ),
+  show_col_types = F
 )
 
 # remove submissions with missing columns (will have NA SubmittedGeneSymbol)
-submission_summary_df <- submission_summary_df[!is.na(submission_summary_df$SubmittedGeneSymbol),]
+submission_summary_df <- submission_summary_df[!is.na(submission_summary_df$SubmittedGeneSymbol), ]
 
 # renamed date last evaluated column to match `variant_summary_df`
 submission_summary_df <- submission_summary_df %>%
@@ -252,12 +253,16 @@ variants_conflicts_latest <- submission_merged_df %>%
 # create final df and take ClinSig calls from submission summary
 submission_final_df <- variants_no_conflicts %>%
   bind_rows(variants_conflicts_phenoInfo, variants_conflicts_latest) %>%
-  dplyr::mutate(ClinicalSignificance = ClinicalSignificance.x,
-                ReviewStatus = ReviewStatus.y) %>%
-  dplyr::select(any_of(c("VariationID", "ClinicalSignificance", "ClinicalSignificance",
-                         "LastEvaluated", "Description", "SubmittedPhenotypeInfo",
-                         "ReportedPhenotypeInfo", "ReviewStatus",
-                         "SubmittedGeneSymbol", "GeneSymbol", "vcf_id")))
+  dplyr::mutate(
+    ClinicalSignificance = ClinicalSignificance.x,
+    ReviewStatus = ReviewStatus.y
+  ) %>%
+  dplyr::select(any_of(c(
+    "VariationID", "ClinicalSignificance", "ClinicalSignificance",
+    "LastEvaluated", "Description", "SubmittedPhenotypeInfo",
+    "ReportedPhenotypeInfo", "ReviewStatus",
+    "SubmittedGeneSymbol", "GeneSymbol", "vcf_id"
+  )))
 
 ## filter only those variants that need consensus call and find  call in submission table
 entries_for_cc <- filter(clinvar_anno_vcf_df, Stars == "1NR", final_call != "Benign", final_call != "Pathogenic", final_call != "Likely_benign", final_call != "Likely_pathogenic", final_call != "Uncertain_significance")
