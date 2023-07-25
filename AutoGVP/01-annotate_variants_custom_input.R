@@ -229,50 +229,70 @@ submission_summary_df <- submission_summary_df %>%
 # merge submission_summary and variant_summary info
 submission_merged_df <- submission_summary_df %>%
   dplyr::rename("LastEvaluated" = DateLastEvaluated) %>%
-  left_join(variant_summary_df, by = c("VariationID", "LastEvaluated"))
+  left_join(variant_summary_df, by = c("VariationID")) %>%
+  dplyr::mutate(LastEvaluated = coalesce(LastEvaluated.x, LastEvaluated.y)) %>%
+  dplyr::filter(!is.na(vcf_id))
 
-# Identify VariationIDs with no ClinSig conflicts between variant and submission summary at date last evaluated
-variants_no_conflicts <- submission_merged_df %>%
+variants_no_conflict_expert <- submission_merged_df %>%
+  filter(ReviewStatus.x == "reviewed by expert panel") %>%
   group_by(VariationID) %>%
-  dplyr::arrange(desc(mdy(LastEvaluated))) %>%
+  dplyr::arrange(desc(mdy(LastEvaluated.x))) %>%
   dplyr::slice_head(n = 1) %>%
   ungroup() %>%
   filter(ClinicalSignificance.x == ClinicalSignificance.y | is.na(ClinicalSignificance.y) | (grepl("Pathogenic|Likely pathogenic", ClinicalSignificance.x) & grepl("Pathogenic|Likely pathogenic", ClinicalSignificance.y)) | (grepl("Benign|Likely benign", ClinicalSignificance.x) & grepl("Benign|Likely benign", ClinicalSignificance.y)) | (grepl("Uncertain significance", ClinicalSignificance.x) & grepl("Uncertain significance", ClinicalSignificance.y)))
 
+# Identify VariationIDs with no ClinSig conflicts between variant and submission summary at date last evaluated
+variants_no_conflicts <- submission_merged_df %>%
+  dplyr::filter(!VariationID %in% variants_no_conflict_expert$VariationID) %>%
+  dplyr::filter(ClinicalSignificance.x == ClinicalSignificance.y | is.na(ClinicalSignificance.y) | (grepl("Pathogenic|Likely pathogenic", ClinicalSignificance.x) & grepl("Pathogenic|Likely pathogenic", ClinicalSignificance.y)) | (grepl("Benign|Likely benign", ClinicalSignificance.x) & grepl("Benign|Likely benign", ClinicalSignificance.y)) | (grepl("Uncertain significance", ClinicalSignificance.x) & grepl("Uncertain significance", ClinicalSignificance.y))) %>%
+  group_by(VariationID) %>%
+  dplyr::arrange(desc(mdy(LastEvaluated.x))) %>%
+  dplyr::slice_head(n = 1) %>%
+  ungroup()
+
+consensus_calls <- submission_merged_df %>%
+  dplyr::filter(!VariationID %in% c(variants_no_conflict_expert$VariationID, variants_no_conflicts$VariationID)) %>%
+  count(VariationID, ClinicalSignificance.x) %>%
+  group_by(VariationID) %>%
+  dplyr::filter(n == max(n)) %>%
+  dplyr::filter(!VariationID %in% VariationID[duplicated(VariationID)])
+
+variants_consensus_call <- submission_merged_df %>%
+  dplyr::filter(glue::glue("{VariationID}-{ClinicalSignificance.x}") %in% glue::glue("{consensus_calls$VariationID}-{consensus_calls$ClinicalSignificance.x}")) %>%
+  group_by(VariationID) %>%
+  dplyr::arrange(desc(mdy(LastEvaluated.x))) %>%
+  dplyr::slice_head(n = 1) %>%
+  ungroup()
+
 # Identify VariationIDs with conflicting ClinSigs, but where a P-LP call has an associated phenotypeInfo
 variants_conflicts_phenoInfo <- submission_merged_df %>%
-  dplyr::filter(!VariationID %in% variants_no_conflicts$VariationID) %>%
+  dplyr::filter(!VariationID %in% c(variants_no_conflict_expert$VariationID, variants_no_conflicts$VariationID, variants_consensus_call$VariationID)) %>%
   dplyr::filter(ClinicalSignificance.y != ClinicalSignificance.x) %>%
-  dplyr::filter(grepl("Pathogenic|Likely pathogenic", ClinicalSignificance.x) & (!is.na(SubmittedPhenotypeInfo) | !is.na(ReportedPhenotypeInfo))) %>%
+  dplyr::filter(grepl("Pathogenic|Likely pathogenic", ClinicalSignificance.x) & (!is.na(SubmittedPhenotypeInfo) | !is.na(ReportedPhenotypeInfo)) & !grepl("not provided|not specified", ReportedPhenotypeInfo)) %>%
   group_by(VariationID) %>%
-  dplyr::arrange(desc(mdy(LastEvaluated))) %>%
+  dplyr::arrange(desc(mdy(LastEvaluated.x))) %>%
   dplyr::slice_head(n = 1) %>%
   ungroup()
 
 # Identify VariationIDs with conflicting ClinSigs, and retain call at last data evaluated
 variants_conflicts_latest <- submission_merged_df %>%
-  dplyr::filter(!VariationID %in% c(variants_no_conflicts$VariationID, variants_conflicts_phenoInfo$VariationID)) %>%
+  dplyr::filter(!VariationID %in% c(variants_no_conflict_expert$VariationID, variants_no_conflicts$VariationID, variants_consensus_call$VariationID, variants_conflicts_phenoInfo$VariationID)) %>%
   dplyr::filter(ClinicalSignificance.y != ClinicalSignificance.x) %>%
   group_by(VariationID) %>%
-  dplyr::arrange(desc(mdy(LastEvaluated))) %>%
+  dplyr::arrange(desc(mdy(LastEvaluated.x))) %>%
   dplyr::slice_head(n = 1) %>%
   ungroup()
 
 # create final df and take ClinSig calls from submission summary
 submission_final_df <- variants_no_conflicts %>%
-  bind_rows(variants_conflicts_phenoInfo, variants_conflicts_latest) %>%
-  dplyr::mutate(
-    ClinicalSignificance = ClinicalSignificance.x,
-    ReviewStatus = ReviewStatus.y
-  ) %>%
-  dplyr::filter(!is.na(vcf_id)) %>%
+  bind_rows(variants_no_conflict_expert, variants_conflicts_phenoInfo, variants_conflicts_latest) %>%
+  dplyr::mutate(ClinicalSignificance = ClinicalSignificance.x,
+                ReviewStatus = ReviewStatus.y) %>%
   distinct(vcf_id, .keep_all = T) %>%
-  dplyr::select(any_of(c(
-    "VariationID", "ClinicalSignificance", "ClinicalSignificance",
-    "LastEvaluated", "Description", "SubmittedPhenotypeInfo",
-    "ReportedPhenotypeInfo", "ReviewStatus",
-    "SubmittedGeneSymbol", "GeneSymbol", "vcf_id"
-  )))
+  dplyr::select(any_of(c("VariationID", "ClinicalSignificance", "ClinicalSignificance",
+                         "LastEvaluated", "Description", "SubmittedPhenotypeInfo",
+                         "ReportedPhenotypeInfo", "ReviewStatus",
+                         "SubmittedGeneSymbol", "GeneSymbol", "vcf_id")))
 
 ## filter only those variants that need consensus call and find  call in submission table
 entries_for_cc <- filter(clinvar_anno_vcf_df, Stars == "1NR", final_call != "Benign", final_call != "Pathogenic", final_call != "Likely_benign", final_call != "Likely_pathogenic", final_call != "Uncertain_significance")
