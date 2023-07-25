@@ -225,8 +225,8 @@ submission_merged_df <- submission_summary_df %>%
 # Identify VariationIDs with no ClinSig conflicts between variant and submission summary at date last evaluated
 variants_no_conflicts <- submission_merged_df %>%
   group_by(VariationID) %>%
-  dplyr::arrange(mdy(LastEvaluated)) %>%
-  dplyr::slice_tail(n = 1) %>%
+  dplyr::arrange(desc(mdy(LastEvaluated))) %>%
+  dplyr::slice_head(n = 1) %>%
   ungroup() %>%
   filter(ClinicalSignificance.x == ClinicalSignificance.y | is.na(ClinicalSignificance.y) | (grepl("Pathogenic|Likely pathogenic", ClinicalSignificance.x) & grepl("Pathogenic|Likely pathogenic", ClinicalSignificance.y)) | (grepl("Benign|Likely benign", ClinicalSignificance.x) & grepl("Benign|Likely benign", ClinicalSignificance.y)) | (grepl("Uncertain significance", ClinicalSignificance.x) & grepl("Uncertain significance", ClinicalSignificance.y)))
 
@@ -236,8 +236,8 @@ variants_conflicts_phenoInfo <- submission_merged_df %>%
   dplyr::filter(ClinicalSignificance.y != ClinicalSignificance.x) %>%
   dplyr::filter(grepl("Pathogenic|Likely pathogenic", ClinicalSignificance.x) & (!is.na(SubmittedPhenotypeInfo) | !is.na(ReportedPhenotypeInfo))) %>%
   group_by(VariationID) %>%
-  dplyr::arrange(mdy(LastEvaluated)) %>%
-  dplyr::slice_tail(n = 1) %>%
+  dplyr::arrange(desc(mdy(LastEvaluated))) %>%
+  dplyr::slice_head(n = 1) %>%
   ungroup()
 
 # Identify VariationIDs with conflicting ClinSigs, and retain call at last data evaluated
@@ -245,8 +245,8 @@ variants_conflicts_latest <- submission_merged_df %>%
   dplyr::filter(!VariationID %in% c(variants_no_conflicts$VariationID, variants_conflicts_phenoInfo$VariationID)) %>%
   dplyr::filter(ClinicalSignificance.y != ClinicalSignificance.x) %>%
   group_by(VariationID) %>%
-  dplyr::arrange(mdy(LastEvaluated)) %>%
-  dplyr::slice_tail(n = 1) %>%
+  dplyr::arrange(desc(mdy(LastEvaluated))) %>%
+  dplyr::slice_head(n = 1) %>%
   ungroup()
 
 # create final df and take ClinSig calls from submission summary
