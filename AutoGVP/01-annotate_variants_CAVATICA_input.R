@@ -257,6 +257,8 @@ submission_final_df <- variants_no_conflicts %>%
     ClinicalSignificance = ClinicalSignificance.x,
     ReviewStatus = ReviewStatus.y
   ) %>%
+  dplyr::filter(!is.na(vcf_id)) %>%
+  distinct(vcf_id, .keep_all = T) %>%
   dplyr::select(any_of(c(
     "VariationID", "ClinicalSignificance", "ClinicalSignificance",
     "LastEvaluated", "Description", "SubmittedPhenotypeInfo",
