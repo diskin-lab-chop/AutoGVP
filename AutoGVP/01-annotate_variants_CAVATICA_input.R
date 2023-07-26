@@ -325,7 +325,9 @@ multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_na
   
   # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
   dplyr::select(-Chr, -Start, -End, -Alt, -Ref, 
-                -contains(c("Otherinfo", "gnomad", "CLN"))) %>%
+                -contains(c("Otherinfo", "gnomad", "CLN", 
+                            "score", "pred", "CADD", "Eigen",
+                            "100way", "30way", "GTEx"))) %>%
   ungroup()
 
 ## add intervar table
@@ -336,8 +338,8 @@ clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws
   arrange(`#Chr`, Start) %>%
   filter(row_number() == 1) %>%
   # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
-  dplyr::select(-`#Chr`, -Start, -End, -Alt, -Ref, ,
-                -contains("gnomad")) %>%
+  dplyr::select(-`#Chr`, -Start, -End, -Alt, -Ref, -`clinvar: Clinvar`,
+                -contains(c("gnomad", "CADD", "Freq", "SCORE", "score", "ORPHA", "MIM", "rmsk"))) %>%
   ungroup()
 
 
