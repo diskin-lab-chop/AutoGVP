@@ -277,14 +277,18 @@ variants_conflicts_latest <- submission_merged_df %>%
 
 # create final df and take ClinSig calls from submission summary
 submission_final_df <- variants_no_conflicts %>%
-  bind_rows(variants_no_conflict_expert, variants_conflicts_phenoInfo, variants_conflicts_latest) %>%
-  dplyr::mutate(ClinicalSignificance = ClinicalSignificance.x,
-                ReviewStatus = ReviewStatus.y) %>%
+  bind_rows(variants_no_conflict_expert, variants_consensus_call, variants_conflicts_phenoInfo, variants_conflicts_latest) %>%
+  dplyr::mutate(
+    ClinicalSignificance = ClinicalSignificance.x,
+    ReviewStatus = ReviewStatus.y
+  ) %>%
   distinct(vcf_id, .keep_all = T) %>%
-  dplyr::select(any_of(c("VariationID", "ClinicalSignificance", "ClinicalSignificance",
-                         "LastEvaluated", "Description", "SubmittedPhenotypeInfo",
-                         "ReportedPhenotypeInfo", "ReviewStatus",
-                         "SubmittedGeneSymbol", "GeneSymbol", "vcf_id")))
+  dplyr::select(any_of(c(
+    "VariationID", "ClinicalSignificance", "ClinicalSignificance",
+    "LastEvaluated", "Description", "SubmittedPhenotypeInfo",
+    "ReportedPhenotypeInfo", "ReviewStatus",
+    "SubmittedGeneSymbol", "GeneSymbol", "vcf_id"
+  )))
 
 ## filter only those variants that need consensus call and find  call in submission table
 entries_for_cc <- filter(clinvar_anno_vcf_df, Stars == "1NR", final_call != "Benign", final_call != "Pathogenic", final_call != "Likely_benign", final_call != "Likely_pathogenic", final_call != "Uncertain_significance")
