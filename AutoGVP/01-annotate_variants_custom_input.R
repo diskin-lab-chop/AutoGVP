@@ -285,7 +285,7 @@ variants_conflicts_latest <- submission_merged_df %>%
 
 # create final df and take ClinSig calls from submission summary
 submission_final_df <- variants_no_conflicts %>%
-  bind_rows(variants_no_conflict_expert, variants_conflicts_phenoInfo, variants_conflicts_latest) %>%
+  bind_rows(variants_no_conflict_expert, variants_consensus_call, variants_conflicts_phenoInfo, variants_conflicts_latest) %>%
   dplyr::mutate(
     ClinicalSignificance = ClinicalSignificance.x,
     ReviewStatus = ReviewStatus.y
