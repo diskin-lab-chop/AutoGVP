@@ -51,5 +51,5 @@ echo "Rscript 01-annotate_variants_CAVATICA_input.R --vcf $vcf_filtered_file --m
 echo "bash parse_vcf.sh $vcf_filtered_file"
 
 bash filter_vcf.sh $vcf_file
-Rscript 01-annotate_variants_CAVATICA_input.R --vcf $vcf_file --multianno $multianno_file --intervar $intervar_file --autopvs1 $autopvs1_file --output $out_file --variant_summary $variant_summary_file --submission_summary $submission_summary_file
+Rscript 01-annotate_variants_CAVATICA_input.R --vcf $vcf_filtered_file --multianno $multianno_file --intervar $intervar_file --autopvs1 $autopvs1_file --output $out_file --variant_summary $variant_summary_file --submission_summary $submission_summary_file
 bash parse_vcf.sh $vcf_filtered_file
