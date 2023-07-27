@@ -231,14 +231,17 @@ entries_for_cc_in_submission <- inner_join(submission_final_df, entries_for_cc, 
 
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 ## modified: any cases that do NOT have the B, LB, P, LP, VUS call must also go to intervar
-additional_intervar_cases <- filter(clinvar_anno_vcf_df, final_call != "Benign", final_call != "Pathogenic", final_call != "Likely_benign", final_call != "Likely_pathogenic", final_call != "Uncertain_significance") %>% anti_join(entries_for_cc_in_submission, by = "vcf_id")
+additional_intervar_cases <- filter(clinvar_anno_vcf_df, final_call != "Benign", final_call != "Pathogenic", final_call != "Likely_benign", final_call != "Likely_pathogenic", final_call != "Uncertain_significance") %>% 
+  anti_join(entries_for_cc_in_submission, by = "vcf_id") %>%
+  anti_join(clinvar_anti_join_vcf_df, by = "vcf_id")
 
 clinvar_anti_join_vcf_df <- clinvar_anti_join_vcf_df %>% mutate(QUAL = as.character(QUAL))
 
 ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
 entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0", na.rm = TRUE) %>%
   bind_rows((additional_intervar_cases)) %>%
-  bind_rows(clinvar_anti_join_vcf_df)
+  bind_rows(clinvar_anti_join_vcf_df) %>%
+  distinct()
 
 ## get vcf ids that need intervar run
 vcf_to_run_intervar <- entries_for_intervar$vcf_id
@@ -316,17 +319,9 @@ autopvs1_results <- read_tsv(input_autopvs1_file, col_names = TRUE) %>%
   ) %>%
   dplyr::filter(vcf_id %in% clinvar_anno_intervar_vcf_df$vcf_id)
 
-## add variants that had clinVar entry but need intervar run
-combined_tab_with_vcf_clinvar <- autopvs1_results %>%
+combined_tab_with_vcf_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by = "vcf_id") %>%
-  dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id)
-
-## add variants that did not have clinVar entry
-combined_tab_with_vcf_anticlinvar <- autopvs1_results %>%
-  inner_join(clinvar_anti_join_vcf_df, by = "vcf_id")
-
-combined_tab_for_intervar <- bind_rows(combined_tab_with_vcf_clinvar) %>%
-  bind_rows(combined_tab_with_vcf_anticlinvar) %>%
+  dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id) %>%
   dplyr::select(any_of(c(
     "vcf_id",
     "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
@@ -335,7 +330,7 @@ combined_tab_for_intervar <- bind_rows(combined_tab_with_vcf_clinvar) %>%
     "evidenceBA1", "evidencePS", "evidencePM", "evidencePP", "evidenceBS", "evidenceBP"
   )))
 
-combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_for_intervar, entries_for_cc_in_submission, by = "vcf_id") %>%
+combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_with_vcf_intervar, entries_for_cc_in_submission, by = "vcf_id") %>%
   ## indicate if recalculated
   dplyr::mutate(
     ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
@@ -403,12 +398,9 @@ combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_for_intervar, ent
 
 
 ## merge tables together (clinvar and intervar) and write to file
-master_tab <- full_join(clinvar_anno_intervar_vcf_df, combined_tab_for_intervar[, !grepl("Gene|CLN", names(combined_tab_for_intervar))], by = "vcf_id") %>%
+master_tab <- full_join(clinvar_anno_intervar_vcf_df, combined_tab_with_vcf_intervar[, !grepl("Gene|CLN", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
   full_join(combined_tab_for_intervar_cc_removed[, !grepl("Gene|CLN", names(combined_tab_for_intervar_cc_removed))], by = "vcf_id") %>%
   distinct()
-
-
-print(master_tab)
 
 master_tab <- master_tab %>%
   dplyr::mutate(
@@ -467,7 +459,7 @@ results_tab_abridged <- results_tab_abridged %>%
 # add column indicating final call source
 results_tab_abridged <- results_tab_abridged %>%
   dplyr::mutate(Reasoning_for_call = case_when(
-    Stars == "0" ~ "InterVar",
+    vcf_id %in% vcf_to_run_intervar ~ "InterVar",
     TRUE ~ "ClinVar"
   ))
 
