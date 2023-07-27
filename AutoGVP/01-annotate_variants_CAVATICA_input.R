@@ -291,7 +291,7 @@ entries_for_cc_in_submission <- inner_join(submission_final_df, entries_for_cc, 
 
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 ## modified: any cases that do NOT have the B, LB, P, LP, VUS call must also go to intervar
-additional_intervar_cases <- filter(clinvar_anno_vcf_df, final_call != "Benign", final_call != "Pathogenic", final_call != "Likely_benign", final_call != "Likely_pathogenic", final_call != "Uncertain_significance") %>% 
+additional_intervar_cases <- filter(clinvar_anno_vcf_df, final_call != "Benign", final_call != "Pathogenic", final_call != "Likely_benign", final_call != "Likely_pathogenic", final_call != "Uncertain_significance") %>%
   anti_join(entries_for_cc_in_submission, by = "vcf_id")
 
 
@@ -466,7 +466,7 @@ master_tab <- master_tab %>%
     evidenceBS = coalesce(as.double(evidenceBS.x, evidenceBS.y)),
     evidenceBP = coalesce(as.double(evidenceBP.x, evidenceBP.y)),
     Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`),
-#    Stars = coalesce(Stars.x, Stars.y),
+    #    Stars = coalesce(Stars.x, Stars.y),
     # replace second final call with the second one because we did not use interVar results
     final_call.x = if_else(evidencePVS1 == 0 & Stars == "0", final_call.y, final_call.x)
   )
