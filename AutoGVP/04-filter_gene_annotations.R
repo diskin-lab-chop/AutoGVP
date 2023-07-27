@@ -154,7 +154,7 @@ vcf_final <- vcf_pick_other %>%
   arrange(CHROM, POS)
 
 # Read in autogvp output
-autogvp <- read_tsv(file.path(results_dir, input_autogvp_file),
+autogvp <- read_tsv(file.path(input_dir, input_autogvp_file),
                     show_col_types = FALSE)
 
 # Merge `autogvp` and `vcf_final`
