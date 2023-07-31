@@ -152,15 +152,8 @@ submission_final_df <- variants_no_conflicts %>%
   bind_rows(variants_no_conflict_expert, variants_consensus_call, variants_conflicts_phenoInfo, variants_conflicts_latest) %>%
   dplyr::mutate(
     ClinicalSignificance = ClinicalSignificance.x,
-    ReviewStatus = ReviewStatus.y,
-    Description = case_when(
-      Description == "-" ~ NA_character_,
-      TRUE ~ Description
-    ),
-    SubmittedPhenotypeInfo = case_when(
-      SubmittedPhenotypeInfo == "Not Provided" ~ NA_character_,
-      TRUE ~ SubmittedPhenotypeInfo
-    )) %>%
+    ReviewStatus = ReviewStatus.y
+  ) %>%
   distinct(vcf_id, .keep_all = T) %>%
   dplyr::select(any_of(c(
     "VariationID", "ClinicalSignificance", "ClinicalSignificance",
