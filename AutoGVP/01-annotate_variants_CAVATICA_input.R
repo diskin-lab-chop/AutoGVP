@@ -398,6 +398,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
 
   # combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_with_vcf_intervar, entries_for_cc_in_submission, by = "vcf_id") %>%
   ## indicate if recalculated
+  dplyr::mutate(intervar_adjusted = if_else((evidencePVS1 == 0), "No", "Yes")) %>%
   dplyr::mutate(
     ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
     # if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
@@ -465,12 +466,13 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- clinvar_anno_intervar_vcf_df %>%
-  full_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted_call|evidence|InterVar:|criterion|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
-  # full_join(combined_tab_for_intervar_cc_removed[, grepl("vcf_id|intervar_adjusted_call|evidence|InterVar:|criterion|final_call", names(combined_tab_for_intervar_cc_removed))], by = "vcf_id") %>%
+  full_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
+  # full_join(combined_tab_for_intervar_cc_removed[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_for_intervar_cc_removed))], by = "vcf_id") %>%
   left_join(submission_final_df, by = "vcf_id")
 
 master_tab <- master_tab %>%
   dplyr::mutate(
+    intervar_adjusted = coalesce(intervar_adjusted, "No"),
     evidencePVS1 = coalesce(as.double(evidencePVS1.x, evidencePVS1.y)),
     evidenceBA1 = coalesce(as.double(evidenceBA1.x, evidenceBA1.y)),
     evidencePS = coalesce(as.double(evidencePS.x, evidencePS.y)),
