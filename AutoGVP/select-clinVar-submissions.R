@@ -160,7 +160,8 @@ submission_final_df <- variants_no_conflicts %>%
     Description = case_when(
       Description == "-" ~ NA_character_,
       TRUE ~ Description
-    )) %>%
+    )
+  ) %>%
   distinct(vcf_id, .keep_all = T) %>%
   dplyr::select(any_of(c(
     "VariationID", "ClinicalSignificance", "ClinicalSignificance",
