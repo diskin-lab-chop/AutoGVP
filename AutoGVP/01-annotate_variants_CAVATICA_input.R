@@ -197,6 +197,15 @@ multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_na
   group_by(vcf_id) %>%
   arrange(Chr, Start) %>%
   filter(row_number() == 1) %>%
+  # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
+  dplyr::select(
+    -Chr, -Start, -End, -Alt, -Ref,
+    -contains(c(
+      "Otherinfo", "gnomad", "CLN",
+      "score", "pred", "CADD", "Eigen",
+      "100way", "30way", "GTEx"
+    ))
+  ) %>%
   ungroup()
 
 ## add intervar table
@@ -206,6 +215,11 @@ clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws
   group_by(var_id) %>%
   arrange(`#Chr`, Start) %>%
   filter(row_number() == 1) %>%
+  # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
+  dplyr::select(
+    -`#Chr`, -Start, -End, -Alt, -Ref, -`clinvar: Clinvar`,
+    -contains(c("gnomad", "CADD", "Freq", "SCORE", "score", "ORPHA", "MIM", "rmsk"))
+  ) %>%
   ungroup()
 
 
@@ -217,24 +231,25 @@ if (tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df)) {
 ## combine the intervar and multianno tables by the appropriate vcf id
 clinvar_anno_intervar_vcf_df <-
   dplyr::mutate(multianno_df, clinvar_anno_intervar_vcf_df) %>%
-  dplyr::filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id) %>%
-  dplyr::select(any_of(c(
-    "vcf_id", "InterVar: InterVar and Evidence",
-    "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
-    "CLNSIG", "CLNREVSTAT"
-  )))
+  dplyr::filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id)
+# dplyr::select(any_of(c(
+#   "vcf_id", "InterVar: InterVar and Evidence",
+#   "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
+#   "CLNSIG", "CLNREVSTAT"
+# )))
 
 ## populate consensus call variants with invervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df, entries_for_cc_in_submission, by = "vcf_id") %>%
-  dplyr::select(any_of(c(
-    "vcf_id", "InterVar: InterVar and Evidence",
-    "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
-    "CLNSIG", "CLNREVSTAT"
-  ))) %>%
+  # dplyr::select(any_of(c(
+  #   "vcf_id", "InterVar: InterVar and Evidence",
+  #   "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
+  #   "CLNSIG", "CLNREVSTAT"
+  # ))) %>%
   dplyr::rename("Intervar_evidence" = `InterVar: InterVar and Evidence`)
 
 
-clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>% anti_join(entries_for_cc_in_submission, by = "vcf_id") %>%
+clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
+  # anti_join(entries_for_cc_in_submission, by = "vcf_id") %>%
   ## add column for individual scores that will be re-calculated if we need to adjust using autoPVS1 result
 
   ## note: ignore PP5 score and BP6 score
@@ -263,50 +278,47 @@ autopvs1_results <- read_tsv(input_autopvs1_file, col_names = TRUE) %>%
 ## merge autopvs1_results with vcf data, and filter for those variants that need intervar run
 combined_tab_with_vcf_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by = "vcf_id") %>%
-  dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id) %>%
-  dplyr::select(any_of(c(
-    "vcf_id",
-    "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
-    "CLNSIG", "CLNREVSTAT",
-    "InterVar: InterVar and Evidence", "consequence", "criterion", "evidencePVS1",
-    "evidenceBA1", "evidencePS", "evidencePM", "evidencePP", "evidenceBS", "evidenceBP"
-  )))
+  dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id & !vcf_id %in% entries_for_cc_in_submission$vcf_id) %>%
+  # dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id)
 
+  # combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_with_vcf_intervar, entries_for_cc_in_submission, by = "vcf_id") %>%
+  ## indicate if recalculated
+  dplyr::mutate(intervar_adjusted = if_else((evidencePVS1 == 0), "No", "Yes")) %>%
+  dplyr::mutate(
+    ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
+    # if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
+    evidencePVS1 = if_else((criterion == "NF1" | criterion == "SS1" |
+      criterion == "DEL1" | criterion == "DEL2" |
+      criterion == "DUP1" | criterion == "IC1") & evidencePVS1 == 1, "1", evidencePVS1),
 
+    # if criterion is NF3|NF5|SS3|SS5|SS8|SS10|DEL8|DEL6|DEL10|DUP3|IC2 then PVS1 = 0; PS = PS+1
+    evidencePS = if_else((criterion == "NF3" | criterion == "NF5" |
+      criterion == "SS3" | criterion == "SS5" |
+      criterion == "SS8" | criterion == "SS10" |
+      criterion == "DEL8" | criterion == "DEL6" |
+      criterion == "DEL10" | criterion == "DUP3" |
+      criterion == "IC2") & evidencePVS1 == 1, as.numeric(evidencePS) + 1, as.double(evidencePS)),
+    evidencePVS1 = if_else((criterion == "NF3" | criterion == "NF5" |
+      criterion == "SS3" | criterion == "SS5" |
+      criterion == "SS8" | criterion == "SS10" |
+      criterion == "DEL8" | criterion == "DEL6" |
+      criterion == "DEL10" | criterion == "DUP3" |
+      criterion == "IC2") & evidencePVS1 == 1, "0", evidencePVS1),
 
-combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_with_vcf_intervar, entries_for_cc_in_submission, by = "vcf_id") %>%
-  ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
-  # if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
-  mutate(evidencePVS1 = if_else((criterion == "NF1" | criterion == "SS1" |
-    criterion == "DEL1" | criterion == "DEL2" |
-    criterion == "DUP1" | criterion == "IC1") & evidencePVS1 == 1, "1", evidencePVS1)) %>%
-  # if criterion is NF3|NF5|SS3|SS5|SS8|SS10|DEL8|DEL6|DEL10|DUP3|IC2 then PVS1 = 0; PS = PS+1
-  mutate(evidencePS = if_else((criterion == "NF3" | criterion == "NF5" |
-    criterion == "SS3" | criterion == "SS5" |
-    criterion == "SS8" | criterion == "SS10" |
-    criterion == "DEL8" | criterion == "DEL6" |
-    criterion == "DEL10" | criterion == "DUP3" |
-    criterion == "IC2") & evidencePVS1 == 1, as.numeric(evidencePS) + 1, as.double(evidencePS))) %>%
-  mutate(evidencePVS1 = if_else((criterion == "NF3" | criterion == "NF5" |
-    criterion == "SS3" | criterion == "SS5" |
-    criterion == "SS8" | criterion == "SS10" |
-    criterion == "DEL8" | criterion == "DEL6" |
-    criterion == "DEL10" | criterion == "DUP3" |
-    criterion == "IC2") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
-  # if criterion is NF6|SS6|SS9|DEL7|DEL11|IC3 then PVS1 = 0; PM = PM+1;
-  mutate(evidencePM = if_else((criterion == "NF6" | criterion == "SS6" |
-    criterion == "SS9" | criterion == "DEL7" |
-    criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, as.numeric(evidencePM) + 1, as.double(evidencePM))) %>%
-  mutate(evidencePVS1 = if_else((criterion == "NF6" | criterion == "SS6" |
-    criterion == "SS9" | criterion == "DEL7" |
-    criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
-  # if criterion is IC4 then PVS1 = 0; PP = PP+1;
-  mutate(evidencePP = if_else((criterion == "IC4") & evidencePVS1 == 1, as.numeric(evidencePP) + 1, as.double(evidencePP))) %>%
-  mutate(evidencePVS1 = if_else((criterion == "IC4") & evidencePVS1 == 1, "0", evidencePVS1)) %>%
-  # if criterion is na then PVS1 = 0;
-  mutate(
+    # if criterion is NF6|SS6|SS9|DEL7|DEL11|IC3 then PVS1 = 0; PM = PM+1;
+    evidencePM = if_else((criterion == "NF6" | criterion == "SS6" |
+      criterion == "SS9" | criterion == "DEL7" |
+      criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, as.numeric(evidencePM) + 1, as.double(evidencePM)),
+    evidencePVS1 = if_else((criterion == "NF6" | criterion == "SS6" |
+      criterion == "SS9" | criterion == "DEL7" |
+      criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, "0", evidencePVS1),
+
+    # if criterion is IC4 then PVS1 = 0; PP = PP+1;
+    evidencePP = if_else((criterion == "IC4") & evidencePVS1 == 1, as.numeric(evidencePP) + 1, as.double(evidencePP)),
+    evidencePVS1 = if_else((criterion == "IC4") & evidencePVS1 == 1, "0", evidencePVS1),
+
+    # if criterion is na then PVS1 = 0;
     evidencePVS1 = if_else((criterion == "na") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
-
 
     ## adjust variables based on given rules described in README
     final_call = ifelse((evidencePVS1 == 1 &
@@ -336,13 +348,16 @@ combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_with_vcf_intervar
     )
   )
 
+
 ## merge tables together (clinvar and intervar) and write to file
-master_tab <- full_join(clinvar_anno_intervar_vcf_df, combined_tab_with_vcf_intervar[, !grepl("Gene|CLN", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
-  full_join(combined_tab_for_intervar_cc_removed[, !grepl("Gene|CLN", names(combined_tab_for_intervar_cc_removed))], by = "vcf_id") %>%
-  distinct()
+master_tab <- clinvar_anno_intervar_vcf_df %>%
+  full_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
+  # full_join(combined_tab_for_intervar_cc_removed[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_for_intervar_cc_removed))], by = "vcf_id") %>%
+  left_join(submission_final_df, by = "vcf_id")
 
 master_tab <- master_tab %>%
   dplyr::mutate(
+    intervar_adjusted = coalesce(intervar_adjusted, "No"),
     evidencePVS1 = coalesce(as.double(evidencePVS1.x, evidencePVS1.y)),
     evidenceBA1 = coalesce(as.double(evidenceBA1.x, evidenceBA1.y)),
     evidencePS = coalesce(as.double(evidencePS.x, evidencePS.y)),
@@ -351,7 +366,6 @@ master_tab <- master_tab %>%
     evidenceBS = coalesce(as.double(evidenceBS.x, evidenceBS.y)),
     evidenceBP = coalesce(as.double(evidenceBP.x, evidenceBP.y)),
     Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`),
-    #    Stars = coalesce(Stars.x, Stars.y),
     # replace second final call with the second one because we did not use interVar results
     final_call.x = if_else(evidencePVS1 == 0 & Stars == "0", final_call.y, final_call.x)
   )
@@ -371,24 +385,22 @@ master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id")
   dplyr::mutate(final_call = coalesce(final_call.y, final_call.x)) %>%
   full_join(entries_for_cc_in_submission_w_intervar[c("vcf_id", "Intervar_evidence")], by = "vcf_id") %>%
   dplyr::mutate(
-    Intervar_evidence = coalesce(Intervar_evidence.y, Intervar_evidence.x)
+    Intervar_evidence = coalesce(Intervar_evidence.y, Intervar_evidence.x),
+    ClinVar_ClinicalSignificance = coalesce(ClinicalSignificance.x, ClinicalSignificance.y)
+  ) %>%
+  dplyr::select(
+    -final_call.x, -final_call.y,
+    -Intervar_evidence.x, -Intervar_evidence.y,
+    -INFO, -ClinicalSignificance.x, -ClinicalSignificance.y
   )
 
-# abridged version
-results_tab_abridged <- master_tab %>%
-  dplyr::select(any_of(c(
-    "vcf_id",
-    "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
-    "consequence", "criterion",
-    "CLNSIG", "CLNREVSTAT", "Stars",
-    "Intervar_evidence", "ID", "final_call"
-  )))
+
 
 ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
-results_tab_abridged <- address_ambiguous_calls(results_tab_abridged)
+master_tab <- address_ambiguous_calls(master_tab)
 
 ## fix spelling and nomenclature inconsistencies
-results_tab_abridged <- results_tab_abridged %>%
+master_tab <- master_tab %>%
   dplyr::mutate(
     final_call = replace(final_call, final_call == "Likely benign", "Likely_benign"),
     final_call = replace(final_call, final_call == "Uncertain significance", "Uncertain_significance"),
@@ -398,16 +410,21 @@ results_tab_abridged <- results_tab_abridged %>%
   ) %>%
   distinct()
 
-# add column indicating final call source
-results_tab_abridged <- results_tab_abridged %>%
+## add column indicating final call source
+master_tab <- master_tab %>%
   dplyr::mutate(Reasoning_for_call = case_when(
     vcf_id %in% vcf_to_run_intervar ~ "InterVar",
     TRUE ~ "ClinVar"
-  ))
+  )) %>%
+  dplyr::relocate(
+    CHROM, START, ID, REF, ALT,
+    final_call, Reasoning_for_call,
+    Stars, ClinVar_ClinicalSignificance, Intervar_evidence
+  )
 
 
 # write out to file
-results_tab_abridged %>%
+master_tab %>%
   write_tsv(
     file.path(results_dir, output_tab_abr_file),
     append = FALSE,
