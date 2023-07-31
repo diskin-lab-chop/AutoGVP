@@ -2,8 +2,8 @@
 # select-clinVar-submissions.R
 # written by Ryan Corbett
 #
-# This script selects unique clinVar variant submission calls based on a list of 
-# predetermined criteria, to be used in AutoGVP for ClinVar variants that need 
+# This script selects unique clinVar variant submission calls based on a list of
+# predetermined criteria, to be used in AutoGVP for ClinVar variants that need
 # resolving due to conflicting calls
 #
 # usage: select-clinVar-submissions.R --variant_summary <variant file>
@@ -30,12 +30,12 @@ input_dir <- file.path(analysis_dir, "input")
 # parse parameters
 option_list <- list(
   make_option(c("--variant_summary"),
-              type = "character",
-              help = "variant_summary file (format: variant_summary_2023-02.txt)"
+    type = "character",
+    help = "variant_summary file (format: variant_summary_2023-02.txt)"
   ),
   make_option(c("--submission_summary"),
-              type = "character",
-              help = "specific submission summary file (format: submission_summary.txt)"
+    type = "character",
+    help = "specific submission summary file (format: submission_summary.txt)"
   )
 )
 
@@ -46,11 +46,11 @@ input_submission_file <- opt$submission_summary
 input_variant_summary <- opt$variant_summary
 
 
-## load variant summary file, which reports latest clinVar consensus calls for each variant 
+## load variant summary file, which reports latest clinVar consensus calls for each variant
 variant_summary_df <- vroom(input_variant_summary,
-                            delim = "\t",
-                            col_types = c(ReferenceAlleleVCF = "c", AlternateAlleleVCF = "c", PositionVCF = "i", VariationID = "n"),
-                            show_col_types = FALSE
+  delim = "\t",
+  col_types = c(ReferenceAlleleVCF = "c", AlternateAlleleVCF = "c", PositionVCF = "i", VariationID = "n"),
+  show_col_types = FALSE
 ) %>%
   # retain only variants mapped to hg38
   dplyr::filter(Assembly == "GRCh38" & ReferenceAlleleVCF != "na" & AlternateAlleleVCF != "na") %>%
@@ -67,14 +67,14 @@ variant_summary_df <- vroom(input_variant_summary,
 
 # Load clinVar submission summary file, which reports all submissions for each clinVar variant
 submission_summary_df <- vroom(input_submission_file,
-                               comment = "#", delim = "\t",
-                               col_names = c(
-                                 "VariationID", "ClinicalSignificance", "DateLastEvaluated",
-                                 "Description", "SubmittedPhenotypeInfo", "ReportedPhenotypeInfo",
-                                 "ReviewStatus", "CollectionMethod", "OriginCounts", "Submitter",
-                                 "SCV", "SubmittedGeneSymbol", "ExplanationOfInterpretation"
-                               ),
-                               show_col_types = F
+  comment = "#", delim = "\t",
+  col_names = c(
+    "VariationID", "ClinicalSignificance", "DateLastEvaluated",
+    "Description", "SubmittedPhenotypeInfo", "ReportedPhenotypeInfo",
+    "ReviewStatus", "CollectionMethod", "OriginCounts", "Submitter",
+    "SCV", "SubmittedGeneSymbol", "ExplanationOfInterpretation"
+  ),
+  show_col_types = F
 )
 
 # remove submissions with missing columns (will have NA SubmittedGeneSymbol)
@@ -162,5 +162,7 @@ submission_final_df <- variants_no_conflicts %>%
     "SubmittedGeneSymbol", "GeneSymbol", "vcf_id"
   )))
 
-write_tsv(submission_final_df, 
-          file.path(input_dir, "ClinVar-selected-submissions.tsv"))
+write_tsv(
+  submission_final_df,
+  file.path(input_dir, "ClinVar-selected-submissions.tsv")
+)
