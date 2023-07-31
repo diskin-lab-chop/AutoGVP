@@ -55,7 +55,7 @@ full_out_file <- glue::glue("{output_name}-autogvp-annotated-full.tsv")
 
 
 # Read in VEP vcf file
-vcf <- read_tsv(file.path(input_dir, input_vcf_file),
+vcf <- read_tsv(input_vcf_file,
                 show_col_types = FALSE)
 
 # Remove "[#]" characters from column headers, if present
@@ -94,12 +94,12 @@ csq_cols <- c("Allele","Consequence","IMPACT","SYMBOL","Gene","Feature_type","Fe
               "phyloP100way_vertebrate_rankscore","Intervar","Intervar_STATUS")
 
 # Create subset vector of vcf column names to retain
-columns_to_retain <- c(names(vcf)[!grepl("CSQ", names(vcf))],
+columns_to_retain <- c(names(vcf)[!grepl("CSQ|DP", names(vcf))],
                        "Allele","Consequence","IMPACT","SYMBOL","Gene","Feature_type","Feature", 
                        "BIOTYPE","EXON","INTRON","HGVSc","HGVSp","cDNA_position","CDS_position",
                        "Protein_position","Amino_acids","Codons","Existing_variation","ALLELE_NUM",
                        "DISTANCE","STRAND","FLAGS","PICK","VARIANT_CLASS","SYMBOL_SOURCE","HGNC_ID",
-                       "CANONICAL","TSL","CCDS","ENSP","SWISSPROT","TREMBL","UNIPARC","UNIPROT_ISOFORM",
+                       "CANONICAL","TSL","CCDS","ENSP", "Interpro_domain", "SWISSPROT","TREMBL","UNIPARC","UNIPROT_ISOFORM",
                        "RefSeq","REFSEQ_MATCH","SOURCE",
                        "SIFT","PolyPhen","DOMAINS","HGVSg")
 
@@ -113,7 +113,6 @@ vcf_separated <- vcf %>%
   separate_wider_delim(CSQ, "|", names = csq_cols) %>%
   
   dplyr::select(any_of(columns_to_retain))
-
 
 # Retain one row per variant by prioritizing gene annotation with value "1" in `PICK` column. In KF workflow, criteria for selection include:
 # 1) Canonical transcript status
@@ -153,41 +152,73 @@ vcf_final <- vcf_pick_other %>%
   dplyr::left_join(vcf[,c("vcf_id", "CSQ")], by = "vcf_id") %>%
   arrange(CHROM, POS)
 
+
 # Read in autogvp output
-autogvp <- read_tsv(file.path(input_dir, input_autogvp_file),
-                    show_col_types = FALSE)
+autogvp <- read_tsv(input_autogvp_file,
+                    show_col_types = FALSE) %>%
+  separate_wider_delim(Sample, delim = ":", names = c("GT", "AD", "DP", "GQ"), too_many = "drop")
 
 # Merge `autogvp` and `vcf_final`
 merged_df <- autogvp %>%
+  
   # rm redundant columns from autogvp
-  dplyr::select(-CHROM, -ID, -REF, -ALT, -FILTER, -QUAL) %>%
+  dplyr::select(-any_of(c("CHROM", "ID", "REF", 
+                          "ALT", "FILTER", "QUAL", 
+                          "Interpro_domain"))) %>%
+  
   # join dfs
   dplyr::left_join(vcf_final, by = "vcf_id") %>%
+  
   # rm unecessary columns
   dplyr::select(-any_of(c("var_id", "Otherinfo"))) %>%
+  
   # convert `gnomad_3_1_1_AF_non_cancer` to numeric
   dplyr::mutate(gnomad_3_1_1_AF_non_cancer = case_when(
     gnomad_3_1_1_AF_non_cancer == "." ~ "0",
     TRUE ~ gnomad_3_1_1_AF_non_cancer
   )) %>%
   dplyr::mutate(gnomad_3_1_1_AF_non_cancer = as.numeric(gnomad_3_1_1_AF_non_cancer)) %>%
+  
   # add clinVar link
   dplyr::mutate(ClinVar_link = case_when(
     !is.na(VariationID) ~ paste0("https://www.ncbi.nlm.nih.gov/clinvar/variation/", VariationID, "/"),
     TRUE ~ NA_character_
   )) %>%
+  
   # rm ensembl transcript/protein IDs from HGVSc/p columns
   dplyr::mutate(HGVSc = str_split(HGVSc, ":", simplify = T)[,2],
                 HGVSp = str_split(HGVSp, ":", simplify = T)[,2]) %>%
+  
+  dplyr::mutate(ID = case_when(
+    grepl("rs", ID) ~ ID,
+    TRUE ~ NA_character_
+  ),
+  avsnp147 = case_when(
+    grepl("rs", avsnp147) ~ avsnp147,
+    TRUE ~ NA_character_
+  ),
+  Existing_variation = case_when(
+    grepl("rs", Existing_variation) ~ Existing_variation,
+    TRUE ~ NA_character_
+  )) %>%
+  
+  dplyr::mutate(rsID = coalesce(Existing_variation, ID, avsnp147)) %>%
+  dplyr::select(-ID, -avsnp147, Existing_variation) %>%
+  
   arrange(CHROM, START)
 
+colnames <- read_tsv(file.path(input_dir, "output_colnames.tsv"))
+
+merged_df <- merged_df %>%
+  dplyr::select(any_of(colnames$Column_name)) %>%
+  rename_at(vars(colnames$Column_name), ~colnames$Rename)
+
+
 # Create list of columns to include in abridged output
-abridged_cols <- c("CHROM", "START", "REF", "ALT", "ID",
-                   "SYMBOL", "Consequence", "HGVSg", "HGVSc", "HGVSp", 
-                   "final_call", "Reasoning_for_call", "Stars",
-                   "ClinVar_ClinicalSignificance",
-                   "Intervar_evidence", "gnomad_3_1_1_AF_non_cancer")
-  
+abridged_cols <- colnames %>%
+  filter(Abridged == T) %>%
+  pull(Rename)
+
 # Generate abridged output
 abridged_df <- merged_df %>%
   dplyr::select(all_of(abridged_cols)) %>%
