@@ -31,11 +31,11 @@ input_dir <- file.path(analysis_dir, "input")
 option_list <- list(
   make_option(c("--variant_summary"),
     type = "character",
-    help = "variant_summary file (format: variant_summary_2023-02.txt)"
+    help = "variant_summary file (format: variant_summary.txt.gz)"
   ),
   make_option(c("--submission_summary"),
     type = "character",
-    help = "specific submission summary file (format: submission_summary.txt)"
+    help = "specific submission summary file (format: submission_summary.txt.gz)"
   )
 )
 
