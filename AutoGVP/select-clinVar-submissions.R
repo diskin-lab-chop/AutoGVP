@@ -76,7 +76,7 @@ submission_summary_df <- vroom(input_submission_file,
   ),
   show_col_types = F
 ) %>%
-# Redefine `DateLastEvaluated`
+  # Redefine `DateLastEvaluated`
   dplyr::mutate(DateLastEvaluated = case_when(
     DateLastEvaluated == "-" ~ NA_character_,
     TRUE ~ DateLastEvaluated
@@ -85,8 +85,10 @@ submission_summary_df <- vroom(input_submission_file,
 # merge submission_summary and variant_summary info
 submission_merged_df <- submission_summary_df %>%
   dplyr::rename("LastEvaluated" = DateLastEvaluated) %>%
-  left_join(variant_summary_df, by = "VariationID", 
-            relationship = "many-to-many", suffix = c("_sub", "_var")) %>%
+  left_join(variant_summary_df,
+    by = "VariationID",
+    relationship = "many-to-many", suffix = c("_sub", "_var")
+  ) %>%
   dplyr::mutate(LastEvaluated = coalesce(LastEvaluated_sub, LastEvaluated_var)) %>%
   dplyr::filter(!is.na(vcf_id))
 
