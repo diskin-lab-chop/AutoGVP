@@ -9,5 +9,6 @@ AutoGVP/input/submission_summary.txt.gz
 AutoGVP/input/variant_summary.txt
 AutoGVP/input/variant_summary.txt.gz
 AutoGVP/input/md5sum.txt
+AutoGVP/input/ClinVar-selected-submissions.tsv
 
 
