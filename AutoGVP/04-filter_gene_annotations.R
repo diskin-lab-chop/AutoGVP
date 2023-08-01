@@ -209,10 +209,17 @@ merged_df <- autogvp %>%
 
 colnames <- read_tsv(file.path(input_dir, "output_colnames.tsv"))
 
+# Subset and reorder output columns based on inclusion and order in `colnames`
 merged_df <- merged_df %>%
-  dplyr::select(any_of(colnames$Column_name)) %>%
-  rename_at(vars(colnames$Column_name), ~colnames$Rename)
+  dplyr::select(any_of(colnames$Column_name))
 
+# filter `colnames` for columns present in `merged_df`
+colnames <- colnames %>%
+  dplyr::filter(Column_name %in% names(merged_df)) 
+
+# rename columns according to `colnames` Rename column
+merged_df <- merged_df %>%
+  rename_at(vars(colnames$Column_name), ~colnames$Rename)
 
 # Create list of columns to include in abridged output
 abridged_cols <- colnames %>%
