@@ -35,7 +35,7 @@ option_list <- list(
   ),
   make_option(c("--submission_summary"),
     type = "character",
-    help = "specific submission summary file (format: submission_summary.txt)"
+    help = "specific submission summary file (format: submission_summary.txt.gz)"
   )
 )
 
