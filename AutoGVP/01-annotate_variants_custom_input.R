@@ -373,7 +373,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
 master_tab <- clinvar_anno_intervar_vcf_df %>%
   left_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
   #  left_join(combined_tab_for_intervar_cc_removed[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_for_intervar_cc_removed))], by = "vcf_id") %>%
-  left_join(submission_final_df, by = "vcf_id")
+  left_join(variant_summary_df, by = "vcf_id")
 
 master_tab <- master_tab %>%
   dplyr::mutate(
