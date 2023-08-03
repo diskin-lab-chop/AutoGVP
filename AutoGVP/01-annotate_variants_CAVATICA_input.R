@@ -326,7 +326,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
         (evidencePM >= 2) |
         (evidencePM == 1 & evidencePP == 1) |
         (evidencePP >= 2))), "Pathogenic",
-    ifelse((evidencePS1 >= 2), "Pathogenic",
+    ifelse((evidencePS >= 2), "Pathogenic",
       ifelse((evidencePS == 1 &
         (evidencePM >= 3 |
           (evidencePM == 2 & evidencePP >= 2) |
