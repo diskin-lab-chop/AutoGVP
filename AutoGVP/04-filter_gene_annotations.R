@@ -73,7 +73,7 @@ names(vcf) <- sub(".*]", "", names(vcf))
 vcf <- vcf %>%
   dplyr::mutate(vcf_id = glue::glue("{CHROM}-{POS}-{REF}-{ALT}")) %>%
   dplyr::mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) %>%
-  select(-ANN)
+  select(-any_of(c("ANN")))
 
 # Define names of VEP CSQ fields that will become df column names
 csq_cols <- c(
