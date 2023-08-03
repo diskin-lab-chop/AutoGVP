@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+set -e
 
 ## default files
 variant_summary_file="input/ClinVar-selected-submissions.tsv"
@@ -102,9 +103,9 @@ if [[ "$workflow" = "cavatica" ]];then
   --autopvs1 $autopvs1_file \
   --output $out_file \
   --variant_summary $variant_summary_file
-  
+
   else
-  
+
   # Run AutoGVP from custom workflow
   Rscript 01-annotate_variants_custom_input.R --vcf $outdir/$vcf_filtered_file \
   --clinvar $clinvar_file \
@@ -114,7 +115,7 @@ if [[ "$workflow" = "cavatica" ]];then
   --output $out_file \
   --variant_summary $variant_summary_file \
   --submission_summary $submission_summary_file
-  
+
 fi
 
 
