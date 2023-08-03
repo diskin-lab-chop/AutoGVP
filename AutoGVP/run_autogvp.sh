@@ -129,4 +129,4 @@ autogvp_output="../results/"${out_file}".cavatica_input.annotations_report.abrid
 # Filter VCF gene/transcript annotations and merge data with AutoGVP output
 Rscript 04-filter_gene_annotations.R --vcf $vcf_parsed_file --autogvp $autogvp_output --output $out_file
 
-#rm $vcf_filtered_file $vcf_parsed_file $autogvp_output
+rm $vcf_filtered_file $vcf_parsed_file $autogvp_output
