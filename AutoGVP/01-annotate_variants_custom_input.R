@@ -327,11 +327,11 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
     evidencePVS1 = if_else((criterion == "IC4") & evidencePVS1 == 1, "0", evidencePVS1),
 
     # if criterion is na|NF2|NF4|SS2|SS4|SS7|DEL3|DEL5|DEL9|DUP2|DUP4|DUP5|IC5 then PVS1 = 0;
-    evidencePVS1 = if_else((criterion == "na" | criterion == "NF2"| criterion == "NF4" |
-      criterion == "SS2" | criterion == "SS4"|criterion == "SS7"|
-      criterion == "DEL3" | criterion == "DEL5"|criterion == "DEL9"|
-      criterion == "DUP2" | criterion == "DUP4"|criterion == "DUP5"|
-      criterion == "IC5" ) & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
+    evidencePVS1 = if_else((criterion == "na" | criterion == "NF2" | criterion == "NF4" |
+      criterion == "SS2" | criterion == "SS4" | criterion == "SS7" |
+      criterion == "DEL3" | criterion == "DEL5" | criterion == "DEL9" |
+      criterion == "DUP2" | criterion == "DUP4" | criterion == "DUP5" |
+      criterion == "IC5") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
 
     ## adjust variables based on given rules described in README
     final_call = ifelse((evidencePVS1 == 1 &
@@ -364,8 +364,8 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- clinvar_anno_intervar_vcf_df %>%
-  left_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") #%>%
-  #left_join(submission_final_df, by = "vcf_id")
+  left_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") # %>%
+# left_join(submission_final_df, by = "vcf_id")
 
 
 master_tab <- master_tab %>%
@@ -379,7 +379,7 @@ master_tab <- master_tab %>%
     evidenceBS = coalesce(as.double(evidenceBS.x, evidenceBS.y)),
     evidenceBP = coalesce(as.double(evidenceBP.x, evidenceBP.y)),
     Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`),
-    
+
     # replace second final call with the first one because we did not use clinvar results
     final_call.x = if_else(Stars == "0", final_call.y, final_call.x)
   )
@@ -400,11 +400,11 @@ master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id")
   full_join(entries_for_cc_in_submission_w_intervar[c("vcf_id", "Intervar_evidence")], by = "vcf_id") %>%
   dplyr::mutate(
     Intervar_evidence = coalesce(Intervar_evidence.y, Intervar_evidence.x),
-    #ClinVar_ClinicalSignificance = coalesce(ClinicalSignificance.x, ClinicalSignificance.y)
+    # ClinVar_ClinicalSignificance = coalesce(ClinicalSignificance.x, ClinicalSignificance.y)
   ) %>%
   dplyr::select(
     -final_call.x, -final_call.y,
-    -Intervar_evidence.x, -Intervar_evidence.y #,
+    -Intervar_evidence.x, -Intervar_evidence.y # ,
     #-ClinicalSignificance.x, -ClinicalSignificance.y
   )
 
