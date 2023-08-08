@@ -171,7 +171,7 @@ clinvar_anno_vcf_df <- vroom(input_clinVar_file, comment = "#", delim = "\t", co
     final_call = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
   )
 
-# clinvar_anno_vcf_df <- address_conflicting_intrep(clinvar_anno_vcf_df)
+clinvar_anno_vcf_df <- address_conflicting_intrep(clinvar_anno_vcf_df)
 
 ## store variants without clinvar info
 clinvar_anti_join_vcf_df <- anti_join(vcf_df, clinvar_anno_vcf_df, by = "vcf_id") %>%
