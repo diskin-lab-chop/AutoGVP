@@ -294,13 +294,13 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
     # if criterion is NF3|NF5|SS3|SS5|SS8|SS10|DEL4|DEL8|DEL6|DEL10|DUP3|IC2 then PVS1 = 0; PS = PS+1
     evidencePS = if_else((criterion == "NF3" | criterion == "NF5" |
       criterion == "SS3" | criterion == "SS5" |
-      criterion == "SS8" | criterion == "SS10" |criterion == "DEL4" |
+      criterion == "SS8" | criterion == "SS10" | criterion == "DEL4" |
       criterion == "DEL8" | criterion == "DEL6" |
       criterion == "DEL10" | criterion == "DUP3" |
       criterion == "IC2") & evidencePVS1 == 1, as.numeric(evidencePS) + 1, as.double(evidencePS)),
     evidencePVS1 = if_else((criterion == "NF3" | criterion == "NF5" |
       criterion == "SS3" | criterion == "SS5" |
-      criterion == "SS8" | criterion == "SS10" |criterion == "DEL4" |
+      criterion == "SS8" | criterion == "SS10" | criterion == "DEL4" |
       criterion == "DEL8" | criterion == "DEL6" |
       criterion == "DEL10" | criterion == "DUP3" |
       criterion == "IC2") & evidencePVS1 == 1, "0", evidencePVS1),
@@ -318,11 +318,11 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
     evidencePVS1 = if_else((criterion == "IC4") & evidencePVS1 == 1, "0", evidencePVS1),
 
     # if criterion is na|NF2|NF4|SS2|SS4|SS7|DEL3|DEL5|DEL9|DUP2|DUP4|DUP5|IC5 then PVS1 = 0;
-    evidencePVS1 = if_else((criterion == "na" | criterion == "NF2"| criterion == "NF4" |
-      criterion == "SS2" | criterion == "SS4"|criterion == "SS7"|
-      criterion == "DEL3" | criterion == "DEL5"|criterion == "DEL9"|
-      criterion == "DUP2" | criterion == "DUP4"|criterion == "DUP5"|
-      criterion == "IC5" ) & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
+    evidencePVS1 = if_else((criterion == "na" | criterion == "NF2" | criterion == "NF4" |
+      criterion == "SS2" | criterion == "SS4" | criterion == "SS7" |
+      criterion == "DEL3" | criterion == "DEL5" | criterion == "DEL9" |
+      criterion == "DUP2" | criterion == "DUP4" | criterion == "DUP5" |
+      criterion == "IC5") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
 
     ## adjust variables based on given rules described in README
     final_call = ifelse((evidencePVS1 == 1 &
