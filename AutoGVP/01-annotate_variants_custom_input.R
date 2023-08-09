@@ -338,7 +338,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
     evidencePVS1 = if_else((criterion == "IC4") & evidencePVS1 == 1, "0", evidencePVS1),
 
     # if criterion is na|NF0|NF2|NF4|SS2|SS4|SS7|DEL3|DEL5|DEL9|DUP2|DUP4|DUP5|IC5 then PVS1 = 0;
-    evidencePVS1 = if_else((criterion == "na" | criterion == "NF0" |criterion == "NF2" | criterion == "NF4" |
+    evidencePVS1 = if_else((criterion == "na" | criterion == "NF0" | criterion == "NF2" | criterion == "NF4" |
       criterion == "SS2" | criterion == "SS4" | criterion == "SS7" |
       criterion == "DEL3" | criterion == "DEL5" | criterion == "DEL9" |
       criterion == "DUP2" | criterion == "DUP4" | criterion == "DUP5" |
@@ -349,39 +349,39 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
       ((evidencePS >= 1) |
         (evidencePM >= 2) |
         (evidencePM == 1 & evidencePP == 1) |
-        (evidencePP >= 2))&
-      ((evidenceBA1) == 1 | 
-        (evidenceBS>=2) | 
-        (evidenceBP>=2) | 
-        (evidenceBS>=1 & evidenceBP>=1) | 
-        (evidenceBA1==1 & (evidenceBS>=1 | evidenceBP>=1)))), "Uncertain_significance",
-    ifelse(((evidencePS >= 2) & 
-      ((evidenceBA1) == 1 | 
-        (evidenceBS>=2) | 
-       (evidenceBP>=2) | 
-        (evidenceBS>=1 & evidenceBP>=1) | 
-        (evidenceBA1==1 & (evidenceBS>=1 | evidenceBP>=1)))), "Uncertain_significance",
-      ifelse(((evidencePS == 1 &
-        (evidencePM >= 3 |
-          (evidencePM == 2 & evidencePP >= 2) |
-          (evidencePM == 1 & evidencePP >= 4))) &
-      ((evidenceBA1) == 1 | 
-        (evidenceBS>=2) | 
-        (evidenceBP>=2) | 
-        (evidenceBS>=1 & evidenceBP>=1) | 
-        (evidenceBA1==1 & (evidenceBS>=1 | evidenceBP>=1)))), "Uncertain_significance",
-      ifelse((((evidencePVS1 == 1 & evidencePM == 1) |
-        (evidencePS == 1 & evidencePM >= 1) |
-        (evidencePS == 1 & evidencePP >= 2) |
-        (evidencePM >= 3) |
+        (evidencePP >= 2)) &
+      ((evidenceBA1) == 1 |
+        (evidenceBS >= 2) |
+        (evidenceBP >= 2) |
+        (evidenceBS >= 1 & evidenceBP >= 1) |
+        (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
+    ifelse(((evidencePS >= 2) &
+      ((evidenceBA1) == 1 |
+        (evidenceBS >= 2) |
+        (evidenceBP >= 2) |
+        (evidenceBS >= 1 & evidenceBP >= 1) |
+        (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
+    ifelse(((evidencePS == 1 &
+      (evidencePM >= 3 |
         (evidencePM == 2 & evidencePP >= 2) |
-        (evidencePM == 1 & evidencePP >= 4)) & 
-        ((evidenceBA1) == 1 | 
-        (evidenceBS>=2) | 
-        (evidenceBP>=2) | 
-       (evidenceBS>=1 & evidenceBP>=1) | 
-       (evidenceBA1==1 & (evidenceBS>=1 | evidenceBP>=1)))), "Uncertain_significance",
-             ifelse((evidencePVS1 == 1 &
+        (evidencePM == 1 & evidencePP >= 4))) &
+      ((evidenceBA1) == 1 |
+        (evidenceBS >= 2) |
+        (evidenceBP >= 2) |
+        (evidenceBS >= 1 & evidenceBP >= 1) |
+        (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
+    ifelse((((evidencePVS1 == 1 & evidencePM == 1) |
+      (evidencePS == 1 & evidencePM >= 1) |
+      (evidencePS == 1 & evidencePP >= 2) |
+      (evidencePM >= 3) |
+      (evidencePM == 2 & evidencePP >= 2) |
+      (evidencePM == 1 & evidencePP >= 4)) &
+      ((evidenceBA1) == 1 |
+        (evidenceBS >= 2) |
+        (evidenceBP >= 2) |
+        (evidenceBS >= 1 & evidenceBP >= 1) |
+        (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
+    ifelse((evidencePVS1 == 1 &
       ((evidencePS >= 1) |
         (evidencePM >= 2) |
         (evidencePM == 1 & evidencePP == 1) |
@@ -406,7 +406,11 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
       )
     )
     )
-  )))))
+    )
+    )
+    )
+    )
+  )
 
 
 ## merge tables together (clinvar and intervar) and write to file
