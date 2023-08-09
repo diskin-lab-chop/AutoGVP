@@ -402,7 +402,7 @@ master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id")
   ) %>%
   dplyr::select(
     -final_call.x, -final_call.y,
-    -Intervar_evidence.x, -Intervar_evidence.y 
+    -Intervar_evidence.x, -Intervar_evidence.y
   )
 
 
