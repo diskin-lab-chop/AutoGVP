@@ -197,9 +197,11 @@ additional_intervar_cases <- filter(clinvar_anno_vcf_df, final_call != "Benign",
   anti_join(entries_for_cc_in_submission, by = "vcf_id") %>%
   anti_join(clinvar_anti_join_vcf_df, by = "vcf_id")
 
-clinvar_anti_join_vcf_df <- clinvar_anti_join_vcf_df %>% 
-  mutate(QUAL = as.character(QUAL),
-         POS = as.double(POS))
+clinvar_anti_join_vcf_df <- clinvar_anti_join_vcf_df %>%
+  mutate(
+    QUAL = as.character(QUAL),
+    POS = as.double(POS)
+  )
 
 ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
 entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0", na.rm = TRUE) %>%
