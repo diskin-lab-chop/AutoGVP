@@ -52,14 +52,17 @@ option_list <- list(
 
 opt <- parse_args(OptionParser(option_list = option_list))
 
-# get input files from parameters (read)
+# get input files from parameters
 input_vcf_file <- opt$vcf
 input_autogvp_file <- opt$autogvp
 output_name <- opt$output
 
+# Define output file variables
 abridged_out_file <- glue::glue("{output_name}-autogvp-annotated-abridged.tsv")
 full_out_file <- glue::glue("{output_name}-autogvp-annotated-full.tsv")
 
+# Define path for VCF file CSQ field names
+csq_fields <- file.path(results_dir, glue::glue("{output_name}.filtered_csq_subfields.tsv"))
 
 # Read in VEP vcf file
 vcf <- read_tsv(input_vcf_file,
@@ -75,33 +78,8 @@ vcf <- vcf %>%
   dplyr::mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) %>%
   select(-any_of(c("ANN")))
 
-# Define names of VEP CSQ fields that will become df column names
-csq_cols <- c(
-  "Allele", "Consequence", "IMPACT", "SYMBOL", "Gene", "Feature_type", "Feature",
-  "BIOTYPE", "EXON", "INTRON", "HGVSc", "HGVSp", "cDNA_position", "CDS_position",
-  "Protein_position", "Amino_acids", "Codons", "Existing_variation", "ALLELE_NUM",
-  "DISTANCE", "STRAND", "FLAGS", "PICK", "VARIANT_CLASS", "SYMBOL_SOURCE", "HGNC_ID",
-  "CANONICAL", "TSL", "CCDS", "ENSP", "SWISSPROT", "TREMBL", "UNIPARC", "UNIPROT_ISOFORM",
-  "RefSeq", "REFSEQ_MATCH", "SOURCE", "REFSEQ_OFFSET", "GIVEN_REF", "USED_REF", "BAM_EDIT",
-  "GENE_PHENO", "SIFT", "PolyPhen", "DOMAINS", "HGVS_OFFSET", "HGVSg", "AFR_AF", "AMR_AF",
-  "EAS_AF", "EUR_AF", "SAS_AF", "AA_AF", "EA_AF", "gnomAD_AF", "gnomAD_AFR_AF",
-  "gnomAD_AMR_AF", "gnomAD_ASJ_AF", "gnomAD_EAS_AF", "gnomAD_FIN_AF", "gnomAD_NFE_AF",
-  "gnomAD_OTH_AF", "gnomAD_SAS_AF", "CLIN_SIG", "SOMATIC", "PHENO", "PUBMED", "CHECK_REF",
-  "MOTIF_NAME", "MOTIF_POS", "HIGH_INF_POS", "MOTIF_SCORE_CHANGE", "TRANSCRIPTION_FACTORS",
-  "CADD_PHRED", "CADD_RAW", "ALSPAC_AC", "ALSPAC_AF", "Aloft_pred", "BayesDel_noAF_pred",
-  "ClinPred_pred", "DEOGEN2_pred", "Eigen-PC-phred_coding", "Eigen-phred_coding",
-  "FATHMM_pred", "GTEx_V8_gene", "GTEx_V8_tissue", "Interpro_domain", "LIST-S2_pred",
-  "LRT_pred", "M-CAP_pred", "MetaLR_pred", "MetaRNN_pred", "MetaSVM_pred", "MutationAssessor_pred",
-  "MutationTaster_pred", "PROVEAN_pred", "Polyphen2_HDIV_pred", "Polyphen2_HVAR_pred",
-  "PrimateAI_pred", "REVEL_rankscore", "REVEL_score", "SIFT4G_pred", "TWINSUK_AC", "TWINSUK_AF",
-  "UK10K_AC", "UK10K_AF", "VEST4_rankscore", "VEST4_score", "fathmm-MKL_coding_pred",
-  "fathmm-XF_coding_pred", "gnomAD_exomes_controls_AC", "gnomAD_exomes_controls_AF",
-  "gnomAD_exomes_controls_AN", "gnomAD_exomes_controls_POPMAX_AC", "gnomAD_exomes_controls_POPMAX_AF",
-  "gnomAD_exomes_controls_POPMAX_AN", "gnomAD_exomes_controls_POPMAX_nhomalt",
-  "gnomAD_exomes_controls_nhomalt", "phastCons100way_vertebrate",
-  "phastCons100way_vertebrate_rankscore", "phyloP100way_vertebrate",
-  "phyloP100way_vertebrate_rankscore", "Intervar", "Intervar_STATUS"
-)
+# Read in VEP CSQ field names
+csq_cols <- read_lines(csq_fields)
 
 # Create subset vector of vcf column names to retain
 columns_to_retain <- c(
@@ -115,13 +93,18 @@ columns_to_retain <- c(
   "SIFT", "PolyPhen", "DOMAINS", "HGVSg"
 )
 
-# Parse data frame by CSQ subfield and transcript annotation
+# Parse data frame by CSQ field and transcript annotation
 vcf_separated <- vcf %>%
+  
   # Separate `CSQ` transcript annotations into distinct rows (comma separated)
   separate_longer_delim(CSQ, delim = ",") %>%
-  # separate `CSQ` subfields into unique columns, named in `csq_cols`
+  
+  # separate `CSQ` fields into unique columns, named in `csq_cols`
   separate_wider_delim(CSQ, "|", names = csq_cols) %>%
+  
+  # Select columns to retain
   dplyr::select(any_of(columns_to_retain))
+
 
 # Retain one row per variant by prioritizing gene annotation with value "1" in `PICK` column. In KF workflow, criteria for selection include:
 # 1) Canonical transcript status
@@ -131,6 +114,7 @@ vcf_separated <- vcf %>%
 # 5) CCDC status
 # 6) Longest transcript length
 
+# Retain only transcripts where PICK == 1
 vcf_pick <- vcf_separated %>%
   dplyr::filter(PICK == "1")
 
@@ -164,56 +148,93 @@ vcf_final <- vcf_pick_other %>%
 
 # Read in autogvp output
 autogvp <- read_tsv(input_autogvp_file,
-  show_col_types = FALSE
-) %>%
-  separate_wider_delim(Sample, delim = ":", names = c("GT", "AD", "DP", "GQ"), too_many = "drop")
+                    show_col_types = FALSE
+)
+
+# Parse Sample column, if present
+if ("Sample" %in% names(autogvp)){
+  
+  autogvp <- autogvp %>%
+    tidyr::separate_wider_delim(Sample, delim = ":", names = c("GT", "AD", "DP", "GQ"), too_many = "drop")
+  
+}
 
 # Merge `autogvp` and `vcf_final`
 merged_df <- autogvp %>%
+  
   # rm redundant columns from autogvp
   dplyr::select(-any_of(c(
-    "CHROM", "ID", "REF",
+    "CHROM", "POS", "ID", "REF",
     "ALT", "FILTER", "QUAL",
     "Interpro_domain"
   ))) %>%
+  
   # join dfs
   dplyr::left_join(vcf_final, by = "vcf_id") %>%
+  
   # rm unecessary columns
   dplyr::select(-any_of(c("var_id", "Otherinfo"))) %>%
-  # convert `gnomad_3_1_1_AF_non_cancer` to numeric
-  dplyr::mutate(gnomad_3_1_1_AF_non_cancer = case_when(
-    gnomad_3_1_1_AF_non_cancer == "." ~ "0",
-    TRUE ~ gnomad_3_1_1_AF_non_cancer
-  )) %>%
-  dplyr::mutate(gnomad_3_1_1_AF_non_cancer = as.numeric(gnomad_3_1_1_AF_non_cancer)) %>%
+  
   # add clinVar link
   dplyr::mutate(ClinVar_link = case_when(
     !is.na(VariationID) ~ paste0("https://www.ncbi.nlm.nih.gov/clinvar/variation/", VariationID, "/"),
     TRUE ~ NA_character_
   )) %>%
-  # rm ensembl transcript/protein IDs from HGVSc/p columns
-  dplyr::mutate(
-    HGVSc = str_split(HGVSc, ":", simplify = T)[, 2],
-    HGVSp = str_split(HGVSp, ":", simplify = T)[, 2]
-  ) %>%
-  dplyr::mutate(
-    ID = case_when(
-      grepl("rs", ID) ~ ID,
-      TRUE ~ NA_character_
-    ),
-    avsnp147 = case_when(
-      grepl("rs", avsnp147) ~ avsnp147,
-      TRUE ~ NA_character_
-    ),
-    Existing_variation = case_when(
-      grepl("rs", Existing_variation) ~ Existing_variation,
-      TRUE ~ NA_character_
-    )
-  ) %>%
-  dplyr::mutate(rsID = coalesce(Existing_variation, ID, avsnp147)) %>%
-  dplyr::select(-ID, -avsnp147, Existing_variation) %>%
-  arrange(CHROM, START)
+  
+  # coordinate-sort
+  arrange(CHROM, POS)
 
+# Change `gnomad_3_1_1_AF_non_cancer` to numeric, when present
+if ("gnomad_3_1_1_AF_non_cancer" %in% names(merged_df)){
+  
+  merged_df <- merged_df %>%
+    # convert `gnomad_3_1_1_AF_non_cancer` to numeric
+    dplyr::mutate(gnomad_3_1_1_AF_non_cancer = case_when(
+      gnomad_3_1_1_AF_non_cancer == "." ~ "0",
+      TRUE ~ gnomad_3_1_1_AF_non_cancer
+    )) %>%
+    dplyr::mutate(gnomad_3_1_1_AF_non_cancer = as.numeric(gnomad_3_1_1_AF_non_cancer))
+  
+}
+
+# Reformat HGVSc and HGVSp columns, when present, to remove gene IDs
+if ("HGVSc" %in% names(merged_df)){
+  
+  merged_df <- merged_df %>%
+    # rm ensembl transcript/protein IDs from HGVSc columns
+    dplyr::mutate(
+      HGVSc = str_split(HGVSc, ":", simplify = T)[, 2],
+    )
+  
+}
+
+if ("HGVSp" %in% names(merged_df)){
+  
+  merged_df <- merged_df %>%
+    # rm ensembl transcript/protein IDs from HGVSp columns
+    dplyr::mutate(
+      HGVSp = str_split(HGVSp, ":", simplify = T)[, 2],
+    )
+  
+}
+
+# Define `coacross()` function to coalesce across multiple df columns
+coacross <- function(...) {
+  coalesce(!!!across(...))
+}
+
+# Coalesce rsIDs across multiple columns, when present
+id_df <- merged_df %>%
+  dplyr::select(any_of(c("ID", "avsnp147", "Existing_variation"))) %>%
+  dplyr::mutate_all(funs(ifelse(grepl("rs", .), ., NA_character_))) %>%
+  dplyr::mutate(rsID = coacross())
+
+# Add coalesced rsID to merged_df, and remove other ID columns
+merged_df <- merged_df %>%
+  dplyr::mutate(rsID = id_df$rsID) %>%
+  select(-any_of(c("ID", "avsnp147", "Existing_variation")))
+
+# read in output file column names tsv
 colnames <- read_tsv(file.path(input_dir, "output_colnames.tsv"))
 
 # Subset and reorder output columns based on inclusion and order in `colnames`
@@ -235,7 +256,7 @@ abridged_cols <- colnames %>%
 
 # Generate abridged output
 abridged_df <- merged_df %>%
-  dplyr::select(all_of(abridged_cols)) %>%
+  dplyr::select(any_of(abridged_cols)) %>%
   write_tsv(file.path(results_dir, abridged_out_file))
 
 # Generate comprehensive output
