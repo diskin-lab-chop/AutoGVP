@@ -105,32 +105,31 @@ Rscript 01-annotate_variants_custom_input.R --vcf input/test_VEP.vcf --multianno
 4. Report and save significant call if Stars are not 0 or 1 and not B/P/LB/LP/VUS
 5. Identify variants that are ambiguous (`criteria_provided,_conflicting_interpretations`), generate table to then check against submission file
 6. Identify variants that need further annotations or possible re-adjustment (Stars 0 or 1)
-7. Retrieve and store interVar results file into table and create vcf_id
+7. Retrieve and store InterVar results file into table and create vcf_id
 8. Retrieve and store corresponding autopvs1 results file into table and create vcf_id
-9. Merge interVar and autopvs1 tables by matching vcf_ids
+9. Merge InterVar and autopvs1 tables by matching vcf_ids
 10. Create columns for `evidencePVS1`, `evidencePS`, `evidencePM`, `evidencePP`, `evidenceBP`, `evidencePM` and `evidenceBA1` (variables that may need re-adjusting) by parsing InterVar: InterVar and Evidence column
 11. Indicate if there needs to be recalculation (if `evidencePVS1` == 1)
-12. If not, take interVar significant call as final_call
+12. If not, take InterVar significant call as final_call
 13. Go through entries and adjust evidence variables above based on criterion*
 14. Report final call based on recalculated evidence variables
 
-#### Annotating Stars
+#### Annotating Stars (https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/)
 ```
-1 = 'criteria_provided,_single_submitter','Needs resolving'
+1 = 'criteria_provided,_single_submitter','criteria_provided,_conflicting_interpretations'
 2 = 'criteria_provided,_multiple_submitters'
 3 = 'reviewed_by_expert_panel'
 4 = 'practice_guideline'
-0 = 'criteria_provided,_conflicting_interpretations'
+0 = 'no_assertion_provided','no_assertion_criteria_provided','no_assertion_for_the_individual_variant' 
 ```
 
 #### Re-calculation adjustments
 ```
 if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
-if criterion is NF3|NF5|SS3|SS5|SS8|SS10|DEL8|DEL6|DEL10|DUP3|IC2 then PVS1 = 0; PS = PS+1
+if criterion is NF3|NF5|SS3|SS5|SS8|SS10|DEL4|DEL8|DEL6|DEL10|DUP3|IC2 then PVS1 = 0; PS = PS+1
 if criterion is NF6|SS6|SS9|DEL7|DEL11|IC3 then PVS1 = 0; PM = PM+1;
-if criterion is NF6|SS6|DEL7|DEL11|IC3 then PVS1 = 0; PP = PP+1;
 if criterion is IC4 then PVS1 = 0; PP = PP+1;
-if criterion is na|NF0  then PVS1 = 0;
+if criterion is na|NF0|NF2|NF4|SS2|SS4|SS7|DEL3|DEL5|DEL9|DUP2|DUP4|DUP5|IC5  then PVS1 = 0;
 
 New ClinSig
 Pathogenic - Criteria 1
