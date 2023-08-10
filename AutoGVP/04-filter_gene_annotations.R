@@ -95,13 +95,10 @@ columns_to_retain <- c(
 
 # Parse data frame by CSQ field and transcript annotation
 vcf_separated <- vcf %>%
-  
   # Separate `CSQ` transcript annotations into distinct rows (comma separated)
   separate_longer_delim(CSQ, delim = ",") %>%
-  
   # separate `CSQ` fields into unique columns, named in `csq_cols`
   separate_wider_delim(CSQ, "|", names = csq_cols) %>%
-  
   # Select columns to retain
   dplyr::select(any_of(columns_to_retain))
 
@@ -148,45 +145,37 @@ vcf_final <- vcf_pick_other %>%
 
 # Read in autogvp output
 autogvp <- read_tsv(input_autogvp_file,
-                    show_col_types = FALSE
+  show_col_types = FALSE
 )
 
 # Parse Sample column, if present
-if ("Sample" %in% names(autogvp)){
-  
+if ("Sample" %in% names(autogvp)) {
   autogvp <- autogvp %>%
     tidyr::separate_wider_delim(Sample, delim = ":", names = c("GT", "AD", "DP", "GQ"), too_many = "drop")
-  
 }
 
 # Merge `autogvp` and `vcf_final`
 merged_df <- autogvp %>%
-  
   # rm redundant columns from autogvp
   dplyr::select(-any_of(c(
     "CHROM", "POS", "ID", "REF",
     "ALT", "FILTER", "QUAL",
     "Interpro_domain"
   ))) %>%
-  
   # join dfs
   dplyr::left_join(vcf_final, by = "vcf_id") %>%
-  
   # rm unecessary columns
   dplyr::select(-any_of(c("var_id", "Otherinfo"))) %>%
-  
   # add clinVar link
   dplyr::mutate(ClinVar_link = case_when(
     !is.na(VariationID) ~ paste0("https://www.ncbi.nlm.nih.gov/clinvar/variation/", VariationID, "/"),
     TRUE ~ NA_character_
   )) %>%
-  
   # coordinate-sort
   arrange(CHROM, POS)
 
 # Change `gnomad_3_1_1_AF_non_cancer` to numeric, when present
-if ("gnomad_3_1_1_AF_non_cancer" %in% names(merged_df)){
-  
+if ("gnomad_3_1_1_AF_non_cancer" %in% names(merged_df)) {
   merged_df <- merged_df %>%
     # convert `gnomad_3_1_1_AF_non_cancer` to numeric
     dplyr::mutate(gnomad_3_1_1_AF_non_cancer = case_when(
@@ -194,28 +183,23 @@ if ("gnomad_3_1_1_AF_non_cancer" %in% names(merged_df)){
       TRUE ~ gnomad_3_1_1_AF_non_cancer
     )) %>%
     dplyr::mutate(gnomad_3_1_1_AF_non_cancer = as.numeric(gnomad_3_1_1_AF_non_cancer))
-  
 }
 
 # Reformat HGVSc and HGVSp columns, when present, to remove gene IDs
-if ("HGVSc" %in% names(merged_df)){
-  
+if ("HGVSc" %in% names(merged_df)) {
   merged_df <- merged_df %>%
     # rm ensembl transcript/protein IDs from HGVSc columns
     dplyr::mutate(
       HGVSc = str_split(HGVSc, ":", simplify = T)[, 2],
     )
-  
 }
 
-if ("HGVSp" %in% names(merged_df)){
-  
+if ("HGVSp" %in% names(merged_df)) {
   merged_df <- merged_df %>%
     # rm ensembl transcript/protein IDs from HGVSp columns
     dplyr::mutate(
       HGVSp = str_split(HGVSp, ":", simplify = T)[, 2],
     )
-  
 }
 
 # Define `coacross()` function to coalesce across multiple df columns
