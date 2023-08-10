@@ -326,8 +326,8 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
     evidencePP = if_else((criterion == "IC4") & evidencePVS1 == 1, as.numeric(evidencePP) + 1, as.double(evidencePP)),
     evidencePVS1 = if_else((criterion == "IC4") & evidencePVS1 == 1, "0", evidencePVS1),
 
-    # if criterion is na|NF2|NF4|SS2|SS4|SS7|DEL3|DEL5|DEL9|DUP2|DUP4|DUP5|IC5 then PVS1 = 0;
-    evidencePVS1 = if_else((criterion == "na" | criterion == "NF2" | criterion == "NF4" |
+    # if criterion is na|NF0|NF2|NF4|SS2|SS4|SS7|DEL3|DEL5|DEL9|DUP2|DUP4|DUP5|IC5 then PVS1 = 0;
+    evidencePVS1 = if_else((criterion == "na" | criterion == "NF0" | criterion == "NF2" | criterion == "NF4" |
       criterion == "SS2" | criterion == "SS4" | criterion == "SS7" |
       criterion == "DEL3" | criterion == "DEL5" | criterion == "DEL9" |
       criterion == "DUP2" | criterion == "DUP4" | criterion == "DUP5" |
