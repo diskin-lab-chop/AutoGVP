@@ -2,14 +2,18 @@
 
 set -e
 
+# export bcftools plugin environmental variable
+export BCFTOOLS_PLUGINS=/rocker-build/bcftools-1.17/plugins
+
 ## default files
 variant_summary_file="input/ClinVar-selected-submissions.tsv"
 
 if [[ ! -f $variant_summary_file ]] ; then
     echo "ERROR: ClinVar-selected-submissions.tsv file not found. Please run select-clinvar-submissions.R script before running AutoGVP"
+    exit 1
 fi
 
-
+# define parameter variables 
 while [ $# -gt 0 ]; do
   case "$1" in
     --workflow*|-w*)
@@ -72,15 +76,17 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-autogvp_input=$vcf_file
-
-# Filter VCF file for read depth, alt allele freq, pass filter and other specified criteria
+# Filter VCF file; by default the function performs filtering based on FILTER column, with other criteria specified by user
+echo "Filtering VCF..."
 
 vcf_filtered_file=${out_file}."filtered.vcf"
 bash filter_vcf.sh $vcf_file $out_file $out_dir $filtering_criteria
 autogvp_input=$out_dir/$vcf_filtered_file
 
+# Run AutoGVP 
+echo "Running AutoGVP..."
 
+# Run appropriate Rscript based on workflow source (Cavatica vs. custom)
 if [[ "$workflow" = "cavatica" ]];then
 
   # Run AutoGVP from Cavatica workflow
@@ -90,6 +96,8 @@ if [[ "$workflow" = "cavatica" ]];then
   --autopvs1 $autopvs1_file \
   --output $out_file \
   --variant_summary $variant_summary_file
+  
+  autogvp_output="../results/"${out_file}".cavatica_input.annotations_report.abridged.tsv"
 
   else
 
@@ -101,18 +109,25 @@ if [[ "$workflow" = "cavatica" ]];then
   --autopvs1 $autopvs1_file \
   --output $out_file \
   --variant_summary $variant_summary_file \
+  
+  autogvp_output="../results/"${out_file}".custom_input.annotations_report.abridged.tsv"
 
 fi
 
 
 # Parse vcf file so that info field values are in distinct columns
+echo "Parsing VCF..."
+
 bash parse_vcf.sh $autogvp_input
 
 # Define parsed vcf and autogvp output file variables
 vcf_parsed_file=${autogvp_input%.vcf*}."parsed.tsv"
-autogvp_output="../results/"${out_file}".cavatica_input.annotations_report.abridged.tsv"
 
-# Filter VCF gene/transcript annotations and merge data with AutoGVP output
+
+# Filter VCF VEP gene/transcript annotations and merge data with AutoGVP output
+echo "Filtering VEP annotations and creating final output..."
+
 Rscript 04-filter_gene_annotations.R --vcf $vcf_parsed_file --autogvp $autogvp_output --output $out_file
 
-rm $out_dir/$vcf_filtered_file $autogvp_input $vcf_parsed_file $out_dir/$autogvp_output
+# Remove intermediate files
+rm $autogvp_input $vcf_parsed_file $out_dir/$autogvp_output $out_dir/$out_file.filtered_csq_subfields.tsv
