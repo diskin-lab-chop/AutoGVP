@@ -1,6 +1,6 @@
 Column_name	Rename	Abridged
 CHROM	chr	T
-START	start	T
+POS	start	T
 REF	ref	T
 ALT	alt	T
 rsID	rs_id	T
