@@ -171,7 +171,7 @@ clinvar_anno_vcf_df <- vroom(input_clinVar_file, comment = "#", delim = "\t", co
     final_call = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
   )
 
-# clinvar_anno_vcf_df <- address_conflicting_intrep(clinvar_anno_vcf_df)
+clinvar_anno_vcf_df <- address_conflicting_intrep(clinvar_anno_vcf_df)
 
 ## store variants without clinvar info
 clinvar_anti_join_vcf_df <- anti_join(vcf_df, clinvar_anno_vcf_df, by = "vcf_id") %>%
@@ -251,19 +251,9 @@ if (tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df)) {
 clinvar_anno_intervar_vcf_df <-
   dplyr::mutate(multianno_df, clinvar_anno_intervar_vcf_df) %>%
   dplyr::filter(vcf_id %in% vcf_df$vcf_id)
-# dplyr::select(any_of(c(
-#   "vcf_id", "InterVar: InterVar and Evidence",
-#   "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
-#   "CLNSIG", "CLNREVSTAT"
-# )))
 
 ## populate consensus call variants with invervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df, entries_for_cc_in_submission, by = "vcf_id") %>%
-  # dplyr::select(any_of(c(
-  #   "vcf_id", "InterVar: InterVar and Evidence",
-  #   "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
-  #   "CLNSIG", "CLNREVSTAT"
-  # ))) %>%
   dplyr::rename("Intervar_evidence" = `InterVar: InterVar and Evidence`)
 
 ## remove variants that we found in the submission file that were 1NR for intervar adjustment
@@ -284,10 +274,6 @@ clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
   left_join(vcf_df, by = "vcf_id") %>%
   left_join(clinvar_anno_vcf_df[, c("vcf_id", "Stars", "final_call")], by = "vcf_id")
 
-
-## add back variants not found in clinVar db
-# clinvar_anno_intervar_vcf_df <- bind_rows(clinvar_anno_intervar_vcf_df, clinvar_anti_join_vcf_df)
-
 ## autopvs1 results
 autopvs1_results <- read_tsv(input_autopvs1_file, col_names = TRUE) %>%
   mutate(
@@ -295,6 +281,9 @@ autopvs1_results <- read_tsv(input_autopvs1_file, col_names = TRUE) %>%
     vcf_id = str_replace_all(vcf_id, "chr", "")
   ) %>%
   dplyr::filter(vcf_id %in% clinvar_anno_intervar_vcf_df$vcf_id)
+
+print(clinvar_anno_intervar_vcf_df$vcf_id)
+print(autopvs1_results$vcf_id)
 
 combined_tab_with_vcf_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by = "vcf_id") %>%
@@ -415,9 +404,8 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- clinvar_anno_intervar_vcf_df %>%
-  left_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
-  #  left_join(combined_tab_for_intervar_cc_removed[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_for_intervar_cc_removed))], by = "vcf_id") %>%
-  left_join(submission_final_df, by = "vcf_id")
+  left_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id")
+
 
 master_tab <- master_tab %>%
   dplyr::mutate(
@@ -430,8 +418,9 @@ master_tab <- master_tab %>%
     evidenceBS = coalesce(as.double(evidenceBS.x, evidenceBS.y)),
     evidenceBP = coalesce(as.double(evidenceBP.x, evidenceBP.y)),
     Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`),
-    # replace second final call with the first one because we did not use interVar results
-    final_call.x = if_else(evidencePVS1 == 0 & Stars == "0", final_call.y, final_call.x)
+
+    # replace second final call with the first one because we did not use clinvar results
+    final_call.x = if_else(Stars == "0", final_call.y, final_call.x)
   )
 
 ## combine final calls into one choosing the appropriate final call
@@ -450,12 +439,10 @@ master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id")
   full_join(entries_for_cc_in_submission_w_intervar[c("vcf_id", "Intervar_evidence")], by = "vcf_id") %>%
   dplyr::mutate(
     Intervar_evidence = coalesce(Intervar_evidence.y, Intervar_evidence.x),
-    ClinVar_ClinicalSignificance = coalesce(ClinicalSignificance.x, ClinicalSignificance.y)
   ) %>%
   dplyr::select(
     -final_call.x, -final_call.y,
-    -Intervar_evidence.x, -Intervar_evidence.y,
-    -ClinicalSignificance.x, -ClinicalSignificance.y
+    -Intervar_evidence.x, -Intervar_evidence.y
   )
 
 
