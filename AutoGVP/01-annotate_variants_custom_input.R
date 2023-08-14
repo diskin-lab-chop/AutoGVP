@@ -197,7 +197,11 @@ additional_intervar_cases <- filter(clinvar_anno_vcf_df, final_call != "Benign",
   anti_join(entries_for_cc_in_submission, by = "vcf_id") %>%
   anti_join(clinvar_anti_join_vcf_df, by = "vcf_id")
 
-clinvar_anti_join_vcf_df <- clinvar_anti_join_vcf_df %>% mutate(QUAL = as.character(QUAL))
+clinvar_anti_join_vcf_df <- clinvar_anti_join_vcf_df %>%
+  mutate(
+    QUAL = as.character(QUAL),
+    POS = as.double(POS)
+  )
 
 ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
 entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0", na.rm = TRUE) %>%
@@ -404,7 +408,8 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- clinvar_anno_intervar_vcf_df %>%
-  left_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id")
+  left_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
+  left_join(variant_summary_df, by = "vcf_id")
 
 
 master_tab <- master_tab %>%
