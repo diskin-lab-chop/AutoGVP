@@ -330,69 +330,28 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
                            ((evidencePS >= 1) |
                               (evidencePM >= 2) |
                               (evidencePM == 1 & evidencePP == 1) |
-                              (evidencePP >= 2)) &
-                           ((evidenceBA1) == 1 |
-                              (evidenceBS >= 2) |
-                              (evidenceBP >= 2) |
-                              (evidenceBS >= 1 & evidenceBP >= 1) |
-                              (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-                        ifelse(((evidencePS >= 2) &
-                                  ((evidenceBA1) == 1 |
-                                     (evidenceBS >= 2) |
-                                     (evidenceBP >= 2) |
-                                     (evidenceBS >= 1 & evidenceBP >= 1) |
-                                     (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-                               ifelse(((evidencePS == 1 &
-                                          (evidencePM >= 3 |
-                                             (evidencePM == 2 & evidencePP >= 2) |
-                                             (evidencePM == 1 & evidencePP >= 4))) &
-                                         ((evidenceBA1) == 1 |
-                                            (evidenceBS >= 2) |
-                                            (evidenceBP >= 2) |
-                                            (evidenceBS >= 1 & evidenceBP >= 1) |
-                                            (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-                                      ifelse((((evidencePVS1 == 1 & evidencePM == 1) |
-                                                 (evidencePS == 1 & evidencePM >= 1) |
-                                                 (evidencePS == 1 & evidencePP >= 2) |
-                                                 (evidencePM >= 3) |
-                                                 (evidencePM == 2 & evidencePP >= 2) |
-                                                 (evidencePM == 1 & evidencePP >= 4)) &
-                                                ((evidenceBA1) == 1 |
-                                                   (evidenceBS >= 2) |
-                                                   (evidenceBP >= 2) |
-                                                   (evidenceBS >= 1 & evidenceBP >= 1) |
-                                                   (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-                                             ifelse((evidencePVS1 == 1 &
-                                                       ((evidencePS >= 1) |
-                                                          (evidencePM >= 2) |
-                                                          (evidencePM == 1 & evidencePP == 1) |
-                                                          (evidencePP >= 2))), "Pathogenic",
-                                                    ifelse((evidencePS >= 2), "Pathogenic",
-                                                           ifelse((evidencePS == 1 &
-                                                                     (evidencePM >= 3 |
-                                                                        (evidencePM == 2 & evidencePP >= 2) |
-                                                                        (evidencePM == 1 & evidencePP >= 4))), "Pathogenic",
-                                                                  ifelse((evidencePVS1 == 1 & evidencePM == 1) |
-                                                                           (evidencePS == 1 & evidencePM >= 1) |
-                                                                           (evidencePS == 1 & evidencePP >= 2) |
-                                                                           (evidencePM >= 3) |
-                                                                           (evidencePM == 2 & evidencePP >= 2) |
-                                                                           (evidencePM == 1 & evidencePP >= 4), "Likely_pathogenic",
-                                                                         ifelse((evidenceBA1 == 1) |
-                                                                                  (evidenceBS >= 2), "Benign",
-                                                                                ifelse((evidenceBS == 1 & evidenceBP == 1) |
-                                                                                         (evidenceBP >= 2), "Likely_benign", "Uncertain_significance")
-                                                                         )
-                                                                  )
-                                                           )
-                                                    )
+                              (evidencePP >= 2))), "Pathogenic",
+                        ifelse((evidencePS >= 2), "Pathogenic",
+                               ifelse((evidencePS == 1 &
+                                         (evidencePM >= 3 |
+                                            (evidencePM == 2 & evidencePP >= 2) |
+                                            (evidencePM == 1 & evidencePP >= 4))), "Pathogenic",
+                                      ifelse((evidencePVS1 == 1 & evidencePM == 1) |
+                                               (evidencePS == 1 & evidencePM >= 1) |
+                                               (evidencePS == 1 & evidencePP >= 2) |
+                                               (evidencePM >= 3) |
+                                               (evidencePM == 2 & evidencePP >= 2) |
+                                               (evidencePM == 1 & evidencePP >= 4), "Likely_pathogenic",
+                                             ifelse((evidenceBA1 == 1) |
+                                                      (evidenceBS >= 2), "Benign",
+                                                    ifelse((evidenceBS == 1 & evidenceBP == 1) |
+                                                             (evidenceBP >= 2), "Likely_benign", "Uncertain_significance")
                                              )
                                       )
                                )
                         )
     )
   )
-
 
 
 ## merge tables together (clinvar and intervar) and write to file
