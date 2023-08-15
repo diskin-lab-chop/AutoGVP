@@ -217,10 +217,11 @@ vcf_to_run_intervar <- entries_for_intervar$vcf_id
 multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>%
   mutate(
     vcf_id = str_remove_all(paste(Chr, "-", Otherinfo5, "-", Otherinfo7, "-", Otherinfo8), " "),
-    vcf_id = str_replace_all(vcf_id, "chr", "")
+    vcf_id = str_replace_all(vcf_id, "chr", ""),
+    Chr = as.character(Chr)
   ) %>%
   group_by(vcf_id) %>%
-  arrange(vcf_id) %>%
+  arrange(Chr, Start) %>%
   filter(row_number() == 1) %>%
   # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
   dplyr::select(
@@ -235,9 +236,9 @@ multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_na
 
 ## add intervar table
 clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = TRUE) %>%
-  dplyr::mutate(var_id = str_remove_all(paste(`#Chr`, "-", Start, "-", Ref, "-", Alt), " ")) %>%
+  dplyr::mutate(var_id = str_remove_all(paste(`#Chr`, "-", Start, "-", Ref, "-", Alt), " "), `#Chr` = as.character(`#Chr`)) %>%
   group_by(var_id) %>%
-  arrange(var_id) %>%
+  arrange(`#Chr`, Start) %>%
   filter(row_number() == 1) %>%
   # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
   dplyr::select(
