@@ -17,7 +17,7 @@ echo "vcf file: $vcf_file ";
 cmd="bcftools view -f 'PASS,.' $vcf_file"
 
 ## loop through args for other user-defined filters
-for i in "${exp_args[@]:4}"; do
+for i in "${exp_args[@]:3}"; do
   #echo filtering for... $i
   cmd+=" | bcftools filter -i '$i'"
 #  cmd+=" $vcf_file "
