@@ -287,9 +287,6 @@ autopvs1_results <- read_tsv(input_autopvs1_file, col_names = TRUE) %>%
   ) %>%
   dplyr::filter(vcf_id %in% clinvar_anno_intervar_vcf_df$vcf_id)
 
-print(clinvar_anno_intervar_vcf_df$vcf_id)
-print(autopvs1_results$vcf_id)
-
 combined_tab_with_vcf_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by = "vcf_id") %>%
   dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id & !vcf_id %in% entries_for_cc_in_submission$vcf_id) %>%
@@ -426,7 +423,7 @@ master_tab <- master_tab %>%
     Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`),
 
     # replace second final call with the first one because we did not use clinvar results
-    final_call.x = if_else(Stars == "0", final_call.y, final_call.x)
+    final_call.x = if_else(Stars == "0", final_call.y, final_call.x),
   )
 
 ## combine final calls into one choosing the appropriate final call
