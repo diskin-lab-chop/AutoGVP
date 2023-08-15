@@ -126,7 +126,8 @@ address_ambiguous_calls <- function(results_tab_abridged) { ## address ambiguous
       is.na(final_call) | (final_call != "Pathogenic" &
         final_call != "Likely_benign" & final_call != "Likely_pathogenic" &
         final_call != "Uncertain_significance" & final_call != "Benign" &
-        final_call != "Uncertain significance" & final_call != "Likely benign") ~ str_match(Intervar_evidence, "InterVar\\:\\s(\\w+\\s\\w+)*")[, 2],
+        final_call != "Uncertain significance" & final_call != "Likely benign" &
+        final_call != "Likely pathogenic") ~ str_match(Intervar_evidence, "InterVar\\:\\s(\\w+\\s\\w+)*")[, 2],
       TRUE ~ NA_character_
     )) %>%
     dplyr::mutate(final_call = case_when(
