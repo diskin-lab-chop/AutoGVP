@@ -396,8 +396,8 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- clinvar_anno_intervar_vcf_df %>%
   full_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
-  # full_join(combined_tab_for_intervar_cc_removed[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_for_intervar_cc_removed))], by = "vcf_id") %>%
-  left_join(submission_final_df, by = "vcf_id")
+  left_join(variant_summary_df, by = "vcf_id")
+
 
 master_tab <- master_tab %>%
   dplyr::mutate(
@@ -411,7 +411,7 @@ master_tab <- master_tab %>%
     evidenceBP = coalesce(as.double(evidenceBP.x, evidenceBP.y)),
     Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`),
     # replace second final call with the second one because we did not use interVar results
-    final_call.x = if_else(evidencePVS1 == 0 & Stars == "0", final_call.y, final_call.x)
+    final_call.x = if_else(Stars == "0", final_call.y, final_call.x)
   )
 
 ## combine final calls into one choosing the appropriate final call
