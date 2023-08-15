@@ -205,6 +205,7 @@ entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0", na.rm = TRUE) 
   bind_rows(clinvar_anti_join_vcf_df) %>%
   distinct()
 
+
 ## get vcf ids that need intervar run
 vcf_to_run_intervar <- entries_for_intervar$vcf_id
 
@@ -215,7 +216,7 @@ multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_na
     vcf_id = str_replace_all(vcf_id, "chr", "")
   ) %>%
   group_by(vcf_id) %>%
-  arrange(Chr, Start) %>%
+  arrange(vcf_id) %>%
   filter(row_number() == 1) %>%
   # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
   dplyr::select(
@@ -230,10 +231,9 @@ multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_na
 
 ## add intervar table
 clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = TRUE) %>%
-  # slice(-1) %>%
-  dplyr::mutate(var_id = str_remove_all(paste(`#Chr`, "-", Start, "-", End, "-", Ref, "-", Alt), " ")) %>%
+  dplyr::mutate(var_id = str_remove_all(paste(`#Chr`, "-", Start, "-", Ref, "-", Alt), " ")) %>%
   group_by(var_id) %>%
-  arrange(`#Chr`, Start) %>%
+  arrange(var_id) %>%
   filter(row_number() == 1) %>%
   # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
   dplyr::select(
@@ -250,20 +250,10 @@ if (tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df)) {
 ## combine the intervar and multianno tables by the appropriate vcf id
 clinvar_anno_intervar_vcf_df <-
   dplyr::mutate(multianno_df, clinvar_anno_intervar_vcf_df) %>%
-  dplyr::filter(vcf_id %in% vcf_df$vcf_id)
-# dplyr::select(any_of(c(
-#   "vcf_id", "InterVar: InterVar and Evidence",
-#   "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
-#   "CLNSIG", "CLNREVSTAT"
-# )))
+  dplyr::filter(vcf_id %in% vcf_df$vcf_id) #%>%
 
 ## populate consensus call variants with invervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df, entries_for_cc_in_submission, by = "vcf_id") %>%
-  # dplyr::select(any_of(c(
-  #   "vcf_id", "InterVar: InterVar and Evidence",
-  #   "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
-  #   "CLNSIG", "CLNREVSTAT"
-  # ))) %>%
   dplyr::rename("Intervar_evidence" = `InterVar: InterVar and Evidence`)
 
 ## remove variants that we found in the submission file that were 1NR for intervar adjustment
@@ -345,7 +335,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
       criterion == "IC5") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
 
     ## adjust variables based on given rules described in README
-    final_call = ifelse((evidencePVS1 == 1 &
+    final_call = ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 &
       ((evidencePS >= 1) |
         (evidencePM >= 2) |
         (evidencePM == 1 & evidencePP == 1) |
@@ -355,13 +345,13 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
         (evidenceBP >= 2) |
         (evidenceBS >= 1 & evidenceBP >= 1) |
         (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-    ifelse(((evidencePS >= 2) &
+    ifelse(((evidencePVS1 == 1) &(evidencePS >= 2) &
       ((evidenceBA1) == 1 |
         (evidenceBS >= 2) |
         (evidenceBP >= 2) |
         (evidenceBS >= 1 & evidenceBP >= 1) |
         (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-    ifelse(((evidencePS == 1 &
+    ifelse(((evidencePVS1 == 1) &(evidencePS == 1 &
       (evidencePM >= 3 |
         (evidencePM == 2 & evidencePP >= 2) |
         (evidencePM == 1 & evidencePP >= 4))) &
@@ -370,7 +360,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
         (evidenceBP >= 2) |
         (evidenceBS >= 1 & evidenceBP >= 1) |
         (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-    ifelse((((evidencePVS1 == 1 & evidencePM == 1) |
+    ifelse((((evidencePVS1 == 1) &(evidencePVS1 == 1 & evidencePM == 1) |
       (evidencePS == 1 & evidencePM >= 1) |
       (evidencePS == 1 & evidencePP >= 2) |
       (evidencePM >= 3) |
@@ -381,25 +371,25 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
         (evidenceBP >= 2) |
         (evidenceBS >= 1 & evidenceBP >= 1) |
         (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-    ifelse((evidencePVS1 == 1 &
+    ifelse((evidencePVS1 == 1) &(evidencePVS1 == 1 &
       ((evidencePS >= 1) |
         (evidencePM >= 2) |
         (evidencePM == 1 & evidencePP == 1) |
         (evidencePP >= 2))), "Pathogenic",
-    ifelse((evidencePS >= 2), "Pathogenic",
-      ifelse((evidencePS == 1 &
+    ifelse((evidencePVS1 == 1) &(evidencePS >= 2), "Pathogenic",
+      ifelse((evidencePVS1 == 0) & (evidencePS == 1 &
         (evidencePM >= 3 |
           (evidencePM == 2 & evidencePP >= 2) |
           (evidencePM == 1 & evidencePP >= 4))), "Pathogenic",
-      ifelse((evidencePVS1 == 1 & evidencePM == 1) |
+      ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 & evidencePM == 1) |
         (evidencePS == 1 & evidencePM >= 1) |
         (evidencePS == 1 & evidencePP >= 2) |
         (evidencePM >= 3) |
         (evidencePM == 2 & evidencePP >= 2) |
         (evidencePM == 1 & evidencePP >= 4), "Likely_pathogenic",
-      ifelse((evidenceBA1 == 1) |
+      ifelse((evidencePVS1 == 1) & (evidenceBA1 == 1) |
         (evidenceBS >= 2), "Benign",
-      ifelse((evidenceBS == 1 & evidenceBP == 1) |
+      ifelse((evidencePVS1 == 1) & (evidenceBS == 1 & evidenceBP == 1) |
         (evidenceBP >= 2), "Likely_benign", "Uncertain_significance")
       )
       )
@@ -415,9 +405,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- clinvar_anno_intervar_vcf_df %>%
-  left_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
-  #  left_join(combined_tab_for_intervar_cc_removed[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_for_intervar_cc_removed))], by = "vcf_id") %>%
-  left_join(submission_final_df, by = "vcf_id")
+  left_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") 
 
 master_tab <- master_tab %>%
   dplyr::mutate(
@@ -450,12 +438,12 @@ master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id")
   full_join(entries_for_cc_in_submission_w_intervar[c("vcf_id", "Intervar_evidence")], by = "vcf_id") %>%
   dplyr::mutate(
     Intervar_evidence = coalesce(Intervar_evidence.y, Intervar_evidence.x),
-    ClinVar_ClinicalSignificance = coalesce(ClinicalSignificance.x, ClinicalSignificance.y)
+    #ClinVar_ClinicalSignificance = coalesce(ClinicalSignificance.x, ClinicalSignificance.y)
   ) %>%
   dplyr::select(
     -final_call.x, -final_call.y,
-    -Intervar_evidence.x, -Intervar_evidence.y,
-    -ClinicalSignificance.x, -ClinicalSignificance.y
+    -Intervar_evidence.x, -Intervar_evidence.y #,
+    #-ClinicalSignificance.x, -ClinicalSignificance.y
   )
 
 
