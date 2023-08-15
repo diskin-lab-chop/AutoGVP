@@ -287,9 +287,6 @@ autopvs1_results <- read_tsv(input_autopvs1_file, col_names = TRUE) %>%
   ) %>%
   dplyr::filter(vcf_id %in% clinvar_anno_intervar_vcf_df$vcf_id)
 
-print(clinvar_anno_intervar_vcf_df$vcf_id)
-print(autopvs1_results$vcf_id)
-
 combined_tab_with_vcf_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by = "vcf_id") %>%
   dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id & !vcf_id %in% entries_for_cc_in_submission$vcf_id) %>%
@@ -366,7 +363,6 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
     )
   )
 
-
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- clinvar_anno_intervar_vcf_df %>%
   left_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
@@ -405,12 +401,13 @@ master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id")
   full_join(entries_for_cc_in_submission_w_intervar[c("vcf_id", "Intervar_evidence")], by = "vcf_id") %>%
   dplyr::mutate(
     Intervar_evidence = coalesce(Intervar_evidence.y, Intervar_evidence.x),
+    ClinVar_ClinicalSignificance = coalesce(ClinicalSignificance.x, ClinicalSignificance.y)
   ) %>%
   dplyr::select(
     -final_call.x, -final_call.y,
-    -Intervar_evidence.x, -Intervar_evidence.y
+    -Intervar_evidence.x, -Intervar_evidence.y,
+    -ClinicalSignificance.x, -ClinicalSignificance.y
   )
-
 
 ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
 master_tab <- address_ambiguous_calls(master_tab)
@@ -432,6 +429,13 @@ master_tab <- master_tab %>%
     vcf_id %in% vcf_to_run_intervar ~ "InterVar",
     TRUE ~ "ClinVar"
   )) %>%
+  
+  # modify `ClinVar_ClinicalSignificance` to equal `final_call` for ClinVar calls
+  dplyr::mutate(ClinVar_ClinicalSignificance = case_when(
+    Reasoning_for_call == "ClinVar" ~ final_call,
+    TRUE ~ str_replace(ClinVar_ClinicalSignificance, " ", "_")
+  )) %>%
+  
   dplyr::relocate(any_of(c(
     "CHROM", "POS", "START", "ID", "REF", "ALT",
     "final_call", "Reasoning_for_call",
