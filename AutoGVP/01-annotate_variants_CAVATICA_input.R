@@ -190,9 +190,10 @@ vcf_to_run_intervar <- entries_for_intervar$vcf_id
 
 ## get multianno file to add  correct vcf_id in intervar table
 multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>%
-  dplyr::mutate(
+  mutate(
     vcf_id = str_remove_all(paste(Chr, "-", Otherinfo5, "-", Otherinfo7, "-", Otherinfo8), " "),
-    vcf_id = str_replace_all(vcf_id, "chr", "")
+    vcf_id = str_replace_all(vcf_id, "chr", ""),
+    Chr = as.character(Chr)
   ) %>%
   group_by(vcf_id) %>%
   arrange(Chr, Start) %>%
@@ -210,8 +211,7 @@ multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_na
 
 ## add intervar table
 clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = TRUE) %>%
-  # slice(-1) %>%
-  dplyr::mutate(var_id = str_remove_all(paste(`#Chr`, "-", Start, "-", End, "-", Ref, "-", Alt), " ")) %>%
+  dplyr::mutate(var_id = str_remove_all(paste(`#Chr`, "-", Start, "-", Ref, "-", Alt), " "), `#Chr` = as.character(`#Chr`)) %>%
   group_by(var_id) %>%
   arrange(`#Chr`, Start) %>%
   filter(row_number() == 1) %>%
@@ -309,7 +309,6 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
     evidencePM = if_else((criterion == "NF6" | criterion == "SS6" |
       criterion == "SS9" | criterion == "DEL7" |
       criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, as.numeric(evidencePM) + 1, as.double(evidencePM)),
-    
     evidencePVS1 = if_else((criterion == "NF6" | criterion == "SS6" |
       criterion == "SS9" | criterion == "DEL7" |
       criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, "0", evidencePVS1),
@@ -326,7 +325,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
       criterion == "IC5") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
 
     ## adjust variables based on given rules described in README
-    final_call = ifelse((evidencePVS1 == 1 &
+    final_call = ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 &
       ((evidencePS >= 1) |
         (evidencePM >= 2) |
         (evidencePM == 1 & evidencePP == 1) |
@@ -336,13 +335,13 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
         (evidenceBP >= 2) |
         (evidenceBS >= 1 & evidenceBP >= 1) |
         (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-    ifelse(((evidencePS >= 2) &
+    ifelse(((evidencePVS1 == 1) & (evidencePS >= 2) &
       ((evidenceBA1) == 1 |
         (evidenceBS >= 2) |
         (evidenceBP >= 2) |
         (evidenceBS >= 1 & evidenceBP >= 1) |
         (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-    ifelse(((evidencePS == 1 &
+    ifelse(((evidencePVS1 == 1) & (evidencePS == 1 &
       (evidencePM >= 3 |
         (evidencePM == 2 & evidencePP >= 2) |
         (evidencePM == 1 & evidencePP >= 4))) &
@@ -351,7 +350,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
         (evidenceBP >= 2) |
         (evidenceBS >= 1 & evidenceBP >= 1) |
         (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-    ifelse((((evidencePVS1 == 1 & evidencePM == 1) |
+    ifelse((((evidencePVS1 == 1) & (evidencePVS1 == 1 & evidencePM == 1) |
       (evidencePS == 1 & evidencePM >= 1) |
       (evidencePS == 1 & evidencePP >= 2) |
       (evidencePM >= 3) |
@@ -362,25 +361,25 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
         (evidenceBP >= 2) |
         (evidenceBS >= 1 & evidenceBP >= 1) |
         (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-    ifelse((evidencePVS1 == 1 &
+    ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 &
       ((evidencePS >= 1) |
         (evidencePM >= 2) |
         (evidencePM == 1 & evidencePP == 1) |
         (evidencePP >= 2))), "Pathogenic",
-    ifelse((evidencePS >= 2), "Pathogenic",
-      ifelse((evidencePS == 1 &
+    ifelse((evidencePVS1 == 1) & (evidencePS >= 2), "Pathogenic",
+      ifelse((evidencePVS1 == 0) & (evidencePS == 1 &
         (evidencePM >= 3 |
           (evidencePM == 2 & evidencePP >= 2) |
           (evidencePM == 1 & evidencePP >= 4))), "Pathogenic",
-      ifelse((evidencePVS1 == 1 & evidencePM == 1) |
+      ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 & evidencePM == 1) |
         (evidencePS == 1 & evidencePM >= 1) |
         (evidencePS == 1 & evidencePP >= 2) |
         (evidencePM >= 3) |
         (evidencePM == 2 & evidencePP >= 2) |
         (evidencePM == 1 & evidencePP >= 4), "Likely_pathogenic",
-      ifelse((evidenceBA1 == 1) |
+      ifelse((evidencePVS1 == 1) & (evidenceBA1 == 1) |
         (evidenceBS >= 2), "Benign",
-      ifelse((evidenceBS == 1 & evidenceBP == 1) |
+      ifelse((evidencePVS1 == 1) & (evidenceBS == 1 & evidenceBP == 1) |
         (evidenceBP >= 2), "Likely_benign", "Uncertain_significance")
       )
       )
@@ -392,6 +391,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
     )
     )
   )
+
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- clinvar_anno_intervar_vcf_df %>%
