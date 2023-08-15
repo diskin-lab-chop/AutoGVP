@@ -256,7 +256,7 @@ if (tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df)) {
 ## combine the intervar and multianno tables by the appropriate vcf id
 clinvar_anno_intervar_vcf_df <-
   dplyr::mutate(multianno_df, clinvar_anno_intervar_vcf_df) %>%
-  dplyr::filter(vcf_id %in% vcf_df$vcf_id) #%>%
+  dplyr::filter(vcf_id %in% vcf_df$vcf_id) # %>%
 
 ## populate consensus call variants with invervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df, entries_for_cc_in_submission, by = "vcf_id") %>%
@@ -347,13 +347,13 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
         (evidenceBP >= 2) |
         (evidenceBS >= 1 & evidenceBP >= 1) |
         (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-    ifelse(((evidencePVS1 == 1) &(evidencePS >= 2) &
+    ifelse(((evidencePVS1 == 1) & (evidencePS >= 2) &
       ((evidenceBA1) == 1 |
         (evidenceBS >= 2) |
         (evidenceBP >= 2) |
         (evidenceBS >= 1 & evidenceBP >= 1) |
         (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-    ifelse(((evidencePVS1 == 1) &(evidencePS == 1 &
+    ifelse(((evidencePVS1 == 1) & (evidencePS == 1 &
       (evidencePM >= 3 |
         (evidencePM == 2 & evidencePP >= 2) |
         (evidencePM == 1 & evidencePP >= 4))) &
@@ -362,7 +362,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
         (evidenceBP >= 2) |
         (evidenceBS >= 1 & evidenceBP >= 1) |
         (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-    ifelse((((evidencePVS1 == 1) &(evidencePVS1 == 1 & evidencePM == 1) |
+    ifelse((((evidencePVS1 == 1) & (evidencePVS1 == 1 & evidencePM == 1) |
       (evidencePS == 1 & evidencePM >= 1) |
       (evidencePS == 1 & evidencePP >= 2) |
       (evidencePM >= 3) |
@@ -373,12 +373,12 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
         (evidenceBP >= 2) |
         (evidenceBS >= 1 & evidenceBP >= 1) |
         (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-    ifelse((evidencePVS1 == 1) &(evidencePVS1 == 1 &
+    ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 &
       ((evidencePS >= 1) |
         (evidencePM >= 2) |
         (evidencePM == 1 & evidencePP == 1) |
         (evidencePP >= 2))), "Pathogenic",
-    ifelse((evidencePVS1 == 1) &(evidencePS >= 2), "Pathogenic",
+    ifelse((evidencePVS1 == 1) & (evidencePS >= 2), "Pathogenic",
       ifelse((evidencePVS1 == 0) & (evidencePS == 1 &
         (evidencePM >= 3 |
           (evidencePM == 2 & evidencePP >= 2) |
@@ -443,11 +443,11 @@ master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id")
   full_join(entries_for_cc_in_submission_w_intervar[c("vcf_id", "Intervar_evidence")], by = "vcf_id") %>%
   dplyr::mutate(
     Intervar_evidence = coalesce(Intervar_evidence.y, Intervar_evidence.x),
-    #ClinVar_ClinicalSignificance = coalesce(ClinicalSignificance.x, ClinicalSignificance.y)
+    # ClinVar_ClinicalSignificance = coalesce(ClinicalSignificance.x, ClinicalSignificance.y)
   ) %>%
   dplyr::select(
     -final_call.x, -final_call.y,
-    -Intervar_evidence.x, -Intervar_evidence.y #,
+    -Intervar_evidence.x, -Intervar_evidence.y # ,
     #-ClinicalSignificance.x, -ClinicalSignificance.y
   )
 
