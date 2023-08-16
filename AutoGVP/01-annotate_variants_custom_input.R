@@ -404,7 +404,6 @@ master_tab <- clinvar_anno_intervar_vcf_df %>%
   left_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
   left_join(variant_summary_df, by = "vcf_id")
 
-
 master_tab <- master_tab %>%
   dplyr::mutate(
     intervar_adjusted = coalesce(intervar_adjusted, "No"),
@@ -425,7 +424,7 @@ master_tab <- master_tab %>%
 master_tab <- master_tab %>%
   dplyr::mutate(final_call = coalesce(final_call.x, final_call.y))
 
-## remove older columns
+## remove unnecc columns
 master_tab <- master_tab %>% dplyr::select(-c(
   evidencePVS1.x, evidencePVS1.y, evidenceBA1.x, evidenceBA1.y, evidencePS.x, evidencePS.y, evidencePM.x, evidencePM.y, evidencePP.x, evidencePP.y, evidenceBS.x, evidenceBS.y, evidenceBP.x, evidenceBP.y,
   `InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`, final_call.x, final_call.y
