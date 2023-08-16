@@ -288,8 +288,7 @@ autopvs1_results <- read_tsv(input_autopvs1_file, col_names = TRUE) %>%
 combined_tab_with_vcf_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by = "vcf_id") %>%
   dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id & !vcf_id %in% entries_for_cc_in_submission$vcf_id) %>%
-
-    ## indicate if recalculated
+  ## indicate if recalculated
   dplyr::mutate(intervar_adjusted = if_else((evidencePVS1 == 0), "No", "Yes")) %>%
   dplyr::mutate(
     ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
@@ -331,7 +330,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
       criterion == "DUP2" | criterion == "DUP4" | criterion == "DUP5" |
       criterion == "IC5") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
 
-    ## adjust variables based on given rules described in README 
+    ## adjust variables based on given rules described in README
     final_call = ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 &
       ((evidencePS >= 1) |
         (evidencePM >= 2) |
@@ -399,7 +398,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
     )
   )
 
-## clean and merge tables together (clinvar,intervar, and submission variants) 
+## clean and merge tables together (clinvar,intervar, and submission variants)
 master_tab <- clinvar_anno_intervar_vcf_df %>%
   left_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
   left_join(variant_summary_df, by = "vcf_id")
