@@ -266,7 +266,6 @@ autopvs1_results <- read_tsv(input_autopvs1_file, col_names = TRUE) %>%
 combined_tab_with_vcf_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by = "vcf_id") %>%
   dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id & !vcf_id %in% entries_for_cc_in_submission$vcf_id) %>%
-  
   ## indicate if recalculated
   dplyr::mutate(intervar_adjusted = if_else((evidencePVS1 == 0), "No", "Yes")) %>%
   dplyr::mutate(
