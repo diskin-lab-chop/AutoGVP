@@ -86,7 +86,6 @@ output_tab_abr_file <- paste0(output_name, ".cavatica_input.annotations_report.a
 ## allocate more memory capacity
 Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
-
 address_conflicting_intrep <- function(clinvar_anno_vcf_df) { ## if conflicting intrep. take the call with most calls in CLNSIGCONF field
   for (i in 1:nrow(clinvar_anno_vcf_df))
   {
@@ -120,7 +119,6 @@ address_conflicting_intrep <- function(clinvar_anno_vcf_df) { ## if conflicting 
 }
 
 address_ambiguous_calls <- function(results_tab_abridged) { ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
-
   results_tab_abridged <- results_tab_abridged %>%
     dplyr::mutate(new_call = case_when(
       is.na(final_call) | (final_call != "Pathogenic" &
@@ -233,26 +231,14 @@ if (tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df)) {
 clinvar_anno_intervar_vcf_df <-
   dplyr::mutate(multianno_df, clinvar_anno_intervar_vcf_df) %>%
   dplyr::filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id)
-# dplyr::select(any_of(c(
-#   "vcf_id", "InterVar: InterVar and Evidence",
-#   "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
-#   "CLNSIG", "CLNREVSTAT"
-# )))
 
 ## populate consensus call variants with invervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df, entries_for_cc_in_submission, by = "vcf_id") %>%
-  # dplyr::select(any_of(c(
-  #   "vcf_id", "InterVar: InterVar and Evidence",
-  #   "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
-  #   "CLNSIG", "CLNREVSTAT"
-  # ))) %>%
   dplyr::rename("Intervar_evidence" = `InterVar: InterVar and Evidence`)
 
 
 clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
-  # anti_join(entries_for_cc_in_submission, by = "vcf_id") %>%
   ## add column for individual scores that will be re-calculated if we need to adjust using autoPVS1 result
-
   ## note: ignore PP5 score and BP6 score
   dplyr::mutate(
     evidencePVS1 = str_match(`InterVar: InterVar and Evidence`, "PVS1\\=(\\d+)\\s")[, 2],
@@ -280,9 +266,7 @@ autopvs1_results <- read_tsv(input_autopvs1_file, col_names = TRUE) %>%
 combined_tab_with_vcf_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by = "vcf_id") %>%
   dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id & !vcf_id %in% entries_for_cc_in_submission$vcf_id) %>%
-  # dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id)
-
-  # combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_with_vcf_intervar, entries_for_cc_in_submission, by = "vcf_id") %>%
+  
   ## indicate if recalculated
   dplyr::mutate(intervar_adjusted = if_else((evidencePVS1 == 0), "No", "Yes")) %>%
   dplyr::mutate(
@@ -419,7 +403,7 @@ master_tab <- master_tab %>%
 master_tab <- master_tab %>%
   dplyr::mutate(final_call = coalesce(final_call.x, final_call.y))
 
-## remove older columns
+## remove unnecc columns
 master_tab <- master_tab %>% dplyr::select(-c(
   evidencePVS1.x, evidencePVS1.y, evidenceBA1.x, evidenceBA1.y, evidencePS.x, evidencePS.y, evidencePM.x, evidencePM.y, evidencePP.x, evidencePP.y, evidenceBS.x, evidenceBS.y, evidenceBP.x, evidenceBP.y,
   `InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`, final_call.x, final_call.y
@@ -438,8 +422,6 @@ master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id")
     -Intervar_evidence.x, -Intervar_evidence.y,
     -INFO, -ClinicalSignificance.x, -ClinicalSignificance.y
   )
-
-
 
 ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
 master_tab <- address_ambiguous_calls(master_tab)
