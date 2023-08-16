@@ -461,6 +461,11 @@ master_tab <- master_tab %>%
     vcf_id %in% vcf_to_run_intervar ~ "InterVar",
     TRUE ~ "ClinVar"
   )) %>%
+  # modify `ClinVar_ClinicalSignificance` to equal `final_call` for ClinVar calls
+  dplyr::mutate(ClinVar_ClinicalSignificance = case_when(
+    Reasoning_for_call == "ClinVar" ~ final_call,
+    TRUE ~ str_replace(ClinVar_ClinicalSignificance, " ", "_")
+  )) %>%
   dplyr::relocate(
     CHROM, START, ID, REF, ALT,
     final_call, Reasoning_for_call,
