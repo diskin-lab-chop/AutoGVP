@@ -212,7 +212,7 @@ clinvar_anti_join_vcf_df <- clinvar_anti_join_vcf_df %>%
   )
 
 ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
-entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0", na.rm = TRUE) %>%
+entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0" | is.na(Stars), na.rm = TRUE) %>%
   bind_rows((additional_intervar_cases)) %>%
   bind_rows(clinvar_anti_join_vcf_df) %>%
   distinct()
