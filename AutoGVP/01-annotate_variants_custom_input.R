@@ -190,7 +190,9 @@ clinvar_anti_join_vcf_df <- anti_join(vcf_df, clinvar_anno_vcf_df, by = "vcf_id"
   dplyr::rename(rs_id = ID)
 
 ## get latest calls from variant and submission summary files
-variant_summary_df <- vroom(input_variant_summary)
+variant_summary_df <- vroom(input_variant_summary) %>%
+  filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id) %>%
+  dplyr::select(-GeneSymbol)
 
 ## filter only those variants that need consensus call and find  call in submission table
 entries_for_cc <- filter(clinvar_anno_vcf_df, Stars == "1NR", final_call != "Benign", final_call != "Pathogenic", final_call != "Likely_benign", final_call != "Likely_pathogenic", final_call != "Uncertain_significance")
@@ -223,37 +225,38 @@ vcf_to_run_intervar <- entries_for_intervar$vcf_id
 
 ## get multianno file to add by correct vcf_id
 multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>%
+  dplyr::select(-Start, -End, -Alt, -Ref,
+                -contains(c("AF",
+                            "gnomad", "CLN",
+                            "score", "pred", "CADD", "Eigen",
+                            "100way", "30way", "GTEx"
+                ))) %>%
   mutate(
     vcf_id = str_remove_all(paste(Chr, "-", Otherinfo5, "-", Otherinfo7, "-", Otherinfo8), " "),
-    vcf_id = str_replace_all(vcf_id, "chr", ""),
-    Chr = as.character(Chr)
+    vcf_id = str_replace(vcf_id, "chr", ""),
   ) %>%
-  group_by(vcf_id) %>%
-  arrange(Chr, Start) %>%
-  filter(row_number() == 1) %>%
   # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
   dplyr::select(
-    -Chr, -Start, -End, -Alt, -Ref,
-    -contains(c(
-      "Otherinfo", "gnomad", "CLN",
-      "score", "pred", "CADD", "Eigen",
-      "100way", "30way", "GTEx"
+    -Chr,
+    -contains(c("Otherinfo"
     ))
-  ) %>%
-  ungroup()
+  )
+
+if (sum(duplicated(multianno_df$vcf_id) != 0)){
+  
+  multianno_df <- multianno_df %>%
+    distinct(vcf_id, .keep_all = T)
+}
 
 ## add intervar table
-clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = TRUE) %>%
-  dplyr::mutate(var_id = str_remove_all(paste(`#Chr`, "-", Start, "-", Ref, "-", Alt), " "), `#Chr` = as.character(`#Chr`)) %>%
-  group_by(var_id) %>%
-  arrange(`#Chr`, Start) %>%
-  filter(row_number() == 1) %>%
+clinvar_anno_intervar_vcf_df <-  vroom(input_intervar_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>%
+  dplyr::select(-`clinvar: Clinvar`,
+                -contains(c("gnomad", "CADD", "Freq", "SCORE", "score", "ORPHA", "MIM", "rmsk", "GERP", "phylo"))) %>%
+  distinct(`#Chr`, Start, Ref, Alt, .keep_all = T) %>%
   # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
   dplyr::select(
-    -`#Chr`, -Start, -End, -Alt, -Ref, -`clinvar: Clinvar`,
-    -contains(c("gnomad", "CADD", "Freq", "SCORE", "score", "ORPHA", "MIM", "rmsk"))
-  ) %>%
-  ungroup()
+    -`#Chr`, -Start, -End, -Alt, -Ref
+  )
 
 ## exit if the total number of variants differ in these two tables to ensure we annotate with the correct vcf so we can match back to clinVar and other tables
 if (tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df)) {
@@ -288,7 +291,8 @@ clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
   left_join(clinvar_anno_vcf_df[, c("vcf_id", "Stars", "final_call")], by = "vcf_id")
 
 ## autopvs1 results
-autopvs1_results <- read_tsv(input_autopvs1_file, col_names = TRUE) %>%
+autopvs1_results <- vroom(input_autopvs1_file, col_names = TRUE) %>%
+  dplyr::select(vcf_id, criterion) %>%
   mutate(
     vcf_id = str_remove_all(paste(vcf_id), " "),
     vcf_id = str_replace_all(vcf_id, "chr", "")
