@@ -116,7 +116,7 @@ address_ambiguous_calls <- function(results_tab_abridged) { ## address ambiguous
 address_conflicting_intrep <- function(clinvar_anno_vcf_df) { ## if conflicting intrep. take the call with most calls in CLNSIGCONF field
   for (i in 1:nrow(clinvar_anno_vcf_df)) {
     entry <- clinvar_anno_vcf_df[i, ]
-    if (entry$Stars != "1NR") {
+    if ((entry$Stars != "1NR" & !is.na(entry$Stars)) | is.na(entry$Stars)) {
       next
     }
 
@@ -159,14 +159,14 @@ clinvar_anno_vcf_df <- vroom(input_clinVar_file, comment = "#", delim = "\t", co
   dplyr::mutate(
     vcf_id = str_replace_all(vcf_id, "chr", ""),
     # add star annotations to clinVar results table based on filters // ## default version
-    Stars = ifelse(grepl("CLNREVSTAT\\=criteria_provided,_single_submitter", INFO), "1",
-      ifelse(grepl("CLNREVSTAT\\=criteria_provided,_multiple_submitters", INFO), "2",
-        ifelse(grepl("CLNREVSTAT\\=reviewed_by_expert_panel", INFO), "3",
-          ifelse(grepl("CLNREVSTAT\\=practice_guideline", INFO), "4",
-            ifelse(grepl("CLNREVSTAT\\=criteria_provided,_conflicting_interpretations", INFO), "1NR", "0")
-          )
-        )
-      )
+    Stars = case_when(
+      str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_single_submitter") ~ "1",
+      str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_multiple_submitters") ~ "2",
+      str_detect(INFO, "CLNREVSTAT\\=reviewed_by_expert_panel") ~ "3",
+      str_detect(INFO, "CLNREVSTAT\\=practice_guideline") ~ "4",
+      str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_conflicting_interpretations") ~ "1NR",
+      str_detect(INFO, "no_assertion") ~ "0",
+      TRUE ~ NA_character_
     ),
     ## extract the calls and put in own column
     final_call = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
@@ -205,7 +205,7 @@ clinvar_anti_join_vcf_df <- clinvar_anti_join_vcf_df %>%
   )
 
 ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
-entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0", na.rm = TRUE) %>%
+entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0" | is.na(Stars), na.rm = TRUE) %>%
   bind_rows((additional_intervar_cases)) %>%
   bind_rows(clinvar_anti_join_vcf_df) %>%
   distinct()
