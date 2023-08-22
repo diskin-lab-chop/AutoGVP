@@ -114,40 +114,37 @@ address_ambiguous_calls <- function(results_tab_abridged) { ## address ambiguous
 }
 
 address_conflicting_interp <- function(clinvar_anno_vcf_df) { ## if conflicting intrep. take the call with most calls in CLNSIGCONF field
-  
+
   clinvar_nr <- clinvar_anno_vcf_df %>%
     dplyr::filter(Stars == "1NR" & !is.na(Stars))
-  
-  for (i in 1:nrow(clinvar_nr)){
-    
+
+  for (i in 1:nrow(clinvar_nr)) {
     conf_section <- str_match(clinvar_nr$INFO[i], "CLNSIGCONF\\=.+\\;CLNVC") ## part to parse and count calls
     call_names <- c("Pathogenic", "Likely_pathogenic", "Benign", "Likely_benign", "Uncertain_significance")
-    
+
     P <- (str_match(conf_section, "Pathogenic\\((\\d+)\\)")[, 2])
     LP <- (str_match(conf_section, "Likely_pathogenic\\((\\d+)\\)")[, 2])
     B <- (str_match(conf_section, "Benign\\((\\d+)\\)")[, 2])
     LB <- (str_match(conf_section, "Likely_benign\\((\\d+)\\)")[, 2])
     U <- (str_match(conf_section, "Uncertain_significance\\((\\d+)\\)")[, 2])
-    
+
     ## make vector out of possible calls to get max
     calls <- c(P, LP, B, LB, U)
-    
+
     if (length(which(calls == max(calls, na.rm = TRUE))) > 1) {
       next
     }
-    
+
     highest_ind <- which.max(calls)
     consensus_call <- call_names[highest_ind]
-    
+
     clinvar_nr[i, ]$final_call <- consensus_call
-    
   }
-  
+
   clinvar_anno_vcf_df <- clinvar_anno_vcf_df %>%
-    left_join(clinvar_nr[,c("vcf_id", "final_call")], by = "vcf_id", suffix = c(".orig", ".resolved")) %>%
+    left_join(clinvar_nr[, c("vcf_id", "final_call")], by = "vcf_id", suffix = c(".orig", ".resolved")) %>%
     dplyr::mutate(final_call = coalesce(final_call.resolved, final_call.orig)) %>%
     dplyr::select(-final_call.resolved, -final_call.orig) %>%
-    
     return(clinvar_anno_vcf_df)
 }
 
@@ -172,7 +169,7 @@ clinvar_anno_vcf_df <- vroom(input_clinVar_file, comment = "#", delim = "\t", co
       str_detect(INFO, "CLNREVSTAT\\=reviewed_by_expert_panel") ~ "3",
       str_detect(INFO, "CLNREVSTAT\\=practice_guideline") ~ "4",
       str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_conflicting_interpretations") ~ "1NR",
-      str_detect(INFO, "no_assertion") ~ "0",
+      str_detect(INFO, "no_assertion|no_interpretation") ~ "0",
       TRUE ~ NA_character_
     ),
     ## extract the calls and put in own column
@@ -225,12 +222,15 @@ vcf_to_run_intervar <- entries_for_intervar$vcf_id
 
 ## get multianno file to add by correct vcf_id
 multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>%
-  dplyr::select(-Start, -End, -Alt, -Ref,
-                -contains(c("AF",
-                            "gnomad", "CLN",
-                            "score", "pred", "CADD", "Eigen",
-                            "100way", "30way", "GTEx"
-                ))) %>%
+  dplyr::select(
+    -Start, -End, -Alt, -Ref,
+    -contains(c(
+      "AF",
+      "gnomad", "CLN",
+      "score", "pred", "CADD", "Eigen",
+      "100way", "30way", "GTEx"
+    ))
+  ) %>%
   mutate(
     vcf_id = str_remove_all(paste(Chr, "-", Otherinfo5, "-", Otherinfo7, "-", Otherinfo8), " "),
     vcf_id = str_replace(vcf_id, "chr", ""),
@@ -238,20 +238,20 @@ multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_na
   # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
   dplyr::select(
     -Chr,
-    -contains(c("Otherinfo"
-    ))
+    -contains(c("Otherinfo"))
   )
 
-if (sum(duplicated(multianno_df$vcf_id) != 0)){
-  
+if (sum(duplicated(multianno_df$vcf_id) != 0)) {
   multianno_df <- multianno_df %>%
     distinct(vcf_id, .keep_all = T)
 }
 
 ## add intervar table
-clinvar_anno_intervar_vcf_df <-  vroom(input_intervar_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>%
-  dplyr::select(-`clinvar: Clinvar`,
-                -contains(c("gnomad", "CADD", "Freq", "SCORE", "score", "ORPHA", "MIM", "rmsk", "GERP", "phylo"))) %>%
+clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>%
+  dplyr::select(
+    -`clinvar: Clinvar`,
+    -contains(c("gnomad", "CADD", "Freq", "SCORE", "score", "ORPHA", "MIM", "rmsk", "GERP", "phylo"))
+  ) %>%
   distinct(`#Chr`, Start, Ref, Alt, .keep_all = T) %>%
   # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
   dplyr::select(
@@ -434,7 +434,7 @@ master_tab <- master_tab %>%
     Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`),
 
     # replace second final call with the first one because we did not use clinvar results
-    final_call.x = if_else(Stars == "0", final_call.y, final_call.x),
+    final_call.x = if_else(Stars == "0" | is.na(Stars), final_call.y, final_call.x),
   )
 
 ## combine final calls into one choosing the appropriate final call
