@@ -160,7 +160,7 @@ clinvar_anno_vcf_df <- clinvar_anno_vcf_df %>%
       str_detect(INFO, "CLNREVSTAT\\=reviewed_by_expert_panel") ~ "3",
       str_detect(INFO, "CLNREVSTAT\\=practice_guideline") ~ "4",
       str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_conflicting_interpretations") ~ "1NR",
-      str_detect(INFO, "no_assertion") ~ "0",
+      str_detect(INFO, "no_assertion|no_interpretation") ~ "0",
       TRUE ~ NA_character_
     ),
     ## extract the calls and put in own column
@@ -419,7 +419,7 @@ master_tab <- master_tab %>%
     evidenceBP = coalesce(as.double(evidenceBP.x, evidenceBP.y)),
     Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`),
     # replace second final call with the second one because we did not use interVar results
-    final_call.x = if_else(Stars == "0", final_call.y, final_call.x)
+    final_call.x = if_else(Stars == "0" | is.na(Stars), final_call.y, final_call.x)
   )
 
 ## combine final calls into one choosing the appropriate final call
