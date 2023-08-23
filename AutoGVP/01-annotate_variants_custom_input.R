@@ -100,7 +100,8 @@ address_ambiguous_calls <- function(results_tab_abridged) { ## address ambiguous
       is.na(final_call) | (final_call != "Pathogenic" &
         final_call != "Likely_benign" & final_call != "Likely_pathogenic" &
         final_call != "Uncertain_significance" & final_call != "Benign" &
-        final_call != "Uncertain significance" & final_call != "Likely benign") ~ str_match(Intervar_evidence, "InterVar\\:\\s(\\w+\\s\\w+)*")[, 2],
+        final_call != "Uncertain significance" & final_call != "Likely benign" &
+        final_call != "Likely pathogenic") ~ str_match(Intervar_evidence, "InterVar\\:\\s(\\w+\\s\\w+)*")[, 2],
       TRUE ~ NA_character_
     )) %>%
     dplyr::mutate(final_call = case_when(
@@ -112,14 +113,13 @@ address_ambiguous_calls <- function(results_tab_abridged) { ## address ambiguous
   return(results_tab_abridged)
 }
 
-address_conflicting_intrep <- function(clinvar_anno_vcf_df) { ## if conflicting intrep. take the call with most calls in CLNSIGCONF field
-  for (i in 1:nrow(clinvar_anno_vcf_df)) {
-    entry <- clinvar_anno_vcf_df[i, ]
-    if (entry$Stars != "1NR") {
-      next
-    }
+address_conflicting_interp <- function(clinvar_anno_vcf_df) { ## if conflicting intrep. take the call with most calls in CLNSIGCONF field
 
-    conf_section <- str_match(entry$INFO, "CLNSIGCONF\\=.+\\;CLNVC") ## part to parse and count calls
+  clinvar_nr <- clinvar_anno_vcf_df %>%
+    dplyr::filter(Stars == "1NR" & !is.na(Stars))
+
+  for (i in 1:nrow(clinvar_nr)) {
+    conf_section <- str_match(clinvar_nr$INFO[i], "CLNSIGCONF\\=.+\\;CLNVC") ## part to parse and count calls
     call_names <- c("Pathogenic", "Likely_pathogenic", "Benign", "Likely_benign", "Uncertain_significance")
 
     P <- (str_match(conf_section, "Pathogenic\\((\\d+)\\)")[, 2])
@@ -138,9 +138,14 @@ address_conflicting_intrep <- function(clinvar_anno_vcf_df) { ## if conflicting 
     highest_ind <- which.max(calls)
     consensus_call <- call_names[highest_ind]
 
-    clinvar_anno_vcf_df[i, ]$final_call <- consensus_call
+    clinvar_nr[i, ]$final_call <- consensus_call
   }
-  return(clinvar_anno_vcf_df)
+
+  clinvar_anno_vcf_df <- clinvar_anno_vcf_df %>%
+    left_join(clinvar_nr[, c("vcf_id", "final_call")], by = "vcf_id", suffix = c(".orig", ".resolved")) %>%
+    dplyr::mutate(final_call = coalesce(final_call.resolved, final_call.orig)) %>%
+    dplyr::select(-final_call.resolved, -final_call.orig) %>%
+    return(clinvar_anno_vcf_df)
 }
 
 ## make vcf dataframe and add vcf_if column
@@ -158,20 +163,20 @@ clinvar_anno_vcf_df <- vroom(input_clinVar_file, comment = "#", delim = "\t", co
   dplyr::mutate(
     vcf_id = str_replace_all(vcf_id, "chr", ""),
     # add star annotations to clinVar results table based on filters // ## default version
-    Stars = ifelse(grepl("CLNREVSTAT\\=criteria_provided,_single_submitter", INFO), "1",
-      ifelse(grepl("CLNREVSTAT\\=criteria_provided,_multiple_submitters", INFO), "2",
-        ifelse(grepl("CLNREVSTAT\\=reviewed_by_expert_panel", INFO), "3",
-          ifelse(grepl("CLNREVSTAT\\=practice_guideline", INFO), "4",
-            ifelse(grepl("CLNREVSTAT\\=criteria_provided,_conflicting_interpretations", INFO), "1NR", "0")
-          )
-        )
-      )
+    Stars = case_when(
+      str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_single_submitter") ~ "1",
+      str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_multiple_submitters") ~ "2",
+      str_detect(INFO, "CLNREVSTAT\\=reviewed_by_expert_panel") ~ "3",
+      str_detect(INFO, "CLNREVSTAT\\=practice_guideline") ~ "4",
+      str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_conflicting_interpretations") ~ "1NR",
+      str_detect(INFO, "no_assertion|no_interpretation") ~ "0",
+      TRUE ~ NA_character_
     ),
     ## extract the calls and put in own column
     final_call = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
   )
 
-clinvar_anno_vcf_df <- address_conflicting_intrep(clinvar_anno_vcf_df)
+clinvar_anno_vcf_df <- address_conflicting_interp(clinvar_anno_vcf_df)
 
 ## store variants without clinvar info
 clinvar_anti_join_vcf_df <- anti_join(vcf_df, clinvar_anno_vcf_df, by = "vcf_id") %>%
@@ -182,7 +187,9 @@ clinvar_anti_join_vcf_df <- anti_join(vcf_df, clinvar_anno_vcf_df, by = "vcf_id"
   dplyr::rename(rs_id = ID)
 
 ## get latest calls from variant and submission summary files
-variant_summary_df <- vroom(input_variant_summary)
+variant_summary_df <- vroom(input_variant_summary) %>%
+  filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id) %>%
+  dplyr::select(-GeneSymbol)
 
 ## filter only those variants that need consensus call and find  call in submission table
 entries_for_cc <- filter(clinvar_anno_vcf_df, Stars == "1NR", final_call != "Benign", final_call != "Pathogenic", final_call != "Likely_benign", final_call != "Likely_pathogenic", final_call != "Uncertain_significance")
@@ -204,47 +211,52 @@ clinvar_anti_join_vcf_df <- clinvar_anti_join_vcf_df %>%
   )
 
 ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
-entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0", na.rm = TRUE) %>%
+entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0" | is.na(Stars), na.rm = TRUE) %>%
   bind_rows((additional_intervar_cases)) %>%
   bind_rows(clinvar_anti_join_vcf_df) %>%
   distinct()
+
 
 ## get vcf ids that need intervar run
 vcf_to_run_intervar <- entries_for_intervar$vcf_id
 
 ## get multianno file to add by correct vcf_id
 multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>%
-  mutate(
-    vcf_id = str_remove_all(paste(Chr, "-", Otherinfo5, "-", Otherinfo7, "-", Otherinfo8), " "),
-    vcf_id = str_replace_all(vcf_id, "chr", "")
-  ) %>%
-  group_by(vcf_id) %>%
-  arrange(Chr, Start) %>%
-  filter(row_number() == 1) %>%
-  # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
   dplyr::select(
-    -Chr, -Start, -End, -Alt, -Ref,
+    -Start, -End, -Alt, -Ref,
     -contains(c(
-      "Otherinfo", "gnomad", "CLN",
+      "AF",
+      "gnomad", "CLN",
       "score", "pred", "CADD", "Eigen",
       "100way", "30way", "GTEx"
     ))
   ) %>%
-  ungroup()
-
-## add intervar table
-clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = TRUE) %>%
-  # slice(-1) %>%
-  dplyr::mutate(var_id = str_remove_all(paste(`#Chr`, "-", Start, "-", End, "-", Ref, "-", Alt), " ")) %>%
-  group_by(var_id) %>%
-  arrange(`#Chr`, Start) %>%
-  filter(row_number() == 1) %>%
+  mutate(
+    vcf_id = str_remove_all(paste(Chr, "-", Otherinfo5, "-", Otherinfo7, "-", Otherinfo8), " "),
+    vcf_id = str_replace(vcf_id, "chr", ""),
+  ) %>%
   # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
   dplyr::select(
-    -`#Chr`, -Start, -End, -Alt, -Ref, -`clinvar: Clinvar`,
-    -contains(c("gnomad", "CADD", "Freq", "SCORE", "score", "ORPHA", "MIM", "rmsk"))
+    -Chr,
+    -contains(c("Otherinfo"))
+  )
+
+if (sum(duplicated(multianno_df$vcf_id) != 0)) {
+  multianno_df <- multianno_df %>%
+    distinct(vcf_id, .keep_all = T)
+}
+
+## add intervar table
+clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>%
+  dplyr::select(
+    -`clinvar: Clinvar`,
+    -contains(c("gnomad", "CADD", "Freq", "SCORE", "score", "ORPHA", "MIM", "rmsk", "GERP", "phylo"))
   ) %>%
-  ungroup()
+  distinct(`#Chr`, Start, Ref, Alt, .keep_all = T) %>%
+  # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
+  dplyr::select(
+    -`#Chr`, -Start, -End, -Alt, -Ref
+  )
 
 ## exit if the total number of variants differ in these two tables to ensure we annotate with the correct vcf so we can match back to clinVar and other tables
 if (tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df)) {
@@ -254,7 +266,7 @@ if (tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df)) {
 ## combine the intervar and multianno tables by the appropriate vcf id
 clinvar_anno_intervar_vcf_df <-
   dplyr::mutate(multianno_df, clinvar_anno_intervar_vcf_df) %>%
-  dplyr::filter(vcf_id %in% vcf_df$vcf_id)
+  dplyr::filter(vcf_id %in% vcf_df$vcf_id) # %>%
 
 ## populate consensus call variants with invervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df, entries_for_cc_in_submission, by = "vcf_id") %>%
@@ -279,15 +291,13 @@ clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
   left_join(clinvar_anno_vcf_df[, c("vcf_id", "Stars", "final_call")], by = "vcf_id")
 
 ## autopvs1 results
-autopvs1_results <- read_tsv(input_autopvs1_file, col_names = TRUE) %>%
+autopvs1_results <- vroom(input_autopvs1_file, col_names = TRUE) %>%
+  dplyr::select(vcf_id, criterion) %>%
   mutate(
     vcf_id = str_remove_all(paste(vcf_id), " "),
     vcf_id = str_replace_all(vcf_id, "chr", "")
   ) %>%
   dplyr::filter(vcf_id %in% clinvar_anno_intervar_vcf_df$vcf_id)
-
-print(clinvar_anno_intervar_vcf_df$vcf_id)
-print(autopvs1_results$vcf_id)
 
 combined_tab_with_vcf_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by = "vcf_id") %>%
@@ -338,33 +348,72 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
       criterion == "IC5") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
 
     ## adjust variables based on given rules described in README
-    final_call = ifelse((evidencePVS1 == 1 &
+    final_call = ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 &
+      ((evidencePS >= 1) |
+        (evidencePM >= 2) |
+        (evidencePM == 1 & evidencePP == 1) |
+        (evidencePP >= 2)) &
+      ((evidenceBA1) == 1 |
+        (evidenceBS >= 2) |
+        (evidenceBP >= 2) |
+        (evidenceBS >= 1 & evidenceBP >= 1) |
+        (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
+    ifelse(((evidencePVS1 == 1) & (evidencePS >= 2) &
+      ((evidenceBA1) == 1 |
+        (evidenceBS >= 2) |
+        (evidenceBP >= 2) |
+        (evidenceBS >= 1 & evidenceBP >= 1) |
+        (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
+    ifelse(((evidencePVS1 == 1) & (evidencePS == 1 &
+      (evidencePM >= 3 |
+        (evidencePM == 2 & evidencePP >= 2) |
+        (evidencePM == 1 & evidencePP >= 4))) &
+      ((evidenceBA1) == 1 |
+        (evidenceBS >= 2) |
+        (evidenceBP >= 2) |
+        (evidenceBS >= 1 & evidenceBP >= 1) |
+        (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
+    ifelse((((evidencePVS1 == 1) & (evidencePVS1 == 1 & evidencePM == 1) |
+      (evidencePS == 1 & evidencePM >= 1) |
+      (evidencePS == 1 & evidencePP >= 2) |
+      (evidencePM >= 3) |
+      (evidencePM == 2 & evidencePP >= 2) |
+      (evidencePM == 1 & evidencePP >= 4)) &
+      ((evidenceBA1) == 1 |
+        (evidenceBS >= 2) |
+        (evidenceBP >= 2) |
+        (evidenceBS >= 1 & evidenceBP >= 1) |
+        (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
+    ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 &
       ((evidencePS >= 1) |
         (evidencePM >= 2) |
         (evidencePM == 1 & evidencePP == 1) |
         (evidencePP >= 2))), "Pathogenic",
-    ifelse((evidencePS >= 2), "Pathogenic",
-      ifelse((evidencePS == 1 &
+    ifelse((evidencePVS1 == 1) & (evidencePS >= 2), "Pathogenic",
+      ifelse((evidencePVS1 == 0) & (evidencePS == 1 &
         (evidencePM >= 3 |
           (evidencePM == 2 & evidencePP >= 2) |
           (evidencePM == 1 & evidencePP >= 4))), "Pathogenic",
-      ifelse((evidencePVS1 == 1 & evidencePM == 1) |
+      ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 & evidencePM == 1) |
         (evidencePS == 1 & evidencePM >= 1) |
         (evidencePS == 1 & evidencePP >= 2) |
         (evidencePM >= 3) |
         (evidencePM == 2 & evidencePP >= 2) |
         (evidencePM == 1 & evidencePP >= 4), "Likely_pathogenic",
-      ifelse((evidenceBA1 == 1) |
+      ifelse((evidencePVS1 == 1) & (evidenceBA1 == 1) |
         (evidenceBS >= 2), "Benign",
-      ifelse((evidenceBS == 1 & evidenceBP == 1) |
+      ifelse((evidencePVS1 == 1) & (evidenceBS == 1 & evidenceBP == 1) |
         (evidenceBP >= 2), "Likely_benign", "Uncertain_significance")
       )
       )
       )
     )
     )
+    )
+    )
+    )
+    )
   )
-
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- clinvar_anno_intervar_vcf_df %>%
@@ -385,7 +434,7 @@ master_tab <- master_tab %>%
     Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`),
 
     # replace second final call with the first one because we did not use clinvar results
-    final_call.x = if_else(Stars == "0", final_call.y, final_call.x)
+    final_call.x = if_else(Stars == "0" | is.na(Stars), final_call.y, final_call.x),
   )
 
 ## combine final calls into one choosing the appropriate final call
@@ -404,12 +453,13 @@ master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id")
   full_join(entries_for_cc_in_submission_w_intervar[c("vcf_id", "Intervar_evidence")], by = "vcf_id") %>%
   dplyr::mutate(
     Intervar_evidence = coalesce(Intervar_evidence.y, Intervar_evidence.x),
+    ClinVar_ClinicalSignificance = coalesce(ClinicalSignificance.x, ClinicalSignificance.y)
   ) %>%
   dplyr::select(
     -final_call.x, -final_call.y,
-    -Intervar_evidence.x, -Intervar_evidence.y
+    -Intervar_evidence.x, -Intervar_evidence.y,
+    -ClinicalSignificance.x, -ClinicalSignificance.y
   )
-
 
 ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
 master_tab <- address_ambiguous_calls(master_tab)
@@ -430,6 +480,11 @@ master_tab <- master_tab %>%
   dplyr::mutate(Reasoning_for_call = case_when(
     vcf_id %in% vcf_to_run_intervar ~ "InterVar",
     TRUE ~ "ClinVar"
+  )) %>%
+  # modify `ClinVar_ClinicalSignificance` to equal `final_call` for ClinVar calls
+  dplyr::mutate(ClinVar_ClinicalSignificance = case_when(
+    Reasoning_for_call == "ClinVar" ~ final_call,
+    TRUE ~ str_replace(ClinVar_ClinicalSignificance, " ", "_")
   )) %>%
   dplyr::relocate(any_of(c(
     "CHROM", "POS", "START", "ID", "REF", "ALT",
