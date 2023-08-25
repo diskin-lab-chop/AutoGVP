@@ -165,7 +165,7 @@ filter_criteria="INFO/AF>=0.2 INFO/DP>=15"
   3. Select columns to retain in final output, and save full and abridged output files
 
 
-#### Annotating Stars (https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/)
+#### Annotating Stars (https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/, https://www.nejm.org/doi/10.1056/NEJMsr1406261)
 ```
 1 = 'criteria_provided,_single_submitter','criteria_provided,_conflicting_interpretations'
 2 = 'criteria_provided,_multiple_submitters'
@@ -174,7 +174,7 @@ filter_criteria="INFO/AF>=0.2 INFO/DP>=15"
 0 = 'no_assertion_provided','no_assertion_criteria_provided','no_assertion_for_the_individual_variant'
 ```
 
-#### Re-calculation adjustments
+#### Re-calculation adjustments (https://onlinelibrary.wiley.com/doi/10.1002/humu.23626)
 ```
 if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
 if criterion is NF3|NF5|SS3|SS5|SS8|SS10|DEL4|DEL8|DEL6|DEL10|DUP3|IC2 then PVS1 = 0; PS = PS+1
