@@ -88,40 +88,37 @@ Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
 
 address_conflicting_interp <- function(clinvar_anno_vcf_df) { ## if conflicting intrep. take the call with most calls in CLNSIGCONF field
-  
+
   clinvar_nr <- clinvar_anno_vcf_df %>%
     dplyr::filter(Stars == "1NR" & !is.na(Stars))
-  
-  for (i in 1:nrow(clinvar_nr)){
-    
+
+  for (i in 1:nrow(clinvar_nr)) {
     conf_section <- str_match(clinvar_nr$INFO[i], "CLNSIGCONF\\=.+\\;CLNVC") ## part to parse and count calls
     call_names <- c("Pathogenic", "Likely_pathogenic", "Benign", "Likely_benign", "Uncertain_significance")
-    
+
     P <- (str_match(conf_section, "Pathogenic\\((\\d+)\\)")[, 2])
     LP <- (str_match(conf_section, "Likely_pathogenic\\((\\d+)\\)")[, 2])
     B <- (str_match(conf_section, "Benign\\((\\d+)\\)")[, 2])
     LB <- (str_match(conf_section, "Likely_benign\\((\\d+)\\)")[, 2])
     U <- (str_match(conf_section, "Uncertain_significance\\((\\d+)\\)")[, 2])
-    
+
     ## make vector out of possible calls to get max
     calls <- c(P, LP, B, LB, U)
-    
+
     if (length(which(calls == max(calls, na.rm = TRUE))) > 1) {
       next
     }
-    
+
     highest_ind <- which.max(calls)
     consensus_call <- call_names[highest_ind]
-    
+
     clinvar_nr[i, ]$final_call <- consensus_call
-    
   }
-  
+
   clinvar_anno_vcf_df <- clinvar_anno_vcf_df %>%
-    left_join(clinvar_nr[,c("vcf_id", "final_call")], by = "vcf_id", suffix = c(".orig", ".resolved")) %>%
+    left_join(clinvar_nr[, c("vcf_id", "final_call")], by = "vcf_id", suffix = c(".orig", ".resolved")) %>%
     dplyr::mutate(final_call = coalesce(final_call.resolved, final_call.orig)) %>%
     dplyr::select(-final_call.resolved, -final_call.orig) %>%
-    
     return(clinvar_anno_vcf_df)
 }
 
