@@ -222,12 +222,15 @@ vcf_to_run_intervar <- entries_for_intervar$vcf_id
 
 ## get multianno file to add  correct vcf_id in intervar table
 multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>%
-  dplyr::select(-End,
-                -contains(c("AF",
-                            "gnomad", "CLN",
-                            "score", "pred", "CADD", "Eigen",
-                            "100way", "30way", "GTEx"
-                ))) %>%
+  dplyr::select(
+    -End,
+    -contains(c(
+      "AF",
+      "gnomad", "CLN",
+      "score", "pred", "CADD", "Eigen",
+      "100way", "30way", "GTEx"
+    ))
+  ) %>%
   dplyr::filter(Otherinfo5 %in% clinvar_anno_vcf_df$POS) %>%
   mutate(
     vcf_id = str_remove_all(paste(Chr, "-", Otherinfo5, "-", Otherinfo7, "-", Otherinfo8), " "),
@@ -243,9 +246,11 @@ multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_na
 
 
 ## add intervar table
-clinvar_anno_intervar_vcf_df <-  vroom(input_intervar_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>%
-  dplyr::select(-`clinvar: Clinvar`,
-                -contains(c("gnomad", "CADD", "Freq", "SCORE", "score", "ORPHA", "MIM", "rmsk", "GERP", "phylo"))) %>%
+clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>%
+  dplyr::select(
+    -`clinvar: Clinvar`,
+    -contains(c("gnomad", "CADD", "Freq", "SCORE", "score", "ORPHA", "MIM", "rmsk", "GERP", "phylo"))
+  ) %>%
   dplyr::filter(Start %in% multianno_df$Start) %>%
   dplyr::mutate(var_id = paste0(`#Chr`, "-", Start, "-", Ref, "-", Alt)) %>%
   distinct(var_id, .keep_all = T) %>%
@@ -256,7 +261,7 @@ clinvar_anno_intervar_vcf_df <-  vroom(input_intervar_file, delim = "\t", trim_w
 
 
 ## combine the intervar and multianno tables by the appropriate vcf id
-clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df%>%
+clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
   left_join(multianno_df, by = "var_id") %>%
   filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id)
 
