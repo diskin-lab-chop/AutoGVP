@@ -80,8 +80,12 @@ done
 echo "Filtering VCF..."
 
 vcf_filtered_file=${out_file}."filtered.vcf"
-bash filter_vcf.sh $vcf_file $out_file $out_dir $filtering_criteria
+bash filter_vcf.sh $vcf_file $multianno_file $autopvs1_file $intervar_file $out_file $out_dir $filtering_criteria
+
 autogvp_input=$out_dir/$vcf_filtered_file
+multianno_input=$out_dir/${out_file}_multianno_filtered.txt
+autopvs1_input=$out_dir/${out_file}_autopvs1_filtered.tsv
+intervar_input=$out_dir/${out_file}_intervar_filtered.txt
 
 # Run AutoGVP 
 echo "Running AutoGVP..."
@@ -91,9 +95,9 @@ if [[ "$workflow" = "cavatica" ]];then
 
   # Run AutoGVP from Cavatica workflow
   Rscript 01-annotate_variants_CAVATICA_input.R --vcf $autogvp_input \
-  --multianno $multianno_file \
-  --intervar $intervar_file \
-  --autopvs1 $autopvs1_file \
+  --multianno $multianno_input \
+  --intervar $intervar_input \
+  --autopvs1 $autopvs1_input \
   --output $out_file \
   --variant_summary $variant_summary_file
   
@@ -104,9 +108,9 @@ if [[ "$workflow" = "cavatica" ]];then
   # Run AutoGVP from custom workflow
   Rscript 01-annotate_variants_custom_input.R --vcf $autogvp_input \
   --clinvar $clinvar_file \
-  --multianno $multianno_file \
-  --intervar $intervar_file \
-  --autopvs1 $autopvs1_file \
+  --multianno $multianno_input \
+  --intervar $intervar_input \
+  --autopvs1 $autopvs1_input \
   --output $out_file \
   --variant_summary $variant_summary_file \
   
@@ -130,4 +134,4 @@ echo "Filtering VEP annotations and creating final output..."
 Rscript 04-filter_gene_annotations.R --vcf $vcf_parsed_file --autogvp $autogvp_output --output $out_file
 
 # Remove intermediate files
-rm $autogvp_input $vcf_parsed_file $out_dir/$autogvp_output $out_dir/$out_file.filtered_csq_subfields.tsv
+rm $autogvp_input $vcf_parsed_file $out_dir/$autogvp_output $out_dir/$out_file.filtered_csq_subfields.tsv $out_dir/${out_file}_multianno_filtered.txt $out_dir/${out_file}_autopvs1_filtered.tsv $out_dir/${out_file}_intervar_filtered.txt
