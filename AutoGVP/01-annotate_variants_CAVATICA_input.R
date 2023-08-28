@@ -198,7 +198,7 @@ vcf_to_run_intervar <- entries_for_intervar$vcf_id
 ## get multianno file to add  correct vcf_id in intervar table
 multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>%
   dplyr::select(
-    -Start, -End, -Alt, -Ref,
+    -End,
     -contains(c(
       "AF",
       "gnomad", "CLN",
@@ -206,21 +206,19 @@ multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_na
       "100way", "30way", "GTEx"
     ))
   ) %>%
+  dplyr::filter(Otherinfo5 %in% clinvar_anno_vcf_df$START) %>%
   mutate(
     vcf_id = str_remove_all(paste(Chr, "-", Otherinfo5, "-", Otherinfo7, "-", Otherinfo8), " "),
     vcf_id = str_replace(vcf_id, "chr", ""),
-    #  Chr = as.character(Chr)
+    var_id = str_remove_all(paste(Chr, "-", Start, "-", Ref, "-", Alt), " "),
+    var_id = str_replace(var_id, "chr", "")
   ) %>%
   # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
   dplyr::select(
-    -Chr,
-    -contains(c("Otherinfo"))
+    -Chr, -Ref, -Alt,
+    -contains(("Otherinfo"))
   )
 
-if (sum(duplicated(multianno_df$vcf_id) != 0)) {
-  multianno_df <- multianno_df %>%
-    distinct(vcf_id, .keep_all = T)
-}
 
 ## add intervar table
 clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>%
@@ -228,22 +226,19 @@ clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws
     -`clinvar: Clinvar`,
     -contains(c("gnomad", "CADD", "Freq", "SCORE", "score", "ORPHA", "MIM", "rmsk", "GERP", "phylo"))
   ) %>%
-  distinct(`#Chr`, Start, Ref, Alt, .keep_all = T) %>%
+  dplyr::filter(Start %in% multianno_df$Start) %>%
+  dplyr::mutate(var_id = paste0(`#Chr`, "-", Start, "-", Ref, "-", Alt)) %>%
+  distinct(var_id, .keep_all = T) %>%
   # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
   dplyr::select(
     -`#Chr`, -Start, -End, -Alt, -Ref
   )
 
 
-# exit if the total number of variants differ in these two tables to ensure we annotate with the correct vcf so we can match back to clinVar and other tables
-if (tally(multianno_df) != tally(clinvar_anno_intervar_vcf_df)) {
-  stop("intervar and multianno files of diff lengths")
-}
-
 ## combine the intervar and multianno tables by the appropriate vcf id
-clinvar_anno_intervar_vcf_df <-
-  dplyr::mutate(multianno_df, clinvar_anno_intervar_vcf_df) %>%
-  dplyr::filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id)
+clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
+  left_join(multianno_df, by = "var_id") %>%
+  filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id)
 
 ## populate consensus call variants with invervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df, entries_for_cc_in_submission, by = "vcf_id") %>%
@@ -277,7 +272,7 @@ clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
 autopvs1_results <- vroom(input_autopvs1_file, col_names = TRUE) %>%
   dplyr::select(vcf_id, criterion) %>%
   mutate(
-    vcf_id = str_remove_all(paste(vcf_id), " "),
+    vcf_id = str_remove_all(vcf_id, " "),
     vcf_id = str_replace_all(vcf_id, "chr", "")
   ) %>%
   dplyr::filter(vcf_id %in% clinvar_anno_intervar_vcf_df$vcf_id)
