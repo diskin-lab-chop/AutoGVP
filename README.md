@@ -237,7 +237,7 @@ chr1 | 1390349 | C | T | rs769726291 | CCNL2 | missense_variant | chr1:g.1390349
 See [here](https://github.com/diskin-lab-chop/AutoGVP/blob/main/AutoGVP/input/output_colnames.tsv) for list of columns included in full output
 
 
-## Code Author
+## Code Authors
 
 Ammar S. Naqvi ([@naqvia](https://github.com/naqvia)) and Ryan J. Corbett ([@rjcorb](https://github.com/rjcorb))
 
