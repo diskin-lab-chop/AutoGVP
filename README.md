@@ -153,7 +153,7 @@ filter_criteria="INFO/AF>=0.2 INFO/DP>=15"
   5. Load and merge ANNOVAR multianno, InterVar, and AutoPVS1 files
   6. Create columns for `evidencePVS1`, `evidencePS`, `evidencePM`, `evidencePP`, `evidenceBP`, `evidencePM` and `evidenceBA1` (variables that may need re-adjusting) by parsing `InterVar: InterVar and Evidence` column
   7. Adjust evidence columns based on AutoPVS1 `criterion` column
-  8. Report Intervar final call (if unadjusted) or final call based on recalculated evidence variables (if adjusted)
+  8. Report InterVar final call (if unadjusted) or final call based on re-calculated evidence variables (if adjusted)
   9. Save output 
 
 * __Parse VCF file__. `parse_vcf.sh` converts the vcf file to a tsv file with tab-separated INFO fields column. 
