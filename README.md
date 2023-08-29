@@ -160,7 +160,8 @@ filter_criteria="INFO/AF>=0.2 INFO/DP>=15"
 
 * __Resolve gene annotations and produce final output files__ (`04-filter_gene_annoations.R`)
 
-  1. Read in parsed vcf file, and select single VEP annotation based on `PICK` column (`PICK == 1`). See R script for criteria used to select pick transcripts. 
+  1. Read in parsed VCF file, and select single VEP annotation based on `PICK` column (`PICK == 1`). 
+  See R script for criteria used to select pick transcripts. 
   2. Merge gene annotation with AutoGVP results
   3. Select columns to retain in final output, and save full and abridged output files
 
