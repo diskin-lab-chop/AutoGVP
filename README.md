@@ -150,7 +150,7 @@ filter_criteria="INFO/AF>=0.2 INFO/DP>=15"
   2. Assign ClinVar stars based on `CLNREVSTAT`*
   3. For ClinVar variants, report `CLINSIG` as final call; resolve ambiguous variants (`criteria_provided,_conflicting_interpretations`) by checking against ClinVar variant submission file
   4. Identify variants that need further Intervar annotation and possible re-adjustment (variants with 0 stars or not in ClinVar database)
-  5. Load and merge multianno, interVar, and autopvs1 files
+  5. Load and merge ANNOVAR multianno, InterVar, and AutoPVS1 files
   6. Create columns for `evidencePVS1`, `evidencePS`, `evidencePM`, `evidencePP`, `evidenceBP`, `evidencePM` and `evidenceBA1` (variables that may need re-adjusting) by parsing `InterVar: InterVar and Evidence` column
   7. Adjust evidence columns based on autopvs1 `criterion` column
   8. Report Intervar final call (if unadjusted) or final call based on recalculated evidence variables (if adjusted)
