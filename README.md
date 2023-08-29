@@ -152,7 +152,7 @@ filter_criteria="INFO/AF>=0.2 INFO/DP>=15"
   4. Identify variants that need further Intervar annotation and possible re-adjustment (variants with 0 stars or not in ClinVar database)
   5. Load and merge ANNOVAR multianno, InterVar, and AutoPVS1 files
   6. Create columns for `evidencePVS1`, `evidencePS`, `evidencePM`, `evidencePP`, `evidenceBP`, `evidencePM` and `evidenceBA1` (variables that may need re-adjusting) by parsing `InterVar: InterVar and Evidence` column
-  7. Adjust evidence columns based on autopvs1 `criterion` column
+  7. Adjust evidence columns based on AutoPVS1 `criterion` column
   8. Report Intervar final call (if unadjusted) or final call based on recalculated evidence variables (if adjusted)
   9. Save output 
 
