@@ -38,8 +38,8 @@ cd /home/rstudio/AutoGVP
 1. Run the [Kids First Germline Annotation Workflow](https://github.com/kids-first/kf-germline-workflow/blob/v0.4.4/docs/GERMLINE_SNV_ANNOT_README.md) first.
 This workflow currently annotates variants with ClinVar (2022-05-07).
 2. Run the [Pathogenicity Preprocessing Workflow](https://github.com/d3b-center/D3b-Pathogenicity-Preprocessing), which performs ANNOVAR with InterVar and AutoPVS1 annotations.
-3. Download required db files
-4. Run `select-clinVar-submissions.R` within `AutoGVP/`
+3. Download required db files, including variant submissions files (`variant_summary.txt` and `submission_summary.txt`) using download_db_files.sh (see below).
+4. Run `select-clinVar-submissions.R` within `AutoGVP/` to consolidate ClinVar submission calls prior to running AutoGVP wrapper script. This step can be ran once and the `ClinVar-selected-submissions.tsv` file could be used for subsequent runs if clinVar versions remain the same. 
 5. Run AutoGVP wrapper script using `--workflow="cavatica"`
 
 AutoGVP Requirements (recommended to place all in the `input/` folder):
@@ -52,7 +52,7 @@ AutoGVP Requirements (recommended to place all in the `input/` folder):
 
 Example run:
 
-Download ClinVar files: 
+Download ClinVar files:
 
 ```bash
 bash download_db_files.sh
@@ -87,7 +87,7 @@ Example command, with results used to replace `PVS1.level` file.
 python3 D3b-DGD-Collaboration/scripts/update_gene_symbols.py -g hgnc_complete_set_2021-06-01.txt -f PVS1.level -z GENE level -u GENE -o results --explode_records 2> old_new.log
 ```
 
-2. Run [ANNOVAR](https://annovar.openbioinformatics.org/en/latest/) with the following options (to create the VCF input for AutoGVP):
+2. Run [ANNOVAR](https://annovar.openbioinformatics.org/en/latest/) with the following options in order to create ANNOVAR annotated file using VCF input:
 ```perl
 perl table_annovar.pl input/test_VEP.vcf hg38 --buildver hg38 --out test_VEP --remove --protocol gnomad211_exome,gnomad211_genome --operation f,f --vcfinput
 ```
@@ -97,8 +97,8 @@ python InterVar.py -b hg38 -i input/test_VEP.vcf --input_type=VCF -o test_VEP
 ```
 4. Run [AutoPVS1 v2.0](https://github.com/JiguangPeng/autopvs1/releases/tag/v2.0).
 5. Optional: provide a ClinVar VCF file. If not supplied by the user, the most recent ClinVar file will be downloaded with `download_db_files.sh` and used in AutoGVP.
-6. Download required db files
-7. Run `select-clinVar-submissions.R` within `AutoGVP/`
+6. Download required db files, including variant submissions (`variant_summary.txt` and `submission_summary.txt`) and clinVar files using download_db_files.sh (see below).
+7. Run `select-clinVar-submissions.R` within `AutoGVP/` to consolidate ClinVar submission calls prior to running AutoGVP wrapper script. This step can be ran once and the `ClinVar-selected-submissions.tsv` file could be used for subsequent runs if clinVar versions remain the same.
 8. Run AutoGVP wrapper script using `--workflow="custom"`
 
 AutoGVP Requirements (recommended to place all in the `input/` folder):
@@ -111,7 +111,7 @@ AutoGVP Requirements (recommended to place all in the `input/` folder):
 
 Example run:
 
-Download ClinVar files: 
+Download ClinVar files:
 
 ```bash
 bash download_db_files.sh
@@ -138,7 +138,7 @@ bash run_autogvp.sh --workflow="custom" \
 
 ### Step by step workflow
 
-* __Filter VCF file__. By default, AutoGVP filters based on `FILTER` column (`PASS` or `.`). Other criteria can be specified by `filter_criteria` argument as follows: 
+* __Filter VCF file__. By default, AutoGVP filters based on `FILTER` column (`PASS` or `.`). Other criteria can be specified by `filter_criteria` argument as follows:
 
 ```
 filter_criteria="INFO/AF>=0.2 INFO/DP>=15"
@@ -154,14 +154,14 @@ filter_criteria="INFO/AF>=0.2 INFO/DP>=15"
   6. Create columns for `evidencePVS1`, `evidencePS`, `evidencePM`, `evidencePP`, `evidenceBP`, `evidencePM` and `evidenceBA1` (variables that may need re-adjusting) by parsing `InterVar: InterVar and Evidence` column
   7. Adjust evidence columns based on AutoPVS1 `criterion` column
   8. Report InterVar final call (if unadjusted) or final call based on re-calculated evidence variables (if adjusted)
-  9. Save output 
+  9. Save output
 
-* __Parse VCF file__. `parse_vcf.sh` converts the VCF file to a TSV file with INFO fields as tab-separated columns. 
+* __Parse VCF file__. `parse_vcf.sh` converts the VCF file to a TSV file with INFO fields as tab-separated columns.
 
 * __Resolve gene annotations and produce final output files__ (`04-filter_gene_annoations.R`)
 
-  1. Read in parsed VCF file, and select single VEP annotation based on `PICK` column (`PICK == 1`). 
-  See R script for criteria used to select pick transcripts. 
+  1. Read in parsed VCF file, and select single VEP annotation based on `PICK` column (`PICK == 1`).
+  See R script for criteria used to select pick transcripts.
   2. Merge gene annotation with AutoGVP results
   3. Select columns to retain in final output, and save full and abridged output files
 
@@ -223,16 +223,16 @@ Uncertain  significance
 
 ### Output
 
-AutoGVP produces an abridged output file with minimal information needed to interpret variant pathogenicity, as well as a full output with >100 variant annotation columns. 
+AutoGVP produces an abridged output file with minimal information needed to interpret variant pathogenicity, as well as a full output with >100 variant annotation columns.
 
-#### Abridged output example: 
+#### Abridged output example:
 
 chr | start | ref | alt | rs_id | gene_symbol_vep | variant_classification_vep | HGVSg | HGVSc | HGVSp | autogvp_call | autogvp_call_reason | clinvar_stars | clinvar_clinsig | intervar_evidence
 -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | --
 chr1 | 1332490 | C | T | rs201607183 | TAS1R3 | missense_variant | chr1:g.1332490C>T | c.959C>T | p.Thr320Met | Uncertain_significance | ClinVar | 1 | Uncertain_significance | InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[1, 0, 0, 0, 0, 0, 0] PP=[0, 0, 1, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]
 chr1 | 1390349 | C | T | rs769726291 | CCNL2 | missense_variant | chr1:g.1390349C>T | c.887G>A | p.Gly296Asp | Uncertain_significance | InterVar | NA | NA | InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[1, 1, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]
 
-*NOTE: gnomAD v.3.1.1 non-cancer AF popmax values (`gnomad_3_1_1_AF_non_cancer`) will also be included in abridged output when provided. 
+*NOTE: gnomAD v.3.1.1 non-cancer AF popmax values (`gnomad_3_1_1_AF_non_cancer`) will also be included in abridged output when provided.
 
 See [here](https://github.com/diskin-lab-chop/AutoGVP/blob/main/AutoGVP/input/output_colnames.tsv) for list of columns included in full output
 
