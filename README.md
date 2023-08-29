@@ -156,7 +156,7 @@ filter_criteria="INFO/AF>=0.2 INFO/DP>=15"
   8. Report InterVar final call (if unadjusted) or final call based on re-calculated evidence variables (if adjusted)
   9. Save output 
 
-* __Parse VCF file__. `parse_vcf.sh` converts the vcf file to a tsv file with tab-separated INFO fields column. 
+* __Parse VCF file__. `parse_vcf.sh` converts the VCF file to a TSV file with INFO fields as tab-separated columns. 
 
 * __Resolve gene annotations and produce final output files__ (`04-filter_gene_annoations.R`)
 
