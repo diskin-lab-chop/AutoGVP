@@ -262,6 +262,7 @@ clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws
 
 ## combine the intervar and multianno tables by the appropriate vcf id
 clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
+  dplyr::select(any_of(c("Ref.Gene", "InterVar: InterVar and Evidence", "var_id"))) %>%
   left_join(multianno_df, by = "var_id") %>%
   filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id)
 
