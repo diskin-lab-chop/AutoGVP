@@ -270,7 +270,7 @@ clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
 
 ## autopvs1 results
 autopvs1_results <- vroom(input_autopvs1_file, col_names = TRUE) %>%
-  dplyr::select(vcf_id, criterion) %>%
+  dplyr::select(vcf_id, Feature, criterion) %>%
   mutate(
     vcf_id = str_remove_all(vcf_id, " "),
     vcf_id = str_replace_all(vcf_id, "chr", "")
@@ -398,8 +398,9 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- clinvar_anno_intervar_vcf_df %>%
-  full_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|criterion|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
-  left_join(variant_summary_df, by = "vcf_id")
+  full_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
+  left_join(variant_summary_df, by = "vcf_id") %>%
+  left_join(autopvs1_results, by = "vcf_id")
 
 
 master_tab <- master_tab %>%
