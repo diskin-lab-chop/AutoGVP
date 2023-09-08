@@ -237,21 +237,16 @@ clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws
 
 ## combine the intervar and multianno tables by the appropriate vcf id
 clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
+  dplyr::select(any_of(c("Ref.Gene", "InterVar: InterVar and Evidence", "var_id"))) %>%
   left_join(multianno_df, by = "var_id") %>%
   filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id)
 
 ## populate consensus call variants with invervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df, entries_for_cc_in_submission, by = "vcf_id") %>%
-  # dplyr::select(any_of(c(
-  #   "vcf_id", "InterVar: InterVar and Evidence",
-  #   "Gene.refGene", "Ref.Gene", "Func.refGene", "ExonicFunc.refGene", "AAChange.refGene",
-  #   "CLNSIG", "CLNREVSTAT"
-  # ))) %>%
   dplyr::rename("Intervar_evidence" = `InterVar: InterVar and Evidence`)
 
 
 clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
-  # anti_join(entries_for_cc_in_submission, by = "vcf_id") %>%
   ## add column for individual scores that will be re-calculated if we need to adjust using autoPVS1 result
 
   ## note: ignore PP5 score and BP6 score
