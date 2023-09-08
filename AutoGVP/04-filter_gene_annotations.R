@@ -100,48 +100,12 @@ vcf_separated <- vcf %>%
   # separate `CSQ` fields into unique columns, named in `csq_cols`
   separate_wider_delim(CSQ, "|", names = csq_cols) %>%
   # Select columns to retain
-  dplyr::select(any_of(columns_to_retain))
-
-
-# Retain one row per variant by prioritizing gene annotation with value "1" in `PICK` column. In KF workflow, criteria for selection include:
-# 1) Canonical transcript status
-# 2) lowest transcript level support (TSL) category
-# 3) Transcript type (protein-coding preferred)
-# 4) Highest impact consequence
-# 5) CCDC status
-# 6) Longest transcript length
-
-# Retain only transcripts where PICK == 1
-vcf_pick <- vcf_separated %>%
-  dplyr::filter(PICK == "1")
-
-# In some instances, entrezGene annotation is chosen when Ensembl has a comparable annotation. We can manually replace entrezGene with ensembl annotation in these cases
-# Extract ensembl annotations:
-vcf_pick_ensembl <- vcf_pick %>%
-  dplyr::filter(grepl("ENS", Feature))
-
-# Identify pick annotations for which a canonical ensembl annotation is also available:
-vcf_pick_other <- vcf_pick %>%
-  dplyr::filter(!grepl("ENS", Feature)) %>%
-  dplyr::mutate(vcf_id_gene_csq = glue::glue("{vcf_id}-{SYMBOL}-{Consequence}"))
-
-# Identify pick annotations for which an ensembl annotation to the same gene and consequence is available:
-vcf_pick_other_ensembl <- vcf_separated %>%
-  dplyr::filter(grepl("ENS", Feature)) %>%
-  dplyr::filter(glue::glue("{vcf_id}-{SYMBOL}-{Consequence}") %in% vcf_pick_other$vcf_id_gene_csq) %>%
-  group_by(vcf_id) %>%
-  arrange(CANONICAL) %>%
-  dplyr::slice_tail(n = 1)
-
-# Bind df rows to create `vcf_final` df:
-vcf_final <- vcf_pick_other %>%
-  dplyr::select(-vcf_id_gene_csq) %>%
-  dplyr::filter(!vcf_id %in% vcf_pick_other_ensembl$vcf_id) %>%
-  bind_rows(vcf_pick_other_ensembl, vcf_pick_ensembl) %>%
-  # Add `csq` column with all annotation info
-  dplyr::left_join(vcf[, c("vcf_id", "CSQ")], by = "vcf_id") %>%
-  arrange(CHROM, POS)
-
+  dplyr::select(any_of(columns_to_retain)) %>%
+  dplyr::select(-any_of(c(
+    "CHROM", "POS", "ID", "REF",
+    "ALT", "FILTER", "QUAL",
+    "Interpro_domain"
+  )))
 
 # Read in autogvp output
 autogvp <- read_tsv(input_autogvp_file,
@@ -156,23 +120,16 @@ if ("Sample" %in% names(autogvp)) {
 
 # Merge `autogvp` and `vcf_final`
 merged_df <- autogvp %>%
-  # rm redundant columns from autogvp
-  dplyr::select(-any_of(c(
-    "CHROM", "POS", "ID", "REF",
-    "ALT", "FILTER", "QUAL",
-    "Interpro_domain"
-  ))) %>%
   # join dfs
-  dplyr::left_join(vcf_final, by = "vcf_id") %>%
+  dplyr::left_join(vcf_separated, by = c("vcf_id", "Feature")) %>%
+  dplyr::left_join(vcf[, c("vcf_id", "CSQ")], by = "vcf_id") %>%
   # rm unecessary columns
   dplyr::select(-any_of(c("var_id", "Otherinfo"))) %>%
   # add clinVar link
   dplyr::mutate(ClinVar_link = case_when(
     !is.na(VariationID) ~ paste0("https://www.ncbi.nlm.nih.gov/clinvar/variation/", VariationID, "/"),
     TRUE ~ NA_character_
-  )) %>%
-  # coordinate-sort
-  arrange(CHROM, POS)
+  ))
 
 # Change `gnomad_3_1_1_AF_non_cancer` to numeric, when present
 if ("gnomad_3_1_1_AF_non_cancer" %in% names(merged_df)) {
@@ -241,9 +198,11 @@ abridged_cols <- colnames %>%
 # Generate abridged output
 abridged_df <- merged_df %>%
   dplyr::select(any_of(abridged_cols)) %>%
+  dplyr::arrange(chr, start) %>%
   write_tsv(file.path(results_dir, abridged_out_file))
 
 # Generate comprehensive output
 full_df <- merged_df %>%
   dplyr::relocate(all_of(abridged_cols)) %>%
+  dplyr::arrange(chr, start) %>%
   write_tsv(file.path(results_dir, full_out_file))
