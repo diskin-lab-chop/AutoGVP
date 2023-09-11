@@ -179,7 +179,7 @@ entries_for_cc <- filter(clinvar_anno_vcf_df, Stars == "1NR", final_call != "Ben
 
 entries_for_cc_in_submission <- inner_join(variant_summary_df, entries_for_cc, by = "vcf_id") %>%
   dplyr::mutate(final_call = ClinicalSignificance) %>%
-  dplyr::select(vcf_id, ClinicalSignificance, final_call)
+  dplyr::select(vcf_id, ClinicalSignificance, final_call, Stars)
 
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 ## modified: any cases that do NOT have the B, LB, P, LP, VUS call must also go to intervar
@@ -241,7 +241,7 @@ clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
   left_join(multianno_df, by = "var_id") %>%
   filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id)
 
-## populate consensus call variants with invervar info
+## populate consensus call variants with intervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df, entries_for_cc_in_submission, by = "vcf_id") %>%
   dplyr::rename("Intervar_evidence" = `InterVar: InterVar and Evidence`)
 
@@ -429,10 +429,15 @@ master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id")
   full_join(entries_for_cc_in_submission_w_intervar[c("vcf_id", "Intervar_evidence")], by = "vcf_id") %>%
   dplyr::mutate(
     Intervar_evidence = coalesce(Intervar_evidence.y, Intervar_evidence.x),
-    ClinVar_ClinicalSignificance = coalesce(ClinicalSignificance.x, ClinicalSignificance.y)
+    ClinVar_ClinicalSignificance = coalesce(ClinicalSignificance.x, ClinicalSignificance.y),
+    Stars = case_when(
+      Stars.x == "1NR" ~ "1",
+      TRUE ~ Stars.x
+    )
   ) %>%
   dplyr::select(
     -final_call.x, -final_call.y,
+    -Stars.x, -Stars.y,
     -Intervar_evidence.x, -Intervar_evidence.y,
     -INFO, -ClinicalSignificance.x, -ClinicalSignificance.y
   )
