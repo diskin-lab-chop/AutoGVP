@@ -433,7 +433,8 @@ master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id")
     Stars = case_when(
       Stars.x == "1NR" ~ "1",
       TRUE ~ Stars.x
-    )) %>%
+    )
+  ) %>%
   dplyr::select(
     -final_call.x, -final_call.y,
     -Stars.x, -Stars.y,
