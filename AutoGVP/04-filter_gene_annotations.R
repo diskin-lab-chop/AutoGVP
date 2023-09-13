@@ -66,7 +66,8 @@ csq_fields <- file.path(results_dir, glue::glue("{output_name}.filtered_csq_subf
 
 # Read in VEP vcf file
 vcf <- read_tsv(input_vcf_file,
-  show_col_types = FALSE
+  show_col_types = FALSE,
+  guess_max = 10000
 )
 
 # Remove "[#]" characters from column headers, if present
@@ -109,7 +110,8 @@ vcf_separated <- vcf %>%
 
 # Read in autogvp output
 autogvp <- read_tsv(input_autogvp_file,
-  show_col_types = FALSE
+  show_col_types = FALSE,
+  guess_max = 10000
 )
 
 # Parse Sample column, if present
