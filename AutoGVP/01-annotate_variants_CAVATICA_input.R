@@ -401,13 +401,13 @@ master_tab <- clinvar_anno_intervar_vcf_df %>%
 master_tab <- master_tab %>%
   dplyr::mutate(
     intervar_adjusted = coalesce(intervar_adjusted, "No"),
-    evidencePVS1 = coalesce(as.double(evidencePVS1.x, evidencePVS1.y)),
-    evidenceBA1 = coalesce(as.double(evidenceBA1.x, evidenceBA1.y)),
-    evidencePS = coalesce(as.double(evidencePS.x, evidencePS.y)),
-    evidencePM = coalesce(as.double(evidencePM.x, evidencePM.y)),
-    evidencePP = coalesce(as.double(evidencePP.x, evidencePP.y)),
-    evidenceBS = coalesce(as.double(evidenceBS.x, evidenceBS.y)),
-    evidenceBP = coalesce(as.double(evidenceBP.x, evidenceBP.y)),
+    evidencePVS1 = coalesce(evidencePVS1.y, as.double(evidencePVS1.x)),
+    evidenceBA1 = coalesce(as.double(evidenceBA1.y), as.double(evidenceBA1.x)),
+    evidencePS = coalesce(as.double(evidencePS.y), as.double(evidencePS.x)),
+    evidencePM = coalesce(as.double(evidencePM.y), as.double(evidencePM.x)),
+    evidencePP = coalesce(as.double(evidencePP.y), as.double(evidencePP.x)),
+    evidenceBS = coalesce(as.double(evidenceBS.y), as.double(evidenceBS.x)),
+    evidenceBP = coalesce(as.double(evidenceBP.y), as.double(evidenceBP.x)),
     Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`),
     # replace second final call with the second one because we did not use interVar results
     final_call.x = if_else(Stars == "0" | is.na(Stars), final_call.y, final_call.x)

@@ -22,6 +22,7 @@ GeneDetail.refGene	cDNA_change_annovar	F
 ExonicFunc.refGene	variant_classification_annovar	F
 AAChange.refGene	protein_change_annovar	F
 Interpro_domain	interpro_domain	F
+criterion	criterion_autopvs1	F
 evidencePVS1	PVS1_autogvp	F
 evidenceBA1	BA1_autogvp	F
 evidencePS	PS_autogvp	F
