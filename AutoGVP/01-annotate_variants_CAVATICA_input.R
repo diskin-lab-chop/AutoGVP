@@ -60,8 +60,8 @@ option_list <- list(
     help = "output name"
   ),
   make_option(c("--outdir"),
-              type = "character", default = "../results",
-              help = "output directory"
+    type = "character", default = "../results",
+    help = "output directory"
   )
 )
 
