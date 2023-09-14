@@ -30,12 +30,12 @@ suppressPackageStartupMessages({
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "AutoGVP")
 input_dir <- file.path(analysis_dir, "input")
-results_dir <- file.path(root_dir, "results")
+#results_dir <- file.path(root_dir, "results")
 
-# create results directory if it does not exist
-if (!dir.exists(results_dir)) {
-  dir.create(results_dir)
-}
+# # create results directory if it does not exist
+# if (!dir.exists(results_dir)) {
+#   dir.create(results_dir)
+# }
 
 # parse parameters
 option_list <- list(
@@ -70,6 +70,10 @@ option_list <- list(
   make_option(c("--output"),
     type = "character", default = "out",
     help = "output name"
+  ),
+  make_option(c("--outdir"),
+              type = "character", default = "../results",
+              help = "output directory"
   )
 )
 
@@ -85,7 +89,12 @@ input_variant_summary <- opt$variant_summary
 input_multianno_file <- opt$multianno
 summary_level <- opt$summary_level
 output_name <- opt$output
+results_dir <- opt$outdir
 
+# create results directory if it does not exist
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
 
 ## output files
 output_tab_abr_file <- paste0(output_name, ".custom_input.annotations_report.abridged.tsv")
