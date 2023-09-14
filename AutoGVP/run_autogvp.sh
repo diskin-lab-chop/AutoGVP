@@ -80,7 +80,7 @@ done
 echo "Filtering VCF..."
 
 vcf_filtered_file=${out_file}."filtered.vcf"
-bash filter_vcf.sh $vcf_file $multianno_file $autopvs1_file $intervar_file $out_file $out_dir $filtering_criteria
+bash 01-filter_vcf.sh $vcf_file $multianno_file $autopvs1_file $intervar_file $out_file $out_dir $filtering_criteria
 
 autogvp_input=$out_dir/$vcf_filtered_file
 multianno_input=$out_dir/${out_file}_multianno_filtered.txt
@@ -94,7 +94,7 @@ echo "Running AutoGVP..."
 if [[ "$workflow" = "cavatica" ]];then
 
   # Run AutoGVP from Cavatica workflow
-  Rscript 01-annotate_variants_CAVATICA_input.R --vcf $autogvp_input \
+  Rscript 02-annotate_variants_CAVATICA_input.R --vcf $autogvp_input \
   --multianno $multianno_input \
   --intervar $intervar_input \
   --autopvs1 $autopvs1_input \
@@ -107,7 +107,7 @@ if [[ "$workflow" = "cavatica" ]];then
   else
 
   # Run AutoGVP from custom workflow
-  Rscript 01-annotate_variants_custom_input.R --vcf $autogvp_input \
+  Rscript 02-annotate_variants_custom_input.R --vcf $autogvp_input \
   --clinvar $clinvar_file \
   --multianno $multianno_input \
   --intervar $intervar_input \
@@ -124,7 +124,7 @@ fi
 # Parse vcf file so that info field values are in distinct columns
 echo "Parsing VCF..."
 
-bash parse_vcf.sh $autogvp_input
+bash 03-parse_vcf.sh $autogvp_input
 
 # Define parsed vcf and autogvp output file variables
 vcf_parsed_file=${autogvp_input%.vcf*}."parsed.tsv"

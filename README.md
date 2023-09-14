@@ -138,13 +138,13 @@ bash run_autogvp.sh --workflow="custom" \
 
 ### Step by step workflow
 
-* __Filter VCF file__. By default, AutoGVP filters based on `FILTER` column (`PASS` or `.`). Other criteria can be specified by `filter_criteria` argument as follows:
+* __Filter VCF file__. By default, `01-filter_vcf.sh` filters based on `FILTER` column (`PASS` or `.`). Other criteria can be specified by `filter_criteria` argument as follows:
 
 ```
 filter_criteria="INFO/AF>=0.2 INFO/DP>=15"
 ```
 
-* __Run Pathogenicity Assessment__. The R scripts `01-annotate_variants_CAVATICA_input.R` and `01-annotate_variants_custom_input.R` perform the following steps:
+* __Run Pathogenicity Assessment__. The R scripts `02-annotate_variants_CAVATICA_input.R` and `02-annotate_variants_custom_input.R` perform the following steps:
 
   1. Read in ClinVar-annotated VCF file
   2. Assign ClinVar stars based on `CLNREVSTAT`*
@@ -156,7 +156,7 @@ filter_criteria="INFO/AF>=0.2 INFO/DP>=15"
   8. Report InterVar final call (if unadjusted) or final call based on re-calculated evidence variables (if adjusted)
   9. Save output
 
-* __Parse VCF file__. `parse_vcf.sh` converts the VCF file to a TSV file with INFO fields as tab-separated columns.
+* __Parse VCF file__. `03-parse_vcf.sh` converts the VCF file to a TSV file with INFO fields as tab-separated columns.
 
 * __Resolve gene annotations and produce final output files__ (`04-filter_gene_annoations.R`)
 
