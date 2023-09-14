@@ -184,8 +184,9 @@ merged_df <- merged_df %>%
   select(-any_of(c("ID", "avsnp147", "Existing_variation")))
 
 # read in output file column names tsv
-colnames <- read_tsv(file.path(input_dir, "output_colnames.tsv"), 
-                     show_col_types = FALSE)
+colnames <- read_tsv(file.path(input_dir, "output_colnames.tsv"),
+  show_col_types = FALSE
+)
 
 # Subset and reorder output columns based on inclusion and order in `colnames`
 merged_df <- merged_df %>%
