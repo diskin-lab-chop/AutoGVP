@@ -6,7 +6,7 @@ vcf_parsed_file=${vcf_file%.vcf*}."parsed.tsv"
 csq_fields=${vcf_file%.vcf*}_"csq_subfields.tsv"
 
 # Extract list of subfields in INFO column; if multiple, these will be separated by a semicolon
-egrep -v "^#" $vcf_file | awk '{ n=split($8, tmp, /=[^;]*;/); for(i=1; i<n; i++) print tmp[i] }' | sort -u > ${vcf_file%.vcf*}_subfields_all.tsv
+egrep -v "^#" $vcf_file | awk '{ n=split($8, tmp, /=[^;]*;*|;/); for(i=1; i<n; i++) print tmp[i] }' | sort -u > ${vcf_file%.vcf*}_subfields_all.tsv
 
 # If only one INFO subfield, it will precede "="
 egrep -v "^#" $vcf_file | awk '{print $8}' | sed 's/=.*//' | sort -u > ${vcf_file%.vcf*}_subfields_first.tsv
