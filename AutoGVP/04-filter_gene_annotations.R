@@ -27,12 +27,7 @@ suppressPackageStartupMessages({
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "AutoGVP")
 input_dir <- file.path(analysis_dir, "input")
-results_dir <- file.path(root_dir, "results")
 
-# create results directory if it does not exist
-if (!dir.exists(results_dir)) {
-  dir.create(results_dir)
-}
 
 # parse parameters
 option_list <- list(
@@ -47,6 +42,10 @@ option_list <- list(
   make_option(c("--output"),
     type = "character", default = "out",
     help = "output name"
+  ),
+  make_option(c("--outdir"),
+    type = "character", default = "../results",
+    help = "output directory"
   )
 )
 
@@ -56,6 +55,12 @@ opt <- parse_args(OptionParser(option_list = option_list))
 input_vcf_file <- opt$vcf
 input_autogvp_file <- opt$autogvp
 output_name <- opt$output
+results_dir <- opt$outdir
+
+# create results directory if it does not exist
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
 
 # Define output file variables
 abridged_out_file <- glue::glue("{output_name}-autogvp-annotated-abridged.tsv")
