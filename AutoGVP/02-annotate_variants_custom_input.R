@@ -191,7 +191,7 @@ clinvar_anti_join_vcf_df <- anti_join(vcf_df, clinvar_anno_vcf_df, by = "vcf_id"
   dplyr::rename(rs_id = ID)
 
 ## get latest calls from variant and submission summary files
-variant_summary_df <- vroom(input_variant_summary) %>%
+variant_summary_df <- vroom(input_variant_summary, show_col_types = FALSE) %>%
   filter(vcf_id %in% vcf_df$vcf_id) %>%
   dplyr::select(-GeneSymbol)
 
@@ -291,7 +291,7 @@ clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
   left_join(clinvar_anno_vcf_df[, c("vcf_id", "Stars", "final_call")], by = "vcf_id")
 
 ## autopvs1 results
-autopvs1_results <- vroom(input_autopvs1_file, col_names = TRUE) %>%
+autopvs1_results <- vroom(input_autopvs1_file, col_names = TRUE, show_col_types = FALSE) %>%
   dplyr::select(vcf_id, Feature, criterion) %>%
   mutate(
     vcf_id = str_remove_all(vcf_id, " "),

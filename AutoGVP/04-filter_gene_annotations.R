@@ -168,13 +168,14 @@ if ("HGVSp" %in% names(merged_df)) {
 
 # Define `coacross()` function to coalesce across multiple df columns
 coacross <- function(...) {
-  coalesce(!!!across(...))
+  coalesce(!!!across(.cols = everything()))
 }
 
 # Coalesce rsIDs across multiple columns, when present
 id_df <- merged_df %>%
   dplyr::select(any_of(c("ID", "avsnp147", "Existing_variation"))) %>%
-  dplyr::mutate_all(funs(ifelse(grepl("rs", .), ., NA_character_))) %>%
+  # dplyr::mutate_all(funs(ifelse(grepl("rs", .), ., NA_character_))) %>%
+  dplyr::mutate(across(everything(), ~ ifelse(grepl("rs", .x), .x, NA_character_))) %>%
   dplyr::mutate(rsID = coacross())
 
 # Add coalesced rsID to merged_df, and remove other ID columns
@@ -183,7 +184,8 @@ merged_df <- merged_df %>%
   select(-any_of(c("ID", "avsnp147", "Existing_variation")))
 
 # read in output file column names tsv
-colnames <- read_tsv(file.path(input_dir, "output_colnames.tsv"))
+colnames <- read_tsv(file.path(input_dir, "output_colnames.tsv"), 
+                     show_col_types = FALSE)
 
 # Subset and reorder output columns based on inclusion and order in `colnames`
 merged_df <- merged_df %>%

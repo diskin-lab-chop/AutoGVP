@@ -147,7 +147,7 @@ address_ambiguous_calls <- function(results_tab_abridged) { ## address ambiguous
 }
 
 ## retrieve and store clinVar input file into table
-clinvar_anno_vcf_df <- vroom(input_clinVar_file, comment = "#", delim = "\t", col_names = c("CHROM", "START", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "Sample"), show_col_types = TRUE)
+clinvar_anno_vcf_df <- vroom(input_clinVar_file, comment = "#", delim = "\t", col_names = c("CHROM", "START", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "Sample"), show_col_types = FALSE)
 
 ## add column "vcf_id" to clinVar results in order to cross-reference with intervar and autopvs1 table
 clinvar_anno_vcf_df <- clinvar_anno_vcf_df %>%
@@ -174,7 +174,7 @@ clinvar_anno_vcf_df <- address_conflicting_interp(clinvar_anno_vcf_df)
 
 
 ## get latest calls from variant and submission summary files
-variant_summary_df <- vroom(input_variant_summary) %>%
+variant_summary_df <- vroom(input_variant_summary, show_col_types = FALSE) %>%
   filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id) %>%
   dplyr::select(-GeneSymbol)
 
@@ -268,7 +268,7 @@ clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
 
 
 ## autopvs1 results
-autopvs1_results <- vroom(input_autopvs1_file, col_names = TRUE) %>%
+autopvs1_results <- vroom(input_autopvs1_file, col_names = TRUE, show_col_types = FALSE) %>%
   dplyr::select(vcf_id, Feature, criterion) %>%
   mutate(
     vcf_id = str_remove_all(vcf_id, " "),
