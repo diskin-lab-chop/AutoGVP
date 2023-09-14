@@ -30,12 +30,7 @@ suppressPackageStartupMessages({
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "AutoGVP")
 input_dir <- file.path(analysis_dir, "input")
-#results_dir <- file.path(root_dir, "results")
 
-# # create results directory if it does not exist
-# if (!dir.exists(results_dir)) {
-#   dir.create(results_dir)
-# }
 
 # parse parameters
 option_list <- list(
