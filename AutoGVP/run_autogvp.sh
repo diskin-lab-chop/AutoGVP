@@ -99,9 +99,10 @@ if [[ "$workflow" = "cavatica" ]];then
   --intervar $intervar_input \
   --autopvs1 $autopvs1_input \
   --output $out_file \
+  --outdir $out_dir \
   --variant_summary $variant_summary_file
   
-  autogvp_output="../results/"${out_file}".cavatica_input.annotations_report.abridged.tsv"
+  autogvp_output=${out_dir}/${out_file}".cavatica_input.annotations_report.abridged.tsv"
 
   else
 
@@ -112,9 +113,10 @@ if [[ "$workflow" = "cavatica" ]];then
   --intervar $intervar_input \
   --autopvs1 $autopvs1_input \
   --output $out_file \
+  --outdir $out_dir \
   --variant_summary $variant_summary_file \
   
-  autogvp_output="../results/"${out_file}".custom_input.annotations_report.abridged.tsv"
+  autogvp_output=${out_dir}/${out_file}".custom_input.annotations_report.abridged.tsv"
 
 fi
 
@@ -131,7 +133,7 @@ vcf_parsed_file=${autogvp_input%.vcf*}."parsed.tsv"
 # Filter VCF VEP gene/transcript annotations and merge data with AutoGVP output
 echo "Filtering VEP annotations and creating final output..."
 
-Rscript 04-filter_gene_annotations.R --vcf $vcf_parsed_file --autogvp $autogvp_output --output $out_file
+Rscript 04-filter_gene_annotations.R --vcf $vcf_parsed_file --autogvp $autogvp_output --output $out_file --outdir $out_dir
 
 # Remove intermediate files
-rm $autogvp_input $vcf_parsed_file $out_dir/$autogvp_output $out_dir/$out_file.filtered_csq_subfields.tsv $out_dir/${out_file}_multianno_filtered.txt $out_dir/${out_file}_autopvs1_filtered.tsv $out_dir/${out_file}_intervar_filtered.txt
+rm $autogvp_input $vcf_parsed_file $autogvp_output $out_dir/$out_file.filtered_csq_subfields.tsv $out_dir/${out_file}_multianno_filtered.txt $out_dir/${out_file}_autopvs1_filtered.tsv $out_dir/${out_file}_intervar_filtered.txt
