@@ -473,8 +473,9 @@ master_tab <- master_tab %>%
     Reasoning_for_call == "ClinVar" ~ final_call,
     TRUE ~ str_replace(ClinVar_ClinicalSignificance, " ", "_")
   )) %>%
+  dplyr::mutate(sample_id = output_name) %>%
   dplyr::relocate(
-    CHROM, START, ID, REF, ALT,
+    sample_id, CHROM, START, ID, REF, ALT,
     final_call, Reasoning_for_call,
     Stars, ClinVar_ClinicalSignificance, Intervar_evidence
   )

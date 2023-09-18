@@ -1,4 +1,5 @@
 Column_name	Rename	Abridged
+sample_id	sample_id	T
 CHROM	chr	T
 POS	start	T
 START	start	T
