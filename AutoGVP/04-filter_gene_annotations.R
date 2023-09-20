@@ -163,6 +163,10 @@ if ("HGVSp" %in% names(merged_df)) {
     # rm ensembl transcript/protein IDs from HGVSp columns
     dplyr::mutate(
       HGVSp = str_split(HGVSp, ":", simplify = T)[, 2],
+    ) %>%
+    # replace `%3D` symbol with `=` in synonymous variant HGVSp
+    dplyr::mutate(
+      HGVSp = str_replace(HGVSp, "%3D", "=")
     )
 }
 
