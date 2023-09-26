@@ -95,8 +95,10 @@ submission_merged_df <- submission_summary_df %>%
 
 # Extract submissions that match variant consensus call and are 2+ stars
 variants_no_conflict_expert <- submission_merged_df %>%
-  filter(ReviewStatus_sub %in% c("practice guideline", "reviewed by expert panel", 
-                                 "criteria provided, multiple submitters, no conflicts")) %>%
+  filter(ReviewStatus_sub %in% c(
+    "practice guideline", "reviewed by expert panel",
+    "criteria provided, multiple submitters, no conflicts"
+  )) %>%
   group_by(VariationID) %>%
   dplyr::arrange(desc(mdy(LastEvaluated_sub))) %>%
   dplyr::slice_head(n = 1) %>%
