@@ -80,7 +80,8 @@ submission_summary_df <- vroom(input_submission_file,
   dplyr::mutate(DateLastEvaluated = case_when(
     DateLastEvaluated == "-" ~ NA_character_,
     TRUE ~ DateLastEvaluated
-  ))
+  )) %>%
+  dplyr::filter(!ReviewStatus %in% c("no assertion provded", "no assertion criteria provided"))
 
 # merge submission_summary and variant_summary info
 submission_merged_df <- submission_summary_df %>%
