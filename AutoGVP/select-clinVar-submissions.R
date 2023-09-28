@@ -9,7 +9,7 @@
 # usage: select-clinVar-submissions.R --variant_summary <variant file>
 #                                       --submission_summary <submission file>
 #
-# NOTE: this script must be run BEFORE running run-autogvp.sh
+# NOTE: this script must be run BEFORE running run_autogvp.sh
 ################################################################################
 
 suppressPackageStartupMessages({
@@ -130,19 +130,9 @@ variants_consensus_call <- submission_merged_df %>%
   dplyr::slice_head(n = 1) %>%
   ungroup()
 
-# Identify variants with conflicting ClinSigs, but where a P-LP call has an associated phenotypeInfo
-variants_conflicts_phenoInfo <- submission_merged_df %>%
-  dplyr::filter(!VariationID %in% c(variants_no_conflict_expert$VariationID, variants_no_conflicts$VariationID, variants_consensus_call$VariationID)) %>%
-  dplyr::filter(ClinicalSignificance_var != ClinicalSignificance_sub) %>%
-  dplyr::filter(grepl("Pathogenic|Likely pathogenic", ClinicalSignificance_sub) & (!is.na(SubmittedPhenotypeInfo) | !is.na(ReportedPhenotypeInfo)) & !grepl("not provided|not specified", ReportedPhenotypeInfo)) %>%
-  group_by(VariationID) %>%
-  dplyr::arrange(desc(mdy(LastEvaluated_sub))) %>%
-  dplyr::slice_head(n = 1) %>%
-  ungroup()
-
 # Identify variants with conflicting ClinSigs, and retain call at last date evaluated
 variants_conflicts_latest <- submission_merged_df %>%
-  dplyr::filter(!VariationID %in% c(variants_no_conflict_expert$VariationID, variants_no_conflicts$VariationID, variants_consensus_call$VariationID, variants_conflicts_phenoInfo$VariationID)) %>%
+  dplyr::filter(!VariationID %in% c(variants_no_conflict_expert$VariationID, variants_no_conflicts$VariationID, variants_consensus_call$VariationID)) %>%
   dplyr::filter(ClinicalSignificance_var != ClinicalSignificance_sub) %>%
   group_by(VariationID) %>%
   dplyr::arrange(desc(mdy(LastEvaluated_sub))) %>%
@@ -151,7 +141,7 @@ variants_conflicts_latest <- submission_merged_df %>%
 
 # create final df and take ClinSig calls from submission summary
 submission_final_df <- variants_no_conflicts %>%
-  bind_rows(variants_no_conflict_expert, variants_consensus_call, variants_conflicts_phenoInfo, variants_conflicts_latest) %>%
+  bind_rows(variants_no_conflict_expert, variants_consensus_call, variants_conflicts_latest) %>%
   dplyr::mutate(
     ClinicalSignificance = ClinicalSignificance_sub,
     ReviewStatus = ReviewStatus_sub,
