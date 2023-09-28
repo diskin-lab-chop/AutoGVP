@@ -130,7 +130,7 @@ variants_consensus_call <- submission_merged_df %>%
   dplyr::slice_head(n = 1) %>%
   ungroup()
 
-# Identify variants with conflicting ClinSigs, and retain call at last date evaluated
+# Identify variants with conflicting ClinSigs, and retain call at most recent date evaluated
 variants_conflicts_latest <- submission_merged_df %>%
   dplyr::filter(!VariationID %in% c(variants_no_conflict_expert$VariationID, variants_no_conflicts$VariationID, variants_consensus_call$VariationID)) %>%
   dplyr::filter(ClinicalSignificance_var != ClinicalSignificance_sub) %>%
