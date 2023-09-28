@@ -117,7 +117,7 @@ variants_no_conflicts <- submission_merged_df %>%
 # Identify cases where a majority pathogenicity call has been made for variants
 consensus_calls <- submission_merged_df %>%
   dplyr::filter(!VariationID %in% c(variants_no_conflict_expert$VariationID, variants_no_conflicts$VariationID)) %>%
-  # Here, we will group B+LB and P+LP together to identify majority calls 
+  # Here, we will group B+LB and P+LP together to identify majority calls
   dplyr::mutate(ClinSig = case_when(
     ClinicalSignificance_sub %in% c("Pathogenic", "Likely pathogenic") ~ "P/LP",
     ClinicalSignificance_sub %in% c("Benign", "Likely benign") ~ "B/LB",
