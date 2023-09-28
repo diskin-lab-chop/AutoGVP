@@ -114,21 +114,35 @@ variants_no_conflicts <- submission_merged_df %>%
   dplyr::slice_head(n = 1) %>%
   ungroup()
 
-# Identify cases where a majority pathnogenicity calls has been made for variants
+# Identify cases where a majority pathogenicity call has been made for variants
 consensus_calls <- submission_merged_df %>%
   dplyr::filter(!VariationID %in% c(variants_no_conflict_expert$VariationID, variants_no_conflicts$VariationID)) %>%
-  count(VariationID, ClinicalSignificance_sub) %>%
+  # Here, we will group B+LB and P+LP together to identify majority calls
+  dplyr::mutate(ClinSig = case_when(
+    ClinicalSignificance_sub %in% c("Pathogenic", "Likely pathogenic") ~ "P/LP",
+    ClinicalSignificance_sub %in% c("Benign", "Likely benign") ~ "B/LB",
+    ClinicalSignificance_sub == "Uncertain significance" ~ "VUS",
+    TRUE ~ NA_character_
+  )) %>%
+  count(VariationID, ClinSig) %>%
   group_by(VariationID) %>%
   dplyr::filter(n == max(n)) %>%
   dplyr::filter(!VariationID %in% VariationID[duplicated(VariationID)])
 
 # Extract variants with majority calls
 variants_consensus_call <- submission_merged_df %>%
-  dplyr::filter(glue::glue("{VariationID}-{ClinicalSignificance_sub}") %in% glue::glue("{consensus_calls$VariationID}-{consensus_calls$ClinicalSignificance_sub}")) %>%
+  dplyr::mutate(ClinSig = case_when(
+    ClinicalSignificance_sub %in% c("Pathogenic", "Likely pathogenic") ~ "P/LP",
+    ClinicalSignificance_sub %in% c("Benign", "Likely benign") ~ "B/LB",
+    ClinicalSignificance_sub == "Uncertain significance" ~ "VUS",
+    TRUE ~ NA_character_
+  )) %>%
+  dplyr::filter(glue::glue("{VariationID}-{ClinSig}") %in% glue::glue("{consensus_calls$VariationID}-{consensus_calls$ClinSig}")) %>%
   group_by(VariationID) %>%
   dplyr::arrange(desc(mdy(LastEvaluated_sub))) %>%
   dplyr::slice_head(n = 1) %>%
-  ungroup()
+  ungroup() %>%
+  dplyr::select(-ClinSig)
 
 # Identify variants with conflicting ClinSigs, and retain call at most recent date evaluated
 variants_conflicts_latest <- submission_merged_df %>%
