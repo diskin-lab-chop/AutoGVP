@@ -35,6 +35,7 @@ evidenceBP	BP_autogvp	F
 intervar_adjusted	intervar_adjusted	F
 AC	AC	F
 AF	AF	F
+DP	DP	F
 ALLELEID	ALLELEID	F
 AN	AN	F
 BaseQRankSum	BaseQRankSum	F
