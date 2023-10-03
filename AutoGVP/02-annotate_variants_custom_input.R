@@ -345,7 +345,9 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
       criterion == "IC5") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
 
     ## adjust variables based on given rules described in README
-    final_call = ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 &
+    final_call = ifelse(intervar_adjusted == "No", 
+                        sub(".*InterVar: ", "", sub("\\ P.*", "", `InterVar: InterVar and Evidence`)),
+    ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 &
       ((evidencePS >= 1) |
         (evidencePM >= 2) |
         (evidencePM == 1 & evidencePP == 1) |
@@ -410,6 +412,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
     )
     )
     )
+  )
   )
 
 ## merge tables together (clinvar and intervar) and write to file
