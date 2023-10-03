@@ -398,7 +398,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- clinvar_anno_intervar_vcf_df %>%
   full_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
-  left_join(variant_summary_df, by = "vcf_id") %>%
+  left_join(variant_summary_df[, c("vcf_id", "VariationID", "ClinicalSignificance", "ReviewStatus", "LastEvaluated")], by = "vcf_id") %>%
   left_join(autopvs1_results, by = "vcf_id")
 
 
@@ -439,14 +439,27 @@ master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id")
       TRUE ~ Stars.x
     )
   ) %>%
+  # Only retain ClinSig and ReviewStatus for variants with ClinVar annotation in VCF, and exclude for variants only found in submission summary file
+  dplyr::mutate(
+    ClinVar_ClinicalSignificance = case_when(
+      !is.na(Stars) ~ ClinVar_ClinicalSignificance,
+      TRUE ~ NA_character_
+    ),
+    ReviewStatus = case_when(
+      !is.na(Stars) ~ ReviewStatus,
+      TRUE ~ NA_character_
+    ),
+    LastEvaluated = case_when(
+      !is.na(Stars) ~ LastEvaluated,
+      TRUE ~ NA_character_
+    )
+  ) %>%
   dplyr::select(
     -final_call.x, -final_call.y,
     -Stars.x, -Stars.y,
     -Intervar_evidence.x, -Intervar_evidence.y,
     -INFO, -ClinicalSignificance.x, -ClinicalSignificance.y
   )
-
-
 
 ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
 master_tab <- address_ambiguous_calls(master_tab)
