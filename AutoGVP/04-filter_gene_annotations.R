@@ -122,7 +122,8 @@ autogvp <- read_tsv(input_autogvp_file,
 # Parse Sample column, if present
 if ("Sample" %in% names(autogvp)) {
   autogvp <- autogvp %>%
-    tidyr::separate_wider_delim(Sample, delim = ":", names = c("GT", "AD", "DP", "GQ"), too_many = "drop")
+    tidyr::separate_wider_delim(Sample, delim = ":", names = c("GT", "AD", "DP", "GQ"), too_many = "drop") %>%
+    tidyr::separate_wider_delim(AD, delim = ",", names = c("AD_ref", "AD_alt"), too_many = "drop")
 }
 
 # Merge `autogvp` and `vcf_final`
