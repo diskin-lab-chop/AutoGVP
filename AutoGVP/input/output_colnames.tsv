@@ -34,6 +34,8 @@ evidenceBS	BS_autogvp	F
 evidenceBP	BP_autogvp	F
 intervar_adjusted	intervar_adjusted	F
 AC	AC	F
+AD_ref	AD_ref	F
+AD_alt	AD_alt	F
 AF	AF	F
 DP	DP	F
 ALLELEID	ALLELEID	F
