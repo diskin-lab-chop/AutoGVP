@@ -29,7 +29,7 @@ docker exec -ti <CONTAINER_NAME> bash
 
 ### cd to AutoGVP directory within docker
 ```bash
-cd /home/rstudio/AutoGVP
+cd /home/rstudio/AutoGVP/AutoGVP
 ```
 
 ## How to Run
@@ -61,7 +61,7 @@ bash download_db_files.sh
 Run `select-clinVar-submissions.R`:
 
 ```
-Rscript `select-clinVar-submissions.R` --variant_summary <variant_summary.txt.gz> --submission_summary <submission_summary.txt.gz>
+Rscript select-clinVar-submissions.R --variant_summary input/variant_summary.txt.gz --submission_summary input/submission_summary.txt.gz
 ```
 
 Run AutoGVP:
@@ -120,7 +120,7 @@ bash download_db_files.sh
 Run `select-clinVar-submissions.R`:
 
 ```
-Rscript `select-clinVar-submissions.R` --variant_summary <variant_summary.txt.gz> --submission_summary <submission_summary.txt.gz>
+Rscript select-clinVar-submissions.R --variant_summary input/variant_summary.txt.gz --submission_summary input/submission_summary.txt.gz
 ```
 
 Run AutoGVP:
