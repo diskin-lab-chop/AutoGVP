@@ -6,7 +6,7 @@ set -e
 export BCFTOOLS_PLUGINS=/rocker-build/bcftools-1.17/plugins
 
 ## default files
-variant_summary_file="input/ClinVar-selected-submissions.tsv"
+variant_summary_file="data/ClinVar-selected-submissions.tsv"
 
 if [[ ! -f $variant_summary_file ]] ; then
     echo "ERROR: ClinVar-selected-submissions.tsv file not found. Please run select-clinvar-submissions.R script before running AutoGVP"
@@ -80,7 +80,7 @@ done
 echo "Filtering VCF..."
 
 vcf_filtered_file=${out_file}."filtered.vcf"
-bash 01-filter_vcf.sh $vcf_file $multianno_file $autopvs1_file $intervar_file $out_file $out_dir $filtering_criteria
+bash scripts/01-filter_vcf.sh $vcf_file $multianno_file $autopvs1_file $intervar_file $out_file $out_dir $filtering_criteria
 
 autogvp_input=$out_dir/$vcf_filtered_file
 multianno_input=$out_dir/${out_file}_multianno_filtered.txt
@@ -94,7 +94,7 @@ echo "Running AutoGVP..."
 if [[ "$workflow" = "cavatica" ]];then
 
   # Run AutoGVP from Cavatica workflow
-  Rscript 02-annotate_variants_CAVATICA_input.R --vcf $autogvp_input \
+  Rscript scripts/02-annotate_variants_CAVATICA_input.R --vcf $autogvp_input \
   --multianno $multianno_input \
   --intervar $intervar_input \
   --autopvs1 $autopvs1_input \
@@ -107,7 +107,7 @@ if [[ "$workflow" = "cavatica" ]];then
   else
 
   # Run AutoGVP from custom workflow
-  Rscript 02-annotate_variants_custom_input.R --vcf $autogvp_input \
+  Rscript scripts/02-annotate_variants_custom_input.R --vcf $autogvp_input \
   --clinvar $clinvar_file \
   --multianno $multianno_input \
   --intervar $intervar_input \
@@ -124,7 +124,7 @@ fi
 # Parse vcf file so that info field values are in distinct columns
 echo "Parsing VCF..."
 
-bash 03-parse_vcf.sh $autogvp_input
+bash scripts/03-parse_vcf.sh $autogvp_input
 
 # Define parsed vcf and autogvp output file variables
 vcf_parsed_file=${autogvp_input%.vcf*}."parsed.tsv"
@@ -133,7 +133,7 @@ vcf_parsed_file=${autogvp_input%.vcf*}."parsed.tsv"
 # Filter VCF VEP gene/transcript annotations and merge data with AutoGVP output
 echo "Filtering VEP annotations and creating final output..."
 
-Rscript 04-filter_gene_annotations.R --vcf $vcf_parsed_file --autogvp $autogvp_output --output $out_file --outdir $out_dir
+Rscript scripts/04-filter_gene_annotations.R --vcf $vcf_parsed_file --autogvp $autogvp_output --output $out_file --outdir $out_dir
 
 # Remove intermediate files
 rm $autogvp_input $vcf_parsed_file $autogvp_output $out_dir/$out_file.filtered_csq_subfields.tsv $out_dir/${out_file}_multianno_filtered.txt $out_dir/${out_file}_autopvs1_filtered.tsv $out_dir/${out_file}_intervar_filtered.txt
