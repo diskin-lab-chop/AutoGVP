@@ -21,11 +21,6 @@ suppressPackageStartupMessages({
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
-## set up directories
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-input_dir <- file.path(root_dir, "data")
-
-
 # parse parameters
 option_list <- list(
   make_option(c("--variant_summary"),
@@ -35,6 +30,10 @@ option_list <- list(
   make_option(c("--submission_summary"),
     type = "character",
     help = "specific submission summary file (format: submission_summary.txt.gz)"
+  ),
+  make_option(c("--outdir"),
+              type = "character",
+              help = "output directory"
   )
 )
 
@@ -43,6 +42,7 @@ opt <- parse_args(OptionParser(option_list = option_list))
 ## get input files from parameters (reqd)
 input_submission_file <- opt$submission_summary
 input_variant_summary <- opt$variant_summary
+results_dir <- opt$outdir
 
 
 ## load variant summary file, which reports latest clinVar consensus calls for each variant
@@ -180,5 +180,5 @@ submission_final_df <- variants_no_conflicts %>%
 
 write_tsv(
   submission_final_df,
-  file.path(input_dir, "ClinVar-selected-submissions.tsv")
+  file.path(results_dir, "ClinVar-selected-submissions.tsv")
 )

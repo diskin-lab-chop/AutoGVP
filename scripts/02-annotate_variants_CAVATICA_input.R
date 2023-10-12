@@ -23,12 +23,6 @@ suppressPackageStartupMessages({
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
-## set up directories
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-analysis_dir <- file.path(root_dir, "AutoGVP")
-input_dir <- file.path(analysis_dir, "input")
-
-
 # parse parameters
 option_list <- list(
   make_option(c("--vcf"),
