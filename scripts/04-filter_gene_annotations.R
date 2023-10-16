@@ -24,8 +24,8 @@ suppressPackageStartupMessages({
 `%>%` <- dplyr::`%>%`
 
 # set up directories
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-input_dir <- file.path(root_dir, "data")
+# root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+# input_dir <- file.path(root_dir, "data")
 
 
 # parse parameters
@@ -43,8 +43,12 @@ option_list <- list(
     help = "output name"
   ),
   make_option(c("--outdir"),
-    type = "character", default = "../results",
+    type = "character", default = "results",
     help = "output directory"
+  ),
+  make_option(c("--colnames"),
+    type = "character", default = "data/output_colnames.tsv",
+    help = "file listing output colnames"
   )
 )
 
@@ -55,6 +59,7 @@ input_vcf_file <- opt$vcf
 input_autogvp_file <- opt$autogvp
 output_name <- opt$output
 results_dir <- opt$outdir
+output_colnames_file <- opt$colnames
 
 # create results directory if it does not exist
 if (!dir.exists(results_dir)) {
@@ -188,7 +193,7 @@ merged_df <- merged_df %>%
   select(-any_of(c("ID", "avsnp147", "Existing_variation")))
 
 # read in output file column names tsv
-colnames <- read_tsv(file.path(input_dir, "output_colnames.tsv"),
+colnames <- read_tsv(output_colnames_file,
   show_col_types = FALSE
 )
 

@@ -5,13 +5,12 @@ set -e
 # export bcftools plugin environmental variable
 export BCFTOOLS_PLUGINS=/rocker-build/bcftools-1.17/plugins
 
-## default files
-variant_summary_file="data/ClinVar-selected-submissions.tsv"
+# Define root directory of repo
+BASEDIR="$(dirname "${BASH_SOURCE[0]}")"
+echo "$BASEDIR"
 
-if [[ ! -f $variant_summary_file ]] ; then
-    echo "ERROR: ClinVar-selected-submissions.tsv file not found. Please run select-clinvar-submissions.R script before running AutoGVP"
-    exit 1
-fi
+## default files
+variant_summary_file="$BASEDIR/data/ClinVar-selected-submissions.tsv"
 
 # define parameter variables 
 while [ $# -gt 0 ]; do
@@ -76,11 +75,32 @@ while [ $# -gt 0 ]; do
   shift
 done
 
+## default files
+
+variant_summary_file="$BASEDIR/data/variant_summary.txt.gz"
+submission_summary_file="$BASEDIR/data/submission_summary.txt.gz"
+
+if [[ ! -f $variant_summary_file || ! -f $submission_summary_file ]] ; then
+    echo "Warning: ClinVar variant and/or submission summary files not found. Downloading to data/..."
+    
+    bash $BASEDIR/scripts/download_db_files.sh
+
+fi
+
+select_submissions_file="$BASEDIR/results/ClinVar-selected-submissions.tsv"
+
+if [[ ! -f $select_submissions_file ]] ; then
+    echo "ClinVar-selected-submissions.tsv file not found. Running select-clinvar-submissions.R script..."
+    
+    Rscript $BASEDIR/scripts/select-clinVar-submissions.R --variant_summary $BASEDIR/data/variant_summary.txt.gz --submission_summary $BASEDIR/data/submission_summary.txt.gz --outdir $out_dir
+
+fi
+
 # Filter VCF file; by default the function performs filtering based on FILTER column, with other criteria specified by user
 echo "Filtering VCF..."
 
 vcf_filtered_file=${out_file}."filtered.vcf"
-bash scripts/01-filter_vcf.sh $vcf_file $multianno_file $autopvs1_file $intervar_file $out_file $out_dir $filtering_criteria
+bash $BASEDIR/scripts/01-filter_vcf.sh $vcf_file $multianno_file $autopvs1_file $intervar_file $out_file $out_dir $filtering_criteria
 
 autogvp_input=$out_dir/$vcf_filtered_file
 multianno_input=$out_dir/${out_file}_multianno_filtered.txt
@@ -94,27 +114,27 @@ echo "Running AutoGVP..."
 if [[ "$workflow" = "cavatica" ]];then
 
   # Run AutoGVP from Cavatica workflow
-  Rscript scripts/02-annotate_variants_CAVATICA_input.R --vcf $autogvp_input \
+  Rscript $BASEDIR/scripts/02-annotate_variants_CAVATICA_input.R --vcf $autogvp_input \
   --multianno $multianno_input \
   --intervar $intervar_input \
   --autopvs1 $autopvs1_input \
   --output $out_file \
   --outdir $out_dir \
-  --variant_summary $variant_summary_file
+  --variant_summary $select_submissions_file
   
   autogvp_output=${out_dir}/${out_file}".cavatica_input.annotations_report.abridged.tsv"
 
   else
 
   # Run AutoGVP from custom workflow
-  Rscript scripts/02-annotate_variants_custom_input.R --vcf $autogvp_input \
+  Rscript $BASEDIR/scripts/02-annotate_variants_custom_input.R --vcf $autogvp_input \
   --clinvar $clinvar_file \
   --multianno $multianno_input \
   --intervar $intervar_input \
   --autopvs1 $autopvs1_input \
   --output $out_file \
   --outdir $out_dir \
-  --variant_summary $variant_summary_file \
+  --variant_summary $select_submissions_file \
   
   autogvp_output=${out_dir}/${out_file}".custom_input.annotations_report.abridged.tsv"
 
@@ -124,7 +144,7 @@ fi
 # Parse vcf file so that info field values are in distinct columns
 echo "Parsing VCF..."
 
-bash scripts/03-parse_vcf.sh $autogvp_input
+bash $BASEDIR/scripts/03-parse_vcf.sh $autogvp_input
 
 # Define parsed vcf and autogvp output file variables
 vcf_parsed_file=${autogvp_input%.vcf*}."parsed.tsv"
@@ -133,7 +153,7 @@ vcf_parsed_file=${autogvp_input%.vcf*}."parsed.tsv"
 # Filter VCF VEP gene/transcript annotations and merge data with AutoGVP output
 echo "Filtering VEP annotations and creating final output..."
 
-Rscript scripts/04-filter_gene_annotations.R --vcf $vcf_parsed_file --autogvp $autogvp_output --output $out_file --outdir $out_dir
+Rscript $BASEDIR/scripts/04-filter_gene_annotations.R --vcf $vcf_parsed_file --autogvp $autogvp_output --output $out_file --outdir $out_dir --colnames $BASEDIR/data/output_colnames.tsv
 
 # Remove intermediate files
 rm $autogvp_input $vcf_parsed_file $autogvp_output $out_dir/$out_file.filtered_csq_subfields.tsv $out_dir/${out_file}_multianno_filtered.txt $out_dir/${out_file}_autopvs1_filtered.tsv $out_dir/${out_file}_intervar_filtered.txt
