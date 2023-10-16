@@ -45,11 +45,10 @@ option_list <- list(
   make_option(c("--outdir"),
     type = "character", default = "results",
     help = "output directory"
-  )
-  ,
+  ),
   make_option(c("--colnames"),
-              type = "character", default = "data/output_colnames.tsv",
-              help = "file listing output colnames"
+    type = "character", default = "data/output_colnames.tsv",
+    help = "file listing output colnames"
   )
 )
 
@@ -195,8 +194,8 @@ merged_df <- merged_df %>%
 
 # read in output file column names tsv
 colnames <- read_tsv(output_colnames_file,
-                     show_col_types = FALSE
-                     )
+  show_col_types = FALSE
+)
 
 # Subset and reorder output columns based on inclusion and order in `colnames`
 merged_df <- merged_df %>%
