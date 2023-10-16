@@ -29,7 +29,7 @@ docker exec -ti <CONTAINER_NAME> bash
 
 ### cd to AutoGVP directory within docker
 ```bash
-cd /home/rstudio/AutoGVP/AutoGVP
+cd /home/rstudio/AutoGVP
 ```
 
 ## How to Run
@@ -39,10 +39,10 @@ cd /home/rstudio/AutoGVP/AutoGVP
 This workflow currently annotates variants with ClinVar (2022-05-07).
 2. Run the [Pathogenicity Preprocessing Workflow](https://github.com/d3b-center/D3b-Pathogenicity-Preprocessing), which performs ANNOVAR with InterVar and AutoPVS1 annotations.
 3. Download required db files, including variant submissions files (`variant_summary.txt` and `submission_summary.txt`) using download_db_files.sh (see below).
-4. Run `select-clinVar-submissions.R` within `AutoGVP/` to consolidate ClinVar submission calls prior to running AutoGVP wrapper script. This step can be ran once and the `ClinVar-selected-submissions.tsv` file could be used for subsequent runs if clinVar versions remain the same. 
+4. Run `select-clinVar-submissions.R` within `scripts/` to consolidate ClinVar submission calls prior to running AutoGVP wrapper script. This step can be ran once and the `ClinVar-selected-submissions.tsv` file could be used for subsequent runs if clinVar versions remain the same. 
 5. Run AutoGVP wrapper script using `--workflow="cavatica"`
 
-AutoGVP Requirements (recommended to place all in the `input/` folder):
+AutoGVP Requirements (recommended to place all in the `data/` folder):
 - VEP-, ANNOVAR-, and ClinVar annotated VCF file (`*VEP.vcf`)
 - ANNOVAR multianno file (`*hg38_multianno.txt`)
 - InterVar file (`*intervar.hg38_multianno.txt.intervar`)
@@ -55,25 +55,25 @@ Example run:
 Download ClinVar files:
 
 ```bash
-bash download_db_files.sh
+bash scripts/download_db_files.sh
 ```
 
 Run `select-clinVar-submissions.R`:
 
 ```
-Rscript select-clinVar-submissions.R --variant_summary input/variant_summary.txt.gz --submission_summary input/submission_summary.txt.gz
+Rscript scripts/select-clinVar-submissions.R --variant_summary data/variant_summary.txt.gz --submission_summary data/submission_summary.txt.gz
 ```
 
 Run AutoGVP:
 
 ```r
 bash run_autogvp.sh --workflow="cavatica" \
---vcf=input/test_pbta.single.vqsr.filtered.vep_105.vcf \
+--vcf=data/test_pbta.single.vqsr.filtered.vep_105.vcf \
 --filter_criteria=<filter criteria> \
---intervar=input/test_pbta.hg38_multianno.txt.intervar \
---multianno=input/test_pbta.hg38_multianno.txt \
---autopvs1=input/test_pbta.autopvs1.tsv \
---outdir=../results \
+--intervar=data/test_pbta.hg38_multianno.txt.intervar \
+--multianno=data/test_pbta.hg38_multianno.txt \
+--autopvs1=data/test_pbta.autopvs1.tsv \
+--outdir=results \
 --out="test_pbta"
 
 ```
@@ -89,11 +89,11 @@ python3 D3b-DGD-Collaboration/scripts/update_gene_symbols.py -g hgnc_complete_se
 
 2. Run [ANNOVAR](https://annovar.openbioinformatics.org/en/latest/) with the following options in order to create ANNOVAR annotated file using VCF input:
 ```perl
-perl table_annovar.pl input/test_VEP.vcf hg38 --buildver hg38 --out test_VEP --remove --protocol gnomad211_exome,gnomad211_genome --operation f,f --vcfinput
+perl table_annovar.pl data/test_VEP.vcf hg38 --buildver hg38 --out test_VEP --remove --protocol gnomad211_exome,gnomad211_genome --operation f,f --vcfinput
 ```
 3. Run [InterVar](https://github.com/WGLab/InterVar) with the following command:
 ```python
-python InterVar.py -b hg38 -i input/test_VEP.vcf --input_type=VCF -o test_VEP
+python InterVar.py -b hg38 -i data/test_VEP.vcf --input_type=VCF -o test_VEP
 ```
 4. Run [AutoPVS1 v2.0](https://github.com/JiguangPeng/autopvs1/releases/tag/v2.0).
 5. Optional: provide a ClinVar VCF file. If not supplied by the user, the most recent ClinVar file will be downloaded with `download_db_files.sh` and used in AutoGVP.
@@ -101,7 +101,7 @@ python InterVar.py -b hg38 -i input/test_VEP.vcf --input_type=VCF -o test_VEP
 7. Run `select-clinVar-submissions.R` within `AutoGVP/` to consolidate ClinVar submission calls prior to running AutoGVP wrapper script. This step can be ran once and the `ClinVar-selected-submissions.tsv` file could be used for subsequent runs if clinVar versions remain the same.
 8. Run AutoGVP wrapper script using `--workflow="custom"`
 
-AutoGVP Requirements (recommended to place all in the `input/` folder):
+AutoGVP Requirements (recommended to place all in the `data/` folder):
 - VEP-annotated VCF (`*VEP.vcf`)
 - ANNOVAR file (`*hg38_multianno.txt`)
 - InterVar file (`*hg38_multianno.txt.intervar`)
@@ -114,25 +114,25 @@ Example run:
 Download ClinVar files:
 
 ```bash
-bash download_db_files.sh
+bash scripts/download_db_files.sh
 ```
 
 Run `select-clinVar-submissions.R`:
 
 ```
-Rscript select-clinVar-submissions.R --variant_summary input/variant_summary.txt.gz --submission_summary input/submission_summary.txt.gz
+Rscript scripts/select-clinVar-submissions.R --variant_summary data/variant_summary.txt.gz --submission_summary data/submission_summary.txt.gz
 ```
 
 Run AutoGVP:
 ```r
 bash run_autogvp.sh --workflow="custom" \
---vcf=input/test_VEP.vcf \
+--vcf=data/test_VEP.vcf \
 --filter_criteria=<filter criteria>
---clinvar=input/clinvar.vcf.gz \
---intervar=input/test_VEP.hg38_multianno.txt.intervar \
---multianno=input/test_VEP.vcf.hg38_multianno.txt \
---autopvs1=input/test_autopvs1.txt \
---outdir=../results \
+--clinvar=data/clinvar.vcf.gz \
+--intervar=data/test_VEP.hg38_multianno.txt.intervar \
+--multianno=data/test_VEP.vcf.hg38_multianno.txt \
+--autopvs1=data/test_autopvs1.txt \
+--outdir=results \
 --out="test_custom"
 ```
 

@@ -1,0 +1,2000 @@
+vcf_id	SYMBOL	Feature	trans_name	consequence	strength_raw	strength	criterion
+1-1045960-C-T	AGRN	NM_198576.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-1332490-C-T	TAS1R3	NM_152228.3	not_lof	missense_variant	Unmet	Unmet	na
+1-1390349-C-T	CCNL2	NM_030937.6	not_lof	missense_variant	Unmet	Unmet	na
+1-1630696-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+1-1641723-TTCCTCCTCC-T	CDK11B	NM_033486.3	not_lof	inframe_deletion	Unmet	Unmet	na
+1-1938848-G-C	CFAP74	NM_001304360.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-2484452-C-T	PLCH2	NM_014638.4	not_lof	missense_variant	Unmet	Unmet	na
+1-3772844-G-A	SMIM1	NM_001288583.2	not_lof	intron_variant	Unmet	Unmet	na
+1-7847858-G-T	UTS2	NM_006786.4	not_lof	missense_variant	Unmet	Unmet	na
+1-9041754-TG-T	SLC2A5	NM_003039.3	not_lof	intron_variant	Unmet	Unmet	na
+1-10639083-CTCGTCG-C	CASZ1	NM_001079843.3	not_lof	inframe_deletion	Unmet	Unmet	na
+1-10639131-G-GTCGTCCTCGTCC	CASZ1	NM_001079843.3	not_lof	inframe_insertion	Unmet	Unmet	na
+1-11045485-C-T	MASP2	NM_006610.4	not_lof	missense_variant	Unmet	Unmet	na
+1-11130640-CGTGGTGGCGGCA-C	MTOR	NM_004958.4	not_lof	inframe_deletion	Unmet	Unmet	na
+1-11765862-C-T	C1orf167	NM_001010881.2	NM_001010881.2	nonsense	VeryStrong	Unset	NF1
+1-11784463-C-T	C1orf167	NM_001010881.2	NM_001010881.2	nonsense	VeryStrong	Unset	NF1
+1-11926172-G-A	KIAA2013	NM_138346.3	not_lof	synonymous_variant	Unmet	Unmet	na
+1-12860036-G-T	PRAMEF2	NM_023014.1	NM_023014.1	nonsense	VeryStrong	Unset	NF1
+1-13005593-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+1-13052505-TC-T	PRAMEF27	NM_001300891.2	NM_001300891.2	frameshift	VeryStrong	Unset	NF1
+1-13281372-C-T	PRAMEF8	NM_001012276.3	not_lof	stop_retained_variant	Unmet	Unmet	na
+1-13341760-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+1-13342568-G-C	PRAMEF14	NM_001024661.2	NM_001024661.2	nonsense	Moderate	Unset	NF6
+1-13369329-C-G	PRAMEF19	NM_001099790.4	not_lof	missense_variant	Unmet	Unmet	na
+1-15352897-G-A	FHAD1	NM_001387888.1	not_lof	3_prime_UTR_variant	Unmet	Unmet	na
+1-15765205-G-A	FBLIM1	NM_017556.4	not_lof	synonymous_variant	Unmet	Unmet	na
+1-16036897-CTCAGTGCACCATGATCTCCA-C			not_lof	intergenic_variant	Unmet	Unmet	na
+1-16148506-T-C	EPHA2	NM_004431.5	not_lof	missense_variant	Unmet	Unmet	na
+1-16647782-A-C	MST1P2	NR_027504.1	NR_027504.1	splice-3	Unmet	Unset	NF0
+1-16680935-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+1-16687323-T-A			not_lof	intergenic_variant	Unmet	Unmet	na
+1-16687363-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+1-16758094-A-T	MST1L	NM_001271733.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-16759176-C-G	MST1L	NM_001271733.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-16759590-G-GC	MST1L	NM_001271733.1	NM_001271733.1	frameshift	VeryStrong	Unset	NF1
+1-16930355-C-T	CROCC	NM_014675.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-20175089-G-A	PLA2G2C	NM_001367969.2	NM_001367969.2	nonsense	VeryStrong	Unset	NF1
+1-20330273-C-T	VWA5B1	NM_001039500.3	NM_001039500.3	nonsense	VeryStrong	Unset	NF1
+1-20618910-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+1-20941500-G-C	EIF4G3	NM_001198801.2	not_lof	missense_variant	Unmet	Unmet	na
+1-21483357-T-C	NBPF3	NM_032264.6	not_lof	missense_variant	Unmet	Unmet	na
+1-21887589-C-T	HSPG2	NM_005529.7	not_lof	missense_variant	Unmet	Unmet	na
+1-21890111-C-G	HSPG2	NM_005529.7	not_lof	synonymous_variant	Unmet	Unmet	na
+1-23967960-CA-C	SRSF10	NM_054016.4	not_lof	3_prime_UTR_variant	Unmet	Unmet	na
+1-24063236-TG-T	MYOM3	NM_152372.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-25223437-G-A	SYF2	NM_015484.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-26035346-A-AG	EXTL1	NM_004455.3	NM_004455.3	frameshift	VeryStrong	Unset	NF1
+1-26346617-C-T	CRYBG2	NM_001039775.4	not_lof	missense_variant	Unmet	Unmet	na
+1-27356738-CCTT-C	MAP3K6	NM_004672.5	not_lof	inframe_deletion	Unmet	Unmet	na
+1-32285709-A-AGCCTTGAGAG	LCK	NM_005356.5	NM_005356.5	frameshift	VeryStrong	Unset	NF1
+1-33176420-C-T	TRIM62	NM_018207.3	not_lof	intron_variant	Unmet	Unmet	na
+1-36319882-A-ATGCTT	SH3D21	NM_001162530.2	NM_001162530.2	frameshift	VeryStrong	Unset	NF1
+1-36422194-TTTCCACAGGCTG-T	OSCP1	NM_145047.5	not_lof	inframe_deletion	Unmet	Unmet	na
+1-39250051-G-A	MACF1	NM_012090.5	not_lof	missense_variant	Unmet	Unmet	na
+1-40070281-A-T	CAP1	NM_006367.4	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+1-41581629-A-T	HIVEP3	NM_024503.5	not_lof	missense_variant	Unmet	Unmet	na
+1-42459782-G-C	PPCS	NM_024664.4	not_lof	missense_variant	Unmet	Unmet	na
+1-43222837-T-TCAC	CFAP57	NM_001378189.1	not_lof	inframe_insertion	Unmet	Unmet	na
+1-43274138-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+1-43992617-C-T	CCDC24	NM_152499.4	NM_152499.4	nonsense	VeryStrong	Unset	NF1
+1-44017127-C-T	SLC6A9	NM_001024845.3	not_lof	intron_variant	Unmet	Unmet	na
+1-45347915-C-T	TESK2	NM_007170.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-45623643-G-A	CCDC17	NM_001114938.3	NM_001114938.3	nonsense	VeryStrong	Unset	NF1
+1-46176417-AG-A	P3R3URF-PIK3R3	NM_001303427.2	NM_001303427.2	frameshift	VeryStrong	Unset	NF1
+1-46189236-C-T	POMGNT1	NM_017739.4	not_lof	3_prime_UTR_variant	Unmet	Unmet	na
+1-46340917-TG-T	NSUN4	NR_170618.1	not_lof	splice_region_variant&non_coding_transcript_exon_variant	Unmet	Unmet	na
+1-52904685-G-T	ECHDC2	NM_001198961.2	NM_001198961.2	nonsense	VeryStrong	Unset	NF1
+1-52905055-G-GC	ECHDC2	NM_001198961.2	NM_001198961.2	frameshift	VeryStrong	Unset	NF1
+1-53952054-C-T	LRRC42	NM_001256409.2	NM_001256409.2	nonsense	VeryStrong	Unset	NF1
+1-54045676-C-G	TMEM59	NM_004872.5	not_lof	intron_variant	Unmet	Unmet	na
+1-54686321-T-C	MROH7	NM_001039464.4	not_lof	missense_variant	Unmet	Unmet	na
+1-54785641-G-A	TTC22	NM_001114108.2	not_lof	intron_variant	Unmet	Unmet	na
+1-58576205-T-A	TACSTD2	NM_002353.3	NM_002353.3	nonsense	Moderate	Unset	NF6
+1-64241678-C-T	UBE2U	NM_001366232.2	NM_001366232.2	nonsense	VeryStrong	Unset	NF1
+1-67321603-T-C	IL12RB2	NM_001374259.2	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+1-74204405-C-T	FPGT	NM_003838.5	NM_003838.5	nonsense	Strong	Unset	NF5
+1-74733079-A-C			not_lof	intergenic_variant	Unmet	Unmet	na
+1-78635486-T-A	IFI44L	NM_006820.4	NM_006820.4	nonsense	VeryStrong	Unset	NF1
+1-84574315-CGCAGCGCCA-C	CTBS	NM_004388.3	not_lof	inframe_deletion	Unmet	Unmet	na
+1-86580213-TCCTACA-T	CLCA4	NM_012128.4	not_lof	inframe_deletion	Unmet	Unmet	na
+1-88784798-ATCT-A	PKN2	NM_006256.4	not_lof	inframe_deletion	Unmet	Unmet	na
+1-88983825-A-AT	RBMXL1	NM_001162536.3	NM_001162536.3	frameshift	Moderate	Unset	NF6
+1-89191447-G-A	GBP4	NM_052941.5	NM_052941.5	nonsense	VeryStrong	Unset	NF1
+1-89713860-TATC-T	LRRC8C	NM_032270.5	not_lof	inframe_deletion	Unmet	Unmet	na
+1-92182085-CCTT-C	BTBD8	NM_001376131.1	not_lof	inframe_deletion	Unmet	Unmet	na
+1-92478757-C-CAG	GFI1	NM_005263.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-94001851-C-T	ABCA4	NM_000350.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-96769883-T-C	PTBP2	NM_021190.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-100990636-TA-T	DPH5	NM_015958.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-103031249-GAA-G	COL11A1	NM_001854.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-108243656-G-A	NBPF4	NM_001143989.3	NM_001143989.3	nonsense	VeryStrong	Unset	NF1
+1-109107936-G-T	C1orf194	NM_001245025.3	NM_001245025.3	nonsense	VeryStrong	Unset	NF1
+1-109192882-T-C	ELAPOR1	NM_020775.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-109740512-C-G	GSTM3	NM_000849.5	NM_000849.5	splice-3	VeryStrong	Unset	SS1
+1-111241360-C-A	CHI3L2	NM_004000.3	not_lof	synonymous_variant	Unmet	Unmet	na
+1-111314579-G-A	CHIA	NM_201653.4	NM_201653.4	nonsense	VeryStrong	Unset	NF1
+1-111416453-C-T	OVGP1	NM_002557.4	NM_002557.4	nonsense	VeryStrong	Unset	NF1
+1-111727135-C-T	INKA2	NM_019099.5	not_lof	missense_variant	Unmet	Unmet	na
+1-113700908-G-GT	PHTF1	NM_001323043.2	NM_001323043.2	frameshift	VeryStrong	Unset	NF1
+1-116579508-T-C	IGSF3	NM_001007237.3	not_lof	missense_variant	Unmet	Unmet	na
+1-117075687-GC-G	TTF2	NM_003594.4	NM_003594.4	frameshift	VeryStrong	Unset	NF1
+1-119647692-T-C	ZNF697	NM_001080470.2	not_lof	splice_region_variant&5_prime_UTR_variant	Unmet	Unmet	na
+1-119841569-G-A	NBPF7	NM_001388487.1	NM_001388487.1	nonsense	VeryStrong	Unset	NF1
+1-119844607-AC-A	NBPF7	NM_001388487.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-119894921-C-T	ADAM30	NM_021794.4	not_lof	synonymous_variant	Unmet	Unmet	na
+1-120322142-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+1-143788013-C-A			not_lof	intergenic_variant	Unmet	Unmet	na
+1-146066318-T-C	NBPF10	NM_001039703.6	not_lof	stop_retained_variant	Unmet	Unmet	na
+1-146994348-ATGGAAG-A	NBPF12	NM_001278141.2	not_lof	inframe_deletion	Unmet	Unmet	na
+1-148776012-G-A	SEC22B3P	NR_158170.1	not_lof	splice_region_variant&non_coding_transcript_exon_variant	Unmet	Unmet	na
+1-148808737-G-A	PDE4DIP	NM_001377392.1	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+1-149020194-C-T	PDE4DIP	NM_001350520.1	NM_001350520.1	nonsense	VeryStrong	Unset	NF1
+1-149177375-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+1-149913635-TCTC-T	SV2A	NM_014849.5	not_lof	inframe_deletion	Unmet	Unmet	na
+1-149936633-G-GC	MTMR11	NM_001145862.2	NM_001145862.2	frameshift	VeryStrong	Unset	NF1
+1-149971229-G-A	OTUD7B	NM_020205.4	not_lof	synonymous_variant	Unmet	Unmet	na
+1-150579854-G-T			not_lof	intergenic_variant	Unmet	Unmet	na
+1-151290750-T-C	ZNF687	NM_020832.3	not_lof	synonymous_variant	Unmet	Unmet	na
+1-151291201-G-GACA	ZNF687	NM_020832.3	not_lof	inframe_insertion	Unmet	Unmet	na
+1-151530595-G-A	CGN	NM_020770.3	not_lof	missense_variant	Unmet	Unmet	na
+1-151716855-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+1-152111699-T-TTGCTGCTCGCGCCTCTCC	TCHH	NM_007113.4	not_lof	inframe_insertion	Unmet	Unmet	na
+1-152213941-C-G	HRNR	NM_001009931.3	not_lof	missense_variant	Unmet	Unmet	na
+1-152309195-GT-G	FLG	NM_002016.2	NM_002016.2	frameshift	Unmet	Unset	NF4
+1-152312600-CACTG-C	FLG	NM_002016.2	NM_002016.2	frameshift	Unmet	Unset	NF4
+1-152313385-G-A	FLG	NM_002016.2	NM_002016.2	nonsense	Unmet	Unset	NF4
+1-152566227-G-A	LCE3E	NM_178435.4	not_lof	splice_region_variant&5_prime_UTR_variant	Unmet	Unmet	na
+1-152709084-C-A	LCE4A	NM_001387222.1	NM_001387222.1	nonsense	Strong	Unset	NF5
+1-152760707-C-A	KPRP	NM_001025231.2	not_lof	missense_variant	Unmet	Unmet	na
+1-152761247-G-GC	KPRP	NM_001025231.2	NM_001025231.2	frameshift	Moderate	Unset	NF6
+1-152761305-G-T	KPRP	NM_001025231.2	NM_001025231.2	nonsense	Moderate	Unset	NF6
+1-153341694-A-AT	PGLYRP4	NM_020393.4	NM_020393.4	frameshift	VeryStrong	Unset	NF1
+1-154199432-ATC-A	C1orf189	NM_001010979.3	NM_001010979.3	frameshift	Moderate	Unset	NF6
+1-154563051-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+1-154869723-GGCT-G	KCNN3	NM_002249.6	not_lof	inframe_deletion	Unmet	Unmet	na
+1-155060832-G-A	ADAM15	NM_207197.3	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+1-155660826-TG-T	YY1AP1	NM_001198904.1	NM_001198904.1	frameshift	Strong	Unset	NF5
+1-155857149-G-C	GON4L	NM_001282856.2	not_lof	intron_variant	Unmet	Unmet	na
+1-156130617-C-T	LMNA	NM_170707.4	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+1-156561014-C-T	IQGAP3	NM_178229.5	not_lof	missense_variant	Unmet	Unmet	na
+1-156700542-C-G	CRABP2	NM_001878.4	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+1-157097868-G-A	ETV3L	NM_001004341.2	NM_001004341.2	nonsense	Unmet	Unset	NF4
+1-157678753-T-C	FCRL3	NM_052939.4	not_lof	missense_variant	Unmet	Unmet	na
+1-158420021-A-T	OR10K2	NM_001004476.2	not_lof	synonymous_variant	Unmet	Unmet	na
+1-159205847-G-A	ACKR1	NM_002036.4	NM_002036.4	nonsense	Strong	Unset	NF5
+1-159440550-T-A	OR10J1	NM_012351.3	NM_012351.3	nonsense	Strong	Unset	NF5
+1-159830018-C-T	SLAMF8	NM_020125.3	NM_020125.3	nonsense	VeryStrong	Unset	NF1
+1-160186676-GTGGA-G	ATP1A4	NM_144699.4	NM_144699.4	frameshift	Moderate	Unset	NF6
+1-160553505-T-C	CD84	NM_003874.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-160750400-T-C	SLAMF7	NM_021181.5	not_lof	missense_variant	Unmet	Unmet	na
+1-161171901-C-T	B4GALT3	NM_003779.4	not_lof	missense_variant	Unmet	Unmet	na
+1-161673166-C-T	FCGR2B	NR_169827.1	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+1-162397281-C-T	SH2D1B	NM_053282.5	not_lof	stop_retained_variant	Unmet	Unmet	na
+1-165728104-G-A	TMCO1	NM_019026.6	not_lof	synonymous_variant	Unmet	Unmet	na
+1-167810745-A-G	ADCY10	NM_018417.6	not_lof	missense_variant	Unmet	Unmet	na
+1-168291418-C-T	TBX19	NM_005149.3	not_lof	synonymous_variant	Unmet	Unmet	na
+1-168696611-G-A	DPT	NM_001937.5	not_lof	missense_variant	Unmet	Unmet	na
+1-170663433-AG-A			not_lof	intergenic_variant	Unmet	Unmet	na
+1-171161576-CCTCT-C			not_lof	intergenic_variant	Unmet	Unmet	na
+1-171589571-C-T	PRRC2C	NM_001387844.1	not_lof	missense_variant	Unmet	Unmet	na
+1-179444970-A-C	AXDND1	NM_144696.6	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+1-179630866-A-G	TDRD5	NM_001199085.3	not_lof	missense_variant	Unmet	Unmet	na
+1-180093080-T-C	CEP350	NM_014810.5	not_lof	synonymous_variant	Unmet	Unmet	na
+1-180964366-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+1-183145718-TTA-T			not_lof	intergenic_variant	Unmet	Unmet	na
+1-186306583-AACT-A	PRG4	NM_005807.6	not_lof	inframe_deletion	Unmet	Unmet	na
+1-186390792-A-G	ODR4	NM_017847.6	not_lof	missense_variant	Unmet	Unmet	na
+1-186671689-AT-A			not_lof	intergenic_variant	Unmet	Unmet	na
+1-194088317-T-A			not_lof	intergenic_variant	Unmet	Unmet	na
+1-196423042-A-T	KCNT2	NM_198503.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-201211072-T-G	IGFN1	NM_001164586.2	not_lof	missense_variant	Unmet	Unmet	na
+1-201318628-G-C	PKP1	NM_001005337.3	not_lof	missense_variant	Unmet	Unmet	na
+1-202853267-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+1-203627225-C-T	ATP2B4	NM_001684.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-204454670-G-A	PIK3C2B	NM_001377334.1	NM_001377334.1	nonsense	VeryStrong	Unset	NF1
+1-204997346-G-A	NFASC	NM_001378329.1	not_lof	missense_variant	Unmet	Unmet	na
+1-205523628-A-G	CDK18	NM_212502.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-206406577-A-G	SRGAP2	NM_001377444.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-206586846-T-C	RASSF5	NM_182663.4	not_lof	synonymous_variant	Unmet	Unmet	na
+1-207050983-A-G	YOD1	NM_001276320.2	not_lof	intron_variant	Unmet	Unmet	na
+1-207620056-T-A	CR1	NM_000651.6	not_lof	missense_variant	Unmet	Unmet	na
+1-211669146-G-A	NEK2	NM_002497.4	NM_002497.4	nonsense	VeryStrong	Unset	NF1
+1-211946703-G-A	INTS7	NM_015434.4	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+1-212625635-A-G	FAM71A	NM_153606.4	not_lof	missense_variant	Unmet	Unmet	na
+1-212739591-CAT-C	NSL1	NM_015471.4	NM_015471.4	frameshift	Strong	Unset	NF5
+1-218345173-A-C	TGFB2-AS1	NR_046268.1	NR_046268.1	splice-5	Unmet	Unset	NF0
+1-219980081-A-G	EPRS1	NM_004446.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-219997037-TTCA-T	EPRS1	NM_004446.3	not_lof	inframe_deletion	Unmet	Unmet	na
+1-224434204-CGGA-C	WDR26	NM_001379403.1	not_lof	inframe_deletion	Unmet	Unmet	na
+1-225147216-CAATT-C	DNAH14	NM_001367479.1	NM_001367479.1	frameshift	VeryStrong	Unset	NF1
+1-225204248-AGTT-A	DNAH14	NM_001367479.1	not_lof	inframe_deletion	Unmet	Unmet	na
+1-225399199-C-A	DNAH14	NM_001367479.1	NM_001367479.1	nonsense	Moderate	Unset	NF6
+1-228158211-CGAG-C	GJC2	NM_020435.4	not_lof	inframe_deletion	Unmet	Unmet	na
+1-228408340-TAGA-T	TRIM17	NM_016102.4	not_lof	inframe_deletion	Unmet	Unmet	na
+1-232465047-T-C	SIPA1L2	NM_020808.5	not_lof	synonymous_variant	Unmet	Unmet	na
+1-233177819-T-C	PCNX2	NM_014801.4	not_lof	missense_variant	Unmet	Unmet	na
+1-235129054-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+1-236736564-C-T	ACTN2	NM_001103.4	not_lof	intron_variant	Unmet	Unmet	na
+1-236824212-C-T	MTR	NM_000254.3	not_lof	synonymous_variant	Unmet	Unmet	na
+1-237004256-CA-C	MT1HL1	NM_001276687.2	NM_001276687.2	frameshift	Strong	Unset	NF5
+1-245156279-C-T	KIF26B	NM_018012.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+1-245685544-A-ACTC	KIF26B	NM_018012.4	not_lof	inframe_insertion	Unmet	Unmet	na
+1-246778688-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+1-247864730-G-A	TRIM58	NM_015431.4	not_lof	missense_variant	Unmet	Unmet	na
+1-247876487-T-C	TRIM58	NM_015431.4	not_lof	stop_lost	Unmet	Unmet	na
+1-247895681-T-G	OR2W3	NM_001001957.2	not_lof	missense_variant	Unmet	Unmet	na
+1-248203380-A-G	OR2M3	NM_001004689.2	not_lof	missense_variant	Unmet	Unmet	na
+1-248361672-A-G	OR2T4	NM_001004696.2	not_lof	missense_variant	Unmet	Unmet	na
+1-248488658-C-T	OR2T5	NM_001004697.2	NM_001004697.2	nonsense	Strong	Unset	NF5
+1-248559422-G-A	OR2T29	NM_001004694.3	NM_001004694.3	nonsense	Strong	Unset	NF5
+1-248638287-C-T	OR2T35	NM_001001827.2	not_lof	stop_retained_variant	Unmet	Unmet	na
+1-248650008-T-TA	OR2T27	NM_001001824.2	NM_001001824.2	frameshift	Moderate	Unset	NF6
+10-1019518-C-T	IDI2	NM_033261.3	not_lof	stop_retained_variant	Unmet	Unmet	na
+10-1024681-G-A	IDI2	NM_033261.3	NM_033261.3	nonsense	VeryStrong	Unset	NF1
+10-3108769-C-T	PFKP	NM_002627.5	not_lof	synonymous_variant	Unmet	Unmet	na
+10-3143463-G-A	PITRM1	NM_014889.4	not_lof	synonymous_variant	Unmet	Unmet	na
+10-5107457-T-G	AKR1C3	NM_003739.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+10-5717695-C-G	TASOR2	NM_001387328.1	NM_001387328.1	nonsense	VeryStrong	Unset	NF1
+10-7720958-C-T	ITIH2	NM_002216.3	NM_002216.3	nonsense	VeryStrong	Unset	NF1
+10-13233625-G-A	UCMA	NM_145314.3	NM_145314.3	nonsense	VeryStrong	Unset	NF1
+10-13656923-T-TCGC	FRMD4A	NM_018027.5	not_lof	inframe_insertion	Unmet	Unmet	na
+10-16937715-T-C	CUBN	NM_001081.4	not_lof	missense_variant	Unmet	Unmet	na
+10-17047451-C-A	CUBN	NM_001081.4	not_lof	missense_variant	Unmet	Unmet	na
+10-17796115-G-A	TMEM236	NM_001098844.3	not_lof	missense_variant	Unmet	Unmet	na
+10-19204983-G-A	MALRD1	NM_001142308.3	not_lof	missense_variant	Unmet	Unmet	na
+10-21172481-G-GA	NEBL	NM_001377322.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+10-21516768-CGGT-C	SKIDA1	NM_207371.4	not_lof	inframe_deletion	Unmet	Unmet	na
+10-21740233-A-G	MLLT10	NM_001195626.3	not_lof	synonymous_variant	Unmet	Unmet	na
+10-22326492-C-A	COMMD3-BMI1	NM_001204062.2	not_lof	missense_variant	Unmet	Unmet	na
+10-26168708-T-C	MYO3A	NM_017433.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+10-26697800-G-T	PDSS1	NM_014317.5	not_lof	missense_variant	Unmet	Unmet	na
+10-27413815-A-G	PTCHD3	NM_001034842.4	not_lof	synonymous_variant	Unmet	Unmet	na
+10-37130364-G-T	ANKRD30A	NM_052997.3	NM_052997.3	nonsense	VeryStrong	Unset	NF1
+10-38094321-G-T			not_lof	intergenic_variant	Unmet	Unmet	na
+10-38650631-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+10-45463720-G-A	MARCHF8	NM_001282866.2	not_lof	synonymous_variant	Unmet	Unmet	na
+10-46798026-T-C	BMS1P1	NR_003611.2	not_lof	splice_region_variant&intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+10-50685707-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+10-59788532-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+10-61690621-G-A	CABCOCO1	NM_001366906.2	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+10-68827436-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+10-69232908-C-T	HKDC1	NM_025130.4	not_lof	missense_variant	Unmet	Unmet	na
+10-69633740-A-T			not_lof	intergenic_variant	Unmet	Unmet	na
+10-72204485-G-C	ASCC1	NM_001198800.3	not_lof	intron_variant	Unmet	Unmet	na
+10-72941332-C-T	PLA2G12B	NM_032562.5	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+10-73331205-G-A	CFAP70	NM_001367801.1	not_lof	missense_variant	Unmet	Unmet	na
+10-73427725-G-A	MSS51	NM_001024593.2	NM_001024593.2	nonsense	VeryStrong	Unset	NF1
+10-73913990-A-C	PLAU	NM_002658.6	not_lof	missense_variant	Unmet	Unmet	na
+10-74708444-G-A	ADK	NM_006721.4	not_lof	stop_retained_variant	Unmet	Unmet	na
+10-75028886-AGAG-A	KAT6B	NM_012330.4	not_lof	inframe_deletion	Unmet	Unmet	na
+10-80081672-AAAAG-A	TMEM254	NM_025125.4	not_lof	intron_variant	Unmet	Unmet	na
+10-80082210-T-G	TMEM254	NM_025125.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+10-81875718-GACCACC-G	NRG3	NM_001010848.4	not_lof	inframe_deletion	Unmet	Unmet	na
+10-84232755-T-C	LRIT1	NM_015613.3	not_lof	synonymous_variant	Unmet	Unmet	na
+10-84477575-G-A	CCSER2	NM_001284240.2	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+10-86718058-GA-G	LDB3	NM_007078.3	NM_007078.3	frameshift	VeryStrong	Unmet	NF1
+10-86962641-A-T	SNCG	NM_003087.3	not_lof	missense_variant	Unmet	Unmet	na
+10-87365105-G-A	NUTM2D	NM_001382304.1	not_lof	missense_variant	Unmet	Unmet	na
+10-89003044-G-A	FAS	NM_000043.6	not_lof	missense_variant	Unmet	Unmet	na
+10-89738145-C-CTAAAAG	KIF20B	NM_001284259.2	not_lof	inframe_insertion	Unmet	Unmet	na
+10-91908547-G-T	FGFBP3	NM_152429.5	not_lof	missense_variant	Unmet	Unmet	na
+10-94298676-G-A	PLCE1	NM_016341.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+10-94577096-G-A	HELLS	NM_018063.5	not_lof	intron_variant	Unmet	Unmet	na
+10-95229068-CAATTA-C			not_lof	intergenic_variant	Unmet	Unmet	na
+10-96158037-CAA-C	ZNF518A	NR_138482.1	not_lof	intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+10-97431055-T-TG	PGAM1	NM_002629.4	NM_002629.4	frameshift	Strong	Unset	NF5
+10-98211325-AAGCCCG-A	R3HCC1L	NM_001351015.2	not_lof	intron_variant	Unmet	Unmet	na
+10-100286623-T-G	BLOC1S2	NM_173809.5	not_lof	missense_variant	Unmet	Unmet	na
+10-102160651-TGAG-T	NOLC1	NM_004741.5	not_lof	inframe_deletion	Unmet	Unmet	na
+10-102228508-G-A	ELOVL3	NM_152310.3	not_lof	missense_variant	Unmet	Unmet	na
+10-110133615-CTAAA-C	ADD3	NM_016824.5	not_lof	stop_retained_variant&3_prime_UTR_variant	Unmet	Unmet	na
+10-110304944-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+10-113578665-C-T	HABP2	NM_004132.5	NM_004132.5	nonsense	VeryStrong	Unset	NF1
+10-113652928-C-T	NRAP	NM_198060.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+10-113679881-CTT-C	CASP7	NM_001267057.1	NM_001267057.1	frameshift	VeryStrong	Unset	NF1
+10-116546086-C-T	PNLIP	NM_000936.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+10-121960414-G-A	NSMCE4A	NM_017615.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+10-122085531-T-C	TACC2	NM_206862.4	not_lof	missense_variant	Unmet	Unmet	na
+10-122454839-C-T	ARMS2	NM_001099667.3	NM_001099667.3	nonsense	VeryStrong	Unset	NF1
+10-122576455-C-T	DMBT1	NM_001377530.1	NM_001377530.1	nonsense	VeryStrong	Unset	NF1
+10-122580891-C-T	DMBT1	NM_001377530.1	not_lof	synonymous_variant	Unmet	Unmet	na
+10-122592328-C-T	DMBT1	NM_001377530.1	NM_001377530.1	nonsense	VeryStrong	Unset	NF1
+10-122698312-C-T	C10orf120	NM_001010912.4	NM_001010912.4	nonsense	Strong	Unset	NF5
+10-123862640-C-T	CPXM2	NM_198148.3	not_lof	missense_variant	Unmet	Unmet	na
+10-124021236-C-CGGGGGGGGGGGGGGGGGGCGGGGGGGGGGGGGGGGGG	CHST15	NM_001270764.2	not_lof	intron_variant	Unmet	Unmet	na
+10-124994597-C-A	CTBP2	NM_022802.3	NM_022802.3	nonsense	VeryStrong	Unset	NF1
+10-125003040-T-G	CTBP2	NM_022802.3	not_lof	missense_variant	Unmet	Unmet	na
+10-132013391-A-T			not_lof	intergenic_variant	Unmet	Unmet	na
+10-132136004-C-T	JAKMIP3	NM_001323086.2	not_lof	synonymous_variant	Unmet	Unmet	na
+10-133302987-G-C	TUBGCP2	NR_046330.2	not_lof	splice_region_variant&intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+11-900079-G-GT	CHID1	NM_023947.4	NM_023947.4	frameshift	VeryStrong	Unset	NF1
+11-1099504-C-T	MUC2	NM_002457.4	not_lof	missense_variant	Unmet	Unmet	na
+11-1237157-G-A	MUC5B	NM_002458.3	not_lof	missense_variant	Unmet	Unmet	na
+11-1584689-G-T	KRTAP5-1	NM_001005922.1	NM_001005922.1	nonsense	Strong	Unset	NF5
+11-2161606-A-AGGACCCCTGTCCCCAG			not_lof	intergenic_variant	Unmet	Unmet	na
+11-2299635-T-TG	C11orf21	NM_001329958.2	NM_001329958.2	frameshift	Strong	Unset	NF5
+11-3166687-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+11-4242620-C-A			not_lof	intergenic_variant	Unmet	Unmet	na
+11-4242696-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+11-4242702-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+11-4450136-T-TA	OR52K2	NM_001005172.2	NM_001005172.2	frameshift	Strong	Unset	NF5
+11-4546129-AATGAAGATT-A	OR52M1	NM_001004137.1	not_lof	inframe_deletion	Unmet	Unmet	na
+11-4924126-CTG-C	OR51G1	NM_001005237.1	NM_001005237.1	frameshift	Strong	Unset	NF5
+11-5047201-G-A	OR52J3	NM_001001916.2	not_lof	missense_variant	Unmet	Unmet	na
+11-5489584-C-T	OR52D1	NM_001005163.2	not_lof	missense_variant	Unmet	Unmet	na
+11-5755057-C-T	OR52N4	NM_001005175.5	not_lof	missense_variant	Unmet	Unmet	na
+11-5755254-A-T	OR52N4	NM_001005175.5	NM_001005175.5	nonsense	Strong	Unset	NF5
+11-5967993-G-A	OR56A5	NM_001146033.1	NM_001146033.1	nonsense	Strong	Unset	NF5
+11-5985797-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+11-6394336-G-A	SMPD1	NM_000543.5	not_lof	missense_variant	Unmet	Unmet	na
+11-6571985-G-A	DNHD1	NM_144666.3	not_lof	stop_retained_variant	Unmet	Unmet	na
+11-6617040-G-A	TPP1	NM_000391.4	NM_000391.4	nonsense	VeryStrong	VeryStrong	NF1
+11-7650964-T-C	PPFIBP2	NM_003621.5	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+11-7965358-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+11-8618974-G-A	TRIM66	NM_001388022.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+11-8937780-G-A	ASCL3	NM_020646.2	NM_020646.2	nonsense	Strong	Unset	NF5
+11-10693795-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+11-10799116-TAAA-T	EIF4G2	NM_001418.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+11-12294797-G-GCTC	MICALCL	NM_032867.4	not_lof	inframe_insertion	Unmet	Unmet	na
+11-13389143-TGAAA-T	BTBD10	NM_032320.7	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+11-15149130-G-A	INSC	NM_001042536.3	not_lof	splice_region_variant&5_prime_UTR_variant	Unmet	Unmet	na
+11-17396930-C-A	ABCC8	NM_000352.6	not_lof	missense_variant	Unmet	Unmet	na
+11-18138122-G-A	MRGPRX3	NM_054031.4	NM_054031.4	nonsense	Moderate	Unset	NF6
+11-18173816-T-A	MRGPRX4	NM_054032.3	NM_054032.3	nonsense	Strong	Unset	NF5
+11-18480568-G-GCAGTCTTTCTTGCTTTTTGCATTA	TSG101	NM_006292.4	not_lof	inframe_insertion	Unmet	Unmet	na
+11-19242020-T-G			not_lof	intergenic_variant	Unmet	Unmet	na
+11-20387462-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+11-21575863-A-T			not_lof	intergenic_variant	Unmet	Unmet	na
+11-26683750-T-A	SLC5A12	NM_178498.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+11-27368597-G-A	LGR4	NM_018490.5	not_lof	missense_variant	Unmet	Unmet	na
+11-33339420-G-A	HIPK3	NM_005734.5	not_lof	missense_variant	Unmet	Unmet	na
+11-35434513-T-C	PAMR1	NM_001001991.3	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+11-45924543-GC-G	LARGE2	NM_001300721.2	NM_001300721.2	frameshift	VeryStrong	Unset	NF1
+11-46877220-T-C	LRP4	NM_002334.4	not_lof	missense_variant	Unmet	Unmet	na
+11-46881778-C-T	LRP4	NM_002334.4	not_lof	missense_variant	Unmet	Unmet	na
+11-47285079-C-T	MADD	NR_164835.1	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+11-47442726-A-G	RAPSN	NM_005055.5	not_lof	missense_variant	Unmet	Unmet	na
+11-48217585-CT-C	OR4B1	NM_001005470.1	NM_001005470.1	frameshift	Strong	Unset	NF5
+11-48366426-T-A	OR4C5	NM_001348223.2	NM_001348223.2	nonsense	Strong	Unset	NF5
+11-48366974-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+11-48464515-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+11-49037810-C-A	TRIM49B	NM_001206626.2	not_lof	missense_variant	Unmet	Unmet	na
+11-49876483-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+11-54635936-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+11-55343427-C-A	OR4A16	NM_001005274.1	NM_001005274.1	nonsense	Strong	Unset	NF5
+11-55344108-A-T	OR4A16	NM_001005274.1	not_lof	missense_variant	Unmet	Unmet	na
+11-55555134-CTCTCTGAGAACACACAGTTCTGAAG-C	OR4C15	NM_001001920.3	NM_001001920.3	frameshift	Strong	Unset	NF5
+11-56248233-T-A			not_lof	intergenic_variant	Unmet	Unmet	na
+11-56448836-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+11-56542880-A-T	OR5M11	NM_001005245.1	NM_001005245.1	nonsense	Strong	Unset	NF5
+11-57313288-T-G	TNKS1BP1	NM_033396.3	not_lof	missense_variant	Unmet	Unmet	na
+11-58403319-AG-A	OR5B3	NM_001005469.2	NM_001005469.2	frameshift	Strong	Unset	NF5
+11-59478120-G-T	OR4D10	NM_001004705.2	NM_001004705.2	nonsense	Strong	Unset	NF5
+11-60062542-C-T	MS4A3	NM_006138.5	not_lof	synonymous_variant	Unmet	Unmet	na
+11-61959966-C-T	BEST1	NM_004183.4	not_lof	synonymous_variant	Unmet	Unmet	na
+11-62273183-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+11-62536083-T-TCTC	AHNAK	NM_001620.3	not_lof	inframe_insertion	Unmet	Unmet	na
+11-62801633-T-TAC	NXF1	NM_006362.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+11-63229407-ATTTGAGTC-A	SLC22A25	NM_199352.4	NM_199352.4	frameshift	VeryStrong	Unset	NF1
+11-63974368-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+11-64750544-G-A	PYGM	NM_005609.4	not_lof	missense_variant	Unmet	Unmet	na
+11-64840198-G-A	CDC42BPG	NM_017525.3	not_lof	missense_variant	Unmet	Unmet	na
+11-65132241-G-A	SYVN1	NM_172230.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+11-65592727-T-G			not_lof	intergenic_variant	Unmet	Unmet	na
+11-65642458-C-T	SIPA1	NM_006747.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+11-66315891-G-A	CD248	NM_020404.3	not_lof	synonymous_variant	Unmet	Unmet	na
+11-66474931-T-G	PELI3	NM_145065.3	not_lof	intron_variant	Unmet	Unmet	na
+11-66857759-CCTG-C	LRFN4	NM_024036.5	not_lof	inframe_deletion	Unmet	Unmet	na
+11-67409044-C-T	TBC1D10C	NM_001369496.1	NM_001369496.1	nonsense	VeryStrong	Unset	NF1
+11-67713690-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+11-68029289-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+11-68312746-C-CGCT	LRP5	NM_002335.4	not_lof	inframe_insertion	Unmet	Unmet	na
+11-68707269-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+11-68914852-C-T	IGHMBP2	NM_002180.3	not_lof	synonymous_variant	Unmet	Unmet	na
+11-69656978-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+11-70087818-C-T	ANO1	NR_030691.2	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+11-71503063-T-A			not_lof	intergenic_variant	Unmet	Unmet	na
+11-71884595-G-GA	LOC100133315	NM_001375848.2	not_lof	intron_variant	Unmet	Unmet	na
+11-72014238-G-C	NUMA1	NM_006185.4	not_lof	missense_variant	Unmet	Unmet	na
+11-72136105-C-T	FOLR3	NM_000804.4	not_lof	synonymous_variant	Unmet	Unmet	na
+11-73309330-G-GCTC	ARHGEF17	NM_014786.4	not_lof	inframe_insertion	Unmet	Unmet	na
+11-74697229-G-A	CHRDL2	NM_001278473.3	NM_001278473.3	nonsense	Moderate	Unset	NF6
+11-75435557-G-A	GDPD5	NM_030792.8	NM_030792.8	nonsense	Moderate	Unset	NF6
+11-75983386-G-GA	UVRAG	NM_003369.4	NM_003369.4	frameshift	VeryStrong	Unset	NF1
+11-78213767-A-G	USP35	NM_020798.4	not_lof	missense_variant	Unmet	Unmet	na
+11-78559622-G-A	NARS2	NM_024678.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+11-85709358-G-A	SYTL2	NM_206927.4	not_lof	missense_variant	Unmet	Unmet	na
+11-88149669-C-T	RAB38	NM_022337.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+11-93408306-C-T	DEUP1	NM_181645.4	NM_181645.4	nonsense	VeryStrong	Unset	NF1
+11-94045866-C-T	HEPHL1	NM_001098672.2	NM_001098672.2	nonsense	VeryStrong	Unset	NF1
+11-94182082-A-C			not_lof	intergenic_variant	Unmet	Unmet	na
+11-94799469-G-A	AMOTL1	NM_130847.3	not_lof	synonymous_variant	Unmet	Unmet	na
+11-100921604-G-A	ARHGAP42	NM_152432.4	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+11-101127741-C-A	PGR	NM_000926.4	not_lof	missense_variant	Unmet	Unmet	na
+11-104892989-A-G	CASP12	NR_034068.3	not_lof	intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+11-105903807-T-C	GRIA4	NM_000829.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+11-108172808-TAGA-T	NPAT	NM_002519.3	not_lof	inframe_deletion	Unmet	Unmet	na
+11-108467612-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+11-111737504-G-A	PPP2R1B	NM_181699.3	not_lof	missense_variant	Unmet	Unmet	na
+11-113231215-G-A	NCAM1	NM_181351.5	not_lof	intron_variant	Unmet	Unmet	na
+11-113398957-C-G	ANKK1	NM_178510.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+11-113696977-C-T	TMPRSS5	NM_030770.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+11-113768940-T-A	ZW10	NM_004724.4	NM_004724.4	nonsense	VeryStrong	Unset	NF1
+11-114400275-G-C	C11orf71	NM_001271562.2	NM_001271562.2	nonsense	Strong	Unset	NF5
+11-116821130-AG-A	APOA4	NM_000482.4	NM_000482.4	frameshift	Strong	Unset	NF5
+11-116858282-TTGCTGTTGC-T	SIK3	NM_001366686.3	not_lof	inframe_deletion	Unmet	Unmet	na
+11-117167483-A-G	PAFAH1B2	NM_002572.4	not_lof	synonymous_variant	Unmet	Unmet	na
+11-117407979-C-T	CEP164	NM_014956.5	not_lof	synonymous_variant	Unmet	Unmet	na
+11-118659953-G-A	TREH	NM_007180.3	NM_007180.3	nonsense	VeryStrong	Unset	NF1
+11-119372960-C-T	USP2	NM_004205.5	not_lof	missense_variant	Unmet	Unmet	na
+11-123883251-C-T	TMEM225	NM_001013743.3	not_lof	missense_variant	Unmet	Unmet	na
+11-124038427-G-T	OR10G7	NM_001004463.2	NM_001004463.2	nonsense	Strong	Unset	NF5
+11-124038988-G-C	OR10G7	NM_001004463.2	not_lof	missense_variant	Unmet	Unmet	na
+11-124119011-G-A	VWA5A	NM_001130142.2	not_lof	missense_variant	Unmet	Unmet	na
+11-124319670-ATGAC-A	OR8D2	NM_001002918.1	NM_001002918.1	frameshift	Strong	Unset	NF5
+11-125900092-C-T	HYLS1	NM_001134793.2	NM_001134793.2	nonsense	Strong	Unset	NF5
+11-125903167-T-C	PUS3	NM_031307.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+11-125951989-CAAG-C	VSIG10L2	NM_001365077.1	not_lof	inframe_deletion	Unmet	Unmet	na
+11-129023850-TCTC-T	ARHGAP32	NM_001378025.1	not_lof	intron_variant	Unmet	Unmet	na
+12-1691220-G-A	ADIPOR2	NM_024551.3	not_lof	intron_variant	Unmet	Unmet	na
+12-2931124-A-T	TULP3	NM_003324.5	not_lof	missense_variant	Unmet	Unmet	na
+12-4428255-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+12-5635355-G-A	ANO2	NM_001278596.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+12-5996230-G-C	VWF	NM_000552.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+12-6019382-G-A	VWF	NM_000552.5	NM_000552.5	nonsense	VeryStrong	VeryStrong	NF1
+12-7322485-C-T	ACSM4	NM_001080454.1	NM_001080454.1	nonsense	VeryStrong	Unset	NF1
+12-7368967-TGAGA-T	CD163L1	NM_174941.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+12-7765335-C-T	NANOGNB	NM_001145465.1	not_lof	missense_variant	Unmet	Unmet	na
+12-7899201-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+12-8224752-T-C	FAM90A1	NM_018088.3	not_lof	synonymous_variant	Unmet	Unmet	na
+12-8234451-A-T	FAM86FP	NR_024254.1	not_lof	splice_region_variant&intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+12-8477433-C-A	CLEC6A	NM_001007033.2	NM_001007033.2	nonsense	Moderate	Unset	NF6
+12-8841389-T-C	A2ML1	NM_144670.6	not_lof	synonymous_variant	Unmet	Unmet	na
+12-8843328-AAG-A	A2ML1	NM_144670.6	NM_144670.6	frameshift	VeryStrong	Unmet	NF1
+12-9053010-G-T			not_lof	intergenic_variant	Unmet	Unmet	na
+12-9432366-C-T	DDX12P	NR_033399.1	not_lof	splice_region_variant&non_coding_transcript_exon_variant	Unmet	Unmet	na
+12-9733111-A-ATAAGT	CLECL1	NM_001267701.1	NM_001267701.1	frameshift	VeryStrong	Unset	NF1
+12-9999043-T-C	CLEC1B	NM_016509.3	not_lof	missense_variant	Unmet	Unmet	na
+12-10166855-GCTT-G	OLR1	NM_002543.4	not_lof	inframe_deletion	Unmet	Unmet	na
+12-10806935-C-A	TAS2R8	NM_023918.3	NM_023918.3	nonsense	Strong	Unset	NF5
+12-11091468-A-ATT	TAS2R43	NM_176884.2	NM_176884.2	frameshift	Strong	Unset	NF5
+12-12477731-T-TGCACGCTGG	DUSP16	NM_030640.3	not_lof	inframe_insertion	Unmet	Unmet	na
+12-12477735-C-T	DUSP16	NM_030640.3	not_lof	missense_variant	Unmet	Unmet	na
+12-12950240-G-A	GPRC5D-AS1	NR_149067.1	not_lof	intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+12-18648027-G-C	PIK3C2G	NM_001288772.2	not_lof	stop_lost	Unmet	Unmet	na
+12-19721017-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+12-25108768-A-G	CFAP94	NM_018272.5	not_lof	missense_variant	Unmet	Unmet	na
+12-29148940-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+12-29445408-G-T	OVCH1-AS1	NR_073172.1	not_lof	intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+12-30720921-C-T	CAPRIN2	NM_001002259.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+12-31206276-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+12-31382113-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+12-40420305-A-G	MUC19	NM_173600.2	not_lof	missense_variant	Unmet	Unmet	na
+12-40428065-G-A	MUC19	NM_173600.2	not_lof	missense_variant	Unmet	Unmet	na
+12-40516466-AG-A	MUC19	NM_173600.2	NM_173600.2	frameshift	VeryStrong	Unset	NF1
+12-40525409-AC-A	MUC19	NM_173600.2	NM_173600.2	frameshift	VeryStrong	Unset	NF1
+12-40534737-A-T	MUC19	NM_173600.2	NM_173600.2	nonsense	VeryStrong	Unset	NF1
+12-42464722-G-A	PRICKLE1	NM_153026.3	NM_153026.3	nonsense	VeryStrong	Unmet	NF1
+12-47235693-T-C	PCED1B	NM_138371.3	not_lof	synonymous_variant	Unmet	Unmet	na
+12-47690554-G-A	RPAP3	NM_024604.3	NM_024604.3	nonsense	VeryStrong	Unset	NF1
+12-48921312-G-A	CCDC65	NM_033124.5	not_lof	missense_variant	Unmet	Unmet	na
+12-48940979-G-C	ARF3	NM_001659.3	not_lof	synonymous_variant	Unmet	Unmet	na
+12-49033122-T-TTGC	KMT2D	NM_003482.4	not_lof	inframe_insertion	Unmet	Unmet	na
+12-50352460-T-G	FAM186A	NM_001145475.3	not_lof	missense_variant	Unmet	Unmet	na
+12-50660312-ACCT-A	DIP2B	NM_173602.3	not_lof	inframe_deletion	Unmet	Unmet	na
+12-51055900-T-C	LETMD1	NM_015416.5	not_lof	missense_variant	Unmet	Unmet	na
+12-51093440-A-AT			not_lof	intergenic_variant	Unmet	Unmet	na
+12-51341287-AG-A	CELA1	NM_001971.6	NM_001971.6	frameshift	VeryStrong	Unset	NF1
+12-51346632-C-CACCAGGAAGCG	CELA1	NM_001971.6	NM_001971.6	frameshift	VeryStrong	Unset	NF1
+12-51379336-C-CG	GALNT6	NM_007210.4	NM_007210.4	frameshift	VeryStrong	Unset	NF1
+12-52254365-C-G	KRT87P	NR_146088.1	NR_146088.1	splice-3	Unmet	Unset	NF0
+12-52592489-G-A	KRT72	NM_080747.3	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+12-52692755-C-CT	KRT77	NM_175078.3	NM_175078.3	frameshift	VeryStrong	Unset	NF1
+12-52768988-C-CGCT	KRT76	NM_015848.4	not_lof	inframe_insertion	Unmet	Unmet	na
+12-52773632-C-A	KRT76	NM_015848.4	NM_015848.4	nonsense	VeryStrong	Unset	NF1
+12-53115492-C-G	SOAT2	NM_003578.4	NM_003578.4	nonsense	VeryStrong	Unset	NF1
+12-54283202-ACGGAGG-A	HNRNPA1	NM_031157.4	not_lof	inframe_deletion	Unmet	Unmet	na
+12-54411969-G-T	ITGA5	NM_002205.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+12-54549898-C-T	PDE1B	NM_000924.4	not_lof	missense_variant	Unmet	Unmet	na
+12-55294634-A-T	OR6C6	NM_001005493.2	NM_001005493.2	nonsense	Strong	Unset	NF5
+12-55321464-A-C	OR6C1	NM_001005182.1	not_lof	missense_variant	Unmet	Unmet	na
+12-55493311-A-T	OR6C68	NM_001005519.2	NM_001005519.2	nonsense	Moderate	Unset	NF6
+12-55681479-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+12-55757558-AAAG-A	SARNP	NM_033082.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+12-57038587-G-A	MYO1A	NM_005379.4	NM_005379.4	nonsense	VeryStrong	Unmet	NF1
+12-57047675-G-A	MYO1A	NM_005379.4	NM_005379.4	nonsense	VeryStrong	Unmet	NF1
+12-57196001-A-C	LRP1	NM_002332.3	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+12-57515336-A-C	MARS1	NM_004990.4	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+12-68248148-T-A			not_lof	intergenic_variant	Unmet	Unmet	na
+12-70353913-TAA-T	CNOT2	NM_014515.7	NM_014515.7	frameshift	VeryStrong	Unset	NF1
+12-70353913-TA-T	CNOT2	NM_014515.7	NM_014515.7	frameshift	VeryStrong	Unset	NF1
+12-71925328-ATAT-A			not_lof	intergenic_variant	Unmet	Unmet	na
+12-73899781-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+12-75304855-C-T	CAPS2	NR_149156.2	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+12-90978265-GAAA-G	EPYC	NM_004950.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+12-92425933-A-G	CLLU1	NR_027932.1	not_lof	splice_region_variant&non_coding_transcript_exon_variant	Unmet	Unmet	na
+12-95966354-G-A	AMDHD1	NM_152435.3	not_lof	missense_variant	Unmet	Unmet	na
+12-96739959-T-G	CFAP54	NM_001306084.2	not_lof	synonymous_variant	Unmet	Unmet	na
+12-96952051-T-G	NEDD1	NM_152905.4	not_lof	stop_lost	Unmet	Unmet	na
+12-100390997-C-A	SLC17A8	NM_139319.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+12-102301774-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+12-102958393-C-CGCAGCAGCAGCA	ASCL1	NM_004316.4	not_lof	inframe_insertion	Unmet	Unmet	na
+12-103306169-C-A	C12orf42	NM_001099336.3	not_lof	missense_variant	Unmet	Unmet	na
+12-104866381-TACACACAC-T	SLC41A2	NM_001387125.1	not_lof	intron_variant	Unmet	Unmet	na
+12-106247711-GGGC-G	CKAP4	NM_006825.4	not_lof	inframe_deletion	Unmet	Unmet	na
+12-108206308-C-T	WSCD2	NM_014653.4	not_lof	synonymous_variant	Unmet	Unmet	na
+12-109458049-C-T	KCTD10	NM_031954.5	not_lof	synonymous_variant	Unmet	Unmet	na
+12-110018370-A-G	ANKRD13A	NM_033121.2	not_lof	synonymous_variant	Unmet	Unmet	na
+12-110180532-ACTT-A	IFT81	NM_014055.4	not_lof	inframe_deletion	Unmet	Unmet	na
+12-111683212-TA-T	BRAP	NM_006768.5	NM_006768.5	frameshift	VeryStrong	Unset	NF1
+12-111936797-C-T	TMEM116	NM_001193531.2	not_lof	missense_variant	Unmet	Unmet	na
+12-112283309-T-C	HECTD4	NM_001388303.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+12-112919388-G-A	OAS1	NM_016816.4	NM_016816.4	splice-3	VeryStrong	Unset	SS1
+12-112965870-C-T	OAS3	NM_006187.4	NM_006187.4	nonsense	VeryStrong	Unset	NF1
+12-113010483-A-G	OAS2	NM_002535.3	not_lof	3_prime_UTR_variant	Unmet	Unmet	na
+12-113180950-A-ACTT	DDX54	NM_024072.4	not_lof	inframe_insertion	Unmet	Unmet	na
+12-117010390-CGT-C	FBXW8	NM_153348.3	NM_153348.3	frameshift	VeryStrong	Unset	NF1
+12-119761056-C-T	CIT	NM_001206999.2	NM_001206999.2	splice-3	VeryStrong	Unset	SS1
+12-120762330-A-C			not_lof	intergenic_variant	Unmet	Unmet	na
+12-121232439-G-C	P2RX4	NM_002560.3	not_lof	missense_variant	Unmet	Unmet	na
+12-122200593-A-AGGGGGAGAAAGACAAGAAAGG	LRRC43	NM_001098519.2	not_lof	inframe_insertion	Unmet	Unmet	na
+12-123389463-AGGC-A	KMT5A	NM_020382.7	not_lof	inframe_deletion	Unmet	Unmet	na
+12-123925146-C-T	DNAH10	NM_001372106.1	not_lof	missense_variant	Unmet	Unmet	na
+12-124402512-GGCTGCTGCT-G	NCOR2	NM_001077261.4	not_lof	inframe_deletion	Unmet	Unmet	na
+12-131828553-G-GGCTGCCGCT	MMP17	NM_016155.7	not_lof	inframe_insertion	Unmet	Unmet	na
+12-132722809-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+13-19204269-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+13-20988343-C-CGGGGCG	LATS2	NM_014572.3	not_lof	inframe_insertion	Unmet	Unmet	na
+13-21261458-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+13-21502943-T-A	MICU2	NM_152726.3	NM_152726.3	nonsense	VeryStrong	Unset	NF1
+13-23805971-GC-G	MIPEP	NM_005932.4	NM_005932.4	frameshift	Strong	Unset	NF5
+13-23891484-G-A	PCOTH	NM_001014442.4	not_lof	5_prime_UTR_variant	Unmet	Unmet	na
+13-24501839-G-C	PARP4	NM_006437.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+13-24512918-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+13-25253966-TA-T	MTMR6	NR_169592.1	not_lof	intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+13-40941085-T-A	ELF1	NM_172373.4	not_lof	synonymous_variant	Unmet	Unmet	na
+13-41336646-C-T	NAA16	NM_024561.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+13-43830275-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+13-44982134-G-A	NUFIP1	NM_012345.3	NM_012345.3	nonsense	VeryStrong	Unset	NF1
+13-49482961-G-A	SETDB2	NM_031915.3	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+13-52223587-T-TATA			not_lof	intergenic_variant	Unmet	Unmet	na
+13-52703676-A-T	CNMD	NM_007015.3	NM_007015.3	nonsense	Moderate	Unset	NF6
+13-61760339-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+13-76991450-AGG-A			not_lof	intergenic_variant	Unmet	Unmet	na
+13-94612350-C-T	GPR180	NM_180989.6	not_lof	synonymous_variant	Unmet	Unmet	na
+13-95630112-C-T	DZIP1	NM_198968.4	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+13-99858993-G-A	CLYBL	NR_104592.2	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+13-99970413-TGGCGGCGGCGGC-T	ZIC5	NR_146224.1	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+13-102731509-A-C	CCDC168	NM_001146197.3	NM_001146197.3	nonsense	Moderate	Unset	NF6
+13-102750353-G-T	CCDC168	NM_001146197.3	NM_001146197.3	nonsense	Strong	Unset	NF5
+13-107121196-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+13-108209993-CTCTTT-C	LIG4	NM_206937.2	NM_206937.2	frameshift	Unmet	Unmet	NF4
+13-109127557-C-T	MYO16	NM_001198950.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+13-110148959-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+13-110445882-G-A	COL4A2	NM_001846.4	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+13-110644069-CCTGTGA-C	CARS2	NM_024537.4	not_lof	intron_variant	Unmet	Unmet	na
+13-111854092-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+13-112547577-T-A	TUBGCP3	NM_006322.6	not_lof	intron_variant	Unmet	Unmet	na
+13-112873565-C-T	ATP11A	NM_032189.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+13-113185474-CAGA-C	PCID2	NM_001127202.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+14-19181090-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+14-20014266-G-T	OR4K14	NM_001004712.2	not_lof	missense_variant	Unmet	Unmet	na
+14-20144108-G-A	OR4N5	NM_001004724.2	not_lof	missense_variant	Unmet	Unmet	na
+14-20224640-C-T	OR11H6	NM_001004480.1	NM_001004480.1	nonsense	Moderate	Unset	NF6
+14-20385093-G-T	TEP1	NM_007110.5	NM_007110.5	nonsense	VeryStrong	Unset	NF1
+14-20396660-G-A	TEP1	NM_007110.5	not_lof	synonymous_variant	Unmet	Unmet	na
+14-20584255-T-A	RNASE11	NM_145250.4	not_lof	missense_variant	Unmet	Unmet	na
+14-21032059-C-G	TPPP2	NM_173846.5	NM_173846.5	nonsense	Unmet	Unset	NF4
+14-21155666-CAAG-C	OR5AU1	NM_001004731.3	not_lof	inframe_deletion	Unmet	Unmet	na
+14-21570339-GCA-G	OR10G3	NM_001005465.2	NM_001005465.2	frameshift	Strong	Unset	NF5
+14-21768531-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+14-22493679-G-T			not_lof	intergenic_variant	Unmet	Unmet	na
+14-22507414-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+14-22767417-G-C	OXA1L	NM_005015.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+14-23526447-A-AT	ZFHX2	NM_033400.3	NM_033400.3	frameshift	VeryStrong	Unset	NF1
+14-24000929-C-T	DHRS4L2	NM_198083.4	NM_198083.4	nonsense	VeryStrong	Unset	NF1
+14-24131609-C-T	FITM1	NM_203402.3	NM_203402.3	nonsense	VeryStrong	Unset	NF1
+14-24336256-T-TG	RIPK3	NM_006871.4	NM_006871.4	frameshift	Moderate	Unset	NF6
+14-24369695-A-AGGGGGTGCT	NFATC4	NM_004554.5	not_lof	inframe_insertion	Unmet	Unmet	na
+14-30586733-G-A	G2E3	NM_017769.5	not_lof	missense_variant	Unmet	Unmet	na
+14-31387189-CAAG-C	HEATR5A	NM_015473.4	not_lof	inframe_deletion	Unmet	Unmet	na
+14-37622795-G-A	TTC6	NM_001310135.3	not_lof	missense_variant	Unmet	Unmet	na
+14-38210558-C-CGCTCTGAGCCCGGGCCACGCAGGG	SSTR1	NM_001049.3	NM_001049.3	nonsense	Moderate	Unset	NF6
+14-45004243-C-T	TOGARAM1	NM_001308120.2	NM_001308120.2	nonsense	VeryStrong	Unset	NF1
+14-49625542-T-C	DNAAF2	NM_018139.3	not_lof	stop_retained_variant	Unmet	Unmet	na
+14-52274931-C-A	PTGDR	NM_000953.3	NM_000953.3	nonsense	Unmet	Unset	NF4
+14-53152762-T-TGCCGCC	DDHD1	NM_001160148.2	not_lof	inframe_insertion	Unmet	Unmet	na
+14-54432110-C-T	CNIH1	NM_005776.3	NM_005776.3	nonsense	VeryStrong	Unset	NF1
+14-60008141-G-A	LRRC9	NR_075071.2	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+14-63317650-C-T	GPHB5	NM_145171.4	NM_145171.4	nonsense	Strong	Unset	NF5
+14-63599753-G-A	WDR89	NM_080666.4	NM_080666.4	nonsense	Strong	Unset	NF5
+14-64098826-G-A	SYNE2	NM_182914.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+14-64158626-T-C	SYNE2	NM_182914.3	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+14-67204627-C-G	FAM71D	NM_173526.4	NM_173526.4	nonsense	VeryStrong	Unset	NF1
+14-73499074-G-A	HEATR4	NM_001220484.1	NM_001220484.1	nonsense	VeryStrong	Unset	NF1
+14-73612984-C-G	ACOT6	NM_001365788.1	not_lof	missense_variant	Unmet	Unmet	na
+14-73617197-G-A	ACOT6	NM_001365788.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+14-73946540-A-T	FAM161B	NM_152445.3	not_lof	synonymous_variant	Unmet	Unmet	na
+14-74296383-G-C	ABCD4	NM_005050.4	not_lof	synonymous_variant	Unmet	Unmet	na
+14-74922483-G-A	RPS6KL1	NM_031464.5	not_lof	splice_region_variant&5_prime_UTR_variant	Unmet	Unmet	na
+14-76177923-C-T	GPATCH2L	NM_017926.4	not_lof	intron_variant	Unmet	Unmet	na
+14-77819118-GT-G	ADCK1	NM_020421.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+14-81526729-C-T	SEL1L	NM_005065.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+14-88620769-G-T	ZC3H14	NM_024824.5	not_lof	3_prime_UTR_variant	Unmet	Unmet	na
+14-89628894-CAAT-C			not_lof	intergenic_variant	Unmet	Unmet	na
+14-93245825-C-T	BTBD7	NM_001002860.4	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+14-93659264-A-G	UNC79	NM_001346218.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+14-94381078-A-G	SERPINA1	NM_000295.5	not_lof	missense_variant	Unmet	Unmet	na
+14-99175206-GCTC-G	BCL11B	NM_138576.4	not_lof	inframe_deletion	Unmet	Unmet	na
+14-103100586-G-GCGT	EXOC3L4	NM_001077594.1	not_lof	inframe_insertion	Unmet	Unmet	na
+14-103127080-T-TGGC	TNFAIP2	NM_006291.4	not_lof	inframe_insertion	Unmet	Unmet	na
+14-104588781-TGACGGGCAG-T	C14orf180	NM_001008404.3	not_lof	stop_retained_variant&3_prime_UTR_variant	Unmet	Unmet	na
+14-104684180-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+14-104689739-G-A	INF2	NM_022489.4	not_lof	splice_region_variant&5_prime_UTR_variant	Unmet	Unmet	na
+14-104707525-ACCCCACCCCCAC-A	INF2	NM_022489.4	not_lof	inframe_deletion	Unmet	Unmet	na
+14-105168369-CCAG-C	JAG2	NM_002226.5	not_lof	inframe_deletion	Unmet	Unmet	na
+14-105624454-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+14-105737503-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+14-105891108-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+14-105900877-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+14-106122963-T-A			not_lof	intergenic_variant	Unmet	Unmet	na
+14-106422064-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+14-106578486-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+14-106593224-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+14-106657839-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+15-19973003-A-T			not_lof	intergenic_variant	Unmet	Unmet	na
+15-20282100-C-A			not_lof	intergenic_variant	Unmet	Unmet	na
+15-20605534-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+15-20921544-A-C			not_lof	intergenic_variant	Unmet	Unmet	na
+15-21119952-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+15-22202307-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+15-22542615-G-C	HERC2P2	NR_002824.3	not_lof	splice_region_variant&non_coding_transcript_exon_variant	Unmet	Unmet	na
+15-22866764-A-AATG	NIPA2	NM_030922.7	not_lof	inframe_insertion	Unmet	Unmet	na
+15-23129927-T-C	GOLGA6L1	NM_001001413.3	not_lof	missense_variant	Unmet	Unmet	na
+15-23440316-G-GCTCCCATATC	GOLGA6L2	NM_001304388.2	NM_001304388.2	frameshift	Strong	Unset	NF5
+15-25236456-G-T	SNHG14	NR_146177.1	not_lof	splice_region_variant&intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+15-28707863-G-A	GOLGA8M	NM_001282468.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+15-30088935-C-G	GOLGA8J	NM_001282472.2	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+15-30634235-T-TA	ARHGAP11B	NR_148423.2	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+15-32393034-C-G	GOLGA8K	NM_001282493.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+15-33473408-TCTC-T	RYR3	NM_001036.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+15-34038912-CCCGCCGCCGCCT-C	AVEN	NM_020371.3	not_lof	inframe_deletion	Unmet	Unmet	na
+15-34489614-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+15-35084193-TCA-T	NANOGP8	NM_001355281.2	NM_001355281.2	frameshift	Moderate	Unset	NF6
+15-39589898-T-C	THBS1	NM_003246.4	not_lof	missense_variant	Unmet	Unmet	na
+15-39589971-G-A	THBS1	NM_003246.4	NM_003246.4	nonsense	VeryStrong	Unset	NF1
+15-39976677-C-A	EIF2AK4	NM_001013703.4	not_lof	missense_variant	Unmet	Unmet	na
+15-40364227-C-T	DISP2	NM_033510.3	NM_033510.3	nonsense	VeryStrong	Unset	NF1
+15-40574142-C-T	RPUSD2	NM_152260.3	NM_152260.3	nonsense	Moderate	Unset	NF6
+15-41504816-C-A	LTK	NM_002344.6	NM_002344.6	nonsense	VeryStrong	Unset	NF1
+15-41710683-AT-A	MGA	NM_001164273.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+15-41815726-G-A	MAPKBP1	NM_014994.3	not_lof	missense_variant	Unmet	Unmet	na
+15-41853738-G-C	SPTBN5	NM_016642.4	not_lof	missense_variant	Unmet	Unmet	na
+15-42071822-C-A	PLA2G4D	NM_178034.4	NM_178034.4	nonsense	VeryStrong	Unset	NF1
+15-43329051-C-T	LCMT2	NM_014793.5	NM_014793.5	nonsense	Strong	Unset	NF5
+15-43649901-C-G	PPIP5K1P1-CATSPER2	NR_146339.1	NR_146339.1	splice-3	Unmet	Unset	NF0
+15-43801716-T-C	HYPK	NM_016400.4	not_lof	synonymous_variant	Unmet	Unmet	na
+15-45116735-T-C	DUOXA2	NM_207581.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+15-45187769-G-GC	SHF	NM_138356.3	not_lof	intron_variant	Unmet	Unmet	na
+15-49621129-G-C	DTWD1	NM_001144955.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+15-52609086-T-C	FAM214A	NR_169538.1	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+15-53699950-G-GA	WDR72	NM_182758.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+15-57963929-C-T	ALDH1A2	NM_003888.4	not_lof	missense_variant	Unmet	Unmet	na
+15-58771477-G-T	MINDY2	NM_001040450.3	NM_001040450.3	nonsense	VeryStrong	Unset	NF1
+15-59161185-T-C	MYO1E	NM_004998.4	not_lof	synonymous_variant	Unmet	Unmet	na
+15-59208059-G-A	LDHAL6B	NM_033195.3	NM_033195.3	nonsense	Moderate	Unset	NF6
+15-59214299-G-A	MYO1E	NM_004998.4	NM_004998.4	nonsense	VeryStrong	Unset	NF1
+15-59689500-C-A			not_lof	intergenic_variant	Unmet	Unmet	na
+15-60502761-T-C	RORA	NM_134261.3	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+15-61874877-T-C	VPS13C	NM_020821.3	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+15-61927138-G-A	VPS13C	NM_020821.3	not_lof	missense_variant	Unmet	Unmet	na
+15-62716451-C-T	TLN2	NM_015059.2	NM_015059.2	nonsense	VeryStrong	Unset	NF1
+15-63674373-C-T	HERC1	NM_003922.4	not_lof	synonymous_variant	Unmet	Unmet	na
+15-65119918-G-A	PDCD7	NM_005707.2	not_lof	missense_variant	Unmet	Unmet	na
+15-65512554-G-A	DPP8	NM_130434.5	not_lof	5_prime_UTR_variant	Unmet	Unmet	na
+15-66349111-G-A	TIPIN	NM_017858.3	NM_017858.3	nonsense	VeryStrong	Unset	NF1
+15-67165360-A-G	SMAD3	NM_005902.4	not_lof	missense_variant	Unmet	Unmet	na
+15-69033276-C-T	NOX5	NM_024505.4	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+15-69416069-G-A	KIF23	NM_001367805.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+15-72284609-C-A			not_lof	intergenic_variant	Unmet	Unmet	na
+15-74044315-C-T	PML	NM_033238.3	not_lof	synonymous_variant	Unmet	Unmet	na
+15-74343968-T-G	CYP11A1	NM_000781.3	not_lof	missense_variant	Unmet	Unmet	na
+15-74544255-G-A	ARID3B	NM_006465.4	not_lof	missense_variant	Unmet	Unmet	na
+15-74720646-G-T	CYP1A1	NM_001319217.2	not_lof	missense_variant	Unmet	Unmet	na
+15-74821900-G-C	LMAN1L	NM_021819.3	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+15-75270158-C-T	GOLGA6C	NM_001164404.1	NM_001164404.1	nonsense	Moderate	Unset	NF6
+15-75293838-G-A	GOLGA6D	NM_001145224.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+15-75687322-T-C	CSPG4	NM_001897.5	not_lof	missense_variant	Unmet	Unmet	na
+15-75785667-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+15-76311587-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+15-77986445-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+15-78593232-T-A	CHRNA5	NM_000745.3	not_lof	missense_variant	Unmet	Unmet	na
+15-80948905-TGAA-T	CEMIP	NM_001293298.2	not_lof	inframe_deletion	Unmet	Unmet	na
+15-80948922-T-G	CEMIP	NM_001293298.2	not_lof	stop_lost	Unmet	Unmet	na
+15-81334973-G-A	TMC3	NM_001080532.3	NM_001080532.3	nonsense	VeryStrong	Unset	NF1
+15-82043672-CAGA-C	MEX3B	NM_032246.6	not_lof	inframe_deletion	Unmet	Unmet	na
+15-82688452-CG-C	AP3B2	NM_001278512.2	not_lof	intron_variant	Unmet	Unmet	na
+15-83008518-CA-C	C15orf40	NM_144597.3	not_lof	intron_variant	Unmet	Unmet	na
+15-88611706-T-A			not_lof	intergenic_variant	Unmet	Unmet	na
+15-88872052-A-C	ACAN	NM_001369268.1	not_lof	missense_variant	Unmet	Unmet	na
+15-88893064-G-A	HAPLN3	NM_178232.4	not_lof	intron_variant	Unmet	Unmet	na
+15-89329112-TGAG-T	POLG	NM_002693.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+15-89804583-G-A	ANPEP	NM_001150.3	not_lof	missense_variant	Unmet	Unmet	na
+15-90241018-T-C	GDPGP1	NM_001322811.2	not_lof	missense_variant	Unmet	Unmet	na
+15-90266405-C-T	NGRN	NM_001033088.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+15-99105469-C-CGAGCTGCGG	SYNM	NM_145728.3	not_lof	inframe_insertion	Unmet	Unmet	na
+16-270993-C-A	RGS11	NM_183337.3	NM_183337.3	nonsense	VeryStrong	Unset	NF1
+16-283017-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+16-724691-C-T	CCDC78	NM_001378030.1	NM_001378030.1	nonsense	VeryStrong	Unmet	NF1
+16-761179-G-C	MSLN	NM_005823.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+16-1229270-G-A	TPSB2	NM_024164.6	not_lof	synonymous_variant	Unmet	Unmet	na
+16-1260776-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+16-1432701-AGAGGAGGAGGAG-A	PERCC1	NM_001365310.2	not_lof	inframe_deletion	Unmet	Unmet	na
+16-1452856-C-T	CLCN7	NM_001287.6	not_lof	missense_variant	Unmet	Unmet	na
+16-1494356-C-T	TELO2	NM_016111.4	not_lof	synonymous_variant	Unmet	Unmet	na
+16-1526742-G-A	IFT140	NM_014714.4	not_lof	synonymous_variant	Unmet	Unmet	na
+16-1775671-C-T	EME2	NM_001257370.2	NM_001257370.2	nonsense	VeryStrong	Unset	NF1
+16-1979151-G-A	NOXO1	NM_172167.3	not_lof	synonymous_variant	Unmet	Unmet	na
+16-2109398-G-A	PKD1	NM_001009944.3	not_lof	synonymous_variant	Unmet	Unmet	na
+16-2111152-C-T	PKD1	NM_001009944.3	not_lof	missense_variant	Unmet	Unmet	na
+16-2262438-G-A	RNPS1	NM_080594.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+16-2464518-C-T	TEDC2	NM_025108.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+16-2766518-G-A	SRRM2	NM_016333.4	not_lof	missense_variant	Unmet	Unmet	na
+16-2799033-C-T	PRSS41	NM_001354586.3	NM_001354586.3	nonsense	VeryStrong	Unset	NF1
+16-3029619-ACGAGGCAGC-A	BICDL2	NM_001369667.1	not_lof	inframe_deletion	Unmet	Unmet	na
+16-3069296-C-CG	IL32	NM_001376923.1	NM_001376923.1	frameshift	Moderate	Unset	NF6
+16-3244246-G-A	MEFV	NM_000243.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+16-3564567-GGGCGACGGTCCT-G	NLRC3	NM_178844.4	not_lof	inframe_deletion	Unmet	Unmet	na
+16-4192708-G-A	SRL	NM_001098814.2	not_lof	synonymous_variant	Unmet	Unmet	na
+16-4340913-C-A	CORO7-PAM16	NM_001201479.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+16-4747476-C-T	C16orf71	NM_139170.3	NM_139170.3	nonsense	Moderate	Unset	NF6
+16-4870568-C-T	UBN1	NM_001079514.3	not_lof	missense_variant	Unmet	Unmet	na
+16-8859173-C-T	CARHSP1	NM_014316.4	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+16-11449107-C-T	LOC400499	NM_001370704.1	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+16-11449113-A-G	LOC400499	NM_001370704.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+16-14140540-G-A	MRTFB	NM_001308142.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+16-15017361-C-T	PDXDC1	NM_015027.4	not_lof	missense_variant	Unmet	Unmet	na
+16-16251079-A-T	NOMO3	NM_001004067.4	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+16-16369380-C-A			not_lof	intergenic_variant	Unmet	Unmet	na
+16-21134275-C-A	DNAH3	NM_017539.2	NM_017539.2	nonsense	VeryStrong	Unset	NF1
+16-21201969-A-T	ZP2	NM_001376232.1	not_lof	missense_variant	Unmet	Unmet	na
+16-22534614-C-G	NPIPB5	NM_001135865.2	NM_001135865.2	nonsense	Strong	Unset	NF5
+16-23417081-T-C	COG7	NM_153603.4	not_lof	missense_variant	Unmet	Unmet	na
+16-23442547-C-T	COG7	NM_153603.4	not_lof	synonymous_variant	Unmet	Unmet	na
+16-23529512-G-A	EARS2	NM_001083614.2	not_lof	missense_variant	Unmet	Unmet	na
+16-27235296-T-C	NSMCE1	NM_145080.4	not_lof	missense_variant	Unmet	Unmet	na
+16-28723267-G-T	EIF3C	NM_003752.5	NM_003752.5	nonsense	VeryStrong	Unset	NF1
+16-28825688-G-A	ATXN2L	NM_001387166.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+16-28887500-C-T	ATP2A1	NM_004320.6	NM_004320.6	nonsense	VeryStrong	Unset	NF1
+16-29897111-C-T	SEZ6L2	NM_001243333.2	not_lof	synonymous_variant	Unmet	Unmet	na
+16-30108239-G-A	GDPD3	NM_024307.3	NM_024307.3	nonsense	Strong	Unset	NF5
+16-30112387-ACGAACCATGCGCCGGT-A	GDPD3	NM_024307.3	NM_024307.3	frameshift	VeryStrong	Unset	NF1
+16-30196983-G-C	SLX1A	NM_001014999.3	not_lof	missense_variant	Unmet	Unmet	na
+16-30279751-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+16-30418141-G-C	ZNF771	NM_001142305.2	not_lof	missense_variant	Unmet	Unmet	na
+16-31885202-C-T	ZNF267	NM_003414.6	NM_003414.6	nonsense	VeryStrong	Unset	NF1
+16-32065745-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+16-32431577-T-A			not_lof	intergenic_variant	Unmet	Unmet	na
+16-33933816-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+16-34163410-C-CT			not_lof	intergenic_variant	Unmet	Unmet	na
+16-48227904-C-T	ABCC11	NM_001370497.1	NM_001370497.1	nonsense	VeryStrong	Unset	NF1
+16-55821449-G-T	CES1	NM_001025195.2	not_lof	missense_variant	Unmet	Unmet	na
+16-55863455-G-A	CES5A	NM_001143685.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+16-56519791-G-C	BBS2	NM_031885.5	NM_031885.5	nonsense	VeryStrong	Unset	NF1
+16-56644009-G-T	MT1DP	NR_027781.1	not_lof	intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+16-56961915-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+16-57061930-A-AAAAG	NLRC5	NR_169520.1	not_lof	intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+16-57813880-A-G	LOC388282	NR_169553.1	not_lof	splice_region_variant&non_coding_transcript_exon_variant	Unmet	Unmet	na
+16-57911874-C-A	CNGB1	NM_001297.5	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+16-57940264-G-A	CNGB1	NM_001297.5	not_lof	synonymous_variant	Unmet	Unmet	na
+16-58518121-T-TA	SETD6	NM_001160305.4	NM_001160305.4	frameshift	VeryStrong	Unset	NF1
+16-58543411-GA-G	CNOT1	NM_016284.5	not_lof	intron_variant	Unmet	Unmet	na
+16-66617337-T-TA	CMTM4	NM_181521.3	not_lof	3_prime_UTR_variant	Unmet	Unmet	na
+16-67193474-T-C	E2F4	NM_001950.4	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+16-67286320-G-A	PLEKHG4	NM_001129729.3	not_lof	missense_variant	Unmet	Unmet	na
+16-67666134-C-T	ENKD1	NM_032140.3	not_lof	missense_variant	Unmet	Unmet	na
+16-67825804-CAGG-C	TSNAXIP1	NM_001288990.3	not_lof	inframe_deletion	Unmet	Unmet	na
+16-70128870-G-A	PDPR	NM_017990.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+16-71230658-A-G	HYDIN	NM_001270974.2	not_lof	5_prime_UTR_variant	Unmet	Unmet	na
+16-71640703-GGCC-G	MARVELD3	NM_001017967.4	not_lof	inframe_deletion	Unmet	Unmet	na
+16-71947527-TTC-T	PKD1L3	NM_181536.2	NM_181536.2	frameshift	VeryStrong	Unset	NF1
+16-71967237-G-A	PKD1L3	NM_181536.2	NM_181536.2	nonsense	VeryStrong	Unset	NF1
+16-72008783-A-C	DHODH	NM_001361.5	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+16-72787694-A-AGCC	ZFHX3	NM_006885.4	not_lof	inframe_insertion	Unmet	Unmet	na
+16-74413115-T-A	CLEC18B	NM_001011880.3	NM_001011880.3	nonsense	VeryStrong	Unset	NF1
+16-74675002-C-A	MLKL	NM_152649.4	NM_152649.4	nonsense	Moderate	Unset	NF6
+16-81175602-T-C	PKD1L2	NR_126532.2	not_lof	splice_region_variant&intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+16-81185590-G-A	PKD1L2	NR_126532.2	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+16-83670784-T-C	CDH13	NM_001257.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+16-87604287-C-CCTGCTG	JPH3	NM_020655.4	not_lof	intron_variant	Unmet	Unmet	na
+16-87604287-CCTGCTGCTGCTGCTGCTGCTG-C	JPH3	NM_020655.4	not_lof	intron_variant	Unmet	Unmet	na
+16-87699396-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+16-87926853-G-C	CA5A	NM_001739.2	not_lof	missense_variant	Unmet	Unmet	na
+16-88431998-ATGC-A	ZNF469	NM_001367624.2	not_lof	inframe_deletion	Unmet	Unmet	na
+16-88567369-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+16-89649432-G-A	CHMP1A	NM_002768.5	not_lof	synonymous_variant	Unmet	Unmet	na
+16-89739252-C-A	FANCA	NM_000135.4	NM_000135.4	nonsense	VeryStrong	VeryStrong	NF1
+16-89971820-C-CA	CENPBD1	NM_145039.4	NM_145039.4	frameshift	Strong	Unset	NF5
+17-413735-G-A	C17orf97	NM_001013672.5	not_lof	missense_variant	Unmet	Unmet	na
+17-1468031-C-T	MYO1C	NM_001080779.2	not_lof	synonymous_variant	Unmet	Unmet	na
+17-1640518-G-A	SCARF1	NM_003693.4	NM_003693.4	nonsense	VeryStrong	Unset	NF1
+17-3229012-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+17-3659975-G-A	CTNS	NM_004937.3	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+17-4453046-C-T	SPNS3	NM_182538.5	not_lof	synonymous_variant	Unmet	Unmet	na
+17-4641943-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+17-4932801-C-T	GP1BA	NM_000173.7	not_lof	missense_variant	Unmet	Unmet	na
+17-5003999-A-C	KIF1C	NM_006612.6	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+17-5422769-C-T	RPAIN	NM_001160243.2	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+17-6760489-C-T	XAF1	NM_017523.5	not_lof	synonymous_variant	Unmet	Unmet	na
+17-7223827-G-A	ACADVL	NM_000018.4	not_lof	synonymous_variant	Unmet	Unmet	na
+17-7314165-G-A	GPS2	NM_004489.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+17-7627770-A-G	SAT2	NM_133491.5	not_lof	5_prime_UTR_variant	Unmet	Unmet	na
+17-7668169-A-AGCCGTG			not_lof	intergenic_variant	Unmet	Unmet	na
+17-7764030-A-AAGTGC	DNAH2	NM_020877.5	NM_020877.5	frameshift	VeryStrong	Unset	NF1
+17-7846859-TACCACC-T	KDM6B	NM_001080424.2	not_lof	inframe_deletion	Unmet	Unmet	na
+17-8003201-G-T	GUCY2D	NM_000180.4	not_lof	missense_variant	Unmet	Unmet	na
+17-8038968-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+17-8435800-A-C			not_lof	intergenic_variant	Unmet	Unmet	na
+17-8741623-G-A	CCDC42	NM_144681.3	NM_144681.3	nonsense	VeryStrong	Unset	NF1
+17-8797668-G-C	MFSD6L	NM_152599.4	not_lof	missense_variant	Unmet	Unmet	na
+17-8797850-AATGTAGC-A	MFSD6L	NM_152599.4	NM_152599.4	frameshift	Strong	Unset	NF5
+17-10364483-G-C	MYH13	NM_003802.3	NM_003802.3	nonsense	VeryStrong	Unset	NF1
+17-10504990-A-AT	MYH1	NM_005963.4	NM_005963.4	frameshift	VeryStrong	Unset	NF1
+17-10545452-A-T	MYH2	NM_017534.6	not_lof	synonymous_variant	Unmet	Unmet	na
+17-11690140-C-T	DNAH9	NM_001372.4	not_lof	synonymous_variant	Unmet	Unmet	na
+17-14236764-G-A	CDRT15	NM_001007530.3	NM_001007530.3	nonsense	VeryStrong	Unset	NF1
+17-15553742-A-AAAGCT	TVP23C	NM_001135036.2	NM_001135036.2	frameshift	VeryStrong	Unset	NF1
+17-15717190-C-G	ZNF286A	NM_001130842.2	not_lof	missense_variant	Unmet	Unmet	na
+17-16165029-G-A	NCOR1	NM_006311.4	NM_006311.4	nonsense	VeryStrong	Unset	NF1
+17-16194556-C-A	NCOR1	NM_006311.4	not_lof	missense_variant	Unmet	Unmet	na
+17-16353372-G-GCGGAGGCCC	CENPV	NM_181716.3	not_lof	inframe_insertion	Unmet	Unmet	na
+17-17136299-A-G	MPRIP	NM_001364716.4	not_lof	synonymous_variant	Unmet	Unmet	na
+17-17221490-C-T	FLCN	NM_144997.7	not_lof	intron_variant	Unmet	Unmet	na
+17-17793779-CCAG-C	RAI1	NM_030665.4	not_lof	inframe_deletion	Unmet	Unmet	na
+17-18100609-C-T	DRG2	NM_001388.5	not_lof	missense_variant	Unmet	Unmet	na
+17-18255268-G-A	FLII	NM_002018.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+17-18285401-C-T	TOP3A	NM_004618.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+17-18680829-A-G	FOXO3B	NM_001368135.1	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+17-18727544-A-G	TRIM16L	NM_001353221.2	not_lof	missense_variant	Unmet	Unmet	na
+17-19187983-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+17-19841552-TA-T	ULK2	NM_014683.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+17-21298925-G-C	MAP2K3	NM_145109.3	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+17-21416561-C-T	KCNJ12	NM_021012.5	NM_021012.5	nonsense	Moderate	Unset	NF6
+17-22044054-TA-T			not_lof	intergenic_variant	Unmet	Unmet	na
+17-27749947-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+17-28725340-C-T	TLCD1	NM_138463.4	not_lof	synonymous_variant	Unmet	Unmet	na
+17-30078255-C-T	EFCAB5	NM_198529.4	not_lof	synonymous_variant	Unmet	Unmet	na
+17-30563185-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+17-33014028-G-C	ASIC2	NM_183377.2	not_lof	missense_variant	Unmet	Unmet	na
+17-34928049-C-A	CCT6B	NM_006584.4	not_lof	stop_lost	Unmet	Unmet	na
+17-35129612-G-A	FNDC8	NM_017559.4	not_lof	missense_variant	Unmet	Unmet	na
+17-35265448-TATGAACCTAA-T	SLFN5	NM_144975.4	NM_144975.4	frameshift	Strong	Unset	NF5
+17-36428395-G-T			not_lof	intergenic_variant	Unmet	Unmet	na
+17-38322595-A-C	MRPL45	NM_032351.6	not_lof	stop_lost	Unmet	Unmet	na
+17-38337666-G-A	GPR179	NM_001004334.4	NM_001004334.4	nonsense	VeryStrong	Unset	NF1
+17-38352779-G-GAGC	SOCS7	NM_014598.4	not_lof	inframe_insertion	Unmet	Unmet	na
+17-38467266-G-A	ARHGAP23	NM_001199417.2	not_lof	missense_variant	Unmet	Unmet	na
+17-38878112-C-T	LASP1	NM_006148.4	not_lof	synonymous_variant	Unmet	Unmet	na
+17-38921807-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+17-40291261-C-T	CDC6	NM_001254.4	NM_001254.4	nonsense	VeryStrong	Unset	NF1
+17-40818851-A-AGCTGCCGCCGCCGTATCCGCCGCCGGAGCT	KRT10	NM_000421.5	not_lof	inframe_insertion	Unmet	Unmet	na
+17-41149659-G-GGCAGCAGGTGGTCCT	KRTAP4-5	NM_033188.4	not_lof	inframe_insertion	Unmet	Unmet	na
+17-41350895-C-CT			not_lof	intergenic_variant	Unmet	Unmet	na
+17-41503281-G-A	KRT13	NM_153490.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+17-41609704-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+17-41621643-T-A	KRT17	NM_000422.3	NM_000422.3	nonsense	VeryStrong	Unset	NF1
+17-41635400-C-T	KRT42P	NR_033415.1	not_lof	splice_region_variant&non_coding_transcript_exon_variant	Unmet	Unmet	na
+17-41893067-C-T	ACLY	NM_001096.3	not_lof	missense_variant	Unmet	Unmet	na
+17-42323632-G-GC	STAT3	NM_139276.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+17-47157288-T-G	CDC27	NM_001256.6	not_lof	missense_variant	Unmet	Unmet	na
+17-47157355-T-A	CDC27	NM_001256.6	NM_001256.6	nonsense	VeryStrong	Unset	NF1
+17-47158217-A-C	CDC27	NM_001256.6	NM_001256.6	nonsense	VeryStrong	Unset	NF1
+17-47223854-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+17-47441400-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+17-47492772-A-C			not_lof	intergenic_variant	Unmet	Unmet	na
+17-48626400-A-C			not_lof	intergenic_variant	Unmet	Unmet	na
+17-48626561-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+17-49210824-G-T	ABI3	NM_016428.3	NM_016428.3	nonsense	VeryStrong	Unset	NF1
+17-50378594-GGACA-G	EME1	NM_152463.4	NM_152463.4	frameshift	VeryStrong	Unset	NF1
+17-57979243-TTGCTGC-T	VEZF1	NM_007146.3	not_lof	inframe_deletion	Unmet	Unmet	na
+17-58156083-G-GT	OR4D1	NM_001386095.1	NM_001386095.1	frameshift	Moderate	Unset	NF6
+17-58309246-G-GTCCTCCTCT	TSPOAP1	NM_004758.4	not_lof	inframe_insertion	Unmet	Unmet	na
+17-58520745-C-T	SEPTIN4-AS1	NR_110810.1	not_lof	intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+17-59647615-C-A	CLTC	NM_004859.4	NM_004859.4	nonsense	VeryStrong	Unset	NF1
+17-61847211-G-A	BRIP1	NM_032043.3	not_lof	missense_variant	Unmet	Unmet	na
+17-62416500-CTT-C			not_lof	intergenic_variant	Unmet	Unmet	na
+17-63482458-C-T	ACE	NM_000789.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+17-63838627-G-A	SMARCD2	NM_001098426.2	not_lof	intron_variant	Unmet	Unmet	na
+17-64758522-T-C	ARHGAP27P1-BPTFP1-KPNA2P3	NR_026899.1	not_lof	splice_region_variant&intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+17-65137166-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+17-67826150-CGAG-C	BPTF	NM_182641.4	not_lof	inframe_deletion	Unmet	Unmet	na
+17-69154324-C-CACCTGGAA	ABCA10	NM_080282.4	NM_080282.4	frameshift	VeryStrong	Unset	NF1
+17-74344293-AG-A	KIF19	NM_153209.4	NM_153209.4	frameshift	VeryStrong	Unset	NF1
+17-74344757-C-T	KIF19	NM_153209.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+17-75104109-G-A	SLC16A5	NM_004695.4	not_lof	synonymous_variant	Unmet	Unmet	na
+17-75616380-CAGGAGG-C	MYO15B	NM_001309242.1	not_lof	inframe_deletion	Unmet	Unmet	na
+17-75616561-A-AT	MYO15B	NM_001309242.1	NM_001309242.1	frameshift	VeryStrong	Unset	NF1
+17-76076753-C-T	GALR2	NM_003857.4	not_lof	synonymous_variant	Unmet	Unmet	na
+17-76291810-G-A	QRICH2	NR_130649.1	not_lof	intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+17-76387533-C-G	SPHK1	NM_001142601.2	not_lof	missense_variant	Unmet	Unmet	na
+17-78223604-G-C	BIRC5	NM_001168.3	not_lof	3_prime_UTR_variant	Unmet	Unmet	na
+17-78451645-C-A	DNAH17	NM_173628.4	NM_173628.4	nonsense	VeryStrong	Unset	NF1
+17-78802466-TTTTTTC-T	USP36	NM_001385169.1	not_lof	inframe_deletion	Unmet	Unmet	na
+17-80090343-A-ACAC	CCDC40	NM_017950.4	not_lof	intron_variant	Unmet	Unmet	na
+17-80421934-G-A	ENDOV	NM_173627.5	not_lof	missense_variant	Unmet	Unmet	na
+17-81115790-A-G	BAIAP2	NR_169579.1	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+17-81245700-AATG-A	SLC38A10	NM_001037984.3	not_lof	inframe_deletion	Unmet	Unmet	na
+17-81251274-G-GT	SLC38A10	NM_001037984.3	not_lof	intron_variant	Unmet	Unmet	na
+17-81459051-C-T	BAHCC1	NM_001377448.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+17-81547585-G-A	FAAP100	NM_025161.6	not_lof	synonymous_variant	Unmet	Unmet	na
+17-82036238-TG-T	DCXR	NM_016286.4	NM_016286.4	frameshift	Unmet	Unset	NF4
+18-224120-AG-A	THOC1	NM_005131.3	NM_005131.3	frameshift	VeryStrong	Unset	NF1
+18-3112415-G-C	MYOM1	NM_003803.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+18-5891374-GGCGGCGGCGGCC-G	TMEM200C	NM_001080209.2	not_lof	inframe_deletion	Unmet	Unmet	na
+18-6080740-A-G	L3MBTL4	NM_001330559.2	not_lof	intron_variant	Unmet	Unmet	na
+18-8718492-C-A	MTCL1	NM_001378207.1	NM_001378207.1	nonsense	VeryStrong	Unset	NF1
+18-9254859-C-G	ANKRD12	NM_015208.5	not_lof	missense_variant	Unmet	Unmet	na
+18-11913965-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+18-13049812-GAGC-G	CEP192	NM_032142.4	not_lof	inframe_deletion	Unmet	Unmet	na
+18-14173867-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+18-23541062-G-A	NPC1	NM_000271.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+18-24377418-C-CAATT	OSBPL1A	NM_080597.4	NM_080597.4	frameshift	VeryStrong	Unset	NF1
+18-31598592-G-A	TTR	NM_000371.4	not_lof	missense_variant	Unmet	Unmet	na
+18-35242388-C-T	ZNF397	NM_001135178.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+18-36215876-A-T	MOCOS	NM_017947.4	not_lof	missense_variant	Unmet	Unmet	na
+18-45865765-CAA-C	EPG5	NM_020964.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+18-47098336-G-T	KATNAL2	NM_001353901.1	NM_001353901.1	nonsense	Moderate	Unmet	NF6
+18-48375536-A-G	ZBTB7C	NM_001318841.2	not_lof	intron_variant	Unmet	Unmet	na
+18-54938101-A-T	CCDC68	NM_025214.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+18-57435993-ACGGCGGCAG-A	ONECUT2	NM_004852.3	not_lof	inframe_deletion	Unmet	Unmet	na
+18-60196295-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+18-63723397-T-G	SERPINB11	NM_001370475.1	not_lof	stop_lost	Unmet	Unmet	na
+18-64098576-C-T	LINC00305	NR_027245.1	NR_027245.1	splice-5	Unmet	Unset	NF0
+19-375772-C-CG	THEG	NM_016585.5	NM_016585.5	frameshift	VeryStrong	Unset	NF1
+19-620086-G-A	POLRMT	NM_005035.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+19-687035-T-A	PRSS57	NM_001308209.2	NM_001308209.2	nonsense	VeryStrong	Unset	NF1
+19-757037-T-C	MISP	NM_173481.4	not_lof	missense_variant	Unmet	Unmet	na
+19-814941-A-AG	PLPPR3	NM_001270366.2	NM_001270366.2	frameshift	Strong	Unset	NF5
+19-831815-GT-G	AZU1	NM_001700.5	NM_001700.5	frameshift	VeryStrong	Unset	NF1
+19-932496-TGAG-T	ARID3A	NM_005224.3	not_lof	inframe_deletion	Unmet	Unmet	na
+19-1008684-G-A	GRIN3B	NM_138690.3	not_lof	missense_variant	Unmet	Unmet	na
+19-1012000-A-G	TMEM259	NM_001033026.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+19-1823639-G-A	REXO1	NM_020695.4	not_lof	synonymous_variant	Unmet	Unmet	na
+19-1827021-TGGA-T	REXO1	NM_020695.4	not_lof	inframe_deletion	Unmet	Unmet	na
+19-1827060-A-G	REXO1	NM_020695.4	not_lof	missense_variant	Unmet	Unmet	na
+19-2989759-G-A	TLE6	NM_001143986.2	NM_001143986.2	nonsense	VeryStrong	Unset	NF1
+19-4499568-C-T	HDGFL2	NM_001001520.3	not_lof	synonymous_variant	Unmet	Unmet	na
+19-5456020-C-T	ZNRF4	NM_181710.4	not_lof	missense_variant	Unmet	Unmet	na
+19-6904126-C-T	ADGRE1	NM_001974.5	not_lof	missense_variant	Unmet	Unmet	na
+19-7076407-C-A	ZNF557	NM_024341.3	not_lof	synonymous_variant	Unmet	Unmet	na
+19-7622759-C-G	XAB2	NM_020196.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+19-7638719-C-T	STXBP2	NM_006949.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+19-7899393-T-A	LRRC8E	NM_025061.6	not_lof	missense_variant	Unmet	Unmet	na
+19-8969786-C-G	MUC16	NM_024690.2	not_lof	missense_variant	Unmet	Unmet	na
+19-8973521-T-G	MUC16	NM_024690.2	not_lof	missense_variant	Unmet	Unmet	na
+19-9213914-G-A	OR7D4	NM_001005191.3	not_lof	synonymous_variant	Unmet	Unmet	na
+19-10285007-A-G	ICAM1	NM_000201.3	not_lof	missense_variant	Unmet	Unmet	na
+19-10310597-C-T	FDX2	NM_001031734.4	not_lof	synonymous_variant	Unmet	Unmet	na
+19-10486666-TCTG-T	KEAP1	NM_203500.2	not_lof	inframe_deletion	Unmet	Unmet	na
+19-11238235-A-G	DOCK6	NM_020812.4	not_lof	synonymous_variant	Unmet	Unmet	na
+19-11335657-G-T	RAB3D	NM_004283.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+19-11831413-T-C	ZNF440	NM_152357.3	not_lof	synonymous_variant	Unmet	Unmet	na
+19-11832410-C-T	ZNF440	NM_152357.3	NM_152357.3	nonsense	Unmet	Unset	NF4
+19-11949847-G-A	ZNF700	NM_144566.3	not_lof	missense_variant	Unmet	Unmet	na
+19-12076594-G-A	ZNF844	NM_001136501.3	not_lof	missense_variant	Unmet	Unmet	na
+19-13207858-CCTGCTGCTG-C	CACNA1A	NM_001127222.2	not_lof	inframe_deletion	Unmet	Unmet	na
+19-14841894-CAGAG-C	OR7A10	NM_001005190.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+19-14942171-T-TATC	OR7C2	NM_012377.1	not_lof	inframe_insertion	Unmet	Unmet	na
+19-15439665-G-A	WIZ	NM_001371589.1	not_lof	synonymous_variant	Unmet	Unmet	na
+19-16869857-C-T	SIN3B	NM_001297595.2	not_lof	missense_variant	Unmet	Unmet	na
+19-17058820-T-C	HAUS8	NM_033417.2	not_lof	synonymous_variant	Unmet	Unmet	na
+19-17577209-G-A	COLGALT1	NM_024656.4	not_lof	missense_variant	Unmet	Unmet	na
+19-17838264-C-T	JAK3	NM_000215.4	NM_000215.4	nonsense	VeryStrong	VeryStrong	NF1
+19-17875954-C-T	SLC5A5	NM_000453.3	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+19-17973941-C-T	KCNN1	NR_170373.1	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+19-18162203-G-A	PIK3R2	NM_005027.4	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+19-18571685-A-C			not_lof	intergenic_variant	Unmet	Unmet	na
+19-19623484-T-TA			not_lof	intergenic_variant	Unmet	Unmet	na
+19-19680067-CAT-C	ZNF101	NM_033204.4	NM_033204.4	frameshift	Strong	Unset	NF5
+19-20545974-T-C	ZNF737	NM_001159293.2	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+19-20806344-G-T	ZNF66	NM_001355197.2	not_lof	missense_variant	Unmet	Unmet	na
+19-21383611-G-A	ZNF738	NM_001355237.2	NM_001355237.2	nonsense	Moderate	Unset	NF6
+19-21809725-A-AT	ZNF43	NM_003423.4	NM_003423.4	frameshift	Strong	Unset	NF5
+19-21973678-G-T	ZNF208	NM_007153.3	not_lof	synonymous_variant	Unmet	Unmet	na
+19-22181229-T-C	ZNF676	NM_001001411.3	not_lof	missense_variant	Unmet	Unmet	na
+19-22314389-T-A	ZNF729	NM_001242680.2	not_lof	missense_variant	Unmet	Unmet	na
+19-23361049-C-T	ZNF91	NM_003430.4	not_lof	missense_variant	Unmet	Unmet	na
+19-23654211-G-A	ZNF675	NM_138330.3	not_lof	missense_variant	Unmet	Unmet	na
+19-32996086-A-C	RHPN2	NM_033103.5	not_lof	missense_variant	Unmet	Unmet	na
+19-32999679-G-A	RHPN2	NM_033103.5	NM_033103.5	nonsense	VeryStrong	Unset	NF1
+19-34351507-C-G	GARRE1	NM_014686.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+19-34493484-G-C	WTIP	NM_001080436.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+19-34944728-C-CATCA	ZNF30	NM_194325.3	NM_194325.3	frameshift	Moderate	Unset	NF6
+19-35010194-C-T	GRAMD1A	NM_001320036.2	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+19-35065966-G-A	HPN	NM_182983.3	not_lof	synonymous_variant	Unmet	Unmet	na
+19-35346193-C-T	CD22	NM_001771.4	not_lof	synonymous_variant	Unmet	Unmet	na
+19-35511516-GCCA-G	DMKN	NM_033317.5	not_lof	inframe_deletion	Unmet	Unmet	na
+19-35715305-C-T	ZBTB32	NM_014383.3	not_lof	missense_variant	Unmet	Unmet	na
+19-35721614-C-CACAGCCACAGCT	KMT2B	NM_014727.3	not_lof	inframe_insertion	Unmet	Unmet	na
+19-35739776-A-G	IGFLR1	NM_024660.4	not_lof	missense_variant	Unmet	Unmet	na
+19-36010997-C-T	ALKBH6	NM_032878.4	NM_032878.4	nonsense	VeryStrong	Unset	NF1
+19-36626400-A-G	ZNF382	NM_032825.5	not_lof	missense_variant	Unmet	Unmet	na
+19-36639883-ATGT-A	ZNF461	NM_153257.5	not_lof	inframe_deletion	Unmet	Unmet	na
+19-36997597-T-C	ZNF568	NM_001204838.2	not_lof	stop_lost	Unmet	Unmet	na
+19-38222600-G-A	DPF1	NM_001289978.2	not_lof	synonymous_variant	Unmet	Unmet	na
+19-38356516-C-T	CATSPERG	NM_021185.5	NM_021185.5	nonsense	VeryStrong	Unset	NF1
+19-38367580-C-T	CATSPERG	NM_021185.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+19-38909277-CCTT-C	CCER2	NM_001243212.2	not_lof	inframe_deletion	Unmet	Unmet	na
+19-39423362-G-A	PLEKHG2	NM_022835.3	not_lof	missense_variant	Unmet	Unmet	na
+19-39886213-ACTT-A	FCGBP	NM_003890.2	not_lof	inframe_deletion	Unmet	Unmet	na
+19-40396335-T-C	PRX	NM_181882.3	not_lof	missense_variant	Unmet	Unmet	na
+19-40843491-T-TAAGTG			not_lof	intergenic_variant	Unmet	Unmet	na
+19-40843881-G-T	CYP2A6	NM_000762.6	NM_000762.6	nonsense	Moderate	Unset	NF6
+19-40875778-G-T	CYP2A7	NM_000764.3	NM_000764.3	nonsense	Moderate	Unset	NF6
+19-42248617-C-A	ERF	NM_006494.4	not_lof	missense_variant	Unmet	Unmet	na
+19-42527203-G-A	CEACAM1	NM_001712.5	NM_001712.5	nonsense	VeryStrong	Unset	NF1
+19-42867056-A-G	PSG1	NM_001184825.2	not_lof	3_prime_UTR_variant	Unmet	Unmet	na
+19-43497883-GAAC-G	PHLDB3	NM_198850.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+19-43613436-C-T	SRRM5	NM_001145641.2	NM_001145641.2	nonsense	Strong	Unset	NF5
+19-43847014-GGGAGAT-G	ZNF283	NM_181845.2	not_lof	inframe_deletion	Unmet	Unmet	na
+19-44176979-C-T	ZNF226	NM_001032373.2	NM_001032373.2	nonsense	Strong	Unset	NF5
+19-44267145-G-T	ZNF233	NM_001330529.2	NM_001330529.2	splice-5	Strong	Unset	SS8
+19-44273533-C-A	ZNF233	NM_001207005.2	NM_001207005.2	nonsense	Strong	Unset	NF5
+19-45164170-T-C	TRAPPC6A	NM_001270891.2	not_lof	synonymous_variant	Unmet	Unmet	na
+19-45348893-GC-G	KLC3	NM_177417.3	NM_177417.3	frameshift	VeryStrong	Unset	NF1
+19-46040269-TGGAAGCAGGGCC-T	IGFL4	NR_169756.1	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+19-46648587-G-C	DACT3	NM_145056.3	not_lof	synonymous_variant	Unmet	Unmet	na
+19-47802674-G-A	TPRX1	NM_198479.2	not_lof	missense_variant	Unmet	Unmet	na
+19-48077775-TG-T	PLA2G4C	NM_003706.3	NM_003706.3	frameshift	VeryStrong	Unset	NF1
+19-48157007-T-C	LIG1	NM_000234.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+19-48298021-G-A	ODAD1	NM_001364171.2	not_lof	missense_variant	Unmet	Unmet	na
+19-48923404-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+19-48965042-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+19-49033016-C-G	CGB2	NM_033378.2	not_lof	missense_variant	Unmet	Unmet	na
+19-49196707-C-A	TRPM4	NM_017636.4	NM_017636.4	nonsense	VeryStrong	Unmet	NF1
+19-49423273-CCAG-C	PTH2	NM_178449.4	not_lof	inframe_deletion	Unmet	Unmet	na
+19-49560038-C-A	NOSIP	NM_001270960.2	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+19-49588505-C-T	PRRG2	NM_000951.3	NM_000951.3	nonsense	VeryStrong	Unset	NF1
+19-49666708-G-T	BCL2L12	NR_104201.1	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+19-49883083-T-C	TBC1D17	NM_024682.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+19-49950149-G-A	SIGLEC11	NM_052884.3	NM_052884.3	nonsense	Moderate	Unset	NF6
+19-50414972-G-A	POLD1	NM_002691.4	not_lof	missense_variant	Unmet	Unmet	na
+19-50723333-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+19-50927180-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+19-51024232-G-A	KLK11	NM_001136032.3	not_lof	synonymous_variant	Unmet	Unmet	na
+19-51125313-TG-T	SIGLEC9	NM_001198558.1	NM_001198558.1	frameshift	VeryStrong	Unset	NF1
+19-51415106-A-G	SIGLEC10	NM_033130.5	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+19-51485003-C-T	CEACAM18	NM_001278392.1	not_lof	synonymous_variant	Unmet	Unmet	na
+19-51560764-T-G			not_lof	intergenic_variant	Unmet	Unmet	na
+19-52115639-C-T	ZNF616	NM_178523.5	not_lof	missense_variant	Unmet	Unmet	na
+19-52230018-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+19-52416134-C-T	ZNF528	NM_032423.3	NM_032423.3	nonsense	Unmet	Unset	NF4
+19-52799689-C-T	ZNF28	NM_006969.5	not_lof	stop_retained_variant	Unmet	Unmet	na
+19-52800247-CT-C	ZNF28	NM_006969.5	NM_006969.5	frameshift	Strong	Unset	NF5
+19-52800886-ATTATC-A	ZNF28	NM_006969.5	NM_006969.5	frameshift	Strong	Unset	NF5
+19-53284618-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+19-53381350-C-G	ZNF525	NM_001348156.2	NM_001348156.2	nonsense	Strong	Unset	NF5
+19-53739439-G-GCTGACCGTGGTAATA			not_lof	intergenic_variant	Unmet	Unmet	na
+19-53958600-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+19-54217135-A-AGAG	LILRB3	NR_135494.2	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+19-54510567-T-A	LAIR2	NM_002288.6	not_lof	stop_lost	Unmet	Unmet	na
+19-54595758-G-T	LILRA1	NM_006863.4	NM_006863.4	nonsense	VeryStrong	Unset	NF1
+19-54636878-G-A	LILRB1	NM_001081637.3	not_lof	stop_retained_variant	Unmet	Unmet	na
+19-54666747-C-T	LILRB4	NM_001278429.3	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+19-54760643-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+19-54770668-A-G	KIR2DL1	NM_014218.3	not_lof	intron_variant	Unmet	Unmet	na
+19-54775428-T-C	KIR2DL1	NM_014218.3	not_lof	missense_variant	Unmet	Unmet	na
+19-54818581-G-A	KIR3DL1	NM_013289.3	not_lof	missense_variant	Unmet	Unmet	na
+19-55086512-G-T	EPS8L1	NM_133180.3	NM_133180.3	nonsense	VeryStrong	Unset	NF1
+19-55182048-T-A	PTPRH	NM_002842.5	NM_002842.5	nonsense	Moderate	Unset	NF6
+19-55456414-C-CCTTCATGT	ISOC2	NM_001136201.2	NM_001136201.2	frameshift	VeryStrong	Unset	NF1
+19-55772703-C-T	RFPL4AL1	NM_001277397.2	NM_001277397.2	nonsense	Strong	Unset	NF5
+19-55832100-C-T	NLRP11	NR_169620.2	not_lof	splice_region_variant&intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+19-55955979-G-T	NLRP8	NM_176811.2	NM_176811.2	nonsense	VeryStrong	Unset	NF1
+19-56182251-C-G	GALP	NM_033106.4	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+19-57135025-T-A	ZIM3	NM_052882.1	NM_052882.1	nonsense	Moderate	Unset	NF6
+19-57399124-G-A	ZNF548	NM_001172773.2	not_lof	synonymous_variant	Unmet	Unmet	na
+19-57506471-A-G	ZNF773	NM_198542.3	not_lof	missense_variant	Unmet	Unmet	na
+19-57591185-T-C	ZIK1	NM_001010879.4	not_lof	synonymous_variant	Unmet	Unmet	na
+19-57640710-G-GAGTAAGCCATT	ZNF211	NM_006385.5	NM_006385.5	frameshift	Strong	Unset	NF5
+19-57687275-C-T	ZNF551	NM_138347.5	not_lof	missense_variant	Unmet	Unmet	na
+19-57702375-G-A	ZNF154	NR_110975.2	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+19-58407450-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+2-15461781-C-G	NBAS	NM_015909.4	not_lof	missense_variant	Unmet	Unmet	na
+2-20308395-C-T	PUM2	NM_015317.5	not_lof	synonymous_variant	Unmet	Unmet	na
+2-24079594-C-T	TP53I3	NM_004881.5	NM_004881.5	nonsense	VeryStrong	Unset	NF1
+2-29035573-T-TTCCGG	TOGARAM2	NM_199280.4	NM_199280.4	frameshift	VeryStrong	Unset	NF1
+2-29193928-G-A	ALK	NM_004304.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+2-31533711-G-C	SRD5A2	NM_000348.4	not_lof	missense_variant	Unmet	Unmet	na
+2-32192921-A-G	SLC30A6	NM_017964.5	not_lof	synonymous_variant	Unmet	Unmet	na
+2-34576389-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+2-42328965-C-T	EML4	NM_019063.5	not_lof	synonymous_variant	Unmet	Unmet	na
+2-43976157-C-T	LRPPRC	NM_133259.4	not_lof	synonymous_variant	Unmet	Unmet	na
+2-44230419-G-A	PPM1B	NM_002706.6	not_lof	missense_variant	Unmet	Unmet	na
+2-47368813-CT-C			not_lof	intergenic_variant	Unmet	Unmet	na
+2-48963902-C-T	FSHR	NM_000145.4	not_lof	missense_variant	Unmet	Unmet	na
+2-54135454-T-A	ACYP2	NM_001320586.2	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+2-54360522-G-C	C2orf73	NM_001100396.2	not_lof	missense_variant	Unmet	Unmet	na
+2-62223414-A-G	B3GNT2	NM_006577.6	not_lof	stop_retained_variant	Unmet	Unmet	na
+2-63056043-C-G	OTX1	NM_014562.4	not_lof	synonymous_variant	Unmet	Unmet	na
+2-65071512-GAAC-G	CEP68	NM_015147.3	not_lof	inframe_deletion	Unmet	Unmet	na
+2-65072937-AAGG-A	CEP68	NM_015147.3	not_lof	inframe_deletion	Unmet	Unmet	na
+2-65074284-A-G	CEP68	NM_015147.3	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+2-68293995-C-T	CNRIP1	NM_015463.3	NM_015463.3	nonsense	Strong	Unset	NF5
+2-70590470-T-A			not_lof	intergenic_variant	Unmet	Unmet	na
+2-70984816-TGCCCAA-T	ANKRD53	NM_001115116.2	not_lof	inframe_deletion	Unmet	Unmet	na
+2-71055887-G-T			not_lof	intergenic_variant	Unmet	Unmet	na
+2-71068265-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+2-71110073-C-T	MCEE	NM_032601.4	not_lof	missense_variant	Unmet	Unmet	na
+2-72956998-CT-C	SFXN5	NM_144579.3	not_lof	intron_variant	Unmet	Unmet	na
+2-73450706-A-G	ALMS1	NM_001378454.1	not_lof	synonymous_variant	Unmet	Unmet	na
+2-74414385-T-A	C2orf81	NM_001316765.2	not_lof	missense_variant	Unmet	Unmet	na
+2-74415138-A-ACGCGGAGGGGCGGGTGGCGCCGCC	C2orf81	NM_001316765.2	not_lof	inframe_insertion	Unmet	Unmet	na
+2-74421780-C-G	WDR54	NM_032118.4	not_lof	5_prime_UTR_variant	Unmet	Unmet	na
+2-74457610-G-T	INO80B	NM_031288.4	not_lof	missense_variant	Unmet	Unmet	na
+2-74958540-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+2-75662646-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+2-79027174-G-C	REG3G	NM_001008387.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+2-86088834-C-CAATG	POLR1A	NM_015425.6	NM_015425.6	frameshift	VeryStrong	Unset	NF1
+2-86106089-C-A			not_lof	intergenic_variant	Unmet	Unmet	na
+2-86842308-C-T	CD8B	NM_004931.5	not_lof	stop_retained_variant	Unmet	Unmet	na
+2-87193127-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+2-88861901-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+2-89969496-A-AG			not_lof	intergenic_variant	Unmet	Unmet	na
+2-90021684-GA-G			not_lof	intergenic_variant	Unmet	Unmet	na
+2-91737435-T-A			not_lof	intergenic_variant	Unmet	Unmet	na
+2-91749701-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+2-91888781-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+2-94876599-C-T	TEKT4	NM_144705.4	NM_144705.4	nonsense	Strong	Unset	NF5
+2-95149401-G-A	ZNF514	NM_032788.3	not_lof	missense_variant	Unmet	Unmet	na
+2-95939004-G-A	ANKRD36C	NM_001310154.3	NM_001310154.3	nonsense	VeryStrong	Unset	NF1
+2-95951363-G-A	ANKRD36C	NM_001310154.3	NM_001310154.3	nonsense	VeryStrong	Unset	NF1
+2-96123863-AT-A	ASTL	NM_001002036.4	NM_001002036.4	frameshift	Unmet	Unset	NF4
+2-96290823-G-A	SNRNP200	NM_014014.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+2-96761488-G-A	CNNM4	NM_020184.4	NM_020184.4	nonsense	VeryStrong	Unset	NF1
+2-97209799-G-A	ANKRD36	NM_001354587.1	NM_001354587.1	splice-3	VeryStrong	Unset	SS1
+2-97246019-A-C	ANKRD36	NM_001354587.1	not_lof	missense_variant	Unmet	Unmet	na
+2-100402655-A-G	CHST10	NM_004854.5	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+2-101022366-C-T	TBC1D8	NM_001330348.2	not_lof	synonymous_variant	Unmet	Unmet	na
+2-101418897-G-A	RFX8	NM_001145664.2	not_lof	missense_variant	Unmet	Unmet	na
+2-102447148-A-G	IL18RAP	NM_003853.3	not_lof	missense_variant	Unmet	Unmet	na
+2-102726966-C-T	MFSD9	NM_032718.5	NM_032718.5	nonsense	VeryStrong	Unset	NF1
+2-106457653-G-A	RGPD3	NM_001144013.2	NM_001144013.2	nonsense	VeryStrong	Unset	NF1
+2-107904321-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+2-108377849-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+2-108381845-C-T	SULT1C4	NM_006588.4	NM_006588.4	nonsense	VeryStrong	Unset	NF1
+2-111117802-G-T	ACOXL	NM_001142807.4	NM_001142807.4	nonsense	Moderate	Unset	NF6
+2-111856852-G-A	ANAPC1	NM_022662.4	NM_022662.4	nonsense	VeryStrong	Unset	NF1
+2-112074958-CAAT-C	TMEM87B	NM_032824.3	not_lof	inframe_deletion&splice_region_variant	Unmet	Unmet	na
+2-112230930-CTTCTT-C	ZC3H8	NM_032494.3	NM_032494.3	frameshift	Moderate	Unset	NF6
+2-112547573-G-C	POLR1B	NM_019014.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+2-112645880-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+2-119367477-C-G	DBI	NM_001282635.3	not_lof	intron_variant	Unmet	Unmet	na
+2-127898834-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+2-129806506-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+2-130963905-G-GGCCCGGAGCGGCGGCCGCGCGGCGACGAGGATGGGGCCGAGGACGCCGCGCGGCC	ARHGEF4	NM_001367493.1	not_lof	intron_variant	Unmet	Unmet	na
+2-131263637-C-T	POTEE	NM_001083538.3	not_lof	missense_variant	Unmet	Unmet	na
+2-131462432-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+2-131527683-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+2-132317145-A-C	ZNF806	NM_001355461.1	not_lof	intron_variant	Unmet	Unmet	na
+2-135616743-T-C	R3HDM1	NM_001378107.1	not_lof	missense_variant	Unmet	Unmet	na
+2-135932844-TA-T	DARS1	NM_001349.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+2-137677838-C-A			not_lof	intergenic_variant	Unmet	Unmet	na
+2-151461210-G-A	RIF1	NM_018151.5	not_lof	missense_variant	Unmet	Unmet	na
+2-151499371-A-G	NEB	NM_001271208.2	not_lof	missense_variant	Unmet	Unmet	na
+2-151727692-G-A	NEB	NM_001271208.2	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+2-151727801-ATGCTGGCTGTGCCAG-A	NEB	NM_001271208.2	not_lof	inframe_deletion	Unmet	Unmet	na
+2-152560914-G-T	FMNL2	NM_052905.4	NM_052905.4	nonsense	VeryStrong	Unset	NF1
+2-152717631-T-TG	PRPF40A	NM_001354431.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+2-159163352-A-G	TANC1	NM_033394.3	not_lof	missense_variant	Unmet	Unmet	na
+2-162188344-G-A	FAP	NM_004460.5	NM_004460.5	nonsense	VeryStrong	Unset	NF1
+2-166238094-A-G	SCN9A	NM_001365536.1	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+2-168871559-GAA-G	SPC25	NM_020675.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+2-170861432-C-A			not_lof	intergenic_variant	Unmet	Unmet	na
+2-172084534-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+2-172487375-C-T	ITGA6	NM_001079818.3	not_lof	synonymous_variant	Unmet	Unmet	na
+2-174337446-GGGCGGCGGCAGCGGC-G	SP9	NM_001145250.2	not_lof	inframe_deletion	Unmet	Unmet	na
+2-176296905-A-G	MTX2	NM_006554.5	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+2-177629445-G-GGGA	PDE11A	NM_016953.4	not_lof	inframe_insertion	Unmet	Unmet	na
+2-178575317-C-T	TTN	NM_001267550.2	not_lof	synonymous_variant	Unmet	Unmet	na
+2-178576421-G-C	TTN	NM_001267550.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+2-178773134-C-G	TTN	NM_001267550.2	not_lof	missense_variant	Unmet	Unmet	na
+2-181916147-C-T	ITPRID2	NM_001130445.3	not_lof	missense_variant	Unmet	Unmet	na
+2-182953171-G-A	NCKAP1	NM_013436.5	NM_013436.5	nonsense	VeryStrong	Unset	NF1
+2-195796637-AC-A	DNAH7	NM_018897.3	NM_018897.3	frameshift	VeryStrong	Unset	NF1
+2-195872432-G-A	DNAH7	NM_018897.3	NM_018897.3	nonsense	VeryStrong	Unset	NF1
+2-200656843-C-T	AOX1	NM_001159.4	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+2-201807887-A-G	CDK15	NM_001366386.2	not_lof	synonymous_variant	Unmet	Unmet	na
+2-203427494-A-G	ABI2	NM_001375670.1	not_lof	3_prime_UTR_variant	Unmet	Unmet	na
+2-206056393-G-C	INO80D	NM_017759.5	not_lof	missense_variant	Unmet	Unmet	na
+2-206705791-G-A	DYTN	NM_001093730.1	NM_001093730.1	nonsense	VeryStrong	Unset	NF1
+2-207946518-C-T	PLEKHM3	NM_001080475.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+2-210612119-C-A	CPS1	NM_001875.5	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+2-217847567-G-A	TNS1	NM_001387777.1	not_lof	missense_variant	Unmet	Unmet	na
+2-217897799-A-C	TNS1	NM_001387777.1	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+2-218360595-GGAA-G	CATIP	NM_198559.2	not_lof	inframe_deletion	Unmet	Unmet	na
+2-218398443-CAGG-C	CTDSP1	NM_001206878.2	not_lof	inframe_deletion	Unmet	Unmet	na
+2-219182152-G-GGAGGAA	RETREG2	NM_024293.6	not_lof	inframe_insertion	Unmet	Unmet	na
+2-219283125-G-A	DNAJB2	NM_006736.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+2-219572569-G-T	INHA	NM_002191.4	not_lof	synonymous_variant	Unmet	Unmet	na
+2-227002544-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+2-227381939-A-T			not_lof	intergenic_variant	Unmet	Unmet	na
+2-227610047-T-TAAA			not_lof	intergenic_variant	Unmet	Unmet	na
+2-227696084-GA-G	SLC19A3	NM_025243.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+2-230270578-T-C	SP140	NM_007237.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+2-231000378-G-A	SPATA3	NM_139073.4	not_lof	missense_variant	Unmet	Unmet	na
+2-232847517-A-AG	GIGYF2	NM_001103146.3	NM_001103146.3	frameshift	VeryStrong	Unset	NF1
+2-233816781-C-T	MROH2A	NM_001367507.1	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+2-233833555-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+2-236214682-C-T	ASB18	NM_212556.3	not_lof	missense_variant	Unmet	Unmet	na
+2-237096814-G-A	COPS8	NM_006710.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+2-237336220-TGCA-T	COL6A3	NM_004369.4	not_lof	inframe_deletion	Unmet	Unmet	na
+2-237365927-C-T	COL6A3	NM_004369.4	not_lof	missense_variant	Unmet	Unmet	na
+2-237424986-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+2-237540383-AGAG-A	MLPH	NM_024101.7	not_lof	inframe_deletion	Unmet	Unmet	na
+2-237733817-G-T	LRRFIP1	NM_001137550.2	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+2-238061085-G-T	SCLY	NM_016510.7	not_lof	missense_variant	Unmet	Unmet	na
+2-238224967-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+2-238328747-G-A	TRAF3IP1	NM_015650.4	not_lof	missense_variant	Unmet	Unmet	na
+2-240042830-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+2-240676658-G-A	AQP12B	NM_001102467.2	NM_001102467.2	nonsense	Strong	Unset	NF5
+2-241223923-G-T	ANO7	NM_001370694.2	NM_001370694.2	nonsense	Moderate	Unset	NF6
+2-241441561-C-T	FARP2	NM_014808.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+2-241802041-C-T	GAL3ST2	NM_022134.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+20-419672-G-T	RBCK1	NM_031229.4	not_lof	missense_variant	Unmet	Unmet	na
+20-675561-C-T	SCRT2	NM_033129.4	not_lof	missense_variant	Unmet	Unmet	na
+20-1297195-TCAG-T	SNPH	NM_001318234.2	not_lof	inframe_deletion	Unmet	Unmet	na
+20-1571053-G-A	SIRPB1	NM_006065.5	not_lof	missense_variant	Unmet	Unmet	na
+20-2395434-C-A	TGM6	NM_198994.3	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+20-3038900-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+20-3706494-C-A	SIGLEC1	NM_023068.4	NM_023068.4	nonsense	VeryStrong	Unset	NF1
+20-5611257-T-G			not_lof	intergenic_variant	Unmet	Unmet	na
+20-8788533-C-T	PLCB1	NM_015192.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+20-9459731-C-T	PLCB4	NM_001377134.2	NM_001377134.2	nonsense	VeryStrong	Unset	NF1
+20-9514911-T-A	LAMP5	NM_012261.4	NM_012261.4	nonsense	VeryStrong	Unset	NF1
+20-17494318-A-G	BFSP1	NM_001195.5	not_lof	missense_variant	Unmet	Unmet	na
+20-17625575-C-T	RRBP1	NM_001365613.2	not_lof	synonymous_variant	Unmet	Unmet	na
+20-17988228-C-T	MGME1	NM_052865.4	not_lof	missense_variant	Unmet	Unmet	na
+20-18569277-C-T	SMIM26	NM_001348957.2	not_lof	missense_variant	Unmet	Unmet	na
+20-19886698-CT-C	RIN2	NM_001242581.2	NM_001242581.2	frameshift	VeryStrong	Unset	NF1
+20-23048003-G-A	THBD	NM_000361.3	not_lof	missense_variant	Unmet	Unmet	na
+20-23990500-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+20-25076555-T-TAA	VSX1	NM_014588.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+20-31864945-G-A	DUSP15	NM_001320479.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+20-35600228-G-A	FER1L4	NR_119376.1	not_lof	splice_region_variant&intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+20-36432627-G-A	DLGAP4	NM_001365621.2	not_lof	missense_variant	Unmet	Unmet	na
+20-36793588-C-T	SOGA1	NM_080627.4	not_lof	synonymous_variant	Unmet	Unmet	na
+20-38364577-G-A	LBP	NM_004139.5	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+20-44522154-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+20-45223055-G-T	SEMG2	NM_003008.3	NM_003008.3	nonsense	Strong	Unset	NF5
+20-45304708-G-A	MATN4	NM_003833.4	NM_003833.4	nonsense	VeryStrong	Unset	NF1
+20-45348351-A-G	SDC4	NM_002999.4	not_lof	missense_variant	Unmet	Unmet	na
+20-45553181-AT-A	WFDC8	NM_130896.3	NM_130896.3	frameshift	Strong	Unset	NF5
+20-45650548-G-A	WFDC11	NM_147197.2	not_lof	missense_variant	Unmet	Unmet	na
+20-45834989-G-GCAGT	SNX21	NM_033421.4	NM_033421.4	frameshift	Strong	Unset	NF5
+20-45882618-G-A	ZSWIM1	NM_080603.5	NM_080603.5	nonsense	Strong	Unset	NF5
+20-45891598-CCTG-C	CTSA	NM_000308.4	not_lof	inframe_deletion	Unmet	Unmet	na
+20-45907744-G-A	PLTP	NM_006227.4	not_lof	synonymous_variant	Unmet	Unmet	na
+20-45940851-T-TC	PCIF1	NM_022104.4	NM_022104.4	frameshift	VeryStrong	Unset	NF1
+20-46733756-G-T	SLC2A10	NM_030777.4	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+20-49850763-G-GT	SLC9A8	NM_015266.3	not_lof	intron_variant	Unmet	Unmet	na
+20-50893388-TGAG-T	ADNP	NM_001282531.3	not_lof	inframe_deletion	Unmet	Unmet	na
+20-54077085-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+20-54159030-C-A	CYP24A1	NM_000782.5	NM_000782.5	nonsense	VeryStrong	Unset	NF1
+20-58221330-A-C	ANKRD60	NM_001304369.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+20-62172726-G-A	SS18L1	NM_198935.3	not_lof	missense_variant	Unmet	Unmet	na
+20-62310566-C-T	LAMA5	NM_005560.6	not_lof	missense_variant	Unmet	Unmet	na
+20-62695394-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+20-63202817-G-A	YTHDF1	NM_017798.4	not_lof	missense_variant	Unmet	Unmet	na
+20-63566892-C-T	HELZ2	NM_001037335.2	NM_001037335.2	nonsense	VeryStrong	Unset	NF1
+20-63696895-CAG-C	TNFRSF6B	NM_003823.4	NM_003823.4	frameshift	VeryStrong	Unset	NF1
+20-63939482-T-TC			not_lof	intergenic_variant	Unmet	Unmet	na
+21-8880140-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+21-13421675-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+21-31696624-C-A	SCAF4	NM_020706.2	not_lof	missense_variant	Unmet	Unmet	na
+21-31940227-C-CT	HUNK	NM_014586.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+21-32366611-G-C	URB1	NM_014825.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+21-32612758-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+21-33070402-CTCCTCCACT-C	OLIG1	NM_138983.3	not_lof	inframe_deletion	Unmet	Unmet	na
+21-33432839-A-C	IFNGR2	NM_005534.4	not_lof	missense_variant	Unmet	Unmet	na
+21-33576390-GA-G	SON	NM_138927.4	NM_138927.4	frameshift	Moderate	Unset	NF6
+21-33997862-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+21-36071920-T-G	CBR1	NM_001757.4	not_lof	intron_variant	Unmet	Unmet	na
+21-36223223-T-C	DOP1B	NM_001320714.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+21-36263568-G-C	DOP1B	NM_001320714.2	not_lof	missense_variant	Unmet	Unmet	na
+21-38806044-C-T	ETS2	NM_005239.6	not_lof	5_prime_UTR_variant	Unmet	Unmet	na
+21-42111215-C-T	UMODL1	NM_001199527.3	NM_001199527.3	nonsense	VeryStrong	Unset	NF1
+21-43013093-G-A	PKNOX1	NM_004571.5	not_lof	missense_variant	Unmet	Unmet	na
+21-43060434-G-A	CBS	NM_000071.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+21-44855226-TTCA-T	PTTG1IP	NM_004339.4	not_lof	inframe_deletion	Unmet	Unmet	na
+21-46302071-ATGG-A	C21orf58	NM_058180.5	not_lof	inframe_deletion	Unmet	Unmet	na
+21-46440851-T-C	PCNT	NM_006031.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+21-46651907-G-A	PRMT2	NM_206962.4	not_lof	intron_variant	Unmet	Unmet	na
+21-46661822-TCGA-T	PRMT2	NM_206962.4	not_lof	inframe_deletion	Unmet	Unmet	na
+22-15711039-G-GTC	POTEH	NM_001136213.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+22-16677081-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+22-16988159-C-A	GAB4	NR_159481.1	not_lof	intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+22-17138160-A-AG	HDHD5	NM_033070.3	NM_033070.3	frameshift	Strong	Unset	NF5
+22-17875535-C-T	MICAL3	NM_015241.3	not_lof	intron_variant	Unmet	Unmet	na
+22-18130836-C-T	TUBA8	NM_018943.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+22-18389491-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+22-18608005-C-CA	RIMBP3	NM_015672.2	NM_015672.2	frameshift	Strong	Unset	NF5
+22-18752164-A-G	FAM230E	NR_165635.1	not_lof	splice_region_variant&intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+22-19766762-A-AGCCGCCGCG	TBX1	NM_005992.1	not_lof	intron_variant	Unmet	Unmet	na
+22-20112643-G-GC	TRMT2A	NM_022727.6	NM_022727.6	frameshift	Moderate	Unset	NF6
+22-20148808-C-T	CCDC188	NM_001365892.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+22-20384023-G-T			not_lof	intergenic_variant	Unmet	Unmet	na
+22-21629916-A-G	YDJC	NM_001017964.2	not_lof	synonymous_variant	Unmet	Unmet	na
+22-22664406-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+22-23289626-G-GC	BCR	NM_004327.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+22-24603528-G-A	GGT1	NM_001288833.2	NM_001288833.2	splice-5	Moderate	Unset	SS9
+22-24886605-C-T	SGSM1	NM_001098497.3	not_lof	synonymous_variant	Unmet	Unmet	na
+22-25174310-T-A	KIAA1671	NM_001386933.1	not_lof	missense_variant	Unmet	Unmet	na
+22-25202793-G-T	CRYBB3	NM_004076.5	NM_004076.5	splice-5	VeryStrong	Unset	SS1
+22-25843883-C-A	MYO18B	NM_032608.7	not_lof	missense_variant	Unmet	Unmet	na
+22-29729157-G-T	CABP7	NM_182527.3	NM_182527.3	nonsense	Strong	Unset	NF5
+22-30121959-C-T	HORMAD2	NM_152510.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+22-36160834-T-C	APOL3	NM_145640.2	not_lof	missense_variant	Unmet	Unmet	na
+22-36349262-G-A	MYH9	NM_002473.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+22-37474643-G-A	MFNG	NM_002405.4	not_lof	missense_variant	Unmet	Unmet	na
+22-37568401-CCAGCGCCTGCTGCAAACCCCT-C	CDC42EP1	NM_152243.3	not_lof	inframe_deletion	Unmet	Unmet	na
+22-37656031-G-A	SH3BP1	NM_018957.6	not_lof	3_prime_UTR_variant	Unmet	Unmet	na
+22-38081582-G-T	SLC16A8	NM_013356.3	not_lof	synonymous_variant	Unmet	Unmet	na
+22-38213894-G-A	MAFF	NM_012323.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+22-38361563-AAAATAAATAAAT-A	TPTEP2-CSNK1E	NM_001289912.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+22-38866367-C-A	CBX6	NM_014292.5	NM_014292.5	nonsense	Strong	Unset	NF5
+22-39570681-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+22-41220775-G-A	L3MBTL2	NM_031488.5	not_lof	missense_variant	Unmet	Unmet	na
+22-42128173-CCTT-C	CYP2D6	NM_000106.6	not_lof	inframe_deletion&splice_region_variant	Unmet	Unmet	na
+22-42129083-CA-C	CYP2D6	NM_000106.6	NM_000106.6	frameshift	VeryStrong	Unset	NF1
+22-42693652-C-G	A4GALT	NM_017436.7	not_lof	synonymous_variant	Unmet	Unmet	na
+22-42797597-G-A	ARFGAP3	NM_014570.5	not_lof	synonymous_variant	Unmet	Unmet	na
+22-42869646-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+22-43687562-T-C	EFCAB6	NM_022785.4	not_lof	missense_variant	Unmet	Unmet	na
+22-46313984-G-A	GTSE1	NM_016426.7	not_lof	missense_variant	Unmet	Unmet	na
+22-46359785-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+22-50120495-T-G	MOV10L1	NM_018995.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+22-50215869-T-G	SELENOO	NM_031454.2	NM_031454.2	splice-5	VeryStrong	Unset	SS1
+22-50283848-C-T	PLXNB2	NM_012401.4	not_lof	synonymous_variant	Unmet	Unmet	na
+22-50505734-G-A	LMF2	NM_033200.3	not_lof	synonymous_variant	Unmet	Unmet	na
+22-50549067-AG-A	KLHDC7B	NM_138433.5	NM_138433.5	frameshift	Strong	Unset	NF5
+22-50572947-G-C	CPT1B	NM_152246.3	not_lof	missense_variant	Unmet	Unmet	na
+3-326064-C-T	CHL1	NM_006614.4	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+3-1385634-C-CAAAG	CNTN6	NM_001289080.2	NM_001289080.2	frameshift	VeryStrong	Unset	NF1
+3-4710317-C-T	ITPR1	NM_001378452.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+3-10046582-G-T	FANCD2	NM_001018115.3	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+3-10992645-A-C			not_lof	intergenic_variant	Unmet	Unmet	na
+3-15082359-C-T	RBSN	NM_022340.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+3-17508563-T-TG	TBC1D5	NM_014744.2	NM_014744.2	frameshift	VeryStrong	Unset	NF1
+3-20154470-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+3-25598460-A-AGAT	TOP2B	NM_001330700.2	not_lof	inframe_insertion	Unmet	Unmet	na
+3-27091345-A-T			not_lof	intergenic_variant	Unmet	Unmet	na
+3-31453579-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+3-31533057-G-A	STT3B	NM_178862.3	NM_178862.3	nonsense	VeryStrong	Unset	NF1
+3-31830101-G-A	OSBPL10	NM_001174060.2	not_lof	intron_variant	Unmet	Unmet	na
+3-33866343-T-TCTCC	PDCD6IP	NM_013374.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+3-35793829-G-A	ARPP21	NR_170705.1	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+3-36874237-G-A	TRANK1	NM_001329998.2	NM_001329998.2	nonsense	VeryStrong	Unset	NF1
+3-37054522-G-A	LRRFIP2	NM_006309.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+3-37779975-G-A	ITGA9	NM_002207.3	not_lof	missense_variant	Unmet	Unmet	na
+3-38499754-G-A	EXOG	NM_005107.4	not_lof	intron_variant	Unmet	Unmet	na
+3-41835918-T-G	ULK4	NM_017886.4	not_lof	missense_variant	Unmet	Unmet	na
+3-42691888-CGAG-C	KLHL40	NM_152393.4	not_lof	inframe_deletion	Unmet	Unmet	na
+3-44242333-T-TCGTCAGACC	TOPAZ1	NM_001145030.2	not_lof	inframe_insertion	Unmet	Unmet	na
+3-44826033-A-G	KIF15	NM_020242.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+3-45595050-CCAG-C	LIMD1	NM_014240.3	not_lof	inframe_deletion	Unmet	Unmet	na
+3-45796655-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+3-46203247-C-T	CCR1	NM_001295.3	not_lof	stop_retained_variant	Unmet	Unmet	na
+3-46204018-C-T	CCR1	NM_001295.3	NM_001295.3	nonsense	Strong	Unset	NF5
+3-46455352-TC-T	LTF	NM_002343.6	NM_002343.6	frameshift	VeryStrong	Unset	NF1
+3-46545132-T-C	LRRC2	NM_024512.5	not_lof	missense_variant	Unmet	Unmet	na
+3-49701830-TGAA-T	RNF123	NM_022064.5	not_lof	inframe_deletion	Unmet	Unmet	na
+3-50118454-TGA-T	RBM5	NM_005778.4	NM_005778.4	frameshift	VeryStrong	Unset	NF1
+3-50214412-C-A	SLC38A3	NM_006841.6	not_lof	missense_variant	Unmet	Unmet	na
+3-50269291-G-A	SEMA3B	NM_001290060.2	NM_001290060.2	nonsense	VeryStrong	Unset	NF1
+3-51350374-G-A	DOCK3	NM_004947.5	not_lof	synonymous_variant	Unmet	Unmet	na
+3-51945859-C-T	PARP3	NM_001003931.4	NM_001003931.4	nonsense	VeryStrong	Unset	NF1
+3-51961154-G-C	PCBP4	NM_001174100.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+3-52419827-C-T	PHF7	NM_016483.7	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+3-52441853-G-A	SEMA3G	NM_020163.3	not_lof	synonymous_variant	Unmet	Unmet	na
+3-52855447-G-A	STIMATE-MUSTN1	NM_001198974.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+3-57630920-C-A	DENND6A	NM_152678.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+3-58105076-G-A	FLNB	NM_001457.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+3-64095199-G-T	PRICKLE2	NM_198859.4	not_lof	3_prime_UTR_variant	Unmet	Unmet	na
+3-65439885-T-TCTGCTG	MAGI1	NM_001033057.2	not_lof	inframe_insertion	Unmet	Unmet	na
+3-67360748-CT-C	SUCLG2	NM_001177599.2	NM_001177599.2	frameshift	Moderate	Unset	NF6
+3-68637148-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+3-69004436-T-A	EOGT	NM_001278689.2	NM_001278689.2	nonsense	VeryStrong	Unset	NF1
+3-69024055-T-C	TMF1	NM_007114.3	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+3-72862051-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+3-75630616-C-A			not_lof	intergenic_variant	Unmet	Unmet	na
+3-75665673-AG-A	FRG2C	NM_001124759.5	NM_001124759.5	frameshift	Strong	Unset	NF5
+3-75669386-G-T			not_lof	intergenic_variant	Unmet	Unmet	na
+3-75732071-C-T	ZNF717	NM_001324027.1	NM_001324027.1	nonsense	Moderate	Unset	NF6
+3-75737765-C-A	ZNF717	NM_001290208.3	NM_001290208.3	nonsense	Strong	Unset	NF5
+3-75737896-G-GACTTATA	ZNF717	NM_001290208.3	NM_001290208.3	frameshift	Strong	Unset	NF5
+3-75738283-CCT-C	ZNF717	NM_001290208.3	NM_001290208.3	frameshift	Strong	Unset	NF5
+3-75738494-GAA-G	ZNF717	NM_001290208.3	NM_001290208.3	frameshift	Strong	Unset	NF5
+3-93874405-T-C	PROS1	NM_000313.4	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+3-97936874-G-A	CRYBG3	NM_153605.4	NM_153605.4	nonsense	VeryStrong	Unset	NF1
+3-97947437-G-C	RIOX2	NM_153182.4	not_lof	missense_variant	Unmet	Unmet	na
+3-98207777-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+3-98283007-T-G	OR5H2	NM_001005482.2	NM_001005482.2	nonsense	Strong	Unset	NF5
+3-98391912-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+3-98498334-T-A	OR5K2	NM_001004737.1	NM_001004737.1	nonsense	Strong	Unset	NF5
+3-100833158-C-T	ABI3BP	NM_001375547.2	NM_001375547.2	splice-3	Moderate	Unset	SS9
+3-108444773-ACTT-A	MYH15	NM_014981.2	not_lof	inframe_deletion	Unmet	Unmet	na
+3-109057364-G-T	MORC1	NM_014429.4	NM_014429.4	nonsense	VeryStrong	Unset	NF1
+3-109337467-C-CTTGCCTT	DPPA4	NM_018189.3	NM_018189.3	frameshift	VeryStrong	Unset	NF1
+3-111193193-T-C	NECTIN3	NM_001243288.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+3-113305155-G-A	CFAP44	NM_001164496.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+3-113656230-T-C	USF3	NM_001009899.4	not_lof	missense_variant	Unmet	Unmet	na
+3-119414348-G-T	ARHGAP31	NM_020754.4	NM_020754.4	nonsense	Strong	Unset	NF5
+3-119600402-G-A	PLA1A	NM_015900.4	not_lof	intron_variant	Unmet	Unmet	na
+3-121994185-G-A	ILDR1	NM_001199799.2	NM_001199799.2	nonsense	VeryStrong	VeryStrong	NF1
+3-123491411-C-A			not_lof	intergenic_variant	Unmet	Unmet	na
+3-124764383-G-A	ITGB5	NM_002213.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+3-126157430-C-A	ALDH1L1	NM_012190.4	not_lof	synonymous_variant	Unmet	Unmet	na
+3-130468818-G-T	COL6A5	NR_022012.2	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+3-132350001-C-T	ACP3	NM_001099.5	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+3-132523632-C-T	DNAJC13	NM_015268.4	not_lof	synonymous_variant	Unmet	Unmet	na
+3-132600469-C-G	ACKR4	NM_016557.4	NM_016557.4	nonsense	Strong	Unset	NF5
+3-132659715-C-A	ACAD11	NM_032169.5	NM_032169.5	nonsense	VeryStrong	Unset	NF1
+3-133491559-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+3-136819074-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+3-138949615-CGGCATTCGAA-C	FOXL2NB	NM_001040061.3	NM_001040061.3	frameshift	Strong	Unset	NF5
+3-148883820-G-A	CPA3	NM_001870.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+3-149520808-C-CTTAA	WWTR1	NM_015472.6	NM_015472.6	frameshift	VeryStrong	Unset	NF1
+3-151328442-C-T	P2RY13	NM_176894.3	NM_176894.3	nonsense	Strong	Unset	NF5
+3-157146609-TAAAAAAA-T	CCNL1	NM_001308185.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+3-168010355-G-A	GOLIM4	NM_014498.5	NM_014498.5	nonsense	Moderate	Unset	NF6
+3-168024565-GTCC-G	GOLIM4	NM_014498.5	not_lof	inframe_deletion	Unmet	Unmet	na
+3-180647195-C-A	CCDC39	NM_181426.2	NM_181426.2	nonsense	VeryStrong	Unset	NF1
+3-184353343-C-CCGG	CLCN2	NM_004366.6	not_lof	inframe_insertion	Unmet	Unmet	na
+3-191375155-AAG-A	CCDC50	NM_178335.3	NM_178335.3	frameshift	VeryStrong	Unmet	NF1
+3-191380177-T-C	CCDC50	NM_178335.3	not_lof	missense_variant	Unmet	Unmet	na
+3-192767522-G-T			not_lof	intergenic_variant	Unmet	Unmet	na
+3-193314086-C-T	ATP13A5	NM_198505.4	not_lof	missense_variant	Unmet	Unmet	na
+3-193638047-G-T	OPA1	NM_130837.3	not_lof	missense_variant	Unmet	Unmet	na
+3-195619561-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+3-195779246-G-T	MUC4	NM_018406.7	not_lof	missense_variant	Unmet	Unmet	na
+3-195781525-G-C	MUC4	NM_018406.7	NM_018406.7	nonsense	VeryStrong	Unset	NF1
+3-195781964-C-T	MUC4	NM_018406.7	not_lof	missense_variant	Unmet	Unmet	na
+3-195785502-G-GGAT	MUC4	NM_018406.7	not_lof	inframe_insertion	Unmet	Unmet	na
+3-197932289-C-G	IQCG	NM_032263.5	not_lof	missense_variant	Unmet	Unmet	na
+4-161621-A-T	ZNF718	NM_001039127.6	not_lof	synonymous_variant	Unmet	Unmet	na
+4-958473-C-T	TMEM175	NM_032326.4	NM_032326.4	nonsense	Moderate	Unset	NF6
+4-1093699-G-A	RNF212	NM_001131034.4	not_lof	intron_variant	Unmet	Unmet	na
+4-1309711-C-T	MAEA	NM_001017405.3	not_lof	intron_variant	Unmet	Unmet	na
+4-1735265-C-T	TACC3	NM_006342.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+4-2072975-TG-T	POLN	NM_181808.4	NM_181808.4	frameshift	Unmet	Unset	NF4
+4-2208305-CT-C	POLN	NM_181808.4	NM_181808.4	frameshift	VeryStrong	Unset	NF1
+4-3074876-CCAGCAGCAG-C	HTT	NM_002111.8	not_lof	inframe_deletion	Unmet	Unmet	na
+4-3074936-A-G	HTT	NM_002111.8	not_lof	synonymous_variant	Unmet	Unmet	na
+4-4130820-A-C			not_lof	intergenic_variant	Unmet	Unmet	na
+4-4197221-GCGTTGC-G	OTOP1	NM_177998.3	not_lof	inframe_deletion	Unmet	Unmet	na
+4-5615549-A-G	EVC2	NM_147127.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+4-5980342-C-T	C4orf50	NM_001364689.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+4-5988853-C-T	C4orf50	NM_001364689.2	not_lof	missense_variant	Unmet	Unmet	na
+4-6593282-G-A	MAN2B2	NM_015274.3	not_lof	missense_variant	Unmet	Unmet	na
+4-8399592-G-A	ACOX3	NM_003501.3	not_lof	synonymous_variant	Unmet	Unmet	na
+4-9173078-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+4-13337210-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+4-15688951-G-A	FAM200B	NM_001145191.2	not_lof	stop_retained_variant	Unmet	Unmet	na
+4-15705570-C-T	BST1	NM_004334.3	not_lof	missense_variant	Unmet	Unmet	na
+4-17632632-G-A	FAM184B	NM_015688.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+4-26163383-C-CA			not_lof	intergenic_variant	Unmet	Unmet	na
+4-30722457-C-G	PCDH7	NM_001173523.2	NM_001173523.2	nonsense	VeryStrong	Unset	NF1
+4-31146980-A-T			not_lof	intergenic_variant	Unmet	Unmet	na
+4-38797138-G-C	TLR1	NM_003263.4	not_lof	missense_variant	Unmet	Unmet	na
+4-39287367-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+4-48594019-TA-T	FRYL	NM_015030.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+4-48594019-T-TA	FRYL	NM_015030.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+4-54658085-G-A	KIT	NM_000222.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+4-55370080-TTTTTG-T	SRD5A3	NM_024592.5	NM_024592.5	frameshift	Unmet	Unset	NF4
+4-57031342-TA-T	IGFBP7	NM_001553.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+4-60663994-G-GTAATA			not_lof	intergenic_variant	Unmet	Unmet	na
+4-67446739-CA-C			not_lof	intergenic_variant	Unmet	Unmet	na
+4-69290774-C-A	UGT2B28	NM_053039.2	not_lof	missense_variant	Unmet	Unmet	na
+4-69841047-G-T			not_lof	intergenic_variant	Unmet	Unmet	na
+4-70602628-CAGG-C	AMBN	NM_016519.6	not_lof	inframe_deletion	Unmet	Unmet	na
+4-73742462-T-TA	CXCL8	NM_000584.4	NM_000584.4	frameshift	VeryStrong	Unset	NF1
+4-73883836-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+4-74201257-T-C	MTHFD2L	NM_001144978.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+4-75917776-TAA-T	NAAA	NM_014435.4	not_lof	intron_variant	Unmet	Unmet	na
+4-76278222-C-T	FAM47E	NM_001136570.3	NM_001136570.3	nonsense	VeryStrong	Unset	NF1
+4-77055221-C-T	CCNI	NM_006835.3	not_lof	missense_variant	Unmet	Unmet	na
+4-77612033-G-T			not_lof	intergenic_variant	Unmet	Unmet	na
+4-83284851-T-A	COQ2	NM_015697.9	NM_015697.9	nonsense	VeryStrong	Unset	NF1
+4-87114865-A-C	AFF1	NM_001166693.3	not_lof	missense_variant	Unmet	Unmet	na
+4-87372735-G-A	HSD17B11	NM_016245.5	not_lof	synonymous_variant	Unmet	Unmet	na
+4-87615021-G-A	DSPP	NM_014208.3	not_lof	missense_variant	Unmet	Unmet	na
+4-87846053-C-G	MEPE	NM_001184694.2	not_lof	missense_variant	Unmet	Unmet	na
+4-88463979-G-C	HERC5	NM_016323.4	not_lof	missense_variant	Unmet	Unmet	na
+4-89725318-T-TAAAA	SNCA	NM_000345.4	not_lof	3_prime_UTR_variant	Unmet	Unmet	na
+4-89909322-T-C	MMRN1	NM_007351.3	not_lof	synonymous_variant	Unmet	Unmet	na
+4-99143175-A-T	ADH4	NM_000670.5	not_lof	intron_variant	Unmet	Unmet	na
+4-99654123-G-A	C4orf54	NM_001354435.2	NM_001354435.2	nonsense	Strong	Unset	NF5
+4-99930524-G-T	DNAJB14	NM_001031723.4	NM_001031723.4	nonsense	VeryStrong	Unset	NF1
+4-105700012-C-T	INTS12	NM_020395.4	not_lof	splice_region_variant&5_prime_UTR_variant	Unmet	Unmet	na
+4-109869931-ATCT-A	LRIT3	NM_198506.5	not_lof	inframe_deletion	Unmet	Unmet	na
+4-110011233-G-GC	EGF	NM_001963.6	NM_001963.6	frameshift	Unmet	Unset	NF4
+4-112620046-G-A	ZGRF1	NM_018392.5	NM_018392.5	nonsense	VeryStrong	Unset	NF1
+4-112644730-AAAG-A	LARP7	NM_016648.4	not_lof	inframe_deletion	Unmet	Unmet	na
+4-112657326-G-GA	LARP7	NM_016648.4	NM_016648.4	frameshift	VeryStrong	Unset	NF1
+4-114827761-TA-T			not_lof	intergenic_variant	Unmet	Unmet	na
+4-118723660-G-GA	SEC24D	NM_014822.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+4-119030437-C-A	SYNPO2	NM_133477.3	NM_133477.3	nonsense	VeryStrong	Unset	NF1
+4-119404439-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+4-121868043-C-A	BBS7	NM_176824.3	NM_176824.3	nonsense	VeryStrong	Unset	NF1
+4-122742971-AG-A	BBS12	NM_152618.3	NM_152618.3	frameshift	Strong	Unset	NF5
+4-129109608-C-T	C4orf33	NM_001099783.2	NM_001099783.2	nonsense	VeryStrong	Unset	NF1
+4-139044694-G-A	NOCT	NM_012118.4	NM_012118.4	nonsense	Strong	Unset	NF5
+4-140451412-T-A	MGAT4D	NM_001277353.2	NM_001277353.2	nonsense	Moderate	Unset	NF6
+4-142028797-TC-T	INPP4B	NR_169617.1	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+4-143577712-T-A	FREM3	NM_001168235.2	not_lof	missense_variant	Unmet	Unmet	na
+4-145124986-T-C	ABCE1	NM_002940.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+4-149563823-CTA-C	IQCM	NM_001363507.2	NM_001363507.2	frameshift	VeryStrong	Unset	NF1
+4-152618489-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+4-154298221-A-G	DCHS2	NM_001358235.2	not_lof	synonymous_variant	Unmet	Unmet	na
+4-154305100-G-A	DCHS2	NM_001358235.2	NM_001358235.2	nonsense	VeryStrong	Unset	NF1
+4-154565984-C-T	FGB	NM_005141.5	not_lof	synonymous_variant	Unmet	Unmet	na
+4-155377157-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+4-158713145-G-A	PPID	NM_005038.3	NM_005038.3	nonsense	VeryStrong	Unset	NF1
+4-163351373-TC-T	NPY5R	NM_006174.4	NM_006174.4	frameshift	Strong	Unset	NF5
+4-164969550-C-T	TRIM61	NM_001012414.3	NM_001012414.3	nonsense	VeryStrong	Unset	NF1
+4-165378701-G-T			not_lof	intergenic_variant	Unmet	Unmet	na
+4-169561898-T-TA	NEK1	NM_001199397.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+4-173331344-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+4-182803147-CTT-C			not_lof	intergenic_variant	Unmet	Unmet	na
+4-185432151-C-CA	C4orf47	NM_001114357.3	NM_001114357.3	frameshift	VeryStrong	Unset	NF1
+5-6491213-C-T	UBE2QL1	NM_001145161.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+5-6633168-G-T			not_lof	intergenic_variant	Unmet	Unmet	na
+5-7826740-G-A	ADCY2	NM_020546.3	not_lof	missense_variant	Unmet	Unmet	na
+5-13844842-C-T	DNAH5	NM_001369.3	not_lof	missense_variant	Unmet	Unmet	na
+5-13862662-G-A	DNAH5	NM_001369.3	not_lof	missense_variant	Unmet	Unmet	na
+5-14462854-G-A	TRIO	NM_007118.4	not_lof	missense_variant	Unmet	Unmet	na
+5-16689924-A-C	MYO10	NM_012334.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+5-16702589-C-A	MYO10	NM_012334.3	NM_012334.3	splice-3	VeryStrong	Unset	SS1
+5-19981178-T-C	CDH18	NM_004934.5	not_lof	splice_region_variant&5_prime_UTR_variant	Unmet	Unmet	na
+5-33751349-A-T	ADAMTS12	NM_030955.4	not_lof	intron_variant	Unmet	Unmet	na
+5-33963765-C-T	SLC45A2	NM_016180.5	not_lof	missense_variant	Unmet	Unmet	na
+5-34911795-G-A	RAD1	NM_002853.4	NM_002853.4	nonsense	VeryStrong	Unset	NF1
+5-35763700-A-T	SPEF2	NM_024867.4	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+5-40841469-CTT-C	CARD6	NM_032587.4	NM_032587.4	frameshift	VeryStrong	Unset	NF1
+5-41061613-C-T	MROH2B	NM_173489.5	NM_173489.5	nonsense	VeryStrong	Unset	NF1
+5-50441594-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+5-55143514-T-G	CDC20B	NM_001170402.1	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+5-56143907-GC-G	ANKRD55	NM_024669.3	NM_024669.3	frameshift	VeryStrong	Unset	NF1
+5-61332747-CCGGCCGCAACCTCGG-C	ZSWIM6	NM_020928.2	not_lof	inframe_deletion	Unmet	Unmet	na
+5-65614103-C-A	TRIM23	NM_001656.4	NM_001656.4	nonsense	VeryStrong	Unset	NF1
+5-66046471-C-T	ERBIN	NM_001253697.2	not_lof	missense_variant	Unmet	Unmet	na
+5-72314132-A-G	MRPS27	NM_015084.3	not_lof	missense_variant	Unmet	Unmet	na
+5-73087644-G-A	FCHO2	NM_138782.3	not_lof	synonymous_variant	Unmet	Unmet	na
+5-78885600-C-T	ARSB	NM_000046.5	not_lof	missense_variant	Unmet	Unmet	na
+5-78985560-TA-T	ARSB	NM_198709.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+5-80665136-G-A	MSH3	NM_002439.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+5-81113707-T-C	RASGRF2	NM_006909.3	not_lof	missense_variant	Unmet	Unmet	na
+5-83353124-G-A	XRCC4	NM_003401.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+5-87390883-G-A	RASA1	NM_002890.3	not_lof	stop_retained_variant	Unmet	Unmet	na
+5-90720207-T-A	ADGRV1	NM_032119.4	not_lof	missense_variant	Unmet	Unmet	na
+5-91374212-A-G	ARRDC3	NM_020801.4	not_lof	missense_variant	Unmet	Unmet	na
+5-94705438-C-CTGTT			not_lof	intergenic_variant	Unmet	Unmet	na
+5-94909385-GA-G	MCTP1	NM_024717.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+5-95391475-CA-C	FAM81B	NM_152548.3	NM_152548.3	frameshift	VeryStrong	Unset	NF1
+5-96909015-T-C	ERAP2	NM_022350.5	not_lof	synonymous_variant	Unmet	Unmet	na
+5-96909814-A-G	ERAP2	NM_022350.5	not_lof	intron_variant	Unmet	Unmet	na
+5-108392970-C-CT			not_lof	intergenic_variant	Unmet	Unmet	na
+5-112840862-T-G	APC	NM_000038.6	not_lof	synonymous_variant	Unmet	Unmet	na
+5-116292489-A-G	COMMD10	NM_016144.4	not_lof	stop_lost	Unmet	Unmet	na
+5-122078330-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+5-122152094-G-A	ZNF474	NM_207317.3	not_lof	missense_variant	Unmet	Unmet	na
+5-122179598-C-T	LOC100505841	NM_001195535.2	not_lof	missense_variant	Unmet	Unmet	na
+5-123090166-A-AGCCGCC	PRDM6	NM_001136239.4	not_lof	inframe_insertion	Unmet	Unmet	na
+5-123346640-C-T	CEP120	NM_001375405.1	not_lof	missense_variant	Unmet	Unmet	na
+5-126627359-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+5-128990472-T-C	SLC27A6	NM_001017372.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+5-132822944-C-T	SHROOM1	NM_001172700.2	not_lof	missense_variant	Unmet	Unmet	na
+5-135922255-T-G			not_lof	intergenic_variant	Unmet	Unmet	na
+5-137753256-C-CGCT	HNRNPA0	NM_006805.4	not_lof	inframe_insertion	Unmet	Unmet	na
+5-138567169-A-T	HSPA9	NM_004134.7	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+5-139379831-T-C	SLC23A1	NM_005847.5	not_lof	missense_variant	Unmet	Unmet	na
+5-140671501-C-T	DND1	NM_194249.3	NM_194249.3	nonsense	Strong	Unset	NF5
+5-140841427-C-T	PCDHA8	NM_018911.3	not_lof	missense_variant	Unmet	Unmet	na
+5-140850095-C-T	PCDHA9	NM_031857.2	NM_031857.2	nonsense	VeryStrong	Unset	NF1
+5-140876300-A-C	PCDHA12	NM_018903.4	not_lof	missense_variant	Unmet	Unmet	na
+5-140966860-TTGCTGC-T	PCDHAC2	NM_018899.6	not_lof	inframe_deletion	Unmet	Unmet	na
+5-141122904-GA-G	PCDHB4	NM_018938.4	NM_018938.4	frameshift	Strong	Unset	NF5
+5-141214310-C-CG	PCDHB13	NM_018933.4	NM_018933.4	frameshift	Strong	Unset	NF5
+5-141372754-G-A	PCDHGB3	NM_018924.5	NM_018924.5	nonsense	VeryStrong	Unset	NF1
+5-141399395-G-A	PCDHGB5	NM_018925.3	not_lof	missense_variant	Unmet	Unmet	na
+5-141415645-A-T	PCDHGA4	NM_018917.4	not_lof	intron_variant	Unmet	Unmet	na
+5-141638408-C-T	RELL2	NM_173828.5	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+5-141945401-T-TGCTGCTGCTGCTGCTGCC	PCDH12	NM_016580.4	not_lof	inframe_insertion	Unmet	Unmet	na
+5-141955356-C-T	PCDH12	NM_016580.4	not_lof	synonymous_variant	Unmet	Unmet	na
+5-145872921-G-C	GRXCR2	NM_001080516.2	not_lof	synonymous_variant	Unmet	Unmet	na
+5-146013752-C-T	SH3RF2	NM_152550.4	not_lof	synonymous_variant	Unmet	Unmet	na
+5-150068208-G-A	CSF1R	NM_001288705.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+5-151267451-A-G	GM2A	NM_000405.5	not_lof	stop_retained_variant	Unmet	Unmet	na
+5-151550631-C-T	FAT2	NM_001447.3	not_lof	missense_variant	Unmet	Unmet	na
+5-151663455-CTA-C	SPARC	NM_003118.4	not_lof	3_prime_UTR_variant	Unmet	Unmet	na
+5-151746340-G-T	ATOX1	NM_004045.4	NM_004045.4	nonsense	Moderate	Unset	NF6
+5-157085629-A-C			not_lof	intergenic_variant	Unmet	Unmet	na
+5-157294854-T-TC	CYFIP2	NM_001037333.3	NM_001037333.3	frameshift	VeryStrong	Unset	NF1
+5-157488326-G-T	ADAM19	NM_033274.5	NM_033274.5	nonsense	VeryStrong	Unset	NF1
+5-172686232-C-T	NEURL1B	NM_001142651.3	not_lof	synonymous_variant	Unmet	Unmet	na
+5-173999705-A-G	C5orf47	NM_001144954.2	not_lof	synonymous_variant	Unmet	Unmet	na
+5-174243694-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+5-175917737-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+5-176383711-C-A			not_lof	intergenic_variant	Unmet	Unmet	na
+5-176384232-C-T	NOP16	NM_016391.8	not_lof	stop_retained_variant	Unmet	Unmet	na
+5-176565330-TC-T	CDHR2	NM_001171976.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+5-177372787-AT-A			not_lof	intergenic_variant	Unmet	Unmet	na
+5-177405330-G-T	F12	NM_000505.4	NM_000505.4	nonsense	VeryStrong	Unmet	NF1
+5-177604400-G-GC	B4GALT7	NM_007255.3	NM_007255.3	frameshift	VeryStrong	Unset	NF1
+5-177734375-C-T	FAM153A	NR_146226.2	not_lof	splice_region_variant&intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+5-179618141-G-A	HNRNPH1	NM_001364233.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+6-1390850-G-GGGC	FOXF2	NM_001452.2	not_lof	inframe_insertion	Unmet	Unmet	na
+6-1611567-G-GGGC	FOXC1	NM_001453.3	not_lof	inframe_insertion	Unmet	Unmet	na
+6-2896085-G-A	SERPINB9	NM_004155.6	not_lof	missense_variant	Unmet	Unmet	na
+6-2961895-C-CT	SERPINB6	NM_004568.6	not_lof	intron_variant	Unmet	Unmet	na
+6-10874573-T-C	GCM2	NM_004752.4	not_lof	missense_variant	Unmet	Unmet	na
+6-11768249-C-T	ADTRP	NM_032744.4	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+6-12514774-CAAA-C			not_lof	intergenic_variant	Unmet	Unmet	na
+6-13286285-A-G	PHACTR1	NM_030948.6	not_lof	intron_variant	Unmet	Unmet	na
+6-18258068-G-GA	DEK	NM_003472.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+6-25140401-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+6-27147345-GACA-G	H2AC12	NM_080596.3	not_lof	inframe_deletion	Unmet	Unmet	na
+6-27911334-GT-G	OR2B2	NM_033057.2	NM_033057.2	frameshift	Moderate	Unset	NF6
+6-28272154-T-TG	ZSCAN26	NM_001023560.4	NM_001023560.4	frameshift	VeryStrong	Unset	NF1
+6-29942753-C-T	HLA-A	NM_002116.8	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+6-31112239-C-G	C6orf15	NM_014070.3	not_lof	missense_variant	Unmet	Unmet	na
+6-31271356-C-A	HLA-C	NM_002117.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+6-32007269-GA-G	CYP21A1P	NR_040090.1	not_lof	splice_region_variant&non_coding_transcript_exon_variant	Unmet	Unmet	na
+6-32503866-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+6-32522131-G-A	HLA-DRB5	NM_002125.4	not_lof	synonymous_variant	Unmet	Unmet	na
+6-32579107-GCAAAAGA-G	HLA-DRB1	NM_002124.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+6-32581568-G-GCA	HLA-DRB1	NM_002124.4	NM_002124.4	frameshift	VeryStrong	Unset	NF1
+6-32584158-G-C	HLA-DRB1	NM_002124.4	NM_002124.4	nonsense	VeryStrong	Unset	NF1
+6-32637215-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+6-32637511-T-C	HLA-DQA1	NM_002122.5	not_lof	missense_variant	Unmet	Unmet	na
+6-32666524-T-C	HLA-DQB1	NM_002123.5	not_lof	synonymous_variant	Unmet	Unmet	na
+6-32668127-T-A			not_lof	intergenic_variant	Unmet	Unmet	na
+6-33577639-CG-C	BAK1	NM_001188.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+6-34856330-A-C	UHRF1BP1	NM_017754.4	not_lof	missense_variant	Unmet	Unmet	na
+6-35091526-A-AGAT			not_lof	intergenic_variant	Unmet	Unmet	na
+6-36232906-C-CT			not_lof	intergenic_variant	Unmet	Unmet	na
+6-36373556-G-A	ETV7	NM_016135.4	not_lof	synonymous_variant	Unmet	Unmet	na
+6-38675755-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+6-38973760-C-T	DNAH8	NM_001206927.2	NM_001206927.2	nonsense	VeryStrong	Unset	NF1
+6-41649686-GCTGGGCGGCACCAGACGGGCGGGGAATGGTGCC-G	MDFI	NM_005586.4	not_lof	inframe_deletion	Unmet	Unmet	na
+6-41786896-C-T	PRICKLE4	NM_013397.6	NM_013397.6	nonsense	Strong	Unset	NF5
+6-41798694-C-CCCCCA	USP49	NM_001286554.2	not_lof	intron_variant	Unmet	Unmet	na
+6-42963074-G-A	GNMT	NM_018960.6	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+6-43072928-A-T	KLC4	NM_201521.3	not_lof	synonymous_variant	Unmet	Unmet	na
+6-43175858-C-T	SRF	NM_003131.4	not_lof	synonymous_variant	Unmet	Unmet	na
+6-43445817-C-T	ABCC10	NM_001198934.2	not_lof	synonymous_variant	Unmet	Unmet	na
+6-43516995-G-GA			not_lof	intergenic_variant	Unmet	Unmet	na
+6-44250347-TGAGAAAGAA-T	HSP90AB1	NM_007355.4	not_lof	inframe_deletion	Unmet	Unmet	na
+6-44360501-GA-G	SPATS1	NM_001372081.1	NM_001372081.1	frameshift	VeryStrong	Unset	NF1
+6-44406319-A-G	CDC5L	NM_001253.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+6-45949302-C-T	CLIC5	NM_016929.5	not_lof	missense_variant	Unmet	Unmet	na
+6-46690239-GAGA-G	TDRD6	NM_001010870.3	not_lof	inframe_deletion	Unmet	Unmet	na
+6-46692761-C-CAGTG	TDRD6	NM_001010870.3	NM_001010870.3	frameshift	VeryStrong	Unset	NF1
+6-47795559-C-CAA	OPN5	NR_033806.2	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+6-49570700-T-G			not_lof	intergenic_variant	Unmet	Unmet	na
+6-52769393-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+6-54136989-G-A	MLIP	NM_001281747.2	not_lof	missense_variant	Unmet	Unmet	na
+6-57101115-TGAAGAA-T	ZNF451	NM_001031623.3	not_lof	intron_variant	Unmet	Unmet	na
+6-64591786-T-C	EYS	NM_001142800.2	not_lof	missense_variant	Unmet	Unmet	na
+6-80345972-C-T	BCKDHB	NM_183050.4	not_lof	3_prime_UTR_variant	Unmet	Unmet	na
+6-84215818-T-C	CEP162	NM_014895.4	not_lof	missense_variant	Unmet	Unmet	na
+6-85642994-A-AC			not_lof	intergenic_variant	Unmet	Unmet	na
+6-87477364-A-C	SLC35A1	NM_006416.5	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+6-88047832-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+6-89630899-A-T	ANKRD6	NM_001242809.2	not_lof	missense_variant	Unmet	Unmet	na
+6-89951857-T-C	BACH2	NM_021813.4	not_lof	synonymous_variant	Unmet	Unmet	na
+6-105096622-AT-A			not_lof	intergenic_variant	Unmet	Unmet	na
+6-106530275-G-GT	CRYBG1	NM_001371242.2	NM_001371242.2	frameshift	VeryStrong	Unset	NF1
+6-107921915-G-GGGGAAAAAAA	SEC63	NM_007214.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+6-108854219-T-C	ARMC2	NM_032131.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+6-109442628-G-C	SMPD2	NM_003080.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+6-109442744-TC-T	SMPD2	NM_003080.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+6-112172670-A-G	LAMA4	NM_001105206.3	not_lof	missense_variant	Unmet	Unmet	na
+6-117365677-T-C	ROS1	NM_001378902.1	not_lof	synonymous_variant	Unmet	Unmet	na
+6-118816282-C-A	MCM9	NR_165493.1	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+6-118917739-C-T	MCM9	NR_165493.1	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+6-118975213-TA-T	FAM184A	NM_024581.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+6-127450307-T-G	KIAA0408	NM_014702.5	not_lof	missense_variant	Unmet	Unmet	na
+6-131724040-A-G	ENPP3	NM_005021.5	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+6-131737432-A-G	ENPP3	NM_005021.5	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+6-132734390-G-A	VNN3	NM_001368156.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+6-136592528-T-TGTC	MAP3K5	NM_005923.4	not_lof	inframe_insertion	Unmet	Unmet	na
+6-139373825-CTGG-C	CITED2	NM_006079.5	not_lof	inframe_deletion	Unmet	Unmet	na
+6-142367690-C-T	ADGRG6	NM_198569.3	not_lof	synonymous_variant	Unmet	Unmet	na
+6-144548649-A-G	UTRN	NM_007124.2	not_lof	missense_variant	Unmet	Unmet	na
+6-149826259-T-A	LRP11	NM_032832.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+6-150069013-G-C	ULBP3	NM_024518.3	NM_024518.3	nonsense	VeryStrong	Unset	NF1
+6-151349194-AAGG-A	AKAP12	NM_005100.4	not_lof	inframe_deletion	Unmet	Unmet	na
+6-151544662-C-A	CCDC170	NM_025059.4	NM_025059.4	nonsense	VeryStrong	Unset	NF1
+6-154039434-C-T	OPRM1	NM_000914.5	not_lof	5_prime_UTR_variant	Unmet	Unmet	na
+6-154246729-C-T	IPCEF1	NM_015553.3	not_lof	synonymous_variant	Unmet	Unmet	na
+6-155954557-G-T			not_lof	intergenic_variant	Unmet	Unmet	na
+6-156778889-CGGA-C	ARID1B	NM_001374828.1	not_lof	inframe_deletion	Unmet	Unmet	na
+6-157206358-TGAC-T	ARID1B	NM_001374828.1	not_lof	inframe_deletion	Unmet	Unmet	na
+6-160136537-C-T	SLC22A1	NM_003057.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+6-161086586-C-T	MAP3K4	NM_005922.4	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+6-167357599-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+6-168294160-A-T	DACT2	NM_001286351.2	NM_001286351.2	nonsense	Moderate	Unset	NF6
+6-168608197-C-T	SMOC2	NM_001166412.2	not_lof	missense_variant	Unmet	Unmet	na
+6-169740223-C-T	DYNLT2	NM_174910.3	not_lof	missense_variant	Unmet	Unmet	na
+7-955401-G-A	ADAP1	NM_001284308.1	NM_001284308.1	nonsense	VeryStrong	Unset	NF1
+7-2314707-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+7-2513247-A-AGATG	LFNG	NM_001166355.2	NM_001166355.2	frameshift	VeryStrong	Unset	NF1
+7-2724509-ACCGACCATGG-A	AMZ1	NM_001384742.1	NM_001384742.1	frameshift	Moderate	Unset	NF6
+7-5287902-A-G	SLC29A4	NM_153247.4	not_lof	missense_variant	Unmet	Unmet	na
+7-6330534-C-T	FAM220A	NM_001037163.2	not_lof	synonymous_variant	Unmet	Unmet	na
+7-6369024-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+7-6446109-CAA-C	DAGLB	NM_139179.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+7-15365564-G-A	AGMO	NM_001004320.2	NM_001004320.2	nonsense	Unmet	Unset	NF4
+7-16636457-TA-T	ANKMY2	NM_020319.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+7-21904104-T-C	CDCA7L	NM_018719.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+7-21905610-G-A	CDCA7L	NM_018719.5	NM_018719.5	nonsense	VeryStrong	Unset	NF1
+7-25155046-G-C	C7orf31	NM_138811.4	not_lof	missense_variant	Unmet	Unmet	na
+7-26184987-CCT-C	NFE2L3	NM_004289.7	NM_004289.7	frameshift	Strong	Unset	NF5
+7-27171899-T-C	HOXA10	NM_018951.4	not_lof	stop_lost	Unmet	Unmet	na
+7-30963834-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+7-32169847-C-T	PDE1C	NM_001191058.4	not_lof	synonymous_variant	Unmet	Unmet	na
+7-32726691-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+7-34848498-G-A	NPSR1	NM_207172.2	NM_207172.2	nonsense	VeryStrong	Unset	NF1
+7-39339688-C-CCAGCAG	POU6F2	NM_001370959.1	not_lof	inframe_insertion	Unmet	Unmet	na
+7-39572602-C-T	YAE1	NM_020192.5	not_lof	missense_variant	Unmet	Unmet	na
+7-43973326-G-T	POLR2J4	NR_003655.3	not_lof	splice_region_variant&intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+7-44969726-G-A	MYO1G	NM_033054.3	not_lof	synonymous_variant	Unmet	Unmet	na
+7-45622742-C-T	ADCY1	NM_021116.4	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+7-47815351-G-A	PKD1L1	NM_138295.5	not_lof	missense_variant	Unmet	Unmet	na
+7-47839465-C-T	PKD1L1	NM_138295.5	not_lof	missense_variant	Unmet	Unmet	na
+7-48273508-T-A	ABCA13	NM_152701.5	NM_152701.5	nonsense	VeryStrong	Unset	NF1
+7-48278365-C-T	ABCA13	NM_152701.5	NM_152701.5	nonsense	VeryStrong	Unset	NF1
+7-48298387-T-A	ABCA13	NM_152701.5	not_lof	missense_variant	Unmet	Unmet	na
+7-56019598-AC-A	PSPH	NM_004577.4	NM_004577.4	splice-5	VeryStrong	Strong	SS1
+7-57120655-C-A	ZNF479	NM_033273.3	not_lof	missense_variant	Unmet	Unmet	na
+7-63765720-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+7-64068891-C-T	ZNF727	NM_001159522.3	NM_001159522.3	nonsense	VeryStrong	Unset	NF1
+7-67321678-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+7-70781665-G-A	AUTS2	NM_015570.4	not_lof	synonymous_variant	Unmet	Unmet	na
+7-72961368-T-G	TRIM74	NM_198853.3	not_lof	missense_variant	Unmet	Unmet	na
+7-73593934-G-A	MLXIPL	NM_032951.3	not_lof	synonymous_variant	Unmet	Unmet	na
+7-74066002-G-C	ELN	NM_000501.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+7-74238915-G-A	RFC2	NM_181471.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+7-76030435-T-C	STYXL1	NM_001317785.2	not_lof	missense_variant	Unmet	Unmet	na
+7-76267351-G-A	SRRM3	NM_001110199.3	NM_001110199.3	nonsense	VeryStrong	Unset	NF1
+7-76400356-G-A	SSC4D	NM_080744.2	not_lof	synonymous_variant	Unmet	Unmet	na
+7-76611560-A-T	POMZP3	NM_152992.4	not_lof	intron_variant	Unmet	Unmet	na
+7-76911213-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+7-77260037-G-T	CCDC146	NM_020879.3	NM_020879.3	nonsense	VeryStrong	Unset	NF1
+7-80671101-G-GA	CD36	NR_110501.1	not_lof	intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+7-80672795-C-CA	CD36	NR_110501.1	not_lof	non_coding_transcript_exon_variant	Unmet	Unmet	na
+7-82136680-C-CA	CACNA2D1	NM_000722.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+7-87165037-C-T	DMTF1	NM_001142327.2	not_lof	synonymous_variant	Unmet	Unmet	na
+7-92022864-A-AAAC	AKAP9	NM_005751.5	not_lof	inframe_insertion	Unmet	Unmet	na
+7-94547164-G-A	CASD1	NM_022900.5	not_lof	missense_variant	Unmet	Unmet	na
+7-97006108-AGCC-A	DLX6	NM_005222.4	not_lof	inframe_deletion	Unmet	Unmet	na
+7-98193813-G-A	LMTK2	NM_014916.4	not_lof	synonymous_variant	Unmet	Unmet	na
+7-99434981-TCTC-T	ATP5MF-PTCD1	NM_001198879.2	not_lof	inframe_deletion	Unmet	Unmet	na
+7-99547799-C-T	FAM200A	NM_145111.4	NM_145111.4	nonsense	Strong	Unset	NF5
+7-99666630-TG-T	CYP3A5	NM_000777.5	NM_000777.5	frameshift	VeryStrong	Unset	NF1
+7-99715905-C-T	CYP3A7-CYP3A51P	NM_001256497.3	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+7-99876384-T-C	OR2AE1	NM_001005276.1	not_lof	missense_variant	Unmet	Unmet	na
+7-100064888-GTAGT-G	ZSCAN21	NM_145914.3	not_lof	3_prime_UTR_variant	Unmet	Unmet	na
+7-100075318-C-CA	ZNF3	NM_032924.5	not_lof	intron_variant	Unmet	Unmet	na
+7-100687290-C-G	GIGYF1	NM_001375765.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+7-100687546-A-AG	GIGYF1	NM_001375765.1	NM_001375765.1	frameshift	VeryStrong	Unset	NF1
+7-100958772-C-T	MUC3A	NM_005960.2	not_lof	synonymous_variant	Unmet	Unmet	na
+7-100959272-G-A	MUC3A	NM_005960.2	not_lof	missense_variant	Unmet	Unmet	na
+7-100960636-AC-A	MUC3A	NM_005960.2	NM_005960.2	frameshift	VeryStrong	Unset	NF1
+7-100995465-T-C	MUC12	NM_001164462.2	not_lof	synonymous_variant	Unmet	Unmet	na
+7-101289726-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+7-101557388-A-AG	COL26A1	NM_001278563.3	NM_001278563.3	frameshift	Strong	Unset	NF5
+7-102248852-ACAG-A	CUX1	NM_181552.4	not_lof	inframe_deletion	Unmet	Unmet	na
+7-102541593-G-GA	UPK3BL2	NM_001363506.1	NM_001363506.1	frameshift	VeryStrong	Unset	NF1
+7-102592425-G-A	RASA4	NM_006989.6	NM_006989.6	nonsense	VeryStrong	Unset	NF1
+7-103561810-T-C	RELN	NM_005045.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+7-105077070-C-T	KMT2E	NM_182931.3	not_lof	synonymous_variant	Unmet	Unmet	na
+7-108111824-C-T	LAMB4	NM_007356.3	NM_007356.3	nonsense	VeryStrong	Unset	NF1
+7-108160491-C-T	NRCAM	NM_001037132.4	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+7-122042648-A-G	PTPRZ1	NM_002851.3	not_lof	missense_variant	Unmet	Unmet	na
+7-122698201-G-A	RNF133	NM_139175.2	NM_139175.2	nonsense	Strong	Unset	NF5
+7-123709171-C-T	WASL	NM_003941.4	NM_003941.4	nonsense	VeryStrong	Unset	NF1
+7-127610853-T-C	PAX4	NM_001366110.1	not_lof	3_prime_UTR_variant	Unmet	Unmet	na
+7-128615950-AAGAAACTCCTTAT-A			not_lof	intergenic_variant	Unmet	Unmet	na
+7-128947297-CACTCTGCAGCCGCCCACTCTGCGGCCGCCT-C	IRF5	NM_001098629.3	not_lof	inframe_deletion	Unmet	Unmet	na
+7-139957687-C-T	TBXAS1	NM_001061.7	NM_001061.7	nonsense	VeryStrong	Unset	NF1
+7-141971817-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+7-142005596-GTTGT-G	MGAM	NM_001365693.1	NM_001365693.1	frameshift	VeryStrong	Unset	NF1
+7-142332525-C-G			not_lof	intergenic_variant	Unmet	Unmet	na
+7-142345297-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+7-142753266-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+7-142808833-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+7-143399922-C-G	EPHA1	NM_005232.5	not_lof	synonymous_variant	Unmet	Unmet	na
+7-143607977-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+7-144365539-C-G	ARHGEF5	NM_005435.4	NM_005435.4	nonsense	VeryStrong	Unset	NF1
+7-144397520-G-T	NOBOX	NM_001080413.3	not_lof	missense_variant	Unmet	Unmet	na
+7-149178756-A-T	ZNF398	NM_170686.3	not_lof	missense_variant	Unmet	Unmet	na
+7-150372306-GCCGCCAGGGGCC-G	REPIN1	NM_001362746.2	not_lof	inframe_deletion	Unmet	Unmet	na
+7-151049120-C-T	ASIC3	NM_004769.4	NM_004769.4	nonsense	VeryStrong	Unset	NF1
+7-151086813-C-CGGCG	AGAP3	NM_031946.7	NM_031946.7	frameshift	VeryStrong	Unset	NF1
+7-152094491-A-C	GALNT11	NM_022087.4	not_lof	missense_variant	Unmet	Unmet	na
+7-154875933-G-A	DPP6	NM_130797.4	not_lof	synonymous_variant	Unmet	Unmet	na
+7-154968556-TCTG-T	PAXIP1	NM_007349.4	not_lof	inframe_deletion	Unmet	Unmet	na
+7-156950463-C-G	NOM1	NM_138400.2	not_lof	synonymous_variant	Unmet	Unmet	na
+7-156963174-C-T	NOM1	NM_138400.2	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+7-158926415-G-A	DYNC2I1	NM_018051.5	not_lof	synonymous_variant	Unmet	Unmet	na
+8-330920-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+8-673748-C-T	ERICH1	NM_207332.3	not_lof	missense_variant	Unmet	Unmet	na
+8-1548867-C-G	DLGAP2	NM_001346810.2	not_lof	synonymous_variant	Unmet	Unmet	na
+8-1701362-G-A	DLGAP2	NM_001346810.2	not_lof	missense_variant	Unmet	Unmet	na
+8-2140852-C-T	MYOM2	NM_003970.4	not_lof	synonymous_variant	Unmet	Unmet	na
+8-7495958-G-T	DEFB107B	NM_001040705.2	not_lof	missense_variant	Unmet	Unmet	na
+8-8376342-G-A	PRAG1	NM_001080826.3	not_lof	synonymous_variant	Unmet	Unmet	na
+8-8381838-G-A	PRAG1	NM_001080826.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+8-9029894-C-T	ERI1	NM_153332.4	NM_153332.4	nonsense	Strong	Unset	NF5
+8-9030032-TAAC-T	ERI1	NM_153332.4	not_lof	stop_retained_variant&3_prime_UTR_variant	Unmet	Unmet	na
+8-9168130-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+8-10429022-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+8-10622875-G-GA	RP1L1	NM_178857.6	NM_178857.6	frameshift	VeryStrong	Unset	NF1
+8-12428722-C-G	FAM86B2	NR_148877.2	not_lof	intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+8-13567550-CAG-C	C8orf48	NM_001007090.3	NM_001007090.3	frameshift	Strong	Unset	NF5
+8-14108232-G-T	SGCZ	NM_139167.4	not_lof	missense_variant	Unmet	Unmet	na
+8-17224857-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+8-20252868-C-G	LZTS1	NM_021020.5	not_lof	missense_variant	Unmet	Unmet	na
+8-22226906-G-A	PHYHIP	NM_014759.5	not_lof	synonymous_variant	Unmet	Unmet	na
+8-25325453-C-T	DOCK5	NM_024940.8	not_lof	synonymous_variant	Unmet	Unmet	na
+8-27397629-G-A	PTK2B	NM_173176.3	not_lof	synonymous_variant	Unmet	Unmet	na
+8-28717312-G-A	EXTL3	NM_001440.4	not_lof	missense_variant	Unmet	Unmet	na
+8-38827335-T-C	TACC1	NM_006283.3	not_lof	synonymous_variant	Unmet	Unmet	na
+8-38981763-GAA-G	HTRA4	NM_153692.4	NM_153692.4	frameshift	VeryStrong	Unset	NF1
+8-39838483-T-G			not_lof	intergenic_variant	Unmet	Unmet	na
+8-39989787-C-T	IDO2	NM_194294.2	NM_194294.2	nonsense	VeryStrong	Unset	NF1
+8-39989793-A-T	IDO2	NM_194294.2	NM_194294.2	nonsense	VeryStrong	Unset	NF1
+8-40015416-T-A	IDO2	NM_194294.2	NM_194294.2	nonsense	Strong	Unset	NF5
+8-40898029-G-T			not_lof	intergenic_variant	Unmet	Unmet	na
+8-42187447-G-A	PLAT	NM_000930.5	not_lof	missense_variant	Unmet	Unmet	na
+8-54865844-G-A	RP1	NM_001375654.1	NM_001375654.1	nonsense	VeryStrong	Unset	NF1
+8-55696338-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+8-55697047-T-A			not_lof	intergenic_variant	Unmet	Unmet	na
+8-56074162-A-G	RPS20	NM_001023.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+8-58585911-C-G	NSMAF	NM_003580.4	not_lof	missense_variant	Unmet	Unmet	na
+8-60623767-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+8-64616285-GA-G	CYP7B1	NM_004820.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+8-66988385-A-G	PPP1R42	NM_001364911.2	not_lof	intron_variant	Unmet	Unmet	na
+8-73830374-T-C	UBE2W	NM_018299.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+8-76854698-AAAG-A	ZFHX4	NM_024721.5	not_lof	inframe_deletion	Unmet	Unmet	na
+8-81695271-G-GAA			not_lof	intergenic_variant	Unmet	Unmet	na
+8-88074598-T-A	MMP16	NM_005941.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+8-90631714-G-A	TMEM64	NM_001008495.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+8-94526413-T-C	VIRMA	NM_015496.5	not_lof	missense_variant	Unmet	Unmet	na
+8-100047577-G-C	RGS22	NM_015668.5	NM_015668.5	nonsense	VeryStrong	Unset	NF1
+8-100705064-C-T	PABPC1	NM_002568.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+8-102560782-CTGCAACCCCTGCAGCCCCTGCAACCCG-C	ODF1	NM_024410.4	not_lof	inframe_deletion	Unmet	Unmet	na
+8-104381251-TG-T	DPYS	NM_001385.3	NM_001385.3	frameshift	Unmet	Unset	NF4
+8-107303234-T-C	ANGPT1	NM_001146.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+8-119626562-T-C	ENPP2	NM_001040092.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+8-123077243-C-G	TBC1D31	NM_145647.4	not_lof	missense_variant	Unmet	Unmet	na
+8-123369918-T-TTCA	ATAD2	NM_014109.4	not_lof	inframe_insertion	Unmet	Unmet	na
+8-128150442-C-A			not_lof	intergenic_variant	Unmet	Unmet	na
+8-130780552-T-C	ADCY8	NM_001115.3	not_lof	synonymous_variant	Unmet	Unmet	na
+8-133134997-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+8-138153220-CAA-C	FAM135B	NM_015912.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+8-142764532-A-G	LYNX1-SLURP2	NM_023946.5	not_lof	3_prime_UTR_variant	Unmet	Unmet	na
+8-143295781-C-T	ZNF696	NM_030895.3	not_lof	missense_variant	Unmet	Unmet	na
+8-143429783-ATGGTGGTGG-A	MAFA	NM_201589.4	not_lof	inframe_deletion	Unmet	Unmet	na
+8-143567240-C-G	MROH6	NM_001100878.2	not_lof	stop_lost	Unmet	Unmet	na
+8-143567371-G-GC	MROH6	NM_001100878.2	NM_001100878.2	frameshift	Moderate	Unset	NF6
+8-144474657-T-A	FOXH1	NM_003923.3	NM_003923.3	nonsense	Strong	Unset	NF5
+9-1057555-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+9-2807880-T-C	PUM3	NM_014878.5	not_lof	missense_variant	Unmet	Unmet	na
+9-2917074-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+9-2923463-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+9-6411222-A-T			not_lof	intergenic_variant	Unmet	Unmet	na
+9-12775862-T-TGGCGGC	LURAP1L	NM_203403.2	not_lof	inframe_insertion	Unmet	Unmet	na
+9-21202411-C-A			not_lof	intergenic_variant	Unmet	Unmet	na
+9-21228003-A-AT	IFNA17	NM_021268.2	NM_021268.2	frameshift	Strong	Unset	NF5
+9-21239448-G-A	IFNA14	NM_002172.3	not_lof	missense_variant	Unmet	Unmet	na
+9-21304689-A-T	IFNA5	NM_002169.3	not_lof	stop_lost	Unmet	Unmet	na
+9-32542038-TGAA-T	TOPORS	NM_005802.5	not_lof	inframe_deletion	Unmet	Unmet	na
+9-33797930-G-GCC	PRSS3	NM_001197097.3	NM_001197097.3	frameshift	VeryStrong	Unset	NF1
+9-35736410-G-A	CREB3	NM_006368.5	not_lof	missense_variant	Unmet	Unmet	na
+9-35811488-ACCAGGACCAGAG-A	SPAG8	NM_001039592.2	not_lof	inframe_deletion	Unmet	Unmet	na
+9-37493551-A-G	POLR1E	NM_022490.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+9-40191572-C-A			not_lof	intergenic_variant	Unmet	Unmet	na
+9-41174353-G-C	CBWD6	NM_001085457.2	NM_001085457.2	splice-3	Moderate	Unset	SS9
+9-61193685-AG-A	SPATA31A7	NM_015667.2	NM_015667.2	frameshift	Strong	Unset	NF5
+9-64004075-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+9-70282524-T-C	SMC5	NM_015110.4	not_lof	missense_variant	Unmet	Unmet	na
+9-71700644-C-T	CEMIP2	NM_013390.3	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+9-72351252-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+9-72700517-GAGA-G	TMC1	NM_138691.3	not_lof	inframe_deletion&splice_region_variant	Unmet	Unmet	na
+9-76503559-G-A	GCNT1	NM_001490.5	not_lof	missense_variant	Unmet	Unmet	na
+9-76629292-TAAA-T	PRUNE2	NM_015225.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+9-79718940-A-G	TLE4	NM_007005.6	not_lof	missense_variant	Unmet	Unmet	na
+9-81991732-A-G	SPATA31D1	NM_001001670.3	not_lof	missense_variant	Unmet	Unmet	na
+9-86229578-G-A	C9orf153	NM_001276366.4	not_lof	missense_variant	Unmet	Unmet	na
+9-87921496-C-G	LOC497256	NR_149022.1	not_lof	intron_variant&non_coding_transcript_variant	Unmet	Unmet	na
+9-89052144-G-T	SHC3	NM_016848.6	NM_016848.6	nonsense	VeryStrong	Unset	NF1
+9-90215843-A-T			not_lof	intergenic_variant	Unmet	Unmet	na
+9-92300814-CAA-C	NOL8	NM_017948.6	not_lof	intron_variant	Unmet	Unmet	na
+9-94558939-T-C	FBP2	NM_003837.4	not_lof	stop_lost	Unmet	Unmet	na
+9-96012640-A-C	ERCC6L2	NM_020207.7	not_lof	missense_variant	Unmet	Unmet	na
+9-96417961-G-A	ZNF367	NM_153695.4	not_lof	synonymous_variant	Unmet	Unmet	na
+9-97904745-A-AGACACCAAG	TRMO	NM_016481.5	not_lof	inframe_insertion	Unmet	Unmet	na
+9-100442362-C-T	MSANTD3-TMEFF1	NM_001198812.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+9-104598648-A-G	OR13C5	NM_001004482.1	not_lof	missense_variant	Unmet	Unmet	na
+9-104695275-G-GTGAA	OR13D1	NM_001004484.2	NM_001004484.2	frameshift	Strong	Unset	NF5
+9-108060420-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+9-109207919-C-T	EPB41L4B	NM_019114.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+9-111631048-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+9-112878668-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+9-112997239-G-A	ZNF883	NM_001101338.1	NM_001101338.1	nonsense	Strong	Unset	NF5
+9-113169870-T-TTTC	FKBP15	NM_015258.2	not_lof	inframe_insertion	Unmet	Unmet	na
+9-114155986-AGCG-A	COL27A1	NM_032888.4	not_lof	inframe_deletion	Unmet	Unmet	na
+9-116015832-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+9-117214709-CCAG-C	ASTN2	NM_014010.5	not_lof	inframe_deletion	Unmet	Unmet	na
+9-120798805-TA-T	B3GALT9	NM_001386823.1	NM_001386823.1	frameshift	Strong	Unset	NF5
+9-120925939-G-A	TRAF1	NM_005658.5	not_lof	missense_variant	Unmet	Unmet	na
+9-120952739-T-C	C5	NM_001735.3	not_lof	stop_retained_variant	Unmet	Unmet	na
+9-122629292-G-A	OR1B1	NM_001004450.2	NM_001004450.2	nonsense	Unmet	Unset	NF4
+9-122893029-T-TA	RC3H2	NM_001100588.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+9-123365932-T-C	CRB2	NM_173689.7	not_lof	missense_variant	Unmet	Unmet	na
+9-123374655-G-A	CRB2	NM_173689.7	not_lof	missense_variant	Unmet	Unmet	na
+9-124452171-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+9-125220560-C-A	RABEPK	NM_005833.4	not_lof	missense_variant	Unmet	Unmet	na
+9-127713201-C-T	CFAP157	NM_001012502.3	not_lof	missense_variant	Unmet	Unmet	na
+9-127714388-G-C	PTRH1	NM_001002913.3	not_lof	synonymous_variant	Unmet	Unmet	na
+9-128437401-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+9-130393960-G-A	HMCN2	NM_001291815.2	not_lof	missense_variant	Unmet	Unmet	na
+9-131049135-C-G	LAMC3	NM_006059.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+9-132625678-G-A	DDX31	NM_022779.8	NM_022779.8	nonsense	VeryStrong	Unset	NF1
+9-133255669-CG-C	ABO	NM_020469.3	NM_020469.3	frameshift	Unmet	Unset	NF4
+9-133257521-T-TC	ABO	NM_020469.3	NM_020469.3	frameshift	Strong	Unset	NF5
+9-135106863-T-A	OLFM1	NM_001282611.2	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+9-136249765-C-T			not_lof	intergenic_variant	Unmet	Unmet	na
+9-136744640-G-A	LCN6	NM_198946.3	not_lof	splice_region_variant&3_prime_UTR_variant	Unmet	Unmet	na
+9-137192572-TTCCTCC-T	TPRN	NM_001128228.3	not_lof	inframe_deletion	Unmet	Unmet	na
+9-137461997-G-GC	PNPLA7	NM_001098537.3	NM_001098537.3	frameshift	VeryStrong	Unset	NF1
+X-3330411-G-T	MXRA5	NM_015419.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+X-7354884-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+X-8170129-C-G	VCX2	NM_016378.3	not_lof	missense_variant	Unmet	Unmet	na
+X-8795154-CCTT-C	FAM9A	NM_174951.3	not_lof	inframe_deletion	Unmet	Unmet	na
+X-10523193-CAAAA-C	MID1	NM_000381.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+X-10567050-C-T	MID1	NM_000381.4	not_lof	synonymous_variant	Unmet	Unmet	na
+X-11156586-A-T	ARHGAP6	NM_013427.3	NM_013427.3	nonsense	VeryStrong	Unset	NF1
+X-13763780-G-A	OFD1	NM_003611.3	not_lof	missense_variant	Unmet	Unmet	na
+X-14850676-TA-T	FANCB	NM_001018113.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+X-23000858-A-G	DDX53	NM_182699.4	not_lof	synonymous_variant	Unmet	Unmet	na
+X-23989034-A-G	KLHL15	NM_030624.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+X-24311779-CAGCAGG-C	SUPT20HL2	NM_001136233.2	not_lof	inframe_deletion	Unmet	Unmet	na
+X-34945069-A-C			not_lof	intergenic_variant	Unmet	Unmet	na
+X-38286440-TTCC-T	RPGR	NM_000328.3	not_lof	intron_variant	Unmet	Unmet	na
+X-40692906-A-C	MED14	NM_004229.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+X-48481714-C-T	FTSJ1	NM_012280.4	not_lof	splice_region_variant&synonymous_variant	Unmet	Unmet	na
+X-64268041-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+X-67545316-T-TGCAGCA	AR	NM_000044.6	not_lof	inframe_insertion	Unmet	Unmet	na
+X-68846252-AGT-A			not_lof	intergenic_variant	Unmet	Unmet	na
+X-71121319-A-C	MED12	NM_005120.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+X-72275732-G-A	RPS4X	NM_001007.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+X-72302838-ACAT-A	CITED1	NM_001144887.2	not_lof	inframe_deletion	Unmet	Unmet	na
+X-74304311-G-A	ZCCHC13	NM_203303.3	NM_203303.3	nonsense	Unmet	Unset	NF4
+X-84326256-C-T	HDX	NM_001177479.2	not_lof	synonymous_variant	Unmet	Unmet	na
+X-85054339-C-CT	APOOL	NM_198450.6	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+X-93672635-G-C	NAP1L3	NM_004538.6	not_lof	missense_variant	Unmet	Unmet	na
+X-101390479-T-C	BTK	NM_001287344.2	not_lof	missense_variant&splice_region_variant	Unmet	Unmet	na
+X-103330974-G-C	TCEAL7	NM_152278.5	not_lof	5_prime_UTR_variant	Unmet	Unmet	na
+X-105908954-G-A	NRK	NM_198465.4	not_lof	missense_variant	Unmet	Unmet	na
+X-107429173-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+X-107981746-G-A	TEX13B	NM_031273.2	NM_031273.2	nonsense	VeryStrong	Unset	NF1
+X-108154847-G-A			not_lof	intergenic_variant	Unmet	Unmet	na
+X-108172536-C-T	COL4A6	NM_033641.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+X-112779069-C-CAGG	AMOT	NM_001113490.2	not_lof	inframe_insertion	Unmet	Unmet	na
+X-112779389-GCTGGAGCAGCAGCAGCAGCAACAGCAA-G	AMOT	NM_001113490.2	not_lof	inframe_deletion	Unmet	Unmet	na
+X-115190618-A-AGAGGCCGCTCGCCCAACGCCCACAGCG	RBMXL3	NM_001145346.2	not_lof	inframe_insertion	Unmet	Unmet	na
+X-115190644-C-CGGAGGCCGCTCGCCCGACACCCACAGT	RBMXL3	NM_001145346.2	not_lof	inframe_insertion	Unmet	Unmet	na
+X-116748464-A-G			not_lof	intergenic_variant	Unmet	Unmet	na
+X-118628156-T-C	DOCK11	NM_144658.4	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+X-120875109-C-G	CT47B1	NM_001145718.2	not_lof	missense_variant	Unmet	Unmet	na
+X-123886275-G-T	XIAP	NM_001167.4	NM_001167.4	nonsense	VeryStrong	Unset	NF1
+X-136024487-A-G	SLC9A6	NM_001379110.1	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+X-136874412-T-TGG	RBMX	NM_002139.4	NM_002139.4	frameshift	Strong	Unset	NF5
+X-140504323-A-AGCG	SOX3	NM_005634.3	not_lof	inframe_insertion	Unmet	Unmet	na
+X-141904963-T-C	MAGEC1	NM_005462.5	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+X-147259521-T-G			not_lof	intergenic_variant	Unmet	Unmet	na
+X-149549718-G-A	HSFX3	NM_001323079.3	not_lof	synonymous_variant	Unmet	Unmet	na
+X-150736591-G-A	MTMR1	NM_001306144.3	not_lof	splice_region_variant&intron_variant	Unmet	Unmet	na
+X-151672214-AGGAGCAGCAGCGGCAGCTGCG-A	PASD1	NM_173493.3	not_lof	inframe_deletion	Unmet	Unmet	na
+X-154776813-C-CAAG	DKC1	NM_001363.5	not_lof	inframe_insertion	Unmet	Unmet	na
+Y-5737889-C-T	PCDH11Y	NM_032973.2	NM_032973.2	nonsense	Moderate	Unset	NF6
+Y-11153563-G-C			not_lof	intergenic_variant	Unmet	Unmet	na
+Y-11345983-T-C			not_lof	intergenic_variant	Unmet	Unmet	na
+Y-11351008-T-A			not_lof	intergenic_variant	Unmet	Unmet	na
