@@ -274,10 +274,7 @@ autopvs1_results <- vroom(input_autopvs1_file, col_names = TRUE, show_col_types 
 ## merge autopvs1_results with vcf data, and filter for those variants that need intervar run
 combined_tab_with_vcf_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by = "vcf_id") %>%
-#  dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id & !vcf_id %in% entries_for_cc_in_submission$vcf_id) %>%
-  # dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id)
 
-  # combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_with_vcf_intervar, entries_for_cc_in_submission, by = "vcf_id") %>%
   ## indicate if recalculated
   dplyr::mutate(intervar_adjusted = if_else((evidencePVS1 == 0), "No", "Yes")) %>%
   dplyr::mutate(
@@ -410,8 +407,6 @@ master_tab <- master_tab %>%
     evidenceBS = coalesce(as.double(evidenceBS.y), as.double(evidenceBS.x)),
     evidenceBP = coalesce(as.double(evidenceBP.y), as.double(evidenceBP.x)),
     Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`),
-    # replace second final call with the second one because we did not use interVar results
-  #  final_call = if_else(Stars == "0" | is.na(Stars), final_call_intervar, final_call_clinvar)
   )
 
 ## remove older columns

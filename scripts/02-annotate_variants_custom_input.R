@@ -136,13 +136,13 @@ address_conflicting_interp <- function(clinvar_anno_vcf_df) { ## if conflicting 
     highest_ind <- which.max(calls)
     consensus_call <- call_names[highest_ind]
 
-    clinvar_nr[i, ]$final_call <- consensus_call
+    clinvar_nr[i, ]$final_call_clinvar <- consensus_call
   }
 
   clinvar_anno_vcf_df <- clinvar_anno_vcf_df %>%
-    left_join(clinvar_nr[, c("vcf_id", "final_call")], by = "vcf_id", suffix = c(".orig", ".resolved")) %>%
-    dplyr::mutate(final_call = coalesce(final_call.resolved, final_call.orig)) %>%
-    dplyr::select(-final_call.resolved, -final_call.orig) %>%
+    left_join(clinvar_nr[, c("vcf_id", "final_call_clinvar")], by = "vcf_id", suffix = c(".orig", ".resolved")) %>%
+    dplyr::mutate(final_call_clinvar = coalesce(final_call_clinvar.resolved, final_call_clinvar.orig)) %>%
+    dplyr::select(-final_call_clinvar.resolved, -final_call_clinvar.orig) %>%
     return(clinvar_anno_vcf_df)
 }
 
@@ -171,7 +171,7 @@ clinvar_anno_vcf_df <- vroom(input_clinVar_file, comment = "#", delim = "\t", co
       TRUE ~ NA_character_
     ),
     ## extract the calls and put in own column
-    final_call = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
+    final_call_clinvar = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
   )
 
 clinvar_anno_vcf_df <- address_conflicting_interp(clinvar_anno_vcf_df)
@@ -190,15 +190,15 @@ variant_summary_df <- vroom(input_variant_summary, show_col_types = FALSE) %>%
   dplyr::select(-GeneSymbol)
 
 ## filter only those variants that need consensus call and find  call in submission table
-entries_for_cc <- filter(clinvar_anno_vcf_df, Stars == "1NR", final_call != "Benign", final_call != "Pathogenic", final_call != "Likely_benign", final_call != "Likely_pathogenic", final_call != "Uncertain_significance")
+entries_for_cc <- filter(clinvar_anno_vcf_df, Stars == "1NR", final_call_clinvar != "Benign", final_call_clinvar != "Pathogenic", final_call_clinvar != "Likely_benign", final_call_clinvar != "Likely_pathogenic", final_call_clinvar != "Uncertain_significance")
 
 entries_for_cc_in_submission <- inner_join(variant_summary_df, entries_for_cc, by = "vcf_id") %>%
-  dplyr::mutate(final_call = ClinicalSignificance) %>%
-  dplyr::select(vcf_id, ClinicalSignificance, final_call, Stars)
+  dplyr::mutate(final_call_clinvar = ClinicalSignificance) %>%
+  dplyr::select(vcf_id, ClinicalSignificance, final_call_clinvar, Stars)
 
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 ## modified: any cases that do NOT have the B, LB, P, LP, VUS call must also go to intervar
-additional_intervar_cases <- filter(clinvar_anno_vcf_df, final_call != "Benign", final_call != "Pathogenic", final_call != "Likely_benign", final_call != "Likely_pathogenic", final_call != "Uncertain_significance") %>%
+additional_intervar_cases <- filter(clinvar_anno_vcf_df, final_call_clinvar != "Benign", final_call_clinvar != "Pathogenic", final_call_clinvar != "Likely_benign", final_call_clinvar != "Likely_pathogenic", final_call_clinvar != "Uncertain_significance") %>%
   anti_join(entries_for_cc_in_submission, by = "vcf_id") %>%
   anti_join(clinvar_anti_join_vcf_df, by = "vcf_id")
 
@@ -282,7 +282,7 @@ clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
   ) %>%
   ## merge dataframe with clinvar_anno_vcf_df above
   left_join(vcf_df, by = "vcf_id") %>%
-  left_join(clinvar_anno_vcf_df[, c("vcf_id", "Stars", "final_call")], by = "vcf_id")
+  left_join(clinvar_anno_vcf_df[, c("vcf_id", "Stars", "final_call_clinvar")], by = "vcf_id")
 
 ## autopvs1 results
 autopvs1_results <- vroom(input_autopvs1_file, col_names = TRUE, show_col_types = FALSE) %>%
@@ -295,123 +295,124 @@ autopvs1_results <- vroom(input_autopvs1_file, col_names = TRUE, show_col_types 
 
 combined_tab_with_vcf_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by = "vcf_id") %>%
-  dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id & !vcf_id %in% entries_for_cc_in_submission$vcf_id) %>%
+
   ## indicate if recalculated
   dplyr::mutate(intervar_adjusted = if_else((evidencePVS1 == 0), "No", "Yes")) %>%
   dplyr::mutate(
     ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
     # if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
     evidencePVS1 = if_else((criterion == "NF1" | criterion == "SS1" |
-      criterion == "DEL1" | criterion == "DEL2" |
-      criterion == "DUP1" | criterion == "IC1") & evidencePVS1 == 1, "1", evidencePVS1),
-
+                              criterion == "DEL1" | criterion == "DEL2" |
+                              criterion == "DUP1" | criterion == "IC1") & evidencePVS1 == 1, "1", evidencePVS1),
+    
     # if criterion is NF3|NF5|SS3|SS5|SS8|SS10|DEL4|DEL8|DEL6|DEL10|DUP3|IC2 then PVS1 = 0; PS = PS+1
     evidencePS = if_else((criterion == "NF3" | criterion == "NF5" |
-      criterion == "SS3" | criterion == "SS5" |
-      criterion == "SS8" | criterion == "SS10" | criterion == "DEL4" |
-      criterion == "DEL8" | criterion == "DEL6" |
-      criterion == "DEL10" | criterion == "DUP3" |
-      criterion == "IC2") & evidencePVS1 == 1, as.numeric(evidencePS) + 1, as.double(evidencePS)),
+                            criterion == "SS3" | criterion == "SS5" |
+                            criterion == "SS8" | criterion == "SS10" | criterion == "DEL4" |
+                            criterion == "DEL8" | criterion == "DEL6" |
+                            criterion == "DEL10" | criterion == "DUP3" |
+                            criterion == "IC2") & evidencePVS1 == 1, as.numeric(evidencePS) + 1, as.double(evidencePS)),
     evidencePVS1 = if_else((criterion == "NF3" | criterion == "NF5" |
-      criterion == "SS3" | criterion == "SS5" |
-      criterion == "SS8" | criterion == "SS10" | criterion == "DEL4" |
-      criterion == "DEL8" | criterion == "DEL6" |
-      criterion == "DEL10" | criterion == "DUP3" |
-      criterion == "IC2") & evidencePVS1 == 1, "0", evidencePVS1),
-
+                              criterion == "SS3" | criterion == "SS5" |
+                              criterion == "SS8" | criterion == "SS10" | criterion == "DEL4" |
+                              criterion == "DEL8" | criterion == "DEL6" |
+                              criterion == "DEL10" | criterion == "DUP3" |
+                              criterion == "IC2") & evidencePVS1 == 1, "0", evidencePVS1),
+    
     # if criterion is NF6|SS6|SS9|DEL7|DEL11|IC3 then PVS1 = 0; PM = PM+1;
     evidencePM = if_else((criterion == "NF6" | criterion == "SS6" |
-      criterion == "SS9" | criterion == "DEL7" |
-      criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, as.numeric(evidencePM) + 1, as.double(evidencePM)),
+                            criterion == "SS9" | criterion == "DEL7" |
+                            criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, as.numeric(evidencePM) + 1, as.double(evidencePM)),
     evidencePVS1 = if_else((criterion == "NF6" | criterion == "SS6" |
-      criterion == "SS9" | criterion == "DEL7" |
-      criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, "0", evidencePVS1),
-
+                              criterion == "SS9" | criterion == "DEL7" |
+                              criterion == "DEL11" | criterion == "IC3") & evidencePVS1 == 1, "0", evidencePVS1),
+    
     # if criterion is IC4 then PVS1 = 0; PP = PP+1;
     evidencePP = if_else((criterion == "IC4") & evidencePVS1 == 1, as.numeric(evidencePP) + 1, as.double(evidencePP)),
     evidencePVS1 = if_else((criterion == "IC4") & evidencePVS1 == 1, "0", evidencePVS1),
-
+    
     # if criterion is na|NF0|NF2|NF4|SS2|SS4|SS7|DEL3|DEL5|DEL9|DUP2|DUP4|DUP5|IC5 then PVS1 = 0;
     evidencePVS1 = if_else((criterion == "na" | criterion == "NF0" | criterion == "NF2" | criterion == "NF4" |
-      criterion == "SS2" | criterion == "SS4" | criterion == "SS7" |
-      criterion == "DEL3" | criterion == "DEL5" | criterion == "DEL9" |
-      criterion == "DUP2" | criterion == "DUP4" | criterion == "DUP5" |
-      criterion == "IC5") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
-
+                              criterion == "SS2" | criterion == "SS4" | criterion == "SS7" |
+                              criterion == "DEL3" | criterion == "DEL5" | criterion == "DEL9" |
+                              criterion == "DUP2" | criterion == "DUP4" | criterion == "DUP5" |
+                              criterion == "IC5") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
+    
     ## adjust variables based on given rules described in README
-    final_call = ifelse(intervar_adjusted == "No",
-      sub(".*InterVar: ", "", sub("\\ P.*", "", `InterVar: InterVar and Evidence`)),
-      ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 &
-        ((evidencePS >= 1) |
-          (evidencePM >= 2) |
-          (evidencePM == 1 & evidencePP == 1) |
-          (evidencePP >= 2)) &
-        ((evidenceBA1) == 1 |
-          (evidenceBS >= 2) |
-          (evidenceBP >= 2) |
-          (evidenceBS >= 1 & evidenceBP >= 1) |
-          (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-      ifelse(((evidencePVS1 == 1) & (evidencePS >= 2) &
-        ((evidenceBA1) == 1 |
-          (evidenceBS >= 2) |
-          (evidenceBP >= 2) |
-          (evidenceBS >= 1 & evidenceBP >= 1) |
-          (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-      ifelse(((evidencePVS1 == 1) & (evidencePS == 1 &
-        (evidencePM >= 3 |
-          (evidencePM == 2 & evidencePP >= 2) |
-          (evidencePM == 1 & evidencePP >= 4))) &
-        ((evidenceBA1) == 1 |
-          (evidenceBS >= 2) |
-          (evidenceBP >= 2) |
-          (evidenceBS >= 1 & evidenceBP >= 1) |
-          (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-      ifelse((((evidencePVS1 == 1) & (evidencePVS1 == 1 & evidencePM == 1) |
-        (evidencePS == 1 & evidencePM >= 1) |
-        (evidencePS == 1 & evidencePP >= 2) |
-        (evidencePM >= 3) |
-        (evidencePM == 2 & evidencePP >= 2) |
-        (evidencePM == 1 & evidencePP >= 4)) &
-        ((evidenceBA1) == 1 |
-          (evidenceBS >= 2) |
-          (evidenceBP >= 2) |
-          (evidenceBS >= 1 & evidenceBP >= 1) |
-          (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-      ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 &
-        ((evidencePS >= 1) |
-          (evidencePM >= 2) |
-          (evidencePM == 1 & evidencePP == 1) |
-          (evidencePP >= 2))), "Pathogenic",
-      ifelse((evidencePVS1 == 1) & (evidencePS >= 2), "Pathogenic",
-        ifelse((evidencePVS1 == 0) & (evidencePS == 1 &
-          (evidencePM >= 3 |
-            (evidencePM == 2 & evidencePP >= 2) |
-            (evidencePM == 1 & evidencePP >= 4))), "Pathogenic",
-        ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 & evidencePM == 1) |
-          (evidencePS == 1 & evidencePM >= 1) |
-          (evidencePS == 1 & evidencePP >= 2) |
-          (evidencePM >= 3) |
-          (evidencePM == 2 & evidencePP >= 2) |
-          (evidencePM == 1 & evidencePP >= 4), "Likely_pathogenic",
-        ifelse((evidencePVS1 == 1) & (evidenceBA1 == 1) |
-          (evidenceBS >= 2), "Benign",
-        ifelse((evidencePVS1 == 1) & (evidenceBS == 1 & evidenceBP == 1) |
-          (evidenceBP >= 2), "Likely_benign", "Uncertain_significance")
-        )
-        )
-        )
-      )
-      )
-      )
-      )
-      )
-      )
+    final_call_intervar = ifelse(intervar_adjusted == "No",
+                                 sub(".*InterVar: ", "", sub("\\ P.*", "", `InterVar: InterVar and Evidence`)),
+                                 ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 &
+                                                                 ((evidencePS >= 1) |
+                                                                    (evidencePM >= 2) |
+                                                                    (evidencePM == 1 & evidencePP == 1) |
+                                                                    (evidencePP >= 2)) &
+                                                                 ((evidenceBA1) == 1 |
+                                                                    (evidenceBS >= 2) |
+                                                                    (evidenceBP >= 2) |
+                                                                    (evidenceBS >= 1 & evidenceBP >= 1) |
+                                                                    (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
+                                        ifelse(((evidencePVS1 == 1) & (evidencePS >= 2) &
+                                                  ((evidenceBA1) == 1 |
+                                                     (evidenceBS >= 2) |
+                                                     (evidenceBP >= 2) |
+                                                     (evidenceBS >= 1 & evidenceBP >= 1) |
+                                                     (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
+                                               ifelse(((evidencePVS1 == 1) & (evidencePS == 1 &
+                                                                                (evidencePM >= 3 |
+                                                                                   (evidencePM == 2 & evidencePP >= 2) |
+                                                                                   (evidencePM == 1 & evidencePP >= 4))) &
+                                                         ((evidenceBA1) == 1 |
+                                                            (evidenceBS >= 2) |
+                                                            (evidenceBP >= 2) |
+                                                            (evidenceBS >= 1 & evidenceBP >= 1) |
+                                                            (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
+                                                      ifelse((((evidencePVS1 == 1) & (evidencePVS1 == 1 & evidencePM == 1) |
+                                                                 (evidencePS == 1 & evidencePM >= 1) |
+                                                                 (evidencePS == 1 & evidencePP >= 2) |
+                                                                 (evidencePM >= 3) |
+                                                                 (evidencePM == 2 & evidencePP >= 2) |
+                                                                 (evidencePM == 1 & evidencePP >= 4)) &
+                                                                ((evidenceBA1) == 1 |
+                                                                   (evidenceBS >= 2) |
+                                                                   (evidenceBP >= 2) |
+                                                                   (evidenceBS >= 1 & evidenceBP >= 1) |
+                                                                   (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
+                                                             ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 &
+                                                                                             ((evidencePS >= 1) |
+                                                                                                (evidencePM >= 2) |
+                                                                                                (evidencePM == 1 & evidencePP == 1) |
+                                                                                                (evidencePP >= 2))), "Pathogenic",
+                                                                    ifelse((evidencePVS1 == 1) & (evidencePS >= 2), "Pathogenic",
+                                                                           ifelse((evidencePVS1 == 0) & (evidencePS == 1 &
+                                                                                                           (evidencePM >= 3 |
+                                                                                                              (evidencePM == 2 & evidencePP >= 2) |
+                                                                                                              (evidencePM == 1 & evidencePP >= 4))), "Pathogenic",
+                                                                                  ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 & evidencePM == 1) |
+                                                                                           (evidencePS == 1 & evidencePM >= 1) |
+                                                                                           (evidencePS == 1 & evidencePP >= 2) |
+                                                                                           (evidencePM >= 3) |
+                                                                                           (evidencePM == 2 & evidencePP >= 2) |
+                                                                                           (evidencePM == 1 & evidencePP >= 4), "Likely_pathogenic",
+                                                                                         ifelse((evidencePVS1 == 1) & (evidenceBA1 == 1) |
+                                                                                                  (evidenceBS >= 2), "Benign",
+                                                                                                ifelse((evidencePVS1 == 1) & (evidenceBS == 1 & evidenceBP == 1) |
+                                                                                                         (evidenceBP >= 2), "Likely_benign", "Uncertain_significance")
+                                                                                         )
+                                                                                  )
+                                                                           )
+                                                                    )
+                                                             )
+                                                      )
+                                               )
+                                        )
+                                 )
     )
   )
 
+
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- clinvar_anno_intervar_vcf_df %>%
-  full_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
+  full_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|final_call_intervar", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
   left_join(variant_summary_df[, c("vcf_id", "VariationID", "ClinicalSignificance", "ReviewStatus", "LastEvaluated")], by = "vcf_id") %>%
   left_join(autopvs1_results, by = "vcf_id")
 
@@ -426,25 +427,19 @@ master_tab <- master_tab %>%
     evidencePP = coalesce(as.double(evidencePP.y), as.double(evidencePP.x)),
     evidenceBS = coalesce(as.double(evidenceBS.y), as.double(evidenceBS.x)),
     evidenceBP = coalesce(as.double(evidenceBP.y), as.double(evidenceBP.x)),
-    Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`),
-
-    # replace second final call with the first one because we did not use clinvar results
-    final_call.x = if_else(Stars == "0" | is.na(Stars), final_call.y, final_call.x),
+    Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`)
   )
-
-## combine final calls into one choosing the appropriate final call
-master_tab <- master_tab %>%
-  dplyr::mutate(final_call = coalesce(final_call.x, final_call.y))
 
 ## remove older columns
 master_tab <- master_tab %>% dplyr::select(-c(
   evidencePVS1.x, evidencePVS1.y, evidenceBA1.x, evidenceBA1.y, evidencePS.x, evidencePS.y, evidencePM.x, evidencePM.y, evidencePP.x, evidencePP.y, evidenceBS.x, evidenceBS.y, evidenceBP.x, evidenceBP.y,
-  `InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`, final_call.x, final_call.y
+  `InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`
 ))
 
 ## reformat columns
 master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id") %>%
-  dplyr::mutate(final_call = coalesce(final_call.y, final_call.x)) %>%
+  dplyr::mutate(final_call_clinvar = coalesce(final_call_clinvar.y, final_call_clinvar.x)) %>%
+  dplyr::mutate(final_call = if_else(Stars.x == "0" | is.na(Stars.x), final_call_intervar, final_call_clinvar)) %>%
   full_join(entries_for_cc_in_submission_w_intervar[c("vcf_id", "Intervar_evidence")], by = "vcf_id") %>%
   dplyr::mutate(
     Intervar_evidence = coalesce(Intervar_evidence.y, Intervar_evidence.x),
@@ -470,7 +465,7 @@ master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id")
     )
   ) %>%
   dplyr::select(
-    -final_call.x, -final_call.y,
+    -final_call_clinvar.x, -final_call_clinvar.y,   
     -Intervar_evidence.x, -Intervar_evidence.y,
     -ClinicalSignificance.x, -ClinicalSignificance.y
   )
