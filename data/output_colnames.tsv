@@ -13,6 +13,8 @@ HGVSc	HGVSc	T
 HGVSp	HGVSp	T
 final_call	autogvp_call	T
 Reasoning_for_call	autogvp_call_reason	T
+final_call_clinvar	autogvp_call_clinvar	F
+final_call_intervar	autogvp_call_intervar	F
 Stars	clinvar_stars	T
 ClinVar_ClinicalSignificance	clinvar_clinsig_autogvp	T
 ReviewStatus	clinvar_review_status_autogvp	T

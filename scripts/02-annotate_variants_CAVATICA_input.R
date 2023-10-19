@@ -110,13 +110,13 @@ address_conflicting_interp <- function(clinvar_anno_vcf_df) { ## if conflicting 
     highest_ind <- which.max(calls)
     consensus_call <- call_names[highest_ind]
 
-    clinvar_nr[i, ]$final_call <- consensus_call
+    clinvar_nr[i, ]$final_call_clinvar <- consensus_call
   }
 
   clinvar_anno_vcf_df <- clinvar_anno_vcf_df %>%
-    left_join(clinvar_nr[, c("vcf_id", "final_call")], by = "vcf_id", suffix = c(".orig", ".resolved")) %>%
-    dplyr::mutate(final_call = coalesce(final_call.resolved, final_call.orig)) %>%
-    dplyr::select(-final_call.resolved, -final_call.orig) %>%
+    left_join(clinvar_nr[, c("vcf_id", "final_call_clinvar")], by = "vcf_id", suffix = c(".orig", ".resolved")) %>%
+    dplyr::mutate(final_call_clinvar = coalesce(final_call_clinvar.resolved, final_call_clinvar.orig)) %>%
+    dplyr::select(-final_call_clinvar.resolved, -final_call_clinvar.orig) %>%
     return(clinvar_anno_vcf_df)
 }
 
@@ -159,7 +159,7 @@ clinvar_anno_vcf_df <- clinvar_anno_vcf_df %>%
       TRUE ~ NA_character_
     ),
     ## extract the calls and put in own column
-    final_call = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
+    final_call_clinvar = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
   )
 
 
@@ -173,15 +173,15 @@ variant_summary_df <- vroom(input_variant_summary, show_col_types = FALSE) %>%
   dplyr::select(-GeneSymbol)
 
 ## filter only those variants that need consensus call and find  call in submission table
-entries_for_cc <- filter(clinvar_anno_vcf_df, Stars == "1NR", final_call != "Benign", final_call != "Pathogenic", final_call != "Likely_benign", final_call != "Likely_pathogenic", final_call != "Uncertain_significance")
+entries_for_cc <- filter(clinvar_anno_vcf_df, Stars == "1NR", final_call_clinvar != "Benign", final_call_clinvar != "Pathogenic", final_call_clinvar != "Likely_benign", final_call_clinvar != "Likely_pathogenic", final_call_clinvar != "Uncertain_significance")
 
 entries_for_cc_in_submission <- inner_join(variant_summary_df, entries_for_cc, by = "vcf_id") %>%
-  dplyr::mutate(final_call = ClinicalSignificance) %>%
-  dplyr::select(vcf_id, ClinicalSignificance, final_call, Stars)
+  dplyr::mutate(final_call_clinvar = ClinicalSignificance) %>%
+  dplyr::select(vcf_id, ClinicalSignificance, final_call_clinvar, Stars)
 
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 ## modified: any cases that do NOT have the B, LB, P, LP, VUS call must also go to intervar
-additional_intervar_cases <- filter(clinvar_anno_vcf_df, final_call != "Benign", final_call != "Pathogenic", final_call != "Likely_benign", final_call != "Likely_pathogenic", final_call != "Uncertain_significance") %>%
+additional_intervar_cases <- filter(clinvar_anno_vcf_df, final_call_clinvar != "Benign", final_call_clinvar != "Pathogenic", final_call_clinvar != "Likely_benign", final_call_clinvar != "Likely_pathogenic", final_call_clinvar != "Uncertain_significance") %>%
   anti_join(entries_for_cc_in_submission, by = "vcf_id")
 
 
@@ -274,10 +274,6 @@ autopvs1_results <- vroom(input_autopvs1_file, col_names = TRUE, show_col_types 
 ## merge autopvs1_results with vcf data, and filter for those variants that need intervar run
 combined_tab_with_vcf_intervar <- autopvs1_results %>%
   inner_join(clinvar_anno_intervar_vcf_df, by = "vcf_id") %>%
-  dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id & !vcf_id %in% entries_for_cc_in_submission$vcf_id) %>%
-  # dplyr::filter(vcf_id %in% entries_for_intervar$vcf_id)
-
-  # combined_tab_for_intervar_cc_removed <- anti_join(combined_tab_with_vcf_intervar, entries_for_cc_in_submission, by = "vcf_id") %>%
   ## indicate if recalculated
   dplyr::mutate(intervar_adjusted = if_else((evidencePVS1 == 0), "No", "Yes")) %>%
   dplyr::mutate(
@@ -321,7 +317,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
       criterion == "IC5") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
 
     ## adjust variables based on given rules described in README
-    final_call = ifelse(intervar_adjusted == "No",
+    final_call_intervar = ifelse(intervar_adjusted == "No",
       sub(".*InterVar: ", "", sub("\\ P.*", "", `InterVar: InterVar and Evidence`)),
       ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 &
         ((evidencePS >= 1) |
@@ -394,7 +390,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- clinvar_anno_intervar_vcf_df %>%
-  full_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|final_call", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
+  full_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|final_call_intervar", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
   left_join(variant_summary_df[, c("vcf_id", "VariationID", "ClinicalSignificance", "ReviewStatus", "LastEvaluated")], by = "vcf_id") %>%
   left_join(autopvs1_results, by = "vcf_id")
 
@@ -410,23 +406,18 @@ master_tab <- master_tab %>%
     evidenceBS = coalesce(as.double(evidenceBS.y), as.double(evidenceBS.x)),
     evidenceBP = coalesce(as.double(evidenceBP.y), as.double(evidenceBP.x)),
     Intervar_evidence = coalesce(`InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`),
-    # replace second final call with the second one because we did not use interVar results
-    final_call.x = if_else(Stars == "0" | is.na(Stars), final_call.y, final_call.x)
   )
-
-## combine final calls into one choosing the appropriate final call
-master_tab <- master_tab %>%
-  dplyr::mutate(final_call = coalesce(final_call.x, final_call.y))
 
 ## remove older columns
 master_tab <- master_tab %>% dplyr::select(-c(
   evidencePVS1.x, evidencePVS1.y, evidenceBA1.x, evidenceBA1.y, evidencePS.x, evidencePS.y, evidencePM.x, evidencePM.y, evidencePP.x, evidencePP.y, evidenceBS.x, evidenceBS.y, evidenceBP.x, evidenceBP.y,
-  `InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`, final_call.x, final_call.y
+  `InterVar: InterVar and Evidence.x`, `InterVar: InterVar and Evidence.y`
 ))
 
 ## reformat columns
 master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id") %>%
-  dplyr::mutate(final_call = coalesce(final_call.y, final_call.x)) %>%
+  dplyr::mutate(final_call_clinvar = coalesce(final_call_clinvar.y, final_call_clinvar.x)) %>%
+  dplyr::mutate(final_call = if_else(Stars.x == "0" | is.na(Stars.x), final_call_intervar, final_call_clinvar)) %>%
   full_join(entries_for_cc_in_submission_w_intervar[c("vcf_id", "Intervar_evidence")], by = "vcf_id") %>%
   dplyr::mutate(
     Intervar_evidence = coalesce(Intervar_evidence.y, Intervar_evidence.x),
@@ -452,7 +443,7 @@ master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id")
     )
   ) %>%
   dplyr::select(
-    -final_call.x, -final_call.y,
+    -final_call_clinvar.x, -final_call_clinvar.y,
     -Stars.x, -Stars.y,
     -Intervar_evidence.x, -Intervar_evidence.y,
     -INFO, -ClinicalSignificance.x, -ClinicalSignificance.y
