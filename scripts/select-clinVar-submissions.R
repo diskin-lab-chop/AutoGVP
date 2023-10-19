@@ -32,8 +32,8 @@ option_list <- list(
     help = "specific submission summary file (format: submission_summary.txt.gz)"
   ),
   make_option(c("--outdir"),
-              type = "character",
-              help = "output directory"
+    type = "character",
+    help = "output directory"
   )
 )
 
