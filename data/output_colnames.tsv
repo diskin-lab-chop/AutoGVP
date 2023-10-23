@@ -55,6 +55,7 @@ CLNREVSTAT	clinvar_review_status_original	F
 CLNSIG	clinvar_clinsig_original	F
 CLNSIGCONF	clinvar_conflicting_significance	F
 CLNSIGINCL	clinvar_clinsig_variant	F
+clinvar_flag	clinvar_flag	F
 CLNVC	clinvar_variant_type	F
 CLNVCSO	clinvar_sequence_ontology	F
 culprit	culprit	F
