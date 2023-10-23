@@ -36,14 +36,14 @@ option_list <- list(
     help = "output directory"
   ),
   make_option(c("--conceptID_list"),
-              type = "character",
-              default = NULL,
-              help = "list of ClinVar concept IDs"
+    type = "character",
+    default = NULL,
+    help = "list of ClinVar concept IDs"
   ),
   make_option(c("--conflict_res"),
-              type = "character",
-              default = "latest",
-              help = "how to resolve conflicting interpretations? 'latest' or 'most_severe'"
+    type = "character",
+    default = "latest",
+    help = "how to resolve conflicting interpretations? 'latest' or 'most_severe'"
   )
 )
 
@@ -88,11 +88,13 @@ submission_summary_df <- vroom(input_submission_file,
   show_col_types = F
 ) %>%
   # Redefine `DateLastEvaluated`
-  dplyr::mutate(DateLastEvaluated = case_when(
-    DateLastEvaluated == "-" ~ NA_character_,
-    TRUE ~ DateLastEvaluated
-  ),
-  VariationID = as.double(VariationID)) %>%
+  dplyr::mutate(
+    DateLastEvaluated = case_when(
+      DateLastEvaluated == "-" ~ NA_character_,
+      TRUE ~ DateLastEvaluated
+    ),
+    VariationID = as.double(VariationID)
+  ) %>%
   dplyr::filter(!ReviewStatus %in% c("no assertion provided", "no assertion criteria provided"))
 
 # merge submission_summary and variant_summary info
@@ -122,35 +124,33 @@ variants_no_conflicts <- submission_merged_df %>%
   dplyr::arrange(desc(mdy(LastEvaluated_sub))) %>%
   distinct(VariationID, .keep_all = T) %>%
   arrange(VariationID) %>%
-  
-  #append variants with >= 2 stars
+  # append variants with >= 2 stars
   bind_rows(variants_no_conflict_expert)
 
 # IF list of concept IDs provided -- filter remaining submissions to only those associated with concept IDs, and resolve conflicts by consensus, latest date, or severity
-if (!is.null(conceptID_file)){
-  
+if (!is.null(conceptID_file)) {
   # read in concept IDs
   conceptIDs <- read_lines(conceptID_file)
-  
+
   # Filter variants for those associated with concept IDs
   variants_with_conceptIDs <- submission_merged_df %>%
     dplyr::filter(!VariationID %in% variants_no_conflicts$VariationID) %>%
     dplyr::mutate(conceptID = unlist(lapply(strsplit(ReportedPhenotypeInfo, ":"), function(x) x[[1]]))) %>%
     dplyr::filter(conceptID %in% conceptIDs) %>%
     dplyr::select(-conceptID)
-  
+
   # if no. submissions remaining = 1, add to no conflict variants
   variants_no_conflicts_conceptID <- submission_merged_df %>%
     count(VariationID) %>%
     dplyr::filter(n == 1) %>%
     pull(VariationID)
-  
+
   # add variants with one submission to variants_no_conflicts
   variants_no_conflicts <- submission_merged_df %>%
     filter(VariationID %in% variants_no_conflicts_conceptID) %>%
     dplyr::mutate(ReviewStatus_var = glue::glue("{ReviewStatus_var}, single submission associated with conceptIDs")) %>%
     bind_rows(variants_no_conflicts)
-  
+
   # Identify variants with consensus calls
   consensus_calls_conceptIDs <- variants_with_conceptIDs %>%
     # Here, we will group B+LB and P+LP together to identify majority calls
@@ -164,7 +164,7 @@ if (!is.null(conceptID_file)){
     group_by(VariationID) %>%
     dplyr::filter(n == max(n)) %>%
     dplyr::filter(!VariationID %in% VariationID[duplicated(VariationID)])
-  
+
   # extract variants resolved through consensus calling
   variants_consensus_call_conceptIDs <- variants_with_conceptIDs %>%
     dplyr::mutate(ClinSig = case_when(
@@ -179,37 +179,38 @@ if (!is.null(conceptID_file)){
     arrange(VariationID) %>%
     dplyr::mutate(ReviewStatus_var = glue::glue("{ReviewStatus_var}, submissions associated with conceptIDs, consensus call taken")) %>%
     dplyr::select(-ClinSig)
-  
+
   # Resolve remaining conflicts for variants associated with concept IDs, either by taking date last evaluated or most severe call
-  if (conflict_res == "latest"){
-    
+  if (conflict_res == "latest") {
     variants_resolved_conceptIDs <- variants_with_conceptIDs %>%
       dplyr::filter(!VariationID %in% variants_consensus_call_conceptIDs$VariationID) %>%
       dplyr::arrange(desc(mdy(LastEvaluated_sub))) %>%
       distinct(VariationID, .keep_all = T) %>%
       dplyr::mutate(ReviewStatus_var = glue::glue("{ReviewStatus_var}, submissions associated with conceptIDs, latest date evaluated taken"))
-    
   }
-  
-  if (conflict_res == "most_severe"){
-    
+
+  if (conflict_res == "most_severe") {
     variants_resolved_conceptIDs <- variants_with_conceptIDs %>%
       dplyr::filter(!VariationID %in% variants_consensus_call_conceptIDs$VariationID) %>%
-      dplyr::mutate(ClinicalSignificance_sub = fct_relevel(ClinicalSignificance_sub,
-                                                      c("Pathogenic", "Likely pathogenic",
-                                                        "Uncertain significance", "Likely benign",
-                                                        "Benign"))) %>%
+      dplyr::mutate(ClinicalSignificance_sub = fct_relevel(
+        ClinicalSignificance_sub,
+        c(
+          "Pathogenic", "Likely pathogenic",
+          "Uncertain significance", "Likely benign",
+          "Benign"
+        )
+      )) %>%
       dplyr::arrange(VariationID, ClinicalSignificance_sub, desc(mdy(LastEvaluated_sub))) %>%
       distinct(VariationID, .keep_all = T) %>%
       dplyr::mutate(ReviewStatus_var = glue::glue("{ReviewStatus_var}, submissions associated with conceptIDs, most severe call at latest date taken"))
-    
   }
-  
+
   # add other resolved submissions to variants_no_conflicts
   variants_no_conflicts <- variants_no_conflicts %>%
-    bind_rows(variants_consensus_call_conceptIDs, 
-              variants_resolved_conceptIDs)
-  
+    bind_rows(
+      variants_consensus_call_conceptIDs,
+      variants_resolved_conceptIDs
+    )
 }
 
 # Extract remaining variants with conflicts
