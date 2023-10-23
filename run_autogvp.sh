@@ -51,6 +51,26 @@ while [ $# -gt 0 ]; do
       if [[ "$1" != *=* ]]; then shift; fi
       out_file="${1#*=}"
       ;;
+    --selected_clinvar_submissions*)
+      if [[ "$1" != *=* ]]; then shift; fi
+      selected_submissions="${1#*=}"
+      ;;
+    --variant_summary*)
+      if [[ "$1" != *=* ]]; then shift; fi
+      variant_summary="${1#*=}"
+      ;;
+    --submission_summary*)
+      if [[ "$1" != *=* ]]; then shift; fi
+      submission_summary="${1#*=}"
+      ;;
+    --conceptIDs*)
+      if [[ "$1" != *=* ]]; then shift; fi
+      conceptIDs="${1#*=}"
+      ;;
+    --conflict_res*)
+      if [[ "$1" != *=* ]]; then shift; fi
+      conflict_res="${1#*=}"
+      ;;
     --help|-h)
         echo "Usage: $0 [-w/--workflow] [-v/--vcf <*.vcf*>] [-f/--filter_criteria=<criteria>] [-c/--clinvar <*.vcf>] [-i/--intervar <*.txt.intervar>] [-a/--autopvs1 <*autopvs1*>] [-m/--multianno <*multianno*>] [-o/--out <output>]"
         echo ""
@@ -75,26 +95,62 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-## default files
 
-variant_summary_file="$BASEDIR/data/variant_summary.txt.gz"
-submission_summary_file="$BASEDIR/data/submission_summary.txt.gz"
-
-if [[ ! -f $variant_summary_file || ! -f $submission_summary_file ]] ; then
-    echo "Warning: ClinVar variant and/or submission summary files not found. Downloading to data/..."
+# If selected ClinVar submissions files not provided, then run select-ClinVar-submissions.R
+if [[ $selected_submissions -eq 0 ]]; then
     
-    bash $BASEDIR/scripts/download_db_files.sh
-
+    echo "select ClinVar submission file not specified. Running select-ClinVar-submissions Rscript..."
+    
+  # if variant_summary or submission_summary args not provided, check if files exist in data/
+  if [[ $variant_summary -eq 0  || $submission_summary -eq 0 ]]
+  then
+      
+      echo "variant summary and/or submission_summary file(s) not specified. Checking if files exist in data/..."
+      
+      variant_summary=$(find data/ -type f -name "variant_summary*")
+      submission_summary=$(find data/ -type f -name "submission_summary*")
+      
+      # if no files found matching pattern, download latest versions from ClinVar
+      if [[ -z "$variant_summary" || -z "$submission_summary" ]]
+      then
+        
+        echo "variant_summary and/or submission_summary files not found. Downloading latest versions from ClinVar..."
+        
+        bash $BASEDIR/scripts/download_db_files.sh
+        
+        variant_summary=$(find data/ -type f -name "variant_summary*")
+        submission_summary=$(find data/ -type f -name "submission_summary*") ; 
+        
+      else 
+        
+        echo "variant and submission summary files found. Running select-ClinVar-submissions Rscript..."
+        
+      fi
+      
+    fi
+      
+        if [[ $conceptIDs -eq 0 ]] ; then
+      
+        Rscript $BASEDIR/scripts/select-clinVar-submissions.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $out_dir
+        
+      fi
+      
+      if [[ ! $conceptIDs -eq 0 && $conflict_res -eq 0 ]] ; then 
+      
+        Rscript $BASEDIR/scripts/select-clinVar-submissions.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $out_dir --conceptID_list $conceptIDs --conflict_res "latest"
+        
+      fi
+      
+      if [[ ! $conceptIDs -eq 0 && ! $conflict_res -eq 0 ]] ; then
+      
+        Rscript $BASEDIR/scripts/select-clinVar-submissions.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $out_dir --conceptID_list $conceptIDs --conflict_res $conflict_res
+      
+      fi
+      
+      selected_submissions="$BASEDIR/results/ClinVar-selected-submissions.tsv"
+        
 fi
 
-select_submissions_file="$BASEDIR/results/ClinVar-selected-submissions.tsv"
-
-if [[ ! -f $select_submissions_file ]] ; then
-    echo "ClinVar-selected-submissions.tsv file not found. Running select-clinvar-submissions.R script..."
-    
-    Rscript $BASEDIR/scripts/select-clinVar-submissions.R --variant_summary $BASEDIR/data/variant_summary.txt.gz --submission_summary $BASEDIR/data/submission_summary.txt.gz --outdir $out_dir
-
-fi
 
 # Filter VCF file; by default the function performs filtering based on FILTER column, with other criteria specified by user
 echo "Filtering VCF..."
@@ -120,7 +176,7 @@ if [[ "$workflow" = "cavatica" ]];then
   --autopvs1 $autopvs1_input \
   --output $out_file \
   --outdir $out_dir \
-  --variant_summary $select_submissions_file
+  --variant_summary $selected_submissions
   
   autogvp_output=${out_dir}/${out_file}".cavatica_input.annotations_report.abridged.tsv"
 
@@ -134,7 +190,7 @@ if [[ "$workflow" = "cavatica" ]];then
   --autopvs1 $autopvs1_input \
   --output $out_file \
   --outdir $out_dir \
-  --variant_summary $select_submissions_file \
+  --variant_summary $selected_submissions \
   
   autogvp_output=${out_dir}/${out_file}".custom_input.annotations_report.abridged.tsv"
 
