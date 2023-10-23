@@ -140,7 +140,7 @@ if (!is.null(conceptID_file)) {
     dplyr::select(-conceptID)
 
   # if no. submissions remaining = 1, add to no conflict variants
-  variants_no_conflicts_conceptID <- submission_merged_df %>%
+  variants_no_conflicts_conceptID <- variants_with_conceptIDs %>%
     count(VariationID) %>%
     dplyr::filter(n == 1) %>%
     pull(VariationID)
