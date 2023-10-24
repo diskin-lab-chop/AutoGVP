@@ -61,10 +61,10 @@ bash scripts/download_db_files.sh
 Run `select-clinVar-submissions.R`:
 
 ```
-Rscript scripts/select-clinVar-submissions.R --variant_summary data/variant_summary.txt.gz --submission_summary data/submission_summary.txt.gz
+Rscript scripts/select-clinVar-submissions.R --variant_summary data/variant_summary.txt.gz --submission_summary data/submission_summary.txt.gz --outdir results --conceptID_list data/clinvar_cpg_concept_ids.txt --conflict_res "latest"
 ```
 
-Run AutoGVP:
+Run AutoGVP; if output of scripts/select-clinVar-submissions.R is not provided, the script will be run prior to starting pathogenicity assessment
 
 ```r
 bash run_autogvp.sh --workflow="cavatica" \
@@ -74,8 +74,12 @@ bash run_autogvp.sh --workflow="cavatica" \
 --multianno=data/test_pbta.hg38_multianno.txt \
 --autopvs1=data/test_pbta.autopvs1.tsv \
 --outdir=results \
---out="test_pbta"
-
+--out="test_pbta" \
+--selected_clinvar_submissions=results/ClinVar-selected-submissions.tsv \
+--variant_summary=data/variant_summary.txt.gz \
+--submission_summary=data/submission_summary.txt.gz \
+--conceptIDs=data/clinvar_cpg_concept_ids.txt \
+--conflict_res="latest"
 ```
 
 ### Custom (non-CAVATICA) input ###
@@ -120,10 +124,10 @@ bash scripts/download_db_files.sh
 Run `select-clinVar-submissions.R`:
 
 ```
-Rscript scripts/select-clinVar-submissions.R --variant_summary data/variant_summary.txt.gz --submission_summary data/submission_summary.txt.gz
+Rscript scripts/select-clinVar-submissions.R --variant_summary data/variant_summary.txt.gz --submission_summary data/submission_summary.txt.gz --outdir results --conceptID_list data/clinvar_cpg_concept_ids.txt --conflict_res "latest"
 ```
 
-Run AutoGVP:
+Run AutoGVP; if output of scripts/select-clinVar-submissions.R is not provided, the script will be run prior to starting pathogenicity assessment
 ```r
 bash run_autogvp.sh --workflow="custom" \
 --vcf=data/test_VEP.vcf \
@@ -133,15 +137,27 @@ bash run_autogvp.sh --workflow="custom" \
 --multianno=data/test_VEP.vcf.hg38_multianno.txt \
 --autopvs1=data/test_autopvs1.txt \
 --outdir=results \
---out="test_custom"
+--out="test_custom" \
+--selected_clinvar_submissions=results/ClinVar-selected-submissions.tsv \
+--variant_summary=data/variant_summary.txt.gz \
+--submission_summary=data/submission_summary.txt.gz \
+--conceptIDs=data/clinvar_cpg_concept_ids.txt \
+--conflict_res="latest"
 ```
 
 ### Step by step workflow
 
+*__Resolve conflicting ClinVar variants__. The Rscript `select-clinVar-submissions.R` takes as input ClinVar variant and submission summary files, and identifies variants with conflicting interpretations to be resolved in the following manner: 
+
+  1. If a concept ID list is provided, submissions for conflicting variants are filtered based on association with any concept ID in provided list. If a single submission is retained for a variant, the final call is taken to resolve conflict. 
+  2. For remaining submissions associated with concept IDs, conflicts are resolved first by determining if a consensus/majority call exists among submissions. If not, a user-provided conflict resolution criterion is applied: either the call at latest date evaluated (the default) or the most severe call is taken (P > LP > VUS > LB > B). 
+  3. For variants with no submissions associated with concept IDs (if list provided), or else for all conflicting variants (if no list provided), conflicts are resolved by determining if consensus/majority call exists among submissions. 
+  4. If no consensus call exists, the call at the latest date evaluated is taken. 
+
 * __Filter VCF file__. By default, `01-filter_vcf.sh` filters based on `FILTER` column (`PASS` or `.`). Other criteria can be specified by `filter_criteria` argument as follows:
 
 ```
-filter_criteria="INFO/AF>=0.2 INFO/DP>=15"
+filter_criteria='FORMAT/DP>=10 (FORMAT/AD[0:1-])/(FORMAT/DP)>=0.2 (gnomad_3_1_1_AF_non_cancer<0.001|gnomad_3_1_1_AF_non_cancer=".")'
 ```
 
 * __Run Pathogenicity Assessment__. The R scripts `02-annotate_variants_CAVATICA_input.R` and `02-annotate_variants_custom_input.R` perform the following steps:
