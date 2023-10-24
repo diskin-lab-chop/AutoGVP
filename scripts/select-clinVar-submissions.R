@@ -279,6 +279,23 @@ submission_final_df <- variants_no_conflicts %>%
     "SubmittedGeneSymbol", "GeneSymbol", "vcf_id"
   )))
 
+# extract all variants with conflicting interpretations
+clinvar_conflicting <- variant_summary_df %>%
+  dplyr::filter(ReviewStatus == "criteria provided, conflicting interpretations") %>%
+  pull(VariationID)
+
+# extract all variants with >= P/LP call
+plp_submissions <- submission_summary_df %>%
+  dplyr::filter(ClinicalSignificance %in% c("Pathogenic", "Likely pathogenic")) %>%
+  pull(VariationID)
+
+# add column `clinvar_flag`, and make note of variants with conflicting interpretations and that have >= 1 P/LP call
+submission_final_df <- submission_final_df %>%
+  dplyr::mutate(clinvar_flag = case_when(
+    VariationID %in% clinvar_conflicting & VariationID %in% plp_submissions ~ "Variant has conflicting interpretations in ClinVar and at least 1 submission with P/LP call",
+    TRUE ~ "None"
+  ))
+
 write_tsv(
   submission_final_df,
   file.path(results_dir, "ClinVar-selected-submissions.tsv")
