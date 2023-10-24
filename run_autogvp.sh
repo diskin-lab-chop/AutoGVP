@@ -75,16 +75,21 @@ while [ $# -gt 0 ]; do
         echo "Usage: $0 [-w/--workflow] [-v/--vcf <*.vcf*>] [-f/--filter_criteria=<criteria>] [-c/--clinvar <*.vcf>] [-i/--intervar <*.txt.intervar>] [-a/--autopvs1 <*autopvs1*>] [-m/--multianno <*multianno*>] [-o/--out <output>]"
         echo ""
         echo "Options:"
-        echo "  -w/--workflow           workflow"
-        echo "  -v/--vcf                VCF file"
-        echo "  -f/--filter_criteria    VCF filtering criteria"
-        echo "  -c/--clinvar            clinvar file"
-        echo "  -i/--intervar           intervar results file"
-        echo "  -a/--autopvs1           autopvs1 results file"
-        echo "  -m/--multianno          multianno file"
-        echo "  -O/--outdir             output directory"
-        echo "  -o/--out                output prefix"
-        echo "  -h/--help               Display usage information"
+        echo "  -w/--workflow                     workflow"
+        echo "  -v/--vcf                          VCF file"
+        echo "  -f/--filter_criteria              VCF filtering criteria"
+        echo "  -c/--clinvar                      clinvar file"
+        echo "  -i/--intervar                     intervar results file"
+        echo "  -a/--autopvs1                     autopvs1 results file"
+        echo "  -m/--multianno                    multianno file"
+        echo "  -O/--outdir                       output directory"
+        echo "  -o/--out                          output prefix"
+        echo "  --selected_clinvar_submissions    clinvar variant file with conflicts resolved"
+        echo "  --variant_summary                 ClinVar variant summary file"
+        echo "  --submission_summary              ClinVar submission summary file"
+        echo "  --conceptIDs                      list of conceptIDs to prioritize submissions for clinvar variant conflict resolution. Will be ignored if selected_clinvar_submissions is provided"
+        echo "  --conflict_res                    how to resolve conflicts associated with conceptIDs. Will be ignored if selected_clinvar_submissions is provided or if conceptIDs are not provided"
+        echo "  -h/--help                         Display usage information"
             exit 0
       ;;
     *)
@@ -97,12 +102,13 @@ done
 
 
 # If selected ClinVar submissions files not provided, then run select-ClinVar-submissions.R
-if [[ $selected_submissions -eq 0 ]]; then
+if [[ ! -e $selected_submissions ]]; then
     
     echo "select ClinVar submission file not specified. Running select-ClinVar-submissions Rscript..."
     
   # if variant_summary or submission_summary args not provided, check if files exist in data/
-  if [[ $variant_summary -eq 0  || $submission_summary -eq 0 ]]
+#  if [[ $variant_summary -eq 0  || $submission_summary -eq 0 ]]
+  if [[ ! -e $variant_summary || ! -e $submission_summary ]]
   then
       
       echo "variant summary and/or submission_summary file(s) not specified. Checking if files exist in data/..."
@@ -111,7 +117,8 @@ if [[ $selected_submissions -eq 0 ]]; then
       submission_summary=$(find data/ -type f -name "submission_summary*")
       
       # if no files found matching pattern, download latest versions from ClinVar
-      if [[ -z "$variant_summary" || -z "$submission_summary" ]]
+     # if [[ -z "$variant_summary" || -z "$submission_summary" ]]
+      if [[ ! -e "$variant_summary" || ! -e "$submission_summary" ]]
       then
         
         echo "variant_summary and/or submission_summary files not found. Downloading latest versions from ClinVar..."
@@ -129,19 +136,25 @@ if [[ $selected_submissions -eq 0 ]]; then
       
     fi
       
-        if [[ $conceptIDs -eq 0 ]] ; then
+        if [[ ! -e $conceptIDs ]] ; then
+        
+        echo "resolving ClinVar conflicts using default parameters..."
       
         Rscript $BASEDIR/scripts/select-clinVar-submissions.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $out_dir
         
       fi
       
-      if [[ ! $conceptIDs -eq 0 && $conflict_res -eq 0 ]] ; then 
+      if [[ -f $conceptIDs && -z $conflict_res ]] ; then 
+      
+        echo "resolving ClinVar conflicts with provided concept IDs and taking latest date evaluated call..."
       
         Rscript $BASEDIR/scripts/select-clinVar-submissions.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $out_dir --conceptID_list $conceptIDs --conflict_res "latest"
         
       fi
       
-      if [[ ! $conceptIDs -eq 0 && ! $conflict_res -eq 0 ]] ; then
+      if [[ -f $conceptIDs && -n $conflict_res ]] ; then
+      
+        echo "resolving ClinVar conflicts with provided concept IDs and specified conflict resolution..."
       
         Rscript $BASEDIR/scripts/select-clinVar-submissions.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $out_dir --conceptID_list $conceptIDs --conflict_res $conflict_res
       
