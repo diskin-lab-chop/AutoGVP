@@ -391,7 +391,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- clinvar_anno_intervar_vcf_df %>%
   full_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|final_call_intervar", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
-  left_join(variant_summary_df[, c("vcf_id", "VariationID", "ClinicalSignificance", "ReviewStatus", "LastEvaluated")], by = "vcf_id") %>%
+  left_join(variant_summary_df[, c("vcf_id", "VariationID", "ClinicalSignificance", "ReviewStatus", "LastEvaluated", "clinvar_flag")], by = "vcf_id") %>%
   left_join(autopvs1_results, by = "vcf_id")
 
 
