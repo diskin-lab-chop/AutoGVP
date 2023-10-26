@@ -146,7 +146,7 @@ if (!is.null(conceptID_file)) {
     pull(VariationID)
 
   # add variants with one submission to variants_no_conflicts
-  variants_no_conflicts <- submission_merged_df %>%
+  variants_no_conflicts <- variants_with_conceptIDs %>%
     filter(VariationID %in% variants_no_conflicts_conceptID) %>%
     dplyr::mutate(ReviewStatus_var = glue::glue("{ReviewStatus_var}, single submission associated with conceptIDs")) %>%
     bind_rows(variants_no_conflicts)
