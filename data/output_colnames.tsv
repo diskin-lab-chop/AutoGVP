@@ -13,13 +13,16 @@ HGVSc	HGVSc	T
 HGVSp	HGVSp	T
 final_call	autogvp_call	T
 Reasoning_for_call	autogvp_call_reason	T
-final_call_clinvar	autogvp_call_clinvar	F
-final_call_intervar	autogvp_call_intervar	F
-Stars	clinvar_stars	T
 ClinVar_ClinicalSignificance	clinvar_clinsig_autogvp	T
 ReviewStatus	clinvar_review_status_autogvp	T
+Stars	clinvar_stars	T
+VariationID	clinvar_variant_id	T
+clinvar_flag	clinvar_flag	T
+ClinVar_link	clinvar_variant_link	T
 Intervar_evidence	intervar_evidence	T
 gnomad_3_1_1_AF_non_cancer	gnomad_3_1_1_AF_non_cancer	T
+final_call_clinvar	autogvp_call_clinvar	F
+final_call_intervar	autogvp_call_intervar	F
 Func.refGene	variant_location_annovar	F
 Gene.refGene	hugo_symbol_annovar	F
 GeneDetail.refGene	cDNA_change_annovar	F
@@ -44,7 +47,6 @@ ALLELEID	ALLELEID	F
 AN	AN	F
 BaseQRankSum	BaseQRankSum	F
 ClippingRankSum	ClippingRankSum	F
-VariationID	clinvar_variant_id	F
 LastEvaluated	clinvar_date_last_evaluated	F
 CLNDISDB	clinvar_associated_disease	F
 CLNDISDBINCL	clinvar_associated_disease_include_variant	F
@@ -55,7 +57,6 @@ CLNREVSTAT	clinvar_review_status_original	F
 CLNSIG	clinvar_clinsig_original	F
 CLNSIGCONF	clinvar_conflicting_significance	F
 CLNSIGINCL	clinvar_clinsig_variant	F
-clinvar_flag	clinvar_flag	F
 CLNVC	clinvar_variant_type	F
 CLNVCSO	clinvar_sequence_ontology	F
 culprit	culprit	F
@@ -118,4 +119,3 @@ SIFT	sift_vep	F
 PolyPhen	polyphen_vep	F
 DOMAINS	protein_domains_vep	F
 CSQ	csq_vep	F
-ClinVar_link	clinvar_variant_link	F
