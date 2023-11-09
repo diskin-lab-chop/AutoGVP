@@ -2,7 +2,7 @@
 Jung Kim, Ammar S. Naqvi, Ryan J. Corbett, Rebecca Kaufman, Zalman Vaksman, Miguel A. Brown,  Daniel P. Miller, Zhuangzhuang Geng, Phillip B. Storm, Adam C. Resnick, Jo Lynne Rokita, Douglas R. Stewart, Sharon J. Diskin
 
 ## AutoGVP Workflow  
-<img src="https://github.com/diskin-lab-chop/pathogenicity-assessment/blob/b461f6248ea3bd472d646d3dd39445b616fa9295/figures/germline-pathogenecity_flow.png" align="center" width = "600">
+<img src="https://github.com/diskin-lab-chop/pathogenicity-assessment/blob/6848a369885fb9e03e75ec82afc97379457c0275/figures/germline-pathogenecity_flow.png" align="center" width = "600">
 
 ## Clone the AutoGVP repository
 ```bash
