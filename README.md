@@ -8,24 +8,28 @@ For more detailed instructions, please visit the [user guide](https://github.com
 
 ## Clone the AutoGVP repository
 ```bash
-git clone https://github.com/diskin-lab-chop/AutoGVP.git
+git clone git@github.com:diskin-lab-chop/AutoGVP.git
 ```
 
 ## Docker set-up
-### docker pull, run, and execute
+1. Pull the docker image.
 ```bash
 docker pull pgc-images.sbgenomics.com/naqvia/autogvp:latest
 ```
-cd to your clone of `AutoGVP`
-Replace <CONTAINER_NAME> with any name and run the command below:
-```
+2. Navigate to the `AutoGVP` root directory
+```bash
+cd AutoGVP
+```   
+4. Start a docker image. Replace <CONTAINER_NAME> with any name and run the commands below:
+```bash
 docker run --platform linux/amd64 --name <CONTAINER_NAME> -d -v $PWD:/home/rstudio/AutoGVP pgc-images.sbgenomics.com/naqvia/autogvp:latest
 docker exec -ti <CONTAINER_NAME> bash
 ```
-### cd to AutoGVP directory within docker
+5. Navigate to AutoGVP directory within the docker image
 ```bash
 cd /home/rstudio/AutoGVP
 ```
+6. Run AutoGVP (see example commands below).
 
 ## How to Run AutoGVP
 
