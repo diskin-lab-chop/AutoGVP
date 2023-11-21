@@ -30,7 +30,7 @@ cd /home/rstudio/AutoGVP
 ## How to Run AutoGVP
 
 AutoGVP Requirements (recommended to place all in the `data/` folder):
-- VEP-, ANNOVAR-, and ClinVar annotated VCF file (`*VEP.vcf`)
+- VEP-annotated VCF file (`*VEP.vcf`) for custom workflow or VEP-, ANNOVAR-, and ClinVar annotated VCF file (`*VEP.vcf`) for CAVATICA workflow
 - ANNOVAR multianno file (`*hg38_multianno.txt`)
 - InterVar file (`*intervar.hg38_multianno.txt.intervar`)
 - AutoPVS1 file (`*autopvs1.txt`)
