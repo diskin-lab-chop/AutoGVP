@@ -39,7 +39,7 @@ AutoGVP Requirements (recommended to place all in the `data/` folder):
 
 ### Custom workflow example run
 1. [Prepare input files](https://github.com/diskin-lab-chop/AutoGVP/wiki/User-Guide#custom-input-workflow---step-by-step) by running VEP, ANNOVAR, InterVar, and AutoPVS1.
-2. Run `select-clinVar-submissions.R`:
+2. Run `select-clinVar-submissions.R` with desired conflict resolution parameter ("latest", "most_severe") and optional ClinGen Concept ID list:
 ```
 Rscript scripts/select-clinVar-submissions.R --variant_summary data/variant_summary.txt.gz --submission_summary data/submission_summary.txt.gz --outdir results --conceptID_list data/clinvar_cpg_concept_ids.txt --conflict_res "latest"
 ```
@@ -62,7 +62,7 @@ bash run_autogvp.sh --workflow="custom" \
 ```
 
 ### CAVATICA workflow example run
-1. Run `select-clinVar-submissions.R`:
+2. Run `select-clinVar-submissions.R` with desired conflict resolution parameter ("latest", "most_severe") and optional ClinGen Concept ID list:
 ```
 Rscript scripts/select-clinVar-submissions.R --variant_summary data/variant_summary.txt.gz --submission_summary data/submission_summary.txt.gz --outdir results --conceptID_list data/clinvar_cpg_concept_ids.txt --conflict_res "latest"
 ```
