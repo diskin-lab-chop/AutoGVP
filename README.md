@@ -104,7 +104,7 @@ chr1 | 1390349 | C | T | rs769726291 | CCNL2 | missense_variant | chr1:g.1390349
 
 *NOTE: gnomAD v.3.1.1 non-cancer AF popmax values (`gnomad_3_1_1_AF_non_cancer`) will also be included in abridged output when provided.
 
-See [here](https://github.com/diskin-lab-chop/AutoGVP/blob/main/data/output_colnames.tsv) for list of columns included in full output
+See [here](https://github.com/diskin-lab-chop/AutoGVP/blob/main/data/output_colnames.tsv) for list of columns included in full output.
 
 
 ## Code Authors
