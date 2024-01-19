@@ -207,12 +207,12 @@ additional_intervar_cases <- filter(clinvar_anno_vcf_df, final_call_clinvar != "
   anti_join(entries_for_cc_in_submission, by = "vcf_id") %>%
   anti_join(clinvar_anti_join_vcf_df, by = "vcf_id")
 
-if (nrow(clinvar_anti_join_vcf_df) < 0) {
+if (nrow(clinvar_anti_join_vcf_df) > 0) {
 
   clinvar_anti_join_vcf_df <- clinvar_anti_join_vcf_df %>%
     mutate(
       QUAL = as.character(QUAL),
-      POS = as.double(POS)
+    #  POS = as.double(POS)
     )
   
 }
@@ -236,7 +236,6 @@ multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_na
       "100way", "30way", "GTEx"
     ))
   ) %>%
-  dplyr::filter(Otherinfo5 %in% clinvar_anno_vcf_df$START) %>%
   mutate(
     vcf_id = str_remove_all(paste(Chr, "-", Otherinfo5, "-", Otherinfo7, "-", Otherinfo8), " "),
     vcf_id = str_replace(vcf_id, "chr", ""),
@@ -256,7 +255,6 @@ clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws
     -`clinvar: Clinvar`,
     -contains(c("gnomad", "CADD", "Freq", "SCORE", "score", "ORPHA", "MIM", "rmsk", "GERP", "phylo"))
   ) %>%
-  dplyr::filter(Start %in% multianno_df$Start) %>%
   dplyr::mutate(var_id = paste0(`#Chr`, "-", Start, "-", Ref, "-", Alt)) %>%
   distinct(var_id, .keep_all = T) %>%
   # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
@@ -269,7 +267,7 @@ clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws
 clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
   dplyr::select(any_of(c("Ref.Gene", "InterVar: InterVar and Evidence", "var_id"))) %>%
   left_join(multianno_df, by = "var_id") %>%
-  filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id)
+  filter(vcf_id %in% c(clinvar_anno_vcf_df$vcf_id, entries_for_intervar$vcf_id))
 
 ## populate consensus call variants with intervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df, entries_for_cc_in_submission, by = "vcf_id") %>%
@@ -290,7 +288,8 @@ clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
     evidenceBP = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sBP\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))[-6]))
   ) %>%
   ## merge dataframe with clinvar_anno_vcf_df above
-  full_join(clinvar_anno_vcf_df, by = "vcf_id")
+  left_join(vcf_df, by = "vcf_id") %>%
+  left_join(clinvar_anno_vcf_df %>% select(-one_of(c("CHROM", "START", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "FORMAT", "Sample", "INFO"))), by = "vcf_id")
 
 
 ## autopvs1 results
@@ -475,11 +474,12 @@ master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id")
     )
   ) %>%
   dplyr::select(
-    -final_call_clinvar.x, -final_call_clinvar.y,
-    -Stars.x, -Stars.y,
-    -Intervar_evidence.x, -Intervar_evidence.y,
-    -INFO, -ClinicalSignificance.x, -ClinicalSignificance.y
-  )
+    -any_of(
+      c("final_call_clinvar.x", "final_call_clinvar.y",
+      "Stars.x", "Stars.y",
+      "Intervar_evidence.x", "Intervar_evidence.y",
+      "INFO", "ClinicalSignificance.x", "ClinicalSignificance.y")
+  ))
 
 ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
 master_tab <- address_ambiguous_calls(master_tab)
@@ -508,9 +508,9 @@ master_tab <- master_tab %>%
   )) %>%
   dplyr::mutate(sample_id = output_name) %>%
   dplyr::relocate(
-    sample_id, CHROM, START, ID, REF, ALT,
-    final_call, Reasoning_for_call,
-    Stars, ClinVar_ClinicalSignificance, Intervar_evidence
+    any_of(c("sample_id", "CHROM", "START", "POS", "ID", "REF", "ALT",
+           "final_call", "Reasoning_for_call",
+           "Stars", "ClinVar_ClinicalSignificance", "Intervar_evidence"))
   )
 
 # write out to file
