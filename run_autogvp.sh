@@ -180,16 +180,32 @@ intervar_input=$out_dir/${out_file}_intervar_filtered.txt
 echo "Running AutoGVP..."
 
 # Run appropriate Rscript based on workflow source (Cavatica vs. custom)
-if [[ "$workflow" = "cavatica" ]];then
+if [[ "$workflow" = "cavatica" ]] ; then
 
-  # Run AutoGVP from Cavatica workflow
-  Rscript $BASEDIR/scripts/02-annotate_variants_CAVATICA_input.R --vcf $autogvp_input \
-  --multianno $multianno_input \
-  --intervar $intervar_input \
-  --autopvs1 $autopvs1_input \
-  --output $out_file \
-  --outdir $out_dir \
-  --variant_summary $selected_submissions
+  if [[ -f $clinvar_file ]] ; then
+
+    # Run AutoGVP from Cavatica workflow with provided clinvar vcf
+    Rscript $BASEDIR/scripts/02-annotate_variants_CAVATICA_input.R --vcf $autogvp_input \
+    --clinvar $clinvar_file \
+    --multianno $multianno_input \
+    --intervar $intervar_input \
+    --autopvs1 $autopvs1_input \
+    --output $out_file \
+    --outdir $out_dir \
+    --variant_summary $selected_submissions
+    
+    else
+    
+      # Run AutoGVP from Cavatica workflow with clinvar annotation in sample vcf
+    Rscript $BASEDIR/scripts/02-annotate_variants_CAVATICA_input.R --vcf $autogvp_input \
+    --multianno $multianno_input \
+    --intervar $intervar_input \
+    --autopvs1 $autopvs1_input \
+    --output $out_file \
+    --outdir $out_dir \
+    --variant_summary $selected_submissions
+    
+  fi
   
   autogvp_output=${out_dir}/${out_file}".cavatica_input.annotations_report.abridged.tsv"
 
