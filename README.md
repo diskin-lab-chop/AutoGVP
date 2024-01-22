@@ -32,11 +32,11 @@ cd /home/rstudio/AutoGVP
 6. Run AutoGVP (see example commands below).
 
 ## Dependencies
-[VEP (v104)](https://github.com/Ensembl/ensembl-vep)
-[InterVar](https://github.com/WGLab/InterVar)
-[ANNOVAR](https://annovar.openbioinformatics.org/en/latest/)
-[AutoPVS1 v2.0](https://github.com/JiguangPeng/autopvs1/releases/tag/v2.0)
-[bcftools (v1.17)](https://github.com/samtools/bcftools/)
+[VEP (v104)](https://github.com/Ensembl/ensembl-vep)<br>
+[InterVar](https://github.com/WGLab/InterVar) <br>
+[ANNOVAR](https://annovar.openbioinformatics.org/en/latest/) <br>
+[AutoPVS1 (v2.0)](https://github.com/JiguangPeng/autopvs1/releases/tag/v2.0) <br>
+[bcftools (v1.17)](https://github.com/samtools/bcftools/) <br>
 
 ## How to Run AutoGVP
 AutoGVP Requirements (recommended to place all in the `data/` folder):
