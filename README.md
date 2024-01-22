@@ -31,8 +31,14 @@ cd /home/rstudio/AutoGVP
 ```
 6. Run AutoGVP (see example commands below).
 
-## How to Run AutoGVP
+## Dependencies
+[VEP (v104)](https://github.com/Ensembl/ensembl-vep)
+[InterVar](https://github.com/WGLab/InterVar)
+[ANNOVAR](https://annovar.openbioinformatics.org/en/latest/)
+[AutoPVS1 v2.0](https://github.com/JiguangPeng/autopvs1/releases/tag/v2.0)
+[bcftools (v1.17)](https://github.com/samtools/bcftools/)
 
+## How to Run AutoGVP
 AutoGVP Requirements (recommended to place all in the `data/` folder):
 - VEP-annotated VCF file (`*VEP.vcf`) for custom workflow or VEP-, ANNOVAR-, and ClinVar annotated VCF file (`*VEP.vcf`) for CAVATICA workflow
 - ANNOVAR multianno file (`*hg38_multianno.txt`)
@@ -43,7 +49,7 @@ AutoGVP Requirements (recommended to place all in the `data/` folder):
 
 ### Custom workflow example run
 1. [Prepare input files](https://github.com/diskin-lab-chop/AutoGVP/wiki/User-Guide#custom-input-workflow---step-by-step) by running VEP, ANNOVAR, InterVar, and AutoPVS1.
-2. Run `select-clinVar-submissions.R` with desired conflict resolution parameter ("latest", "most_severe") and optional ClinGen Concept ID list.
+2. Download [database files](https://github.com/diskin-lab-chop/AutoGVP/blob/main/scripts/download_db_files.sh) and run `select-clinVar-submissions.R` with desired conflict resolution parameter ("latest", "most_severe") and optional ClinGen Concept ID list.
 For more details, see the [FAQ](https://github.com/diskin-lab-chop/AutoGVP/wiki/FAQ#how-can-i-create-my-own-concept-id-list).
 Example command:
 ```
