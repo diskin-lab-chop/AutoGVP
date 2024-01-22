@@ -112,7 +112,6 @@ vcf_df <- vroom(input_vcf_file, comment = "#", delim = "\t", col_names = c("CHRO
   )
 
 if (!is.null(input_clinVar_file)) {
-  
   ## add clinvar table to this (INFO)
   clinvar_anno_vcf_df <- vroom(input_clinVar_file, comment = "#", delim = "\t", col_names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO"), trim_ws = TRUE, show_col_types = FALSE) %>%
     # add vcf id column
@@ -133,9 +132,7 @@ if (!is.null(input_clinVar_file)) {
       ## extract the calls and put in own column
       final_call_clinvar = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
     )
-  
 } else {
-  
   ## add column "vcf_id" to clinVar results in order to cross-reference with intervar and autopvs1 table
   clinvar_anno_vcf_df <- vcf_df %>%
     dplyr::mutate(
@@ -152,32 +149,31 @@ if (!is.null(input_clinVar_file)) {
       ## extract the calls and put in own column
       final_call_clinvar = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
     )
-  
 }
 
 # ## get latest calls from variant and submission summary files
 # variant_summary_df <- vroom(input_variant_summary, show_col_types = FALSE) %>%
 #   filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id) %>%
 #   dplyr::select(-GeneSymbol)
-# 
+#
 # ## filter only those variants that need consensus call and find  call in submission table
 # entries_for_cc <- filter(clinvar_anno_vcf_df, Stars == "1NR", final_call_clinvar != "Benign", final_call_clinvar != "Pathogenic", final_call_clinvar != "Likely_benign", final_call_clinvar != "Likely_pathogenic", final_call_clinvar != "Uncertain_significance")
-# 
+#
 # entries_for_cc_in_submission <- inner_join(variant_summary_df, entries_for_cc, by = "vcf_id") %>%
 #   dplyr::mutate(final_call_clinvar = ClinicalSignificance) %>%
 #   dplyr::select(vcf_id, ClinicalSignificance, final_call_clinvar, Stars)
-# 
+#
 # ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 # ## modified: any cases that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 # additional_intervar_cases <- filter(clinvar_anno_vcf_df, final_call_clinvar != "Benign", final_call_clinvar != "Pathogenic", final_call_clinvar != "Likely_benign", final_call_clinvar != "Likely_pathogenic", final_call_clinvar != "Uncertain_significance") %>%
 #   anti_join(entries_for_cc_in_submission, by = "vcf_id")
-# 
-# 
+#
+#
 # ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
 # entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0" | is.na(Stars), na.rm = TRUE) %>%
 #   bind_rows((additional_intervar_cases)) %>%
 #   distinct()
-# 
+#
 # ## get vcf ids that need intervar run
 # vcf_to_run_intervar <- entries_for_intervar$vcf_id
 
@@ -208,13 +204,11 @@ additional_intervar_cases <- filter(clinvar_anno_vcf_df, final_call_clinvar != "
   anti_join(clinvar_anti_join_vcf_df, by = "vcf_id")
 
 if (nrow(clinvar_anti_join_vcf_df) > 0) {
-
   clinvar_anti_join_vcf_df <- clinvar_anti_join_vcf_df %>%
     mutate(
       QUAL = as.character(QUAL),
-    #  POS = as.double(POS)
+      #  POS = as.double(POS)
     )
-  
 }
 
 ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
@@ -475,11 +469,14 @@ master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id")
   ) %>%
   dplyr::select(
     -any_of(
-      c("final_call_clinvar.x", "final_call_clinvar.y",
-      "Stars.x", "Stars.y",
-      "Intervar_evidence.x", "Intervar_evidence.y",
-      "INFO", "ClinicalSignificance.x", "ClinicalSignificance.y")
-  ))
+      c(
+        "final_call_clinvar.x", "final_call_clinvar.y",
+        "Stars.x", "Stars.y",
+        "Intervar_evidence.x", "Intervar_evidence.y",
+        "INFO", "ClinicalSignificance.x", "ClinicalSignificance.y"
+      )
+    )
+  )
 
 ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
 master_tab <- address_ambiguous_calls(master_tab)
@@ -508,9 +505,11 @@ master_tab <- master_tab %>%
   )) %>%
   dplyr::mutate(sample_id = output_name) %>%
   dplyr::relocate(
-    any_of(c("sample_id", "CHROM", "START", "POS", "ID", "REF", "ALT",
-           "final_call", "Reasoning_for_call",
-           "Stars", "ClinVar_ClinicalSignificance", "Intervar_evidence"))
+    any_of(c(
+      "sample_id", "CHROM", "START", "POS", "ID", "REF", "ALT",
+      "final_call", "Reasoning_for_call",
+      "Stars", "ClinVar_ClinicalSignificance", "Intervar_evidence"
+    ))
   )
 
 # write out to file
