@@ -61,12 +61,12 @@ option_list <- list(
 
 opt <- parse_args(OptionParser(option_list = option_list))
 
-## get input files from parameters (reqd)
-input_clinVar_file <- opt$vcf
+## get input files from parameters (read)
+input_vcf_file <- opt$vcf
 input_intervar_file <- opt$intervar
 input_autopvs1_file <- opt$autopvs1
 input_multianno_file <- opt$multianno
-clinvar_ver <- opt$clinvar
+input_clinVar_file <- opt$clinvar
 sample_name <- opt$output
 input_variant_summary <- opt$variant_summary
 summary_level <- opt$summary_level_vcf
@@ -105,30 +105,89 @@ address_ambiguous_calls <- function(results_tab_abridged) { ## address ambiguous
 }
 
 ## retrieve and store clinVar input file into table
-clinvar_anno_vcf_df <- vroom(input_clinVar_file, comment = "#", delim = "\t", col_names = c("CHROM", "START", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "Sample"), show_col_types = FALSE)
-
-## add column "vcf_id" to clinVar results in order to cross-reference with intervar and autopvs1 table
-clinvar_anno_vcf_df <- clinvar_anno_vcf_df %>%
+vcf_df <- vroom(input_vcf_file, comment = "#", delim = "\t", col_names = c("CHROM", "START", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "Sample"), show_col_types = FALSE) %>%
   dplyr::mutate(
     vcf_id = str_remove_all(paste(CHROM, "-", START, "-", REF, "-", ALT), " "),
-    vcf_id = str_replace(vcf_id, "chr", ""),
-    # add star annotations to clinVar results table based on filters // ## default version
-    Stars = case_when(
-      str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_single_submitter") ~ "1",
-      str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_multiple_submitters") ~ "2",
-      str_detect(INFO, "CLNREVSTAT\\=reviewed_by_expert_panel") ~ "3",
-      str_detect(INFO, "CLNREVSTAT\\=practice_guideline") ~ "4",
-      str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_conflicting_interpretations") ~ "1NR",
-      str_detect(INFO, "no_assertion|no_interpretation") ~ "0",
-      TRUE ~ NA_character_
-    ),
-    ## extract the calls and put in own column
-    final_call_clinvar = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
+    vcf_id = str_replace(vcf_id, "chr", "")
   )
+
+if (!is.null(input_clinVar_file)) {
+  ## add clinvar table to this (INFO)
+  clinvar_anno_vcf_df <- vroom(input_clinVar_file, comment = "#", delim = "\t", col_names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO"), trim_ws = TRUE, show_col_types = FALSE) %>%
+    # add vcf id column
+    mutate(vcf_id = str_remove_all(paste(CHROM, "-", POS, "-", REF, "-", ALT), " ")) %>%
+    semi_join(vcf_df, by = "vcf_id") %>%
+    dplyr::mutate(
+      vcf_id = str_replace_all(vcf_id, "chr", ""),
+      # add star annotations to clinVar results table based on filters // ## default version
+      Stars = case_when(
+        str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_single_submitter") ~ "1",
+        str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_multiple_submitters") ~ "2",
+        str_detect(INFO, "CLNREVSTAT\\=reviewed_by_expert_panel") ~ "3",
+        str_detect(INFO, "CLNREVSTAT\\=practice_guideline") ~ "4",
+        str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_conflicting_interpretations") ~ "1NR",
+        str_detect(INFO, "no_assertion|no_interpretation") ~ "0",
+        TRUE ~ NA_character_
+      ),
+      ## extract the calls and put in own column
+      final_call_clinvar = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
+    )
+} else {
+  ## add column "vcf_id" to clinVar results in order to cross-reference with intervar and autopvs1 table
+  clinvar_anno_vcf_df <- vcf_df %>%
+    dplyr::mutate(
+      # add star annotations to clinVar results table based on filters // ## default version
+      Stars = case_when(
+        str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_single_submitter") ~ "1",
+        str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_multiple_submitters") ~ "2",
+        str_detect(INFO, "CLNREVSTAT\\=reviewed_by_expert_panel") ~ "3",
+        str_detect(INFO, "CLNREVSTAT\\=practice_guideline") ~ "4",
+        str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_conflicting_interpretations") ~ "1NR",
+        str_detect(INFO, "no_assertion|no_interpretation") ~ "0",
+        TRUE ~ NA_character_
+      ),
+      ## extract the calls and put in own column
+      final_call_clinvar = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
+    )
+}
+
+# ## get latest calls from variant and submission summary files
+# variant_summary_df <- vroom(input_variant_summary, show_col_types = FALSE) %>%
+#   filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id) %>%
+#   dplyr::select(-GeneSymbol)
+#
+# ## filter only those variants that need consensus call and find  call in submission table
+# entries_for_cc <- filter(clinvar_anno_vcf_df, Stars == "1NR", final_call_clinvar != "Benign", final_call_clinvar != "Pathogenic", final_call_clinvar != "Likely_benign", final_call_clinvar != "Likely_pathogenic", final_call_clinvar != "Uncertain_significance")
+#
+# entries_for_cc_in_submission <- inner_join(variant_summary_df, entries_for_cc, by = "vcf_id") %>%
+#   dplyr::mutate(final_call_clinvar = ClinicalSignificance) %>%
+#   dplyr::select(vcf_id, ClinicalSignificance, final_call_clinvar, Stars)
+#
+# ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
+# ## modified: any cases that do NOT have the B, LB, P, LP, VUS call must also go to intervar
+# additional_intervar_cases <- filter(clinvar_anno_vcf_df, final_call_clinvar != "Benign", final_call_clinvar != "Pathogenic", final_call_clinvar != "Likely_benign", final_call_clinvar != "Likely_pathogenic", final_call_clinvar != "Uncertain_significance") %>%
+#   anti_join(entries_for_cc_in_submission, by = "vcf_id")
+#
+#
+# ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
+# entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0" | is.na(Stars), na.rm = TRUE) %>%
+#   bind_rows((additional_intervar_cases)) %>%
+#   distinct()
+#
+# ## get vcf ids that need intervar run
+# vcf_to_run_intervar <- entries_for_intervar$vcf_id
+
+## store variants without clinvar info
+clinvar_anti_join_vcf_df <- anti_join(vcf_df, clinvar_anno_vcf_df, by = "vcf_id") %>%
+  dplyr::mutate(
+    vcf_id = str_replace_all(vcf_id, "chr", ""),
+    CHROM = str_replace_all(CHROM, "chr", "")
+  ) %>%
+  dplyr::rename(rs_id = ID)
 
 ## get latest calls from variant and submission summary files
 variant_summary_df <- vroom(input_variant_summary, show_col_types = FALSE) %>%
-  filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id) %>%
+  filter(vcf_id %in% vcf_df$vcf_id) %>%
   dplyr::select(-GeneSymbol)
 
 ## filter only those variants that need consensus call and find  call in submission table
@@ -141,15 +200,23 @@ entries_for_cc_in_submission <- inner_join(variant_summary_df, entries_for_cc, b
 ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 ## modified: any cases that do NOT have the B, LB, P, LP, VUS call must also go to intervar
 additional_intervar_cases <- filter(clinvar_anno_vcf_df, final_call_clinvar != "Benign", final_call_clinvar != "Pathogenic", final_call_clinvar != "Likely_benign", final_call_clinvar != "Likely_pathogenic", final_call_clinvar != "Uncertain_significance") %>%
-  anti_join(entries_for_cc_in_submission, by = "vcf_id")
+  anti_join(entries_for_cc_in_submission, by = "vcf_id") %>%
+  anti_join(clinvar_anti_join_vcf_df, by = "vcf_id")
 
+if (nrow(clinvar_anti_join_vcf_df) > 0) {
+  clinvar_anti_join_vcf_df <- clinvar_anti_join_vcf_df %>%
+    mutate(
+      QUAL = as.character(QUAL),
+      #  POS = as.double(POS)
+    )
+}
 
 ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
 entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0" | is.na(Stars), na.rm = TRUE) %>%
   bind_rows((additional_intervar_cases)) %>%
+  bind_rows(clinvar_anti_join_vcf_df) %>%
   distinct()
 
-## get vcf ids that need intervar run
 vcf_to_run_intervar <- entries_for_intervar$vcf_id
 
 ## get multianno file to add  correct vcf_id in intervar table
@@ -163,7 +230,6 @@ multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_na
       "100way", "30way", "GTEx"
     ))
   ) %>%
-  dplyr::filter(Otherinfo5 %in% clinvar_anno_vcf_df$START) %>%
   mutate(
     vcf_id = str_remove_all(paste(Chr, "-", Otherinfo5, "-", Otherinfo7, "-", Otherinfo8), " "),
     vcf_id = str_replace(vcf_id, "chr", ""),
@@ -183,7 +249,6 @@ clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws
     -`clinvar: Clinvar`,
     -contains(c("gnomad", "CADD", "Freq", "SCORE", "score", "ORPHA", "MIM", "rmsk", "GERP", "phylo"))
   ) %>%
-  dplyr::filter(Start %in% multianno_df$Start) %>%
   dplyr::mutate(var_id = paste0(`#Chr`, "-", Start, "-", Ref, "-", Alt)) %>%
   distinct(var_id, .keep_all = T) %>%
   # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
@@ -196,7 +261,7 @@ clinvar_anno_intervar_vcf_df <- vroom(input_intervar_file, delim = "\t", trim_ws
 clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
   dplyr::select(any_of(c("Ref.Gene", "InterVar: InterVar and Evidence", "var_id"))) %>%
   left_join(multianno_df, by = "var_id") %>%
-  filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id)
+  filter(vcf_id %in% c(clinvar_anno_vcf_df$vcf_id, entries_for_intervar$vcf_id))
 
 ## populate consensus call variants with intervar info
 entries_for_cc_in_submission_w_intervar <- inner_join(clinvar_anno_intervar_vcf_df, entries_for_cc_in_submission, by = "vcf_id") %>%
@@ -217,7 +282,8 @@ clinvar_anno_intervar_vcf_df <- clinvar_anno_intervar_vcf_df %>%
     evidenceBP = map_dbl(str_match(`InterVar: InterVar and Evidence`, "\\sBP\\=\\[([^]]+)\\]")[, 2], function(x) sum(as.integer(unlist(str_split(x, ",")))[-6]))
   ) %>%
   ## merge dataframe with clinvar_anno_vcf_df above
-  full_join(clinvar_anno_vcf_df, by = "vcf_id")
+  left_join(vcf_df, by = "vcf_id") %>%
+  left_join(clinvar_anno_vcf_df %>% select(-one_of(c("CHROM", "START", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "FORMAT", "Sample", "INFO"))), by = "vcf_id")
 
 
 ## autopvs1 results
@@ -402,10 +468,14 @@ master_tab <- full_join(master_tab, entries_for_cc_in_submission, by = "vcf_id")
     )
   ) %>%
   dplyr::select(
-    -final_call_clinvar.x, -final_call_clinvar.y,
-    -Stars.x, -Stars.y,
-    -Intervar_evidence.x, -Intervar_evidence.y,
-    -INFO, -ClinicalSignificance.x, -ClinicalSignificance.y
+    -any_of(
+      c(
+        "final_call_clinvar.x", "final_call_clinvar.y",
+        "Stars.x", "Stars.y",
+        "Intervar_evidence.x", "Intervar_evidence.y",
+        "INFO", "ClinicalSignificance.x", "ClinicalSignificance.y"
+      )
+    )
   )
 
 ## address ambiguous calls (non L/LB/P/LP/VUS) by taking the InterVar final call
@@ -435,9 +505,11 @@ master_tab <- master_tab %>%
   )) %>%
   dplyr::mutate(sample_id = output_name) %>%
   dplyr::relocate(
-    sample_id, CHROM, START, ID, REF, ALT,
-    final_call, Reasoning_for_call,
-    Stars, ClinVar_ClinicalSignificance, Intervar_evidence
+    any_of(c(
+      "sample_id", "CHROM", "START", "POS", "ID", "REF", "ALT",
+      "final_call", "Reasoning_for_call",
+      "Stars", "ClinVar_ClinicalSignificance", "Intervar_evidence"
+    ))
   )
 
 # write out to file
