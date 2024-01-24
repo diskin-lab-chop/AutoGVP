@@ -61,7 +61,7 @@ option_list <- list(
 
 opt <- parse_args(OptionParser(option_list = option_list))
 
-## get input files from parameters (reqd)
+## get input files from parameters (read)
 input_vcf_file <- opt$vcf
 input_intervar_file <- opt$intervar
 input_autopvs1_file <- opt$autopvs1
