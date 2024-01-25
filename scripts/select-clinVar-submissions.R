@@ -87,14 +87,14 @@ while (grepl("^#", readLines(con, n = 1))) {
 
 # Load submission file while skipping number of lines determined above
 submission_summary_df <- vroom(input_submission_file,
-                               skip = skip_lines, delim = "\t",
-                               col_names = c(
-                                 "VariationID", "ClinicalSignificance", "DateLastEvaluated",
-                                 "Description", "SubmittedPhenotypeInfo", "ReportedPhenotypeInfo",
-                                 "ReviewStatus", "CollectionMethod", "OriginCounts", "Submitter",
-                                 "SCV", "SubmittedGeneSymbol", "ExplanationOfInterpretation"
-                               ),
-                               show_col_types = F
+  skip = skip_lines, delim = "\t",
+  col_names = c(
+    "VariationID", "ClinicalSignificance", "DateLastEvaluated",
+    "Description", "SubmittedPhenotypeInfo", "ReportedPhenotypeInfo",
+    "ReviewStatus", "CollectionMethod", "OriginCounts", "Submitter",
+    "SCV", "SubmittedGeneSymbol", "ExplanationOfInterpretation"
+  ),
+  show_col_types = F
 ) %>%
   # Redefine `DateLastEvaluated`
   dplyr::mutate(
