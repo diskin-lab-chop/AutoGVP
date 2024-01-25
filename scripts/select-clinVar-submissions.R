@@ -49,7 +49,7 @@ option_list <- list(
 
 opt <- parse_args(OptionParser(option_list = option_list))
 
-## get input files from parameters (reqd)
+## get input files from parameters (read)
 input_submission_file <- opt$submission_summary
 input_variant_summary <- opt$variant_summary
 results_dir <- opt$outdir
@@ -77,15 +77,24 @@ variant_summary_df <- vroom(input_variant_summary,
   dplyr::filter(!ReviewStatus %in% c("no assertion provided", "no assertion criteria provided"))
 
 # Load clinVar submission summary file, which reports all submissions for each clinVar variant
+
+# Open the file and read lines until a line without '#' is found
+con <- file(input_submission_file, "r")
+skip_lines <- 0
+while (grepl("^#", readLines(con, n = 1))) {
+  skip_lines <- skip_lines + 1
+}
+
+# Load submission file while skipping number of lines determined above
 submission_summary_df <- vroom(input_submission_file,
-  comment = "#", delim = "\t",
-  col_names = c(
-    "VariationID", "ClinicalSignificance", "DateLastEvaluated",
-    "Description", "SubmittedPhenotypeInfo", "ReportedPhenotypeInfo",
-    "ReviewStatus", "CollectionMethod", "OriginCounts", "Submitter",
-    "SCV", "SubmittedGeneSymbol", "ExplanationOfInterpretation"
-  ),
-  show_col_types = F
+                               skip = skip_lines, delim = "\t",
+                               col_names = c(
+                                 "VariationID", "ClinicalSignificance", "DateLastEvaluated",
+                                 "Description", "SubmittedPhenotypeInfo", "ReportedPhenotypeInfo",
+                                 "ReviewStatus", "CollectionMethod", "OriginCounts", "Submitter",
+                                 "SCV", "SubmittedGeneSymbol", "ExplanationOfInterpretation"
+                               ),
+                               show_col_types = F
 ) %>%
   # Redefine `DateLastEvaluated`
   dplyr::mutate(
