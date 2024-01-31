@@ -59,6 +59,8 @@ CLNSIGCONF	clinvar_conflicting_significance	F
 CLNSIGINCL	clinvar_clinsig_variant	F
 CLNVC	clinvar_variant_type	F
 CLNVCSO	clinvar_sequence_ontology	F
+Origin	clinvar_origin
+OriginSimple	clinvar_origin_simple
 culprit	culprit	F
 ExcessHet	ExcessHet	F
 FS	FS	F
