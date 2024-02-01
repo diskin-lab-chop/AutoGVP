@@ -285,7 +285,8 @@ submission_final_df <- variants_no_conflicts %>%
     "VariationID", "ClinicalSignificance",
     "LastEvaluated", "Description", "SubmittedPhenotypeInfo",
     "ReportedPhenotypeInfo", "ReviewStatus",
-    "SubmittedGeneSymbol", "GeneSymbol", "vcf_id"
+    "SubmittedGeneSymbol", "GeneSymbol", "vcf_id",
+    "Origin", "OriginSimple"
   )))
 
 # extract all variants with conflicting interpretations

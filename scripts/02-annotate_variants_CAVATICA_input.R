@@ -151,32 +151,6 @@ if (!is.null(input_clinVar_file)) {
     )
 }
 
-# ## get latest calls from variant and submission summary files
-# variant_summary_df <- vroom(input_variant_summary, show_col_types = FALSE) %>%
-#   filter(vcf_id %in% clinvar_anno_vcf_df$vcf_id) %>%
-#   dplyr::select(-GeneSymbol)
-#
-# ## filter only those variants that need consensus call and find  call in submission table
-# entries_for_cc <- filter(clinvar_anno_vcf_df, Stars == "1NR", final_call_clinvar != "Benign", final_call_clinvar != "Pathogenic", final_call_clinvar != "Likely_benign", final_call_clinvar != "Likely_pathogenic", final_call_clinvar != "Uncertain_significance")
-#
-# entries_for_cc_in_submission <- inner_join(variant_summary_df, entries_for_cc, by = "vcf_id") %>%
-#   dplyr::mutate(final_call_clinvar = ClinicalSignificance) %>%
-#   dplyr::select(vcf_id, ClinicalSignificance, final_call_clinvar, Stars)
-#
-# ## one Star cases that are “criteria_provided,_single_submitter” that do NOT have the B, LB, P, LP, VUS call must also go to intervar
-# ## modified: any cases that do NOT have the B, LB, P, LP, VUS call must also go to intervar
-# additional_intervar_cases <- filter(clinvar_anno_vcf_df, final_call_clinvar != "Benign", final_call_clinvar != "Pathogenic", final_call_clinvar != "Likely_benign", final_call_clinvar != "Likely_pathogenic", final_call_clinvar != "Uncertain_significance") %>%
-#   anti_join(entries_for_cc_in_submission, by = "vcf_id")
-#
-#
-# ## filter only those variant entries that need an InterVar run (No Star) and add the additional intervar cases from above
-# entries_for_intervar <- filter(clinvar_anno_vcf_df, Stars == "0" | is.na(Stars), na.rm = TRUE) %>%
-#   bind_rows((additional_intervar_cases)) %>%
-#   distinct()
-#
-# ## get vcf ids that need intervar run
-# vcf_to_run_intervar <- entries_for_intervar$vcf_id
-
 ## store variants without clinvar info
 clinvar_anti_join_vcf_df <- anti_join(vcf_df, clinvar_anno_vcf_df, by = "vcf_id") %>%
   dplyr::mutate(
@@ -416,7 +390,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- clinvar_anno_intervar_vcf_df %>%
   full_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|final_call_intervar", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
-  left_join(variant_summary_df[, c("vcf_id", "VariationID", "ClinicalSignificance", "ReviewStatus", "LastEvaluated", "clinvar_flag")], by = "vcf_id") %>%
+  left_join(variant_summary_df[, c("vcf_id", "VariationID", "ClinicalSignificance", "ReviewStatus", "LastEvaluated", "clinvar_flag", "Origin", "OriginSimple")], by = "vcf_id") %>%
   left_join(autopvs1_results, by = "vcf_id")
 
 
