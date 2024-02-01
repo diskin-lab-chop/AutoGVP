@@ -104,7 +104,8 @@ submission_summary_df <- vroom(input_submission_file,
     ),
     VariationID = as.double(VariationID)
   ) %>%
-  dplyr::filter(!ReviewStatus %in% c("no assertion provided", "no assertion criteria provided"))
+  dplyr::filter(!ReviewStatus %in% c("no assertion provided", "no assertion criteria provided"), 
+                ClinicalSignificance %in% c("Pathogenic", "Likely pathogenic", "Benign", "Likely benign", "Uncertain significance"))
 
 # merge submission_summary and variant_summary info
 submission_merged_df <- submission_summary_df %>%
