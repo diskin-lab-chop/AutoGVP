@@ -1,6 +1,8 @@
 # AutoGVP: Automated Germline Variant Pathogenicity
 Jung Kim, Ammar S. Naqvi, Ryan J. Corbett, Rebecca Kaufman, Zalman Vaksman, Miguel A. Brown,  Daniel P. Miller, Zhuangzhuang Geng, Phillip B. Storm, Adam C. Resnick, Douglas R. Stewart, Jo Lynne Rokita, Sharon J. Diskin
 
+**BioRxiv preprint**: [10.1101/2023.11.29.569103](https://doi.org/10.1101/2023.11.29.569103)
+
 ## AutoGVP Workflow  
 <img src="https://github.com/diskin-lab-chop/pathogenicity-assessment/blob/6848a369885fb9e03e75ec82afc97379457c0275/figures/germline-pathogenecity_flow.png" align="center" width = "600">
 
@@ -119,4 +121,4 @@ Ammar S. Naqvi ([@naqvia](https://github.com/naqvia)) and Ryan J. Corbett ([@rjc
 
 ## Contact
 
-For questions, please submit an issue or send an email to Jo Lynne Rokita ([@jharenza](https://github.com/jharenza)): rokita@chop.edu
+For questions, please submit an issue or send an email to Ryan Corbett ([@rjcorb](https://github.com/rjcorb)): corbettr@chop.edu
