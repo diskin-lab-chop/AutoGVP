@@ -51,13 +51,17 @@ AutoGVP Requirements (recommended to place all in the `data/` folder):
 
 ### Custom workflow example run
 1. [Prepare input files](https://github.com/diskin-lab-chop/AutoGVP/wiki/User-Guide#custom-input-workflow---step-by-step) by running VEP, ANNOVAR, InterVar, and AutoPVS1.
-2. Download [database files](https://github.com/diskin-lab-chop/AutoGVP/blob/main/scripts/download_db_files.sh) and run `select-clinVar-submissions.R`. To customize conflicting interpretation resolution, users can provide a ClinGen Concept ID list to filter submissions against (`--conceptID_list`). When a list is provided, users can also determine how unsettled conflicts are resolved with the `--conflict_res` argument (`"latest"` or `"most_severe"`). 
+2. Download [database files](https://github.com/diskin-lab-chop/AutoGVP/blob/main/scripts/download_db_files.sh): 
+```
+bash scripts/download_db_files.sh
+```
+3. Run `select-clinVar-submissions.R`. To customize conflicting interpretation resolution, users can provide a ClinGen Concept ID list to filter submissions against (`--conceptID_list`). When a list is provided, users can also determine how unsettled conflicts are resolved with the `--conflict_res` argument (`"latest"` or `"most_severe"`). 
 For more details, see the [FAQ](https://github.com/diskin-lab-chop/AutoGVP/wiki/FAQ#how-can-i-create-my-own-concept-id-list).
 Example command:
 ```
 Rscript scripts/select-clinVar-submissions.R --variant_summary data/variant_summary.txt.gz --submission_summary data/submission_summary.txt.gz --outdir results --conceptID_list data/clinvar_cpg_concept_ids.txt --conflict_res "latest"
 ```
-3. Run AutoGVP; if output of scripts/select-clinVar-submissions.R is not provided, the script will be run prior to starting pathogenicity assessment
+4. Run AutoGVP; if output of scripts/select-clinVar-submissions.R is not provided, the script will be run prior to starting pathogenicity assessment
 ```r
 bash run_autogvp.sh --workflow="custom" \
 --vcf=data/test_VEP.vcf \
@@ -76,7 +80,11 @@ bash run_autogvp.sh --workflow="custom" \
 ```
 
 ### CAVATICA workflow example run
-1. Run `select-clinVar-submissions.R` (See custom workflow step 2 for optional conflict resolution parameters).
+1. Download [database files](https://github.com/diskin-lab-chop/AutoGVP/blob/main/scripts/download_db_files.sh): 
+```
+bash scripts/download_db_files.sh
+```
+2. Run `select-clinVar-submissions.R` (See custom workflow step 2 for optional conflict resolution parameters).
 For more details, see the [FAQ](https://github.com/diskin-lab-chop/AutoGVP/wiki/FAQ#how-can-i-create-my-own-concept-id-list).
 Example command:
 ```

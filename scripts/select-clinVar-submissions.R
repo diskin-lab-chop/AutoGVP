@@ -16,6 +16,7 @@ suppressPackageStartupMessages({
   library("tidyverse")
   library("optparse")
   library("vroom")
+  library("lubridate")
 })
 
 # Get `magrittr` pipe
@@ -104,14 +105,17 @@ submission_summary_df <- vroom(input_submission_file,
     ),
     VariationID = as.double(VariationID)
   ) %>%
-  dplyr::filter(!ReviewStatus %in% c("no assertion provided", "no assertion criteria provided"))
+  dplyr::filter(
+    !ReviewStatus %in% c("no assertion provided", "no assertion criteria provided"),
+    ClinicalSignificance %in% c("Pathogenic", "Likely pathogenic", "Benign", "Likely benign", "Uncertain significance")
+  )
 
 # merge submission_summary and variant_summary info
 submission_merged_df <- submission_summary_df %>%
   dplyr::rename("LastEvaluated" = DateLastEvaluated) %>%
   left_join(variant_summary_df,
     by = "VariationID",
-    relationship = "many-to-many", suffix = c("_sub", "_var")
+    multiple = "all", suffix = c("_sub", "_var")
   ) %>%
   dplyr::mutate(LastEvaluated = coalesce(LastEvaluated_sub, LastEvaluated_var)) %>%
   dplyr::filter(!is.na(vcf_id))
