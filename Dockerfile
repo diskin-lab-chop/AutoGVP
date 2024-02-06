@@ -24,12 +24,16 @@ RUN wget https://github.com/samtools/bcftools/releases/download/1.17/bcftools-1.
     cd bcftools-1.17 && \
     make && mv /rocker-build/bcftools-1.17/bcftools /bin/.
 
+# install R packages from CRAN
+RUN install2.r \
+    lubridate
+
 # install R packages
 RUN ./install_bioc.r \
     Biobase \
     BiocManager \
     optparse \
     vcfR \
-    vroom
+    vroom 
 
 ADD Dockerfile .
