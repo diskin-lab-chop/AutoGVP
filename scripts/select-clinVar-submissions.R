@@ -16,6 +16,7 @@ suppressPackageStartupMessages({
   library("tidyverse")
   library("optparse")
   library("vroom")
+  library("lubridate")
 })
 
 # Get `magrittr` pipe
@@ -112,7 +113,7 @@ submission_merged_df <- submission_summary_df %>%
   dplyr::rename("LastEvaluated" = DateLastEvaluated) %>%
   left_join(variant_summary_df,
     by = "VariationID",
-    relationship = "many-to-many", suffix = c("_sub", "_var")
+    multiple = "all", suffix = c("_sub", "_var")
   ) %>%
   dplyr::mutate(LastEvaluated = coalesce(LastEvaluated_sub, LastEvaluated_var)) %>%
   dplyr::filter(!is.na(vcf_id))
