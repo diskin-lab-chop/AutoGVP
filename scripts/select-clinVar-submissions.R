@@ -16,6 +16,7 @@ suppressPackageStartupMessages({
   library("tidyverse")
   library("optparse")
   library("vroom")
+  library("lubridate")
 })
 
 # Get `magrittr` pipe
