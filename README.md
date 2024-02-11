@@ -1,4 +1,6 @@
 # AutoGVP: Automated Germline Variant Pathogenicity
+[![DOI](https://zenodo.org/badge/525946788.svg)](https://zenodo.org/doi/10.5281/zenodo.10107711)
+
 Jung Kim, Ammar S. Naqvi, Ryan J. Corbett, Rebecca Kaufman, Zalman Vaksman, Miguel A. Brown,  Daniel P. Miller, Zhuangzhuang Geng, Phillip B. Storm, Adam C. Resnick, Douglas R. Stewart, Jo Lynne Rokita, Sharon J. Diskin
 
 **BioRxiv preprint**: [10.1101/2023.11.29.569103](https://doi.org/10.1101/2023.11.29.569103)
