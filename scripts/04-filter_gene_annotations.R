@@ -143,15 +143,15 @@ merged_df <- autogvp %>%
     TRUE ~ NA_character_
   ))
 
-# Change `gnomad_3_1_1_AF_non_cancer` to numeric, when present
-if ("gnomad_3_1_1_AF_non_cancer" %in% names(merged_df)) {
+# Change `gnomad_3_1_1_AF_non_cancer_popmax` to numeric, when present
+if ("gnomad_3_1_1_AF_non_cancer_popmax" %in% names(merged_df)) {
   merged_df <- merged_df %>%
-    # convert `gnomad_3_1_1_AF_non_cancer` to numeric
-    dplyr::mutate(gnomad_3_1_1_AF_non_cancer = case_when(
-      gnomad_3_1_1_AF_non_cancer == "." ~ "0",
-      TRUE ~ gnomad_3_1_1_AF_non_cancer
+    # convert `gnomad_3_1_1_AF_non_cancer_popmax` to numeric
+    dplyr::mutate(gnomad_3_1_1_AF_non_cancer_popmax = case_when(
+      gnomad_3_1_1_AF_non_cancer_popmax == "." ~ "0",
+      TRUE ~ gnomad_3_1_1_AF_non_cancer_popmax
     )) %>%
-    dplyr::mutate(gnomad_3_1_1_AF_non_cancer = as.numeric(gnomad_3_1_1_AF_non_cancer))
+    dplyr::mutate(gnomad_3_1_1_AF_non_cancer_popmax = as.numeric(gnomad_3_1_1_AF_non_cancer_popmax))
 }
 
 # Reformat HGVSc and HGVSp columns, when present, to remove gene IDs
