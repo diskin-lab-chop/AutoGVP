@@ -176,16 +176,38 @@ if ("HGVSp" %in% names(merged_df)) {
 }
 
 # Define `coacross()` function to coalesce across multiple df columns
-coacross <- function(...) {
-  coalesce(!!!across(.cols = everything()))
+# coacross <- function(...) {
+#   coalesce(!!!across(.cols = everything()))
+# }
+
+split_and_unique <- function(string) {
+  # Split the string by both ";" and ","
+  split_values <- unlist(strsplit(string, "[;,]"))
+  # Return only unique values
+  unique_values <- unique(split_values[!is.na(split_values)])
+  unique_values <- paste(unique_values, collapse = ";")
+  unique_values <- unlist(unique_values)
+
+  return(unique_values)
 }
 
 # Coalesce rsIDs across multiple columns, when present
 id_df <- merged_df %>%
   dplyr::select(any_of(c("ID", "avsnp147", "Existing_variation"))) %>%
-  dplyr::mutate(across(everything(), ~ ifelse(grepl("rs", .x), .x, NA_character_))) %>%
-  dplyr::mutate(variantID = coacross()) %>%
-  dplyr::mutate(variantID = str_replace(variantID, "&", ";")) %>%
+#  dplyr::mutate(across(everything(), ~ ifelse(grepl("rs", .x), .x, NA_character_))) %>%
+#  dplyr::mutate(variantID = coacross()) %>%
+#  dplyr::mutate(variantID = str_replace(variantID, "&", ";")) %>%
+#  dplyr::mutate(variantID = str_replace_all(variantID, "~", ""))
+#  dplyr::mutate(across(everything(), as.character)) %>%
+  dplyr::mutate(across(everything(), ~ ifelse(.x %in% c(".", NA_character_), "", .x))) %>%
+  rowwise() %>%
+  mutate(variantID = glue::glue(paste(c_across(everything()), collapse = ";"))) %>%
+  ungroup() %>%
+  dplyr::mutate(variantID = unlist(lapply(variantID, split_and_unique))) %>%
+  dplyr::mutate(variantID = case_when(
+    variantID == "NA" ~ "", 
+    TRUE ~ variantID
+  )) %>%
   dplyr::mutate(variantID = str_replace_all(variantID, "~", ""))
 
 # Add coalesced rsID to merged_df, and remove other ID columns
