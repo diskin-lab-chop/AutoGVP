@@ -183,13 +183,14 @@ coacross <- function(...) {
 # Coalesce rsIDs across multiple columns, when present
 id_df <- merged_df %>%
   dplyr::select(any_of(c("ID", "avsnp147", "Existing_variation"))) %>%
-  # dplyr::mutate_all(funs(ifelse(grepl("rs", .), ., NA_character_))) %>%
   dplyr::mutate(across(everything(), ~ ifelse(grepl("rs", .x), .x, NA_character_))) %>%
-  dplyr::mutate(rsID = coacross())
+  dplyr::mutate(variantID = coacross()) %>%
+  dplyr::mutate(variantID = str_replace(variantID, "&", ";")) %>%
+  dplyr::mutate(variantID = str_replace_all(variantID, "~", ""))
 
 # Add coalesced rsID to merged_df, and remove other ID columns
 merged_df <- merged_df %>%
-  dplyr::mutate(rsID = id_df$rsID) %>%
+  dplyr::mutate(variantID = id_df$variantID) %>%
   select(-any_of(c("ID", "avsnp147", "Existing_variation")))
 
 # read in output file column names tsv
