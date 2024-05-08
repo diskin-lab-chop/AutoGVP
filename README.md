@@ -1,12 +1,15 @@
 # AutoGVP: Automated Germline Variant Pathogenicity
 [![DOI](https://zenodo.org/badge/525946788.svg)](https://zenodo.org/doi/10.5281/zenodo.10107711)
 
-Jung Kim, Ammar S. Naqvi, Ryan J. Corbett, Rebecca Kaufman, Zalman Vaksman, Miguel A. Brown,  Daniel P. Miller, Zhuangzhuang Geng, Phillip B. Storm, Adam C. Resnick, Douglas R. Stewart, Jo Lynne Rokita, Sharon J. Diskin
+**This work has now been published**: [AutoGVP: a dockerized workflow integrating ClinVar and InterVar germline sequence variant classification.](https://doi.org/10.1093/bioinformatics/btae114)
 
-**BioRxiv preprint**: [10.1101/2023.11.29.569103](https://doi.org/10.1101/2023.11.29.569103)
+Kim J^, Naqvi AS^, Corbett RJ, Kaufman RS, Vaksman Z, Brown MA, Miller DP, Phul S, Geng Z, Storm PB, Resnick AC, Stewart DR, Rokita JL+, Diskin SJ+. AutoGVP: a dockerized workflow integrating ClinVar and InterVar germline sequence variant classification. Bioinformatics. 2024 Mar 4;40(3):btae114. doi: 10.1093/bioinformatics/btae114. PMID: 38426335; PMCID: PMC10955249.
+
+^Equal first authorship 
++Equal senior authorship
 
 ## AutoGVP Workflow  
-<img src="https://github.com/diskin-lab-chop/pathogenicity-assessment/blob/6848a369885fb9e03e75ec82afc97379457c0275/figures/germline-pathogenecity_flow.png" align="center" width = "600">
+<img src="https://github.com/diskin-lab-chop/AutoGVP/blob/main/figures/germline-pathogenecity_flow.png" align="center" width = "600">
 
 For more detailed instructions, please visit the [user guide](https://github.com/diskin-lab-chop/AutoGVP/wiki/User-Guide) on our wiki.
 
