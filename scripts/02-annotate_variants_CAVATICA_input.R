@@ -126,7 +126,7 @@ if (!is.null(input_clinVar_file)) {
         str_detect(INFO, "CLNREVSTAT\\=reviewed_by_expert_panel") ~ "3",
         str_detect(INFO, "CLNREVSTAT\\=practice_guideline") ~ "4",
         str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_conflicting_interpretations|CLNREVSTAT\\=criteria_provided,_conflicting_classifications") ~ "1NR",
-        str_detect(INFO, "no_assertion|no_interpretation") ~ "0",
+        str_detect(INFO, "no_assertion|no_interpretation|no_classification") ~ "0",
         TRUE ~ NA_character_
       ),
       ## extract the calls and put in own column
@@ -143,7 +143,7 @@ if (!is.null(input_clinVar_file)) {
         str_detect(INFO, "CLNREVSTAT\\=reviewed_by_expert_panel") ~ "3",
         str_detect(INFO, "CLNREVSTAT\\=practice_guideline") ~ "4",
         str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_conflicting_interpretations|CLNREVSTAT\\=criteria_provided,_conflicting_classifications") ~ "1NR",
-        str_detect(INFO, "no_assertion|no_interpretation") ~ "0",
+        str_detect(INFO, "no_assertion|no_interpretation|no_classification") ~ "0",
         TRUE ~ NA_character_
       ),
       ## extract the calls and put in own column
