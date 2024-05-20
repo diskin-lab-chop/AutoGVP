@@ -133,11 +133,18 @@ clinvar_anno_vcf_df <- vroom(input_clinVar_file, comment = "#", delim = "\t", co
       str_detect(INFO, "CLNREVSTAT\\=practice_guideline") ~ "4",
       str_detect(INFO, "CLNREVSTAT\\=criteria_provided,_conflicting_interpretations|CLNREVSTAT\\=criteria_provided,_conflicting_classifications") ~ "1NR",
       str_detect(INFO, "no_assertion|no_interpretation|no_classification") ~ "0",
+      str_detect(INFO, "CLNREVSTAT") ~ "Other",
       TRUE ~ NA_character_
     ),
     ## extract the calls and put in own column
     final_call_clinvar = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
   )
+
+if (sum(grepl("Other", clinvar_anno_vcf_df$Stars)) > 0){
+  
+  print("ERROR: there are ClinVar review statuses in data that are not recognized by AutoGVP as aligning with star values.\nPlease check that ClinVar review status values match those presented here: https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/.\nIf no discrepancies exist, please submit an issue through the AutoGVP github here: https://github.com/diskin-lab-chop/AutoGVP/issues")
+  
+}
 
 ## store variants without clinvar info
 clinvar_anti_join_vcf_df <- anti_join(vcf_df, clinvar_anno_vcf_df, by = "vcf_id") %>%
