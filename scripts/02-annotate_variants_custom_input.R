@@ -140,10 +140,8 @@ clinvar_anno_vcf_df <- vroom(input_clinVar_file, comment = "#", delim = "\t", co
     final_call_clinvar = str_match(INFO, "CLNSIG\\=(\\w+)([\\|\\/]\\w+)*\\;")[, 2]
   )
 
-if (sum(grepl("Other", clinvar_anno_vcf_df$Stars)) > 0){
-  
+if (sum(grepl("Other", clinvar_anno_vcf_df$Stars)) > 0) {
   print("ERROR: there are ClinVar review statuses in data that are not recognized by AutoGVP as aligning with star values.\nPlease check that ClinVar review status values match those presented here: https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/.\nIf no discrepancies exist, please submit an issue through the AutoGVP github here: https://github.com/diskin-lab-chop/AutoGVP/issues")
-  
 }
 
 ## store variants without clinvar info

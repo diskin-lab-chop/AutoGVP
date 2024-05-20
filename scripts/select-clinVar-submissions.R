@@ -75,8 +75,10 @@ variant_summary_df <- vroom(input_variant_summary,
       TRUE ~ LastEvaluated
     )
   ) %>%
-  dplyr::filter(!ReviewStatus %in% c("no assertion provided", "no assertion criteria provided",
-                                     "no classification for the individual variant", "no classification provided"))
+  dplyr::filter(!ReviewStatus %in% c(
+    "no assertion provided", "no assertion criteria provided",
+    "no classification for the individual variant", "no classification provided"
+  ))
 
 # Load clinVar submission summary file, which reports all submissions for each clinVar variant
 
@@ -107,8 +109,10 @@ submission_summary_df <- vroom(input_submission_file,
     VariationID = as.double(VariationID)
   ) %>%
   dplyr::filter(
-    !ReviewStatus %in% c("no assertion provided", "no assertion criteria provided",
-                         "no classification provided"),
+    !ReviewStatus %in% c(
+      "no assertion provided", "no assertion criteria provided",
+      "no classification provided"
+    ),
     ClinicalSignificance %in% c("Pathogenic", "Likely pathogenic", "Benign", "Likely benign", "Uncertain significance")
   )
 
