@@ -295,8 +295,10 @@ submission_final_df <- variants_no_conflicts %>%
 
 # extract all variants with conflicting interpretations
 clinvar_conflicting <- variant_summary_df %>%
-  dplyr::filter(ReviewStatus %in% c("criteria provided, conflicting interpretations",
-                                    "criteria provided, conflicting classifications")) %>%
+  dplyr::filter(ReviewStatus %in% c(
+    "criteria provided, conflicting interpretations",
+    "criteria provided, conflicting classifications"
+  )) %>%
   pull(VariationID)
 
 # extract all variants with >= P/LP call
