@@ -75,7 +75,10 @@ variant_summary_df <- vroom(input_variant_summary,
       TRUE ~ LastEvaluated
     )
   ) %>%
-  dplyr::filter(!ReviewStatus %in% c("no assertion provided", "no assertion criteria provided"))
+  dplyr::filter(!ReviewStatus %in% c(
+    "no assertion provided", "no assertion criteria provided",
+    "no classification for the individual variant", "no classification provided"
+  ))
 
 # Load clinVar submission summary file, which reports all submissions for each clinVar variant
 
@@ -106,7 +109,10 @@ submission_summary_df <- vroom(input_submission_file,
     VariationID = as.double(VariationID)
   ) %>%
   dplyr::filter(
-    !ReviewStatus %in% c("no assertion provided", "no assertion criteria provided"),
+    !ReviewStatus %in% c(
+      "no assertion provided", "no assertion criteria provided",
+      "no classification provided"
+    ),
     ClinicalSignificance %in% c("Pathogenic", "Likely pathogenic", "Benign", "Likely benign", "Uncertain significance")
   )
 
@@ -295,7 +301,10 @@ submission_final_df <- variants_no_conflicts %>%
 
 # extract all variants with conflicting interpretations
 clinvar_conflicting <- variant_summary_df %>%
-  dplyr::filter(ReviewStatus == "criteria provided, conflicting interpretations") %>%
+  dplyr::filter(ReviewStatus %in% c(
+    "criteria provided, conflicting interpretations",
+    "criteria provided, conflicting classifications"
+  )) %>%
   pull(VariationID)
 
 # extract all variants with >= P/LP call
