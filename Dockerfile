@@ -1,5 +1,5 @@
 FROM rocker/tidyverse:4.4.0
-LABEL maintainer = "Ryan Corbett (corbettr@chop.edu)"
+LABEL maintainer="Ryan Corbett (rcorbett@childrensnational.org)"
 WORKDIR /rocker-build/
 
 ### Install apt-getable packages to start
@@ -20,7 +20,7 @@ RUN wget https://github.com/samtools/bcftools/releases/download/1.17/bcftools-1.
 
 # Install BiocManager and the desired version of Bioconductor
 RUN R -e "install.packages('BiocManager', dependencies=TRUE)"
-RUN R -e "BiocManager::install(version = '3.19')"
+RUN R -e "BiocManager::install(version = '3.19', ask = FALSE)"
 
 # install R packages
 RUN R -e 'BiocManager::install(c( \
@@ -33,13 +33,15 @@ RUN R -e 'BiocManager::install(c( \
 ))' 
     
 # AutoGVP
-COPY scripts/01-filter_vcf.sh .
-COPY scripts/02-annotate_variants_CAVATICA_input.R .
-COPY scripts/02-annotate_variants_custom_input.R .
-COPY scripts/03-parse_vcf.sh .
-COPY scripts/04-filter_gene_annotations.R .
-COPY scripts/download_db_files.sh .
-COPY scripts/select-clinVar-submissions.R .
-COPY run_autogvp.sh .
+RUN git clone https://github.com/diskin-lab-chop/AutoGVP.git
+
+#COPY scripts/01-filter_vcf.sh .
+#COPY scripts/02-annotate_variants_CAVATICA_input.R .
+#COPY scripts/02-annotate_variants_custom_input.R .
+#COPY scripts/03-parse_vcf.sh .
+#COPY scripts/04-filter_gene_annotations.R .
+#COPY scripts/download_db_files.sh .
+#COPY scripts/select-clinVar-submissions.R .
+#COPY run_autogvp.sh .
 
 ADD Dockerfile .
