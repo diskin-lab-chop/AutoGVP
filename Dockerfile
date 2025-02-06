@@ -35,13 +35,4 @@ RUN R -e 'BiocManager::install(c( \
 # AutoGVP
 RUN git clone https://github.com/diskin-lab-chop/AutoGVP.git
 
-#COPY scripts/01-filter_vcf.sh .
-#COPY scripts/02-annotate_variants_CAVATICA_input.R .
-#COPY scripts/02-annotate_variants_custom_input.R .
-#COPY scripts/03-parse_vcf.sh .
-#COPY scripts/04-filter_gene_annotations.R .
-#COPY scripts/download_db_files.sh .
-#COPY scripts/select-clinVar-submissions.R .
-#COPY run_autogvp.sh .
-
 ADD Dockerfile .
