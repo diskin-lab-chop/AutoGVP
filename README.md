@@ -21,7 +21,7 @@ git clone git@github.com:diskin-lab-chop/AutoGVP.git
 ## Docker set-up
 1. Pull the docker image.
 ```bash
-docker pull pgc-images.sbgenomics.com/diskin-lab/autogvp:v1.0.1
+docker pull pgc-images.sbgenomics.com/diskin-lab/autogvp:v1.0.2
 ```
 2. Navigate to the `AutoGVP` root directory
 ```bash
@@ -29,7 +29,7 @@ cd AutoGVP
 ```   
 3. Start a docker image. Replace <CONTAINER_NAME> with any name and run the commands below:
 ```bash
-docker run --platform linux/amd64 --name <CONTAINER_NAME> -d -v $PWD:/home/rstudio/AutoGVP pgc-images.sbgenomics.com/diskin-lab/autogvp:v1.0.1
+docker run --platform linux/amd64 --name <CONTAINER_NAME> -d -v $PWD:/home/rstudio/AutoGVP pgc-images.sbgenomics.com/diskin-lab/autogvp:v1.0.2
 docker exec -ti <CONTAINER_NAME> bash
 ```
 4. Navigate to AutoGVP directory within the docker image
@@ -134,4 +134,4 @@ Ammar S. Naqvi ([@naqvia](https://github.com/naqvia)) and Ryan J. Corbett ([@rjc
 
 ## Contact
 
-For questions, please submit an issue or send an email to Ryan Corbett ([@rjcorb](https://github.com/rjcorb)): corbettr@chop.edu
+For questions, please submit an issue
