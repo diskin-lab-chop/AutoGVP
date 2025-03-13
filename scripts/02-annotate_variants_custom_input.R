@@ -1,12 +1,12 @@
 ################################################################################
-# 01-annotate_variants_custom_input.R
+# 02-annotate_variants_custom_input.R
 # written by Ammar Naqvi & refactored by Saksham Phul
 #
 # This script annotates variants based on clinVar and integrates a modified
 # version of InterVar that involves adjustments of calls based on ACMG-AMP
 # guidelines
 #
-# usage: Rscript 01-annotate_variants_custom_input.R --vcf <VEP annotated vcf file>
+# usage: Rscript 02-annotate_variants_custom_input.R --vcf <VEP annotated vcf file>
 #                                       --intervar <intervar file>
 #                                       --autopvs1 <autopvs1 file>
 #                                       --multianno <multianno file>
@@ -111,8 +111,15 @@ address_ambiguous_calls <- function(results_tab_abridged) { ## address ambiguous
   return(results_tab_abridged)
 }
 
+# Open vcf and read lines until a line without '#' is found
+con <- file(input_vcf_file, "r")
+skip_lines <- 0
+while (grepl("^#", readLines(con, n = 1))) {
+  skip_lines <- skip_lines + 1
+}
+
 ## make vcf dataframe and add vcf_if column
-vcf_df <- vroom(input_vcf_file, comment = "#", delim = "\t", col_names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "Sample"), trim_ws = TRUE, show_col_types = FALSE) %>%
+vcf_df <- vroom(input_vcf_file, skip = skip_lines, delim = "\t", col_names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "Sample"), trim_ws = TRUE, show_col_types = FALSE) %>%
   mutate(
     vcf_id = str_remove_all(paste(CHROM, "-", POS, "-", REF, "-", ALT), " "),
     vcf_id = str_replace_all(vcf_id, "chr", "")
