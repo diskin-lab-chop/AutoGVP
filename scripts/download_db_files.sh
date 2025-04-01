@@ -4,8 +4,8 @@ set -e
 set -o pipefail
 
 # Use the OpenAUTOGVP bucket as the default.
-URL=${AUTOGVP_URL:-https://s3.amazonaws.com/d3b-openaccess-us-east-1-prd-pbta/autogvp}
-RELEASE=${AUTOGVP_RELEASE:-v20230720}
+URL=${AUTOGVP_URL:-https://bti-openaccess-us-east-1-prd-rokita-lab.s3.us-east-1.amazonaws.com/autogvp}
+RELEASE=${AUTOGVP_RELEASE:-v2}
 
 # Set the working directory to the directory of this file
 cd "$(dirname "${BASH_SOURCE[0]}")"

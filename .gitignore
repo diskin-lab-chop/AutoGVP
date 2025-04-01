@@ -8,5 +8,5 @@ data/submission_summary.txt.gz
 data/variant_summary.txt.gz
 data/md5sum.txt
 data/ClinVar-selected-submissions.tsv
-
+data/release-notes.md
 
