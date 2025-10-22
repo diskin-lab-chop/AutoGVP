@@ -63,6 +63,10 @@ option_list <- list(
   make_option(c("--outdir"),
     type = "character", default = "../results",
     help = "output directory"
+  ),
+  make_option(c("--sample_id"),
+    type = "character",
+    help = "input sample bioassay id"
   )
 )
 
@@ -79,6 +83,7 @@ input_multianno_file <- opt$multianno
 summary_level <- opt$summary_level
 output_name <- opt$output
 results_dir <- opt$outdir
+sample_name <- opt$sample_id
 
 # create results directory if it does not exist
 if (!dir.exists(results_dir)) {
@@ -469,7 +474,7 @@ master_tab <- master_tab %>%
     Reasoning_for_call == "ClinVar" ~ final_call,
     TRUE ~ str_replace(ClinVar_ClinicalSignificance, " ", "_")
   )) %>%
-  dplyr::mutate(sample_id = output_name) %>%
+  dplyr::mutate(sample_id = sample_name) %>%
   dplyr::relocate(any_of(c(
     "sample_id", "CHROM", "POS", "START", "ID", "REF", "ALT",
     "final_call", "Reasoning_for_call",
