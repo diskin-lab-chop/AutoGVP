@@ -23,11 +23,6 @@ suppressPackageStartupMessages({
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
-# set up directories
-# root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-# input_dir <- file.path(root_dir, "data")
-
-
 # parse parameters
 option_list <- list(
   make_option(c("--vcf"),
@@ -46,9 +41,13 @@ option_list <- list(
     type = "character", default = "results",
     help = "output directory"
   ),
-  make_option(c("--colnames"),
-    type = "character", default = "data/output_colnames.tsv",
-    help = "file listing output colnames"
+  make_option(c("--default_colnames"),
+    type = "character", default = "data/output_colnames_default.tsv",
+    help = "default output colnames"
+  ),
+  make_option(c("--custom_colnames"),
+    type = "character", default = NULL,
+    help = "user-defined output colnames"
   )
 )
 
@@ -59,7 +58,8 @@ input_vcf_file <- opt$vcf
 input_autogvp_file <- opt$autogvp
 output_name <- opt$output
 results_dir <- opt$outdir
-output_colnames_file <- opt$colnames
+default_colnames_file <- opt$default_colnames
+custom_colnames_file <- opt$custom_colnames
 
 # create results directory if it does not exist
 if (!dir.exists(results_dir)) {
@@ -175,11 +175,6 @@ if ("HGVSp" %in% names(merged_df)) {
     )
 }
 
-# Define `coacross()` function to coalesce across multiple df columns
-# coacross <- function(...) {
-#   coalesce(!!!across(.cols = everything()))
-# }
-
 split_and_unique <- function(string) {
   # Split the string by both ";" and ","
   split_values <- unlist(strsplit(string, "[;,]"))
@@ -211,10 +206,28 @@ merged_df <- merged_df %>%
   dplyr::mutate(variantID = id_df$variantID) %>%
   select(-any_of(c("ID", "avsnp147", "Existing_variation")))
 
-# read in output file column names tsv
-colnames <- read_tsv(output_colnames_file,
+# read in default output column names tsv
+default_colnames <- read_tsv(default_colnames_file,
   show_col_types = FALSE
 )
+
+# if custom output colnames provided, append to default colnames
+if (!is.null(custom_colnames_file)) {
+  custom_colnames <- read_tsv(custom_colnames_file,
+    show_col_types = FALSE
+  )
+
+  if (length(names(custom_colnames)) != 3 & all(names(custom_colnames) != c("Column_name", "Rename", "Abridged"))) {
+    stop("Error: custom_colnames should contain three columns with names 'Column_name', 'Rename', 'Abridged')")
+  }
+
+  colnames <- default_colnames %>%
+    # remove col_name from default if also in custom to ensure abridged status is defined by user
+    dplyr::filter(!Column_name %in% custom_colnames$Column_name) %>%
+    bind_rows(custom_colnames)
+} else {
+  colnames <- default_colnames
+}
 
 # Subset and reorder output columns based on inclusion and order in `colnames`
 merged_df <- merged_df %>%

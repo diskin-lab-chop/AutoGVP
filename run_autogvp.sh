@@ -71,6 +71,10 @@ while [ $# -gt 0 ]; do
       if [[ "$1" != *=* ]]; then shift; fi
       conflict_res="${1#*=}"
       ;;
+    --custom_output_cols*)
+      if [[ "$1" != *=* ]]; then shift; fi
+      custom_output_cols="${1#*=}"
+      ;;
     --help|-h)
         echo "Usage: $0 [-w/--workflow] [-v/--vcf <*.vcf*>] [-f/--filter_criteria=<criteria>] [-c/--clinvar <*.vcf>] [-i/--intervar <*.txt.intervar>] [-a/--autopvs1 <*autopvs1*>] [-m/--multianno <*multianno*>] [-o/--out <output>]"
         echo ""
@@ -78,17 +82,18 @@ while [ $# -gt 0 ]; do
         echo "  -w/--workflow                     workflow"
         echo "  -v/--vcf                          VCF file"
         echo "  -f/--filter_criteria              VCF filtering criteria"
-        echo "  -c/--clinvar                      clinvar file"
-        echo "  -i/--intervar                     intervar results file"
-        echo "  -a/--autopvs1                     autopvs1 results file"
-        echo "  -m/--multianno                    multianno file"
+        echo "  -c/--clinvar                      ClinVar file"
+        echo "  -i/--intervar                     Intervar results file"
+        echo "  -a/--autopvs1                     Autopvs1 results file"
+        echo "  -m/--multianno                    ANNOVAR file"
         echo "  -O/--outdir                       output directory"
         echo "  -o/--out                          output prefix"
-        echo "  --selected_clinvar_submissions    clinvar variant file with conflicts resolved"
+        echo "  --selected_clinvar_submissions    ClinVar variant file with conflicts resolved"
         echo "  --variant_summary                 ClinVar variant summary file"
         echo "  --submission_summary              ClinVar submission summary file"
         echo "  --conceptIDs                      list of conceptIDs to prioritize submissions for clinvar variant conflict resolution. Will be ignored if selected_clinvar_submissions is provided"
         echo "  --conflict_res                    how to resolve conflicts associated with conceptIDs. Will be ignored if selected_clinvar_submissions is provided or if conceptIDs are not provided"
+        echo "  --custom_output_cols              optional; text file of user-defined column names from VCF info fields or other input file to be included in AutoGVP output files. Must contain three columns named 'Column_name', 'Rename' (i.e., what to rename colum in final output), and 'Abridged' (T or F indicating if column should be included in abridged output)"
         echo "  -h/--help                         Display usage information"
             exit 0
       ;;
@@ -238,7 +243,25 @@ vcf_parsed_file=${autogvp_input%.vcf*}."parsed.tsv"
 # Filter VCF VEP gene/transcript annotations and merge data with AutoGVP output
 echo "Filtering VEP annotations and creating final output..."
 
-Rscript $BASEDIR/scripts/04-filter_gene_annotations.R --vcf $vcf_parsed_file --autogvp $autogvp_output --output $out_file --outdir $out_dir --colnames $BASEDIR/data/output_colnames.tsv
+  # check if custom colnames file is provided
+  if [[ -f $custom_output_cols ]] ; then
+
+  Rscript $BASEDIR/scripts/04-filter_gene_annotations.R --vcf $vcf_parsed_file \
+  --autogvp $autogvp_output \
+  --output $out_file \
+  --outdir $out_dir \
+  --default_colnames $BASEDIR/data/output_colnames_default.tsv \
+  --custom_colnames $custom_output_cols
+
+  else 
+
+  Rscript $BASEDIR/scripts/04-filter_gene_annotations.R --vcf $vcf_parsed_file \
+  --autogvp $autogvp_output \
+  --output $out_file \
+  --outdir $out_dir \
+  --default_colnames $BASEDIR/data/output_colnames_default.tsv
+
+  fi
 
 # Remove intermediate files
 rm $autogvp_input $vcf_parsed_file $autogvp_output $out_dir/$out_file.filtered_csq_subfields.tsv $out_dir/${out_file}_multianno_filtered.txt $out_dir/${out_file}_autopvs1_filtered.tsv $out_dir/${out_file}_intervar_filtered.txt
