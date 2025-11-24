@@ -126,7 +126,7 @@ autogvp <- read_tsv(input_autogvp_file,
 # Parse Sample column, if present
 if ("Sample" %in% names(autogvp)) {
   
-  # write function to parse SAMPLE format fields based on 
+  # write function to parse SAMPLE format fields based on values in each row
   parse_sample <- function(fmt, smp) {
     ff <- strsplit(fmt, ":")[[1]]
     sv <- strsplit(smp, ":")[[1]]
@@ -137,10 +137,12 @@ if ("Sample" %in% names(autogvp)) {
     as.data.frame(res)
   }
   
+  # apply function row-wise
   autogvp_expanded <- dplyr::bind_rows(
     purrr::map2(autogvp$FORMAT, autogvp$Sample, parse_sample)
   )
   
+  # merge parsed fields with autogvp df and expand AD column
   autogvp <- bind_cols(autogvp, autogvp_expanded) %>%
     tidyr::separate_wider_delim(AD, delim = ",", names = c("AD_ref", "AD_alt"), too_many = "drop")
   
