@@ -125,9 +125,25 @@ autogvp <- read_tsv(input_autogvp_file,
 
 # Parse Sample column, if present
 if ("Sample" %in% names(autogvp)) {
-  autogvp <- autogvp %>%
-    tidyr::separate_wider_delim(Sample, delim = ":", names = c("GT", "AD", "DP", "GQ"), too_many = "drop") %>%
+  
+  # write function to parse SAMPLE format fields based on 
+  parse_sample <- function(fmt, smp) {
+    ff <- strsplit(fmt, ":")[[1]]
+    sv <- strsplit(smp, ":")[[1]]
+    res <- setNames(as.list(sv), ff)
+    # pad missing fields with NA
+    missing <- setdiff(ff, names(res))
+    res[missing] <- NA
+    as.data.frame(res)
+  }
+  
+  autogvp_expanded <- dplyr::bind_rows(
+    purrr::map2(autogvp$FORMAT, autogvp$Sample, parse_sample)
+  )
+  
+  autogvp <- bind_cols(autogvp, autogvp_expanded) %>%
     tidyr::separate_wider_delim(AD, delim = ",", names = c("AD_ref", "AD_alt"), too_many = "drop")
+  
 }
 
 # Merge `autogvp` and `vcf_final`
