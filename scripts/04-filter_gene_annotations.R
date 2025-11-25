@@ -26,28 +26,28 @@ suppressPackageStartupMessages({
 # parse parameters
 option_list <- list(
   make_option(c("--vcf"),
-    type = "character",
-    help = "Input filtered and parsed VEP VCF file"
+              type = "character",
+              help = "Input filtered and parsed VEP VCF file"
   ),
   make_option(c("--autogvp"),
-    type = "character",
-    help = "input AutoGVP annotated file"
+              type = "character",
+              help = "input AutoGVP annotated file"
   ),
   make_option(c("--output"),
-    type = "character", default = "out",
-    help = "output name"
+              type = "character", default = "out",
+              help = "output name"
   ),
   make_option(c("--outdir"),
-    type = "character", default = "results",
-    help = "output directory"
+              type = "character", default = "results",
+              help = "output directory"
   ),
   make_option(c("--default_colnames"),
-    type = "character", default = "data/output_colnames_default.tsv",
-    help = "default output colnames"
+              type = "character", default = "data/output_colnames_default.tsv",
+              help = "default output colnames"
   ),
   make_option(c("--custom_colnames"),
-    type = "character", default = NULL,
-    help = "user-defined output colnames"
+              type = "character", default = NULL,
+              help = "user-defined output colnames"
   )
 )
 
@@ -75,8 +75,8 @@ csq_fields <- file.path(results_dir, glue::glue("{output_name}.filtered_csq_subf
 
 # Read in VEP vcf file
 vcf <- read_tsv(input_vcf_file,
-  show_col_types = FALSE,
-  guess_max = 10000
+                show_col_types = FALSE,
+                guess_max = 10000
 )
 
 # Remove "[#]" characters from column headers, if present
@@ -119,12 +119,13 @@ vcf_separated <- vcf %>%
 
 # Read in autogvp output
 autogvp <- read_tsv(input_autogvp_file,
-  show_col_types = FALSE,
-  guess_max = 10000
+                    show_col_types = FALSE,
+                    guess_max = 10000
 )
 
 # Parse Sample column, if present
 if ("Sample" %in% names(autogvp)) {
+  
   # write function to parse SAMPLE format fields based on values in each row
   parse_sample <- function(fmt, smp) {
     ff <- strsplit(fmt, ":")[[1]]
@@ -135,15 +136,16 @@ if ("Sample" %in% names(autogvp)) {
     res[missing] <- NA
     as.data.frame(res)
   }
-
+  
   # apply function row-wise
   autogvp_expanded <- dplyr::bind_rows(
     purrr::map2(autogvp$FORMAT, autogvp$Sample, parse_sample)
   )
-
+  
   # merge parsed fields with autogvp df and expand AD column
   autogvp <- bind_cols(autogvp, autogvp_expanded) %>%
     tidyr::separate_wider_delim(AD, delim = ",", names = c("AD_ref", "AD_alt"), too_many = "drop")
+  
 }
 
 # Merge `autogvp` and `vcf_final`
@@ -180,15 +182,19 @@ if ("HGVSc" %in% names(merged_df)) {
 }
 
 if ("HGVSp" %in% names(merged_df)) {
+  
   merged_df <- merged_df %>%
     # rm ensembl transcript/protein IDs from HGVSp columns
     dplyr::mutate(
-      HGVSp = str_split(HGVSp, ":", simplify = T)[, 2],
-    ) %>%
+      HGVSp = case_when(
+        grepl(":", HGVSp) ~ str_split(HGVSp, ":", simplify = T)[, 2],
+        TRUE ~ HGVSp
+      )) %>%
     # replace `%3D` symbol with `=` in synonymous variant HGVSp
     dplyr::mutate(
       HGVSp = str_replace(HGVSp, "%3D", "=")
     )
+  
 }
 
 split_and_unique <- function(string) {
@@ -198,7 +204,7 @@ split_and_unique <- function(string) {
   unique_values <- unique(split_values[!is.na(split_values)])
   unique_values <- paste(unique_values, collapse = ";")
   unique_values <- unlist(unique_values)
-
+  
   return(unique_values)
 }
 
@@ -224,25 +230,30 @@ merged_df <- merged_df %>%
 
 # read in default output column names tsv
 default_colnames <- read_tsv(default_colnames_file,
-  show_col_types = FALSE
+                             show_col_types = FALSE
 )
 
 # if custom output colnames provided, append to default colnames
 if (!is.null(custom_colnames_file)) {
+  
   custom_colnames <- read_tsv(custom_colnames_file,
-    show_col_types = FALSE
-  )
-
-  if (length(names(custom_colnames)) != 3 & all(names(custom_colnames) != c("Column_name", "Rename", "Abridged"))) {
+                              show_col_types = FALSE)
+  
+  if (length(names(custom_colnames)) != 3 & all(names(custom_colnames) != c("Column_name", "Rename", "Abridged"))){
+    
     stop("Error: custom_colnames should contain three columns with names 'Column_name', 'Rename', 'Abridged')")
+    
   }
-
+  
   colnames <- default_colnames %>%
-    # remove col_name from default if also in custom to ensure abridged status is defined by user
+    # remove col_name from default if also in custom to ensure abridged status is defined by user 
     dplyr::filter(!Column_name %in% custom_colnames$Column_name) %>%
     bind_rows(custom_colnames)
+  
 } else {
+  
   colnames <- default_colnames
+  
 }
 
 # Subset and reorder output columns based on inclusion and order in `colnames`
