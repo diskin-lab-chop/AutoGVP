@@ -46,8 +46,8 @@ option_list <- list(
               help = "default output colnames"
   ),
   make_option(c("--custom_colnames"),
-              type = "character", default = NULL,
-              help = "user-defined output colnames"
+    type = "character", default = NULL,
+    help = "user-defined output colnames"
   )
 )
 
@@ -230,30 +230,26 @@ merged_df <- merged_df %>%
 
 # read in default output column names tsv
 default_colnames <- read_tsv(default_colnames_file,
-                             show_col_types = FALSE
+  show_col_types = FALSE
 )
 
 # if custom output colnames provided, append to default colnames
 if (!is.null(custom_colnames_file)) {
-  
   custom_colnames <- read_tsv(custom_colnames_file,
-                              show_col_types = FALSE)
-  
-  if (length(names(custom_colnames)) != 3 & all(names(custom_colnames) != c("Column_name", "Rename", "Abridged"))){
-    
+    show_col_types = FALSE
+  )
+
+  if (length(names(custom_colnames)) != 3 & all(names(custom_colnames) != c("Column_name", "Rename", "Abridged"))) {
     stop("Error: custom_colnames should contain three columns with names 'Column_name', 'Rename', 'Abridged')")
-    
   }
-  
+
   colnames <- default_colnames %>%
-    # remove col_name from default if also in custom to ensure abridged status is defined by user 
+    # remove col_name from default if also in custom to ensure abridged status is defined by user
     dplyr::filter(!Column_name %in% custom_colnames$Column_name) %>%
     bind_rows(custom_colnames)
   
 } else {
-  
   colnames <- default_colnames
-  
 }
 
 # Subset and reorder output columns based on inclusion and order in `colnames`
