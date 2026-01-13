@@ -6,6 +6,7 @@ set -o pipefail
 # Use the OpenAUTOGVP bucket as the default.
 URL=${AUTOGVP_URL:-https://bti-openaccess-us-east-1-prd-rokita-lab.s3.us-east-1.amazonaws.com/autogvp}
 RELEASE=${AUTOGVP_RELEASE:-v3}
+CLINVAR_DATE="20260104"
 
 # Set the working directory to the directory of this file
 cd "$(dirname "${BASH_SOURCE[0]}")"
@@ -28,4 +29,12 @@ done
 cd $BASEDIR/../data
 echo "Checking MD5 hashes..."
 md5sum -c md5sum.txt
+
+echo "Renaming ClinVar files with source date"
+for file in "${FILES[@]}"
+do
+  filename="${file/./_${CLINVAR_DATE}.}"
+  mv -- "$file" "$filename"
+done
+
 cd $BASEDIR
