@@ -1,13 +1,13 @@
 ################################################################################
 # select-clinVar-submissions.R
-# written by Ryan Corbett
+# written by Ryan Corbett, Patricia Sullivan
 #
-# This script selects unique clinVar variant submission calls based on a list of
+# This script selects unique ClinVar variant submission calls based on a list of
 # predetermined criteria, to be used in AutoGVP for ClinVar variants that need
 # resolving due to conflicting calls
 #
 # usage: select-clinVar-submissions.R --variant_summary <variant file>
-#                                       --submission_summary <submission file>
+#                                     --submission_summary <submission file>
 #
 # NOTE: this script must be run BEFORE running run_autogvp.sh
 ################################################################################
@@ -57,14 +57,20 @@ results_dir <- opt$outdir
 conceptID_file <- opt$conceptID_list
 conflict_res <- opt$conflict_res
 
-## load variant summary file, which reports latest clinVar consensus calls for each variant
+## load variant summary file, which reports latest ClinVar consensus calls for each variant
 variant_summary_df <- vroom(input_variant_summary,
-  delim = "\t",
-  col_types = c(ReferenceAlleleVCF = "c", AlternateAlleleVCF = "c", PositionVCF = "i", VariationID = "n"),
-  show_col_types = FALSE
-) %>%
-  # retain only variants mapped to hg38
-  dplyr::filter(Assembly == "GRCh38" & ReferenceAlleleVCF != "na" & AlternateAlleleVCF != "na") %>%
+    delim = "\t",
+    col_types = c(ReferenceAlleleVCF = "c", AlternateAlleleVCF = "c", PositionVCF = "i", VariationID = "n"),
+    show_col_types = FALSE
+  ) %>%
+  dplyr::rename(
+    AlleleID = dplyr::any_of(c("AlleleID", "#AlleleID"))
+  ) %>%
+  dplyr::filter(
+    Assembly == "GRCh38", # retain only variants mapped to hg38
+    ReferenceAlleleVCF != "na",
+    AlternateAlleleVCF != "na"
+  ) %>%
   # add vcf id column
   dplyr::mutate(
     vcf_id = str_remove_all(paste(Chromosome, "-", PositionVCF, "-", ReferenceAlleleVCF, "-", AlternateAlleleVCF), " "),
@@ -76,30 +82,69 @@ variant_summary_df <- vroom(input_variant_summary,
     )
   ) %>%
   dplyr::filter(!ReviewStatus %in% c(
-    "no assertion provided", "no assertion criteria provided",
-    "no classification for the individual variant", "no classification provided"
+    "no assertion provided",
+    "no assertion criteria provided",
+    "no classification for the individual variant", 
+    "no classification provided",
+    "no classification for the single variant",
+    "no classifications from unflagged records"
   ))
 
-# Load clinVar submission summary file, which reports all submissions for each clinVar variant
+
+# Load ClinVar submission summary file, which reports all submissions for each ClinVar variant
 
 # Open the file and read lines until a line without '#' is found
 con <- file(input_submission_file, "r")
-skip_lines <- 0
+skip_lines <- -1 # keep last line for column names
 while (grepl("^#", readLines(con, n = 1))) {
   skip_lines <- skip_lines + 1
 }
 
 # Load submission file while skipping number of lines determined above
 submission_summary_df <- vroom(input_submission_file,
-  skip = skip_lines, delim = "\t",
-  col_names = c(
-    "VariationID", "ClinicalSignificance", "DateLastEvaluated",
-    "Description", "SubmittedPhenotypeInfo", "ReportedPhenotypeInfo",
-    "ReviewStatus", "CollectionMethod", "OriginCounts", "Submitter",
-    "SCV", "SubmittedGeneSymbol", "ExplanationOfInterpretation"
-  ),
-  show_col_types = F
-) %>%
+    skip = skip_lines, 
+    delim = "\t",
+    show_col_types = F
+  ) %>% 
+  dplyr::rename(
+    VariationID = dplyr::any_of(c("VariationID", "#VariationID"))
+  )
+
+# Define columns to check the presence of
+required_cols <- c(
+  "VariationID",
+  "ClinicalSignificance",
+  "DateLastEvaluated",
+  "ReviewStatus"
+)
+
+# Columns present in submissions file as of 01 2026
+#  "#VariationID", "ClinicalSignificance", "DateLastEvaluated",
+#  "Description", "SubmittedPhenotypeInfo", "ReportedPhenotypeInfo",
+#  "ReviewStatus", "CollectionMethod", "OriginCounts", "Submitter",
+#  "SCV", "SubmittedGeneSymbol", "ExplanationOfInterpretation",
+#  "SomaticClinicalImpact",	"Oncogenicity",	"ContributesToAggregateClassification"
+
+missing_cols <- setdiff(required_cols, names(submission_summary_df))
+if (length(missing_cols) > 0) {
+  stop(
+    paste(
+      "Required column(s) missing from ClinVar submission summary file:",
+      paste(missing_cols, collapse = ", ")
+    ),
+    call. = FALSE
+  )
+}
+
+if (!"ContributesToAggregateClassification" %in% names(submission_summary_df)) {
+  message(
+    "Note: 'ContributesToAggregateClassification' column not found.",
+    "This is likely an older ClinVar submission file.",
+    "Proceeding without aggregate classification filtering."
+  )
+}
+
+submission_summary_df <- submission_summary_df %>%
   # Redefine `DateLastEvaluated`
   dplyr::mutate(
     DateLastEvaluated = case_when(
@@ -110,10 +155,24 @@ submission_summary_df <- vroom(input_submission_file,
   ) %>%
   dplyr::filter(
     !ReviewStatus %in% c(
-      "no assertion provided", "no assertion criteria provided",
-      "no classification provided"
+      "no assertion provided", 
+      "no assertion criteria provided",
+      "no classification provided", 
+      "flagged submission"
     ),
-    ClinicalSignificance %in% c("Pathogenic", "Likely pathogenic", "Benign", "Likely benign", "Uncertain significance")
+    ClinicalSignificance %in% c(
+      "Pathogenic", 
+      "Likely pathogenic", 
+      "Benign", 
+      "Likely benign", 
+      "Uncertain significance"
+    ),
+    # Filter on contributing records if this column is present in supplied file
+    if ("ContributesToAggregateClassification" %in% names(.)) {
+      ContributesToAggregateClassification == "yes"
+    } else {
+      TRUE
+    }
   )
 
 # merge submission_summary and variant_summary info
@@ -121,7 +180,9 @@ submission_merged_df <- submission_summary_df %>%
   dplyr::rename("LastEvaluated" = DateLastEvaluated) %>%
   left_join(variant_summary_df,
     by = "VariationID",
-    multiple = "all", suffix = c("_sub", "_var")
+    multiple = "all", 
+    suffix = c("_sub", "_var"),
+    relationship = "many-to-many"
   ) %>%
   dplyr::mutate(LastEvaluated = coalesce(LastEvaluated_sub, LastEvaluated_var)) %>%
   dplyr::filter(!is.na(vcf_id))
@@ -129,18 +190,25 @@ submission_merged_df <- submission_summary_df %>%
 # Extract submissions that match variant consensus call and are 2+ stars
 variants_no_conflict_expert <- submission_merged_df %>%
   filter(ReviewStatus_var %in% c(
-    "practice guideline", "reviewed by expert panel",
-    "criteria provided, multiple submitters, no conflicts"
+    "practice guideline", # 4 stars
+    "reviewed by expert panel", # 3 stars
+    "criteria provided, multiple submitters, no conflicts" # 2 stars
   )) %>%
-  dplyr::arrange(desc(mdy(LastEvaluated_sub))) %>%
+  dplyr::arrange(desc(mdy(LastEvaluated))) %>%
   distinct(VariationID, .keep_all = T) %>%
   arrange(VariationID)
 
 # Identify VariationIDs with no ClinSig conflicts between variant and submission summary at date last evaluated
 variants_no_conflicts <- submission_merged_df %>%
   dplyr::filter(!VariationID %in% variants_no_conflict_expert$VariationID) %>%
-  dplyr::filter(ClinicalSignificance_sub == ClinicalSignificance_var | is.na(ClinicalSignificance_var) | (grepl("Pathogenic|Likely pathogenic", ClinicalSignificance_sub) & grepl("Pathogenic|Likely pathogenic", ClinicalSignificance_var)) | (grepl("Benign|Likely benign", ClinicalSignificance_sub) & grepl("Benign|Likely benign", ClinicalSignificance_var)) | (grepl("Uncertain significance", ClinicalSignificance_sub) & grepl("Uncertain significance", ClinicalSignificance_var))) %>%
-  dplyr::arrange(desc(mdy(LastEvaluated_sub))) %>%
+  dplyr::filter(
+    ClinicalSignificance_sub == ClinicalSignificance_var | 
+    is.na(ClinicalSignificance_var) | 
+    (grepl("Pathogenic|Likely pathogenic", ClinicalSignificance_sub) & grepl("Pathogenic|Likely pathogenic", ClinicalSignificance_var)) | 
+    (grepl("Benign|Likely benign", ClinicalSignificance_sub) & grepl("Benign|Likely benign", ClinicalSignificance_var)) | 
+    (grepl("Uncertain significance", ClinicalSignificance_sub) & grepl("Uncertain significance", ClinicalSignificance_var))
+  ) %>%
+  dplyr::arrange(desc(mdy(LastEvaluated))) %>%
   distinct(VariationID, .keep_all = T) %>%
   arrange(VariationID) %>%
   # append variants with >= 2 stars
