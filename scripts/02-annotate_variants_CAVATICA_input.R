@@ -8,7 +8,7 @@
 # guidelines
 #
 # usage: Rscript 02-annotate_variants_CAVATICA_input.R --vcf <vcf file>
-#                                       --clinvar  <ClinVar-selected-submissions.tsv>
+#                                       --clinvar <ClinVar-selected-submissions.tsv>
 #                                       --multianno <multianno file>
 #                                       --intervar <intervar file>
 #                                       --autopvs1 <autopvs1 file>
@@ -46,11 +46,7 @@ option_list <- list(
   ),
   make_option(c("--clinvar"),
     type = "character",
-    help = "specific clinVar file (format: clinvar_20211225.vcf.gz)"
-  ), ## https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2022clinvar_20211225.vcf.gz
-  make_option(c("--variant_summary"),
-    type = "character",
-    help = "variant_summary file (format: variant_summary_2023-02.txt)"
+    help = "ClinVar selected submissions file (format: ClinVar-selected-submissions.tsv)"
   ),
   make_option(c("--output"),
     type = "character", default = "out",
@@ -74,8 +70,6 @@ input_intervar_file <- opt$intervar
 input_autopvs1_file <- opt$autopvs1
 input_multianno_file <- opt$multianno
 input_clinVar_file <- opt$clinvar
-input_variant_summary <- opt$variant_summary
-summary_level <- opt$summary_level_vcf
 output_name <- opt$output
 results_dir <- opt$outdir
 sample_name <- opt$sample_id
@@ -91,7 +85,6 @@ output_tab_abr_file <- paste0(output_name, ".cavatica_input.annotations_report.a
 ## allocate more memory capacity
 Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
-input_vcf_file <- file.path("../data/test_VEP.vcf")
 # Open vcf and read lines until a line without '#' is found
 con <- file(input_vcf_file, "r")
 skip_lines <- 0
@@ -106,12 +99,11 @@ vcf_df <- vroom(input_vcf_file, skip = skip_lines, delim = "\t", col_names = c("
     vcf_id = str_replace(vcf_id, "chr", "")
   )
 
-input_variant_summary <- file.path("../results/ClinVar-selected-submissions.tsv")
 ## load in selected ClinVar submissions
-clinvar_df <- vroom(input_variant_summary, show_col_types = FALSE) %>%
+clinvar_df <- vroom(input_clinVar_file, show_col_types = FALSE) %>%
   dplyr::filter(vcf_id %in% vcf_df$vcf_id)
+## TODO: Add "Stars" back in
 
-input_multianno_file <- file.path("../data/test_VEP.vcf.hg38_multianno.txt")
 ## get multianno file to add correct vcf_id in intervar table
 multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>%
   dplyr::select(
@@ -135,7 +127,6 @@ multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_na
     -contains(("Otherinfo"))
   )
 
-input_intervar_file <- file.path("../data/test_VEP.hg38_multianno.txt.intervar")
 ## add intervar table
 intervar_df <- vroom(input_intervar_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>%
   dplyr::select(
@@ -170,8 +161,6 @@ clinvar_intervar_vcf_df <- vcf_df %>%
   left_join(intervar_multianno_df, by = "vcf_id") %>%
   left_join(clinvar_df %>% dplyr::select(any_of(c("vcf_id", "VariationID", "ClinicalSignificance", "ReviewStatus", "LastEvaluated", "clinvar_flag", "Origin", "OriginSimple"))), by = "vcf_id")
 
-
-input_autopvs1_file <- file.path("../data/test_pbta.autopvs1.tsv")
 ## autopvs1 results
 autopvs1_results <- vroom(input_autopvs1_file, col_names = TRUE, show_col_types = FALSE) %>%
   dplyr::select(vcf_id, Feature, criterion) %>%
@@ -180,7 +169,6 @@ autopvs1_results <- vroom(input_autopvs1_file, col_names = TRUE, show_col_types 
     vcf_id = str_replace_all(vcf_id, "chr", "")
   ) %>%
   dplyr::filter(vcf_id %in% clinvar_intervar_vcf_df$vcf_id)
-
 
 ## merge autopvs1_results with vcf data, and filter for those variants that need intervar run
 combined_tab_with_vcf_intervar <- autopvs1_results %>%
@@ -335,8 +323,6 @@ master_tab <- master_tab %>%
   ) %>%
   distinct()
 
-
-sample_name <- "Test"
 ## add column indicating final call source
 master_tab <- master_tab %>%
   dplyr::mutate(Reasoning_for_call = case_when(
