@@ -64,7 +64,7 @@ bash scripts/download_db_files.sh
 For more details, see the [FAQ](https://github.com/diskin-lab-chop/AutoGVP/wiki/FAQ#how-can-i-create-my-own-concept-id-list).
 Example command:
 ```
-Rscript scripts/select-clinVar-submissions.R --variant_summary data/variant_summary.txt.gz --submission_summary data/submission_summary.txt.gz --outdir results --conceptID_list data/clinvar_cpg_concept_ids.txt --conflict_res "latest"
+Rscript scripts/select-clinVar-submissions.R --variant_summary data/variant_summary.txt.gz --submission_summary data/submission_summary.txt.gz --outdir refs --conceptID_list refs/clinvar_cancer_concept_ids_20260130.txt --conflict_res "latest"
 ```
 4. Run AutoGVP; if output of scripts/select-clinVar-submissions.R is not provided, the script will be run prior to starting pathogenicity assessment
 ```r
@@ -77,10 +77,10 @@ bash run_autogvp.sh --workflow="custom" \
 --autopvs1=data/test_autopvs1.txt \
 --outdir=results \
 --out="test_custom" \
---selected_clinvar_submissions=results/ClinVar-selected-submissions.tsv \
+--selected_clinvar_submissions=refs/ClinVar-selected-submissions.tsv \
 --variant_summary=data/variant_summary.txt.gz \
 --submission_summary=data/submission_summary.txt.gz \
---conceptIDs=data/clinvar_cpg_concept_ids.txt \
+--conceptIDs=refs/clinvar_cancer_concept_ids_20260130.txt \
 --conflict_res="latest"
 ```
 
@@ -93,7 +93,7 @@ bash scripts/download_db_files.sh
 For more details, see the [FAQ](https://github.com/diskin-lab-chop/AutoGVP/wiki/FAQ#how-can-i-create-my-own-concept-id-list).
 Example command:
 ```
-Rscript scripts/select-clinVar-submissions.R --variant_summary data/variant_summary.txt.gz --submission_summary data/submission_summary.txt.gz --outdir results --conceptID_list data/clinvar_cpg_concept_ids.txt --conflict_res "latest"
+Rscript scripts/select-clinVar-submissions.R --variant_summary data/variant_summary.txt.gz --submission_summary data/submission_summary.txt.gz --outdir refs --conceptID_list refs/clinvar_cancer_concept_ids_20260130.txt --conflict_res "latest"
 ```
 2. Run AutoGVP; if output of scripts/select-clinVar-submissions.R is not provided, the script will be run prior to starting pathogenicity assessment
 
@@ -106,10 +106,10 @@ bash run_autogvp.sh --workflow="cavatica" \
 --autopvs1=data/test_pbta.autopvs1.tsv \
 --outdir=results \
 --out="test_pbta" \
---selected_clinvar_submissions=results/ClinVar-selected-submissions.tsv \
+--selected_clinvar_submissions=refs/ClinVar-selected-submissions.tsv \
 --variant_summary=data/variant_summary.txt.gz \
 --submission_summary=data/submission_summary.txt.gz \
---conceptIDs=data/clinvar_cpg_concept_ids.txt \
+--conceptIDs=refs/clinvar_cancer_concept_ids_20260130.txt \
 --conflict_res="latest"
 ```
 
