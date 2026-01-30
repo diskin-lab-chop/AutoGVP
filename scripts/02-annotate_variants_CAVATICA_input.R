@@ -164,7 +164,7 @@ intervar_df <- vroom(input_intervar_file, delim = "\t", trim_ws = TRUE, col_name
 # combine intervar and multianno by var_id
 intervar_multianno_df <- intervar_df %>%
   left_join(multianno_df, by = "var_id")
-  
+
 ## combine the vcf, clinvar, intervar and multianno tables by the appropriate vcf id
 clinvar_intervar_vcf_df <- vcf_df %>%
   left_join(intervar_multianno_df, by = "vcf_id") %>%
@@ -322,7 +322,7 @@ master_tab <- clinvar_intervar_vcf_df %>%
   dplyr::mutate(
     final_call_clinvar = ClinicalSignificance,
     final_call = coalesce(final_call_clinvar, final_call_intervar)
-  ) 
+  )
 
 ## fix spelling and nomenclature inconsistencies
 master_tab <- master_tab %>%
@@ -336,7 +336,7 @@ master_tab <- master_tab %>%
   distinct()
 
 
-sample_name = "Test"
+sample_name <- "Test"
 ## add column indicating final call source
 master_tab <- master_tab %>%
   dplyr::mutate(Reasoning_for_call = case_when(
