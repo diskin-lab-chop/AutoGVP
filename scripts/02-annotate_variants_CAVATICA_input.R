@@ -1,17 +1,20 @@
 ################################################################################
 # 02-annotate_variants_CAVATICA_input.R
 # written by Ammar Naqvi & refactored by Saksham Phul
+# updated 01/2026 by Patricia Sullivan
 #
-# This script annotates variants based on clinVar and integrates a modified
+# This script annotates variants based on ClinVar and integrates a modified
 # version of InterVar that involves adjustments of calls based on ACMG-AMP
 # guidelines
 #
 # usage: Rscript 02-annotate_variants_CAVATICA_input.R --vcf <vcf file>
+#                                       --clinvar  <ClinVar-selected-submissions.tsv>
+#                                       --multianno <multianno file>
 #                                       --intervar <intervar file>
 #                                       --autopvs1 <autopvs1 file>
-#                                       --clinvar  'clinvar_yyyymmdd.vcf.gz'
-#                                       --variant_summary <variant_summary file>
 #                                       --output <string>
+#                                       --outdir <output directory>
+#                                       --sample_id <string>
 ################################################################################
 
 suppressPackageStartupMessages({
@@ -357,8 +360,7 @@ master_tab <- master_tab %>%
 # write out to file
 master_tab %>%
   write_tsv(
-    #file.path(results_dir, output_tab_abr_file),
-    file.path("../results/Test.submission-file-only.tsv"),
+    file.path(results_dir, output_tab_abr_file),
     append = FALSE,
     quote = "none",
     col_names = TRUE
