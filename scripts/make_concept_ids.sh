@@ -22,7 +22,7 @@ mondo_file="https://purl.obolibrary.org/obo/mondo.obo"
 # Make full disease concept ID list
 curl -fsSL $disease_file | awk -F'\t' '($7 == "Disease" && $1 != "not specified" && $1 != "not provided") {print $3}' | \
   sort -u | sed '/^$/d' \
-  > $BASEDIR/../data/clinvar_all_disease_concept_ids_$DATE.txt
+  > $BASEDIR/../refs/clinvar_all_disease_concept_ids_$DATE.txt
 
 # Make cpg concept ID list
 awk -F'\t' '
@@ -30,7 +30,7 @@ awk -F'\t' '
     ($2 in list) {print $4}
   ' <(curl -fsSL "$cpg_file") <(curl -fsSL "$gene_file") | \
   sort -u | sed '/^$/d' \
-  > $BASEDIR/../data/clinvar_cpg_concept_ids_$DATE.txt
+  > $BASEDIR/../refs/clinvar_cpg_concept_ids_$DATE.txt
 
 # Get cancer associated MONDO terms (under MONDO:0045024)
 # https://www.pombase.org/term/MONDO:0045024
@@ -64,12 +64,12 @@ awk -v root="MONDO:0045024" '
     }
     for (id in keep) print id
   }
-' | sort -u | sed '/^$/d' > $BASEDIR/../data/mondo_cancer_$DATE.txt
+' | sort -u | sed '/^$/d' > $BASEDIR/../refs/mondo_cancer_$DATE.txt
 
 # Make cancer-associated concept ID list
 awk -F'\t' '
     NR==FNR { list[$1]=1; next }
     ($4 in list && $7 == "Disease") {print $3}
-  ' $BASEDIR/../data/mondo_cancer_$DATE.txt <(curl -fsSL "$disease_file") | \
+  ' $BASEDIR/../refs/mondo_cancer_$DATE.txt <(curl -fsSL "$disease_file") | \
   sort -u | sed '/^$/d' \
-  > $BASEDIR/../data/clinvar_cancer_concept_ids_$DATE.txt
+  > $BASEDIR/../refs/clinvar_cancer_concept_ids_$DATE.txt
