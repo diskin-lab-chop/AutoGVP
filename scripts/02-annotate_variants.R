@@ -1,5 +1,5 @@
 ################################################################################
-# 02-annotate_variants_CAVATICA_input.R
+# 02-annotate_variants.R
 # written by Ammar Naqvi & refactored by Saksham Phul
 # updated 01/2026 by Patricia Sullivan
 #
@@ -7,7 +7,7 @@
 # version of InterVar that involves adjustments of calls based on ACMG-AMP
 # guidelines
 #
-# usage: Rscript 02-annotate_variants_CAVATICA_input.R --vcf <vcf file>
+# usage: Rscript 02-annotate_variants.R --vcf <vcf file>
 #                                       --clinvar <ClinVar-selected-submissions.tsv>
 #                                       --multianno <multianno file>
 #                                       --intervar <intervar file>
