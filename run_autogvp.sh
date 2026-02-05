@@ -47,7 +47,7 @@ while [ $# -gt 0 ]; do
       if [[ "$1" != *=* ]]; then shift; fi
       sample_id="${1#*=}"
       ;;
-    --selected_clinvar_submissions*|-c*)
+    --selected_submissions*|-c*)
       if [[ "$1" != *=* ]]; then shift; fi
       selected_submissions="${1#*=}"
       ;;
@@ -83,7 +83,7 @@ while [ $# -gt 0 ]; do
         echo "  -O/--outdir                       output directory"
         echo "  -o/--out                          output prefix"
         echo "  -s/--sample_id                    sample ID to be added to the output file"
-        echo "  -c/--selected_clinvar_submissions ClinVar variant file with conflicts resolved"
+        echo "  -c/--selected_submissions         ClinVar variant file with conflicts resolved"
         echo "  --variant_summary                 ClinVar variant summary file"
         echo "  --submission_summary              ClinVar submission summary file"
         echo "  --conceptIDs                      list of conceptIDs to prioritize submissions for clinvar variant conflict resolution. Will be ignored if selected_clinvar_submissions is provided"

@@ -80,7 +80,7 @@ if (!dir.exists(results_dir)) {
 }
 
 ## output files
-output_tab_abr_file <- paste0(output_name, ".cavatica_input.annotations_report.abridged.tsv")
+output_tab_abr_file <- paste0(output_name, ".annotations_report.abridged.tsv")
 
 ## allocate more memory capacity
 Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
