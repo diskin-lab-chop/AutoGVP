@@ -1,13 +1,13 @@
 ################################################################################
-# select-clinVar-submissions.R
+# resolve-clinvar-intepretations.R
 # written by Ryan Corbett, Patricia Sullivan
 #
 # This script selects unique ClinVar variant submission calls based on a list of
 # predetermined criteria, to be used in AutoGVP for ClinVar variants that need
 # resolving due to conflicting calls
 #
-# usage: select-clinVar-submissions.R --variant_summary <variant file>
-#                                     --submission_summary <submission file>
+# usage: resolve-clinvar-intepretations.R --variant_summary <variant file>
+#                                         --submission_summary <submission file>
 #
 # NOTE: this script must be run BEFORE running run_autogvp.sh
 ################################################################################
@@ -57,11 +57,11 @@ results_dir <- opt$outdir
 conceptID_file <- opt$conceptID_list
 conflict_res <- opt$conflict_res
 
-input_submission_file <- file.path("../data/submission_summary_20260104.txt.gz")
-input_variant_summary <- file.path("../data/variant_summary_20260104.txt.gz")
-results_dir <- file.path("../refs/")
-conceptID_file <- file.path("../refs/clinvar_cancer_concept_ids_20260130.txt")
-conflict_res <- "latest"
+# input_submission_file <- file.path("../data/submission_summary_20260104.txt.gz")
+# input_variant_summary <- file.path("../data/variant_summary_20260104.txt.gz")
+# results_dir <- file.path("../refs/")
+# conceptID_file <- file.path("../refs/clinvar_cancer_concept_ids_20260130.txt")
+# conflict_res <- "latest"
 
 ## load variant summary file, which reports latest ClinVar consensus calls for each variant
 variant_summary_df <- vroom(input_variant_summary,
@@ -408,5 +408,5 @@ table(submission_final_df$ClinicalSignificance)
 
 write_tsv(
   submission_final_df,
-  file.path(results_dir, "ClinVar-selected-submissions.tsv")
+  file.path(results_dir, "resolved-clinvar-interpretations.tsv")
 )
