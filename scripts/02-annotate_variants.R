@@ -8,7 +8,7 @@
 # guidelines
 #
 # usage: Rscript 02-annotate_variants.R --vcf <vcf file>
-#                                       --clinvar <ClinVar-selected-submissions.tsv>
+#                                       --clinvar <resolved-clinvar-interpretations.tsv>
 #                                       --multianno <multianno file>
 #                                       --intervar <intervar file>
 #                                       --autopvs1 <autopvs1 file>
@@ -46,7 +46,7 @@ option_list <- list(
   ),
   make_option(c("--clinvar"),
     type = "character",
-    help = "ClinVar selected submissions file (format: ClinVar-selected-submissions.tsv)"
+    help = "ClinVar resolved clinical significance file (format: resolved-clinvar-interpretations.tsv)"
   ),
   make_option(c("--output"),
     type = "character", default = "out",
@@ -99,7 +99,7 @@ vcf_df <- vroom(input_vcf_file, skip = skip_lines, delim = "\t", col_names = c("
     vcf_id = str_replace(vcf_id, "chr", "")
   )
 
-## load in selected ClinVar submissions
+## load in ClinVar resolved variant interpretations
 clinvar_df <- vroom(input_clinVar_file, show_col_types = FALSE) %>%
   dplyr::filter(vcf_id %in% vcf_df$vcf_id)
 ## TODO: Add "Stars" back in
