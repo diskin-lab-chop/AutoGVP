@@ -232,7 +232,7 @@ if (!is.null(conceptID_file)) {
     dplyr::mutate(conceptID = unlist(lapply(strsplit(ReportedPhenotypeInfo, ":"), function(x) x[[1]]))) %>%
     dplyr::filter(conceptID %in% conceptIDs) %>%
     dplyr::select(-conceptID)
-  
+
   length(unique(variants_with_conceptIDs$VariationID))
 
   # if no. submissions remaining = 1, add to no conflict variants
@@ -284,13 +284,16 @@ if (!is.null(conceptID_file)) {
   # Resolve remaining conflicts for variants associated with concept IDs, either by taking date last evaluated or most severe call
   if (conflict_res == "latest") {
     variants_resolved <- variants_with_conceptIDs %>%
-      dplyr::filter(!VariationID %in% consensus_calls_conceptIDs,
-                    !VariationID %in% variants_no_conflicts_conceptID) %>%
+      dplyr::filter(
+        !VariationID %in% consensus_calls_conceptIDs,
+        !VariationID %in% variants_no_conflicts_conceptID
+      ) %>%
       dplyr::arrange(desc(mdy(LastEvaluated_sub))) %>%
       distinct(VariationID, .keep_all = T) %>%
       dplyr::mutate(
         ClinSig_report = ClinicalSignificance_sub,
-        ReviewStatus_var = glue::glue("{ReviewStatus_var}, submissions associated with conceptIDs, latest date evaluated taken")) %>%
+        ReviewStatus_var = glue::glue("{ReviewStatus_var}, submissions associated with conceptIDs, latest date evaluated taken")
+      ) %>%
       bind_rows(variants_resolved)
   }
 
@@ -301,7 +304,7 @@ if (!is.null(conceptID_file)) {
         ClinicalSignificance_sub,
         c(
           "Pathogenic", "Likely pathogenic",
-          "Uncertain significance", 
+          "Uncertain significance",
           "Likely benign", "Benign"
         )
       )) %>%
@@ -309,7 +312,8 @@ if (!is.null(conceptID_file)) {
       distinct(VariationID, .keep_all = T) %>%
       dplyr::mutate(
         ClinSig_report = ClinicalSignificance_sub,
-        ReviewStatus_var = glue::glue("{ReviewStatus_var}, submissions associated with conceptIDs, most severe call at latest date taken")) %>%
+        ReviewStatus_var = glue::glue("{ReviewStatus_var}, submissions associated with conceptIDs, most severe call at latest date taken")
+      ) %>%
       bind_rows(variants_resolved)
   }
 }
