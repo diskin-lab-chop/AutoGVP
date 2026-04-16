@@ -23,6 +23,8 @@ suppressPackageStartupMessages({
   library("vroom")
 })
 
+options(scipen = 999)
+
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
