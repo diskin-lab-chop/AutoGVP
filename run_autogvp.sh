@@ -47,7 +47,7 @@ while [ $# -gt 0 ]; do
       if [[ "$1" != *=* ]]; then shift; fi
       sample_id="${1#*=}"
       ;;
-    --selected_submissions*|-c*)
+    --resolved_clinvar*|-c*)
       if [[ "$1" != *=* ]]; then shift; fi
       selected_submissions="${1#*=}"
       ;;
@@ -72,7 +72,7 @@ while [ $# -gt 0 ]; do
       custom_output_cols="${1#*=}"
       ;;
     --help|-h)
-        echo "Usage: $0 [-v/--vcf <*.vcf*>] [-f/--filter_criteria=<criteria>] [-i/--intervar <*.txt.intervar>] [-a/--autopvs1 <*autopvs1*>] [-m/--multianno <*multianno*>] [-c/--selected_clinvar_submissions <refs/ClinVar-selected-submissions.tsv>] [-o/--out <output>]"
+        echo "Usage: $0 [-v/--vcf <*.vcf*>] [-f/--filter_criteria=<criteria>] [-i/--intervar <*.txt.intervar>] [-a/--autopvs1 <*autopvs1*>] [-m/--multianno <*multianno*>] [-c/--resolved_clinvar <refs/resolved-clinvar-interpretations.tsv>] [-o/--out <output>]"
         echo ""
         echo "Options:"
         echo "  -v/--vcf                          VCF file"
@@ -83,11 +83,11 @@ while [ $# -gt 0 ]; do
         echo "  -O/--outdir                       output directory"
         echo "  -o/--out                          output prefix"
         echo "  -s/--sample_id                    sample ID to be added to the output file"
-        echo "  -c/--selected_submissions         ClinVar variant file with conflicts resolved"
+        echo "  -c/--resolved_clinvar             ClinVar variant file with conflicts resolved"
         echo "  --variant_summary                 ClinVar variant summary file"
         echo "  --submission_summary              ClinVar submission summary file"
-        echo "  --conceptIDs                      list of conceptIDs to prioritize submissions for clinvar variant conflict resolution. Will be ignored if selected_clinvar_submissions is provided"
-        echo "  --conflict_res                    how to resolve conflicts associated with conceptIDs. Will be ignored if selected_clinvar_submissions is provided or if conceptIDs are not provided"
+        echo "  --conceptIDs                      list of conceptIDs to prioritize submissions for clinvar variant conflict resolution. Will be ignored if --resolved_clinvar is provided"
+        echo "  --conflict_res                    how to resolve conflicts associated with conceptIDs. Will be ignored if --resolved_clinvar is provided or if conceptIDs are not provided"
         echo "  --custom_output_cols              optional; text file of user-defined column names from VCF info fields or other input file to be included in AutoGVP output files. Must contain three columns named 'Column_name', 'Rename' (i.e., what to rename colum in final output), and 'Abridged' (T or F indicating if column should be included in abridged output)"
         echo "  -h/--help                         Display usage information"
             exit 0
@@ -140,7 +140,7 @@ if [[ ! -e $selected_submissions ]]; then
         
         echo "resolving ClinVar conflicts using default parameters..."
       
-        Rscript $BASEDIR/scripts/select-clinVar-submissions.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $out_dir
+        Rscript $BASEDIR/scripts/resolve-clinvar-intepretations.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $BASEDIR/refs
         
       fi
       
@@ -148,7 +148,7 @@ if [[ ! -e $selected_submissions ]]; then
       
         echo "resolving ClinVar conflicts with provided concept IDs and taking latest date evaluated call..."
       
-        Rscript $BASEDIR/scripts/select-clinVar-submissions.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $out_dir --conceptID_list $conceptIDs --conflict_res "latest"
+        Rscript $BASEDIR/scripts/resolve-clinvar-intepretations.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $BASEDIR/refs --conceptID_list $conceptIDs --conflict_res "latest"
         
       fi
       
@@ -156,11 +156,11 @@ if [[ ! -e $selected_submissions ]]; then
       
         echo "resolving ClinVar conflicts with provided concept IDs and specified conflict resolution..."
       
-        Rscript $BASEDIR/scripts/select-clinVar-submissions.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $out_dir --conceptID_list $conceptIDs --conflict_res $conflict_res
+        Rscript $BASEDIR/scripts/resolve-clinvar-intepretations.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $BASEDIR/refs --conceptID_list $conceptIDs --conflict_res $conflict_res
       
       fi
       
-      selected_submissions="$BASEDIR/results/ClinVar-selected-submissions.tsv"
+      selected_submissions="$BASEDIR/refs/resolved-clinvar-interpretations.tsv"
         
 fi
 
