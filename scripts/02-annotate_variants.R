@@ -104,7 +104,6 @@ vcf_df <- vroom(input_vcf_file, skip = skip_lines, delim = "\t", col_names = c("
 ## load in ClinVar resolved variant interpretations
 clinvar_df <- vroom(input_clinVar_file, show_col_types = FALSE) %>%
   dplyr::filter(vcf_id %in% vcf_df$vcf_id)
-## TODO: Add "Stars" back in
 
 ## get multianno file to add correct vcf_id in intervar table
 multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_names = TRUE, show_col_types = FALSE) %>%
@@ -161,7 +160,7 @@ intervar_multianno_df <- intervar_df %>%
 ## combine the vcf, clinvar, intervar and multianno tables by the appropriate vcf id
 clinvar_intervar_vcf_df <- vcf_df %>%
   left_join(intervar_multianno_df, by = "vcf_id") %>%
-  left_join(clinvar_df %>% dplyr::select(any_of(c("vcf_id", "VariationID", "ClinicalSignificance", "ReviewStatus", "LastEvaluated", "clinvar_flag", "Origin", "OriginSimple"))), by = "vcf_id")
+  left_join(clinvar_df %>% dplyr::select(any_of(c("vcf_id", "VariationID", "ClinicalSignificance", "Stars", "ReviewStatus", "LastEvaluated", "clinvar_flag", "Origin", "OriginSimple"))), by = "vcf_id")
 
 ## autopvs1 results
 autopvs1_results <- vroom(input_autopvs1_file, col_names = TRUE, show_col_types = FALSE) %>%
