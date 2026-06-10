@@ -220,7 +220,6 @@ variants_resolved <- submission_merged_df %>%
   mutate(ClinSig_report = ClinSig_resolved) %>%
   arrange(VariationID)
 
-
 # IF list of concept IDs provided -- filter remaining submissions to only those associated with concept IDs, and resolve conflicts by consensus, latest date, or severity
 if (!is.null(conceptID_file)) {
   # read in concept IDs
