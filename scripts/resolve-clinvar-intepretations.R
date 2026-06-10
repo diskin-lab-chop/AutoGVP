@@ -118,6 +118,7 @@ variant_summary_df <- vroom(input_variant_summary,
       grepl("Likely benign", ClinicalSignificance) ~ "Likely benign",
       grepl("Pathogenic", ClinicalSignificance) ~ "Pathogenic",
       grepl("Benign", ClinicalSignificance) ~ "Benign",
+      grepl("Uncertain risk allele", ClinicalSignificance) ~ "Uncertain significance",
       grepl("risk allele", ClinicalSignificance) ~ "Risk allele",
       grepl("VUS", ClinicalSignificance) ~ "Uncertain significance",
       TRUE ~ NA
@@ -129,7 +130,8 @@ variant_summary_df <- vroom(input_variant_summary,
       ReviewStatus %in% c("criteria provided, conflicting classifications", "criteria provided, single submitter") ~ 1,
       TRUE ~ NA
     )
-  )
+  ) %>% 
+  dplyr::filter(!is.na(ClinSig_resolved))
 
 
 # Load ClinVar submission summary file, which reports all submissions for each ClinVar variant
@@ -147,6 +149,7 @@ skip_lines <- max(skip_lines, 0)
 submission_summary_df <- vroom(input_submission_file,
   skip = skip_lines,
   delim = "\t",
+  quote = "",
   show_col_types = F
 ) %>%
   dplyr::rename(
@@ -188,12 +191,13 @@ if (!"ContributesToAggregateClassification" %in% names(submission_summary_df)) {
 }
 
 submission_summary_df <- submission_summary_df %>%
-  # Redefine `DateLastEvaluated`
+  # Redefine `DateLastEvaluated`; remove all quote characters from Description
   dplyr::mutate(
     DateLastEvaluated = case_when(
       DateLastEvaluated == "-" ~ NA_character_,
       TRUE ~ DateLastEvaluated
     ),
+    Description = str_remove_all(Description, "[\"'‘’“”]"),
     VariationID = as.double(VariationID)
   ) %>%
   dplyr::filter(
@@ -247,12 +251,12 @@ submission_merged_df <- submission_summary_df %>%
 
 # Extract submissions that have no conflicts
 variants_resolved <- submission_merged_df %>%
-  filter(ClinSig_resolved != "Conflicting classifications of pathogenicity") %>%
+  filter(ClinSig_resolved != "Conflicting classifications of pathogenicity",
+         !is.na(ClinSig_resolved)) %>%
   dplyr::arrange(desc(mdy(LastEvaluated))) %>%
   distinct(VariationID, .keep_all = T) %>%
   mutate(ClinSig_report = ClinSig_resolved) %>%
   arrange(VariationID)
-
 
 # IF list of concept IDs provided -- filter remaining submissions to only those associated with concept IDs, and resolve conflicts by consensus, latest date, or severity
 if (!is.null(conceptID_file)) {
@@ -390,7 +394,11 @@ variants_conflicts_latest <- conflicting_variants %>%
 submission_final_df <- variants_resolved %>%
   bind_rows(variants_consensus_call, variants_conflicts_latest) %>%
   dplyr::mutate(
-    ClinicalSignificance = ClinSig_report,
+    ClinicalSignificance = case_when(
+      grepl("Uncertain risk allele", ClinSig_report, ignore.case = TRUE) ~ "Uncertain significance",
+      grepl("risk allele", ClinSig_report, ignore.case = TRUE) ~ "Risk allele",
+      TRUE ~ ClinSig_report
+    ),
     ReviewStatus = ReviewStatus_var,
     SubmittedPhenotypeInfo = case_when(
       SubmittedPhenotypeInfo == "Not Provided" ~ NA_character_,
@@ -401,7 +409,12 @@ submission_final_df <- variants_resolved %>%
       TRUE ~ Description
     )
   ) %>%
-  distinct(vcf_id, .keep_all = T) %>%
+  filter(
+    !is.na(ClinicalSignificance),
+    !ClinicalSignificance %in% c("-", "not provided", "association", "risk factor", "drug response")
+  ) %>%
+  dplyr::arrange(desc(mdy(LastEvaluated_sub))) %>%
+  distinct(VariationID, .keep_all = TRUE) %>%
   dplyr::select(any_of(c(
     "VariationID", "ClinicalSignificance",
     "LastEvaluated", "Description", "SubmittedPhenotypeInfo",
