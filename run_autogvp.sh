@@ -15,10 +15,6 @@ variant_summary_file="$BASEDIR/data/ClinVar-selected-submissions.tsv"
 # define parameter variables 
 while [ $# -gt 0 ]; do
   case "$1" in
-    --workflow*|-w*)
-      if [[ "$1" != *=* ]]; then shift; fi # Value is next arg if no `=`
-      workflow="${1#*=}"
-      ;;
     --vcf*|-v*)
       if [[ "$1" != *=* ]]; then shift; fi
       vcf_file="${1#*=}"
@@ -26,10 +22,6 @@ while [ $# -gt 0 ]; do
     --filter_criteria*|-f*)
       if [[ "$1" != *=* ]]; then shift; fi
       filtering_criteria="${1#*=}"
-      ;;
-    --clinvar*|-c*)
-      if [[ "$1" != *=* ]]; then shift; fi
-      clinvar_file="${1#*=}"
       ;;
     --intervar*|-i*)
       if [[ "$1" != *=* ]]; then shift; fi
@@ -51,7 +43,11 @@ while [ $# -gt 0 ]; do
       if [[ "$1" != *=* ]]; then shift; fi
       out_file="${1#*=}"
       ;;
-    --selected_clinvar_submissions*)
+    --sample_id*|-s*)
+      if [[ "$1" != *=* ]]; then shift; fi
+      sample_id="${1#*=}"
+      ;;
+    --resolved_clinvar*|-c*)
       if [[ "$1" != *=* ]]; then shift; fi
       selected_submissions="${1#*=}"
       ;;
@@ -76,23 +72,22 @@ while [ $# -gt 0 ]; do
       custom_output_cols="${1#*=}"
       ;;
     --help|-h)
-        echo "Usage: $0 [-w/--workflow] [-v/--vcf <*.vcf*>] [-f/--filter_criteria=<criteria>] [-c/--clinvar <*.vcf>] [-i/--intervar <*.txt.intervar>] [-a/--autopvs1 <*autopvs1*>] [-m/--multianno <*multianno*>] [-o/--out <output>]"
+        echo "Usage: $0 [-v/--vcf <*.vcf*>] [-f/--filter_criteria=<criteria>] [-i/--intervar <*.txt.intervar>] [-a/--autopvs1 <*autopvs1*>] [-m/--multianno <*multianno*>] [-c/--resolved_clinvar <refs/resolved-clinvar-interpretations.tsv>] [-o/--out <output>]"
         echo ""
         echo "Options:"
-        echo "  -w/--workflow                     workflow"
         echo "  -v/--vcf                          VCF file"
         echo "  -f/--filter_criteria              VCF filtering criteria"
-        echo "  -c/--clinvar                      ClinVar file"
         echo "  -i/--intervar                     Intervar results file"
         echo "  -a/--autopvs1                     Autopvs1 results file"
         echo "  -m/--multianno                    ANNOVAR file"
         echo "  -O/--outdir                       output directory"
         echo "  -o/--out                          output prefix"
-        echo "  --selected_clinvar_submissions    ClinVar variant file with conflicts resolved"
+        echo "  -s/--sample_id                    sample ID to be added to the output file"
+        echo "  -c/--resolved_clinvar             ClinVar variant file with conflicts resolved"
         echo "  --variant_summary                 ClinVar variant summary file"
         echo "  --submission_summary              ClinVar submission summary file"
-        echo "  --conceptIDs                      list of conceptIDs to prioritize submissions for clinvar variant conflict resolution. Will be ignored if selected_clinvar_submissions is provided"
-        echo "  --conflict_res                    how to resolve conflicts associated with conceptIDs. Will be ignored if selected_clinvar_submissions is provided or if conceptIDs are not provided"
+        echo "  --conceptIDs                      list of conceptIDs to prioritize submissions for clinvar variant conflict resolution. Will be ignored if --resolved_clinvar is provided"
+        echo "  --conflict_res                    how to resolve conflicts associated with conceptIDs. Will be ignored if --resolved_clinvar is provided or if conceptIDs are not provided"
         echo "  --custom_output_cols              optional; text file of user-defined column names from VCF info fields or other input file to be included in AutoGVP output files. Must contain three columns named 'Column_name', 'Rename' (i.e., what to rename colum in final output), and 'Abridged' (T or F indicating if column should be included in abridged output)"
         echo "  -h/--help                         Display usage information"
             exit 0
@@ -122,7 +117,7 @@ if [[ ! -e $selected_submissions ]]; then
       submission_summary=$(find data/ -type f -name "submission_summary*")
       
       # if no files found matching pattern, download latest versions from ClinVar
-     # if [[ -z "$variant_summary" || -z "$submission_summary" ]]
+      # if [[ -z "$variant_summary" || -z "$submission_summary" ]]
       if [[ ! -e "$variant_summary" || ! -e "$submission_summary" ]]
       then
         
@@ -145,7 +140,7 @@ if [[ ! -e $selected_submissions ]]; then
         
         echo "resolving ClinVar conflicts using default parameters..."
       
-        Rscript $BASEDIR/scripts/select-clinVar-submissions.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $out_dir
+        Rscript $BASEDIR/scripts/resolve-clinvar-intepretations.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $BASEDIR/refs
         
       fi
       
@@ -153,7 +148,7 @@ if [[ ! -e $selected_submissions ]]; then
       
         echo "resolving ClinVar conflicts with provided concept IDs and taking latest date evaluated call..."
       
-        Rscript $BASEDIR/scripts/select-clinVar-submissions.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $out_dir --conceptID_list $conceptIDs --conflict_res "latest"
+        Rscript $BASEDIR/scripts/resolve-clinvar-intepretations.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $BASEDIR/refs --conceptID_list $conceptIDs --conflict_res "latest"
         
       fi
       
@@ -161,11 +156,11 @@ if [[ ! -e $selected_submissions ]]; then
       
         echo "resolving ClinVar conflicts with provided concept IDs and specified conflict resolution..."
       
-        Rscript $BASEDIR/scripts/select-clinVar-submissions.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $out_dir --conceptID_list $conceptIDs --conflict_res $conflict_res
+        Rscript $BASEDIR/scripts/resolve-clinvar-intepretations.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $BASEDIR/refs --conceptID_list $conceptIDs --conflict_res $conflict_res
       
       fi
       
-      selected_submissions="$BASEDIR/results/ClinVar-selected-submissions.tsv"
+      selected_submissions="$BASEDIR/refs/resolved-clinvar-interpretations.tsv"
         
 fi
 
@@ -184,51 +179,17 @@ intervar_input=$out_dir/${out_file}_intervar_filtered.txt
 # Run AutoGVP 
 echo "Running AutoGVP..."
 
-# Run appropriate Rscript based on workflow source (Cavatica vs. custom)
-if [[ "$workflow" = "cavatica" ]] ; then
-
-  if [[ -f $clinvar_file ]] ; then
-
-    # Run AutoGVP from Cavatica workflow with provided clinvar vcf
-    Rscript $BASEDIR/scripts/02-annotate_variants_CAVATICA_input.R --vcf $autogvp_input \
-    --clinvar $clinvar_file \
-    --multianno $multianno_input \
-    --intervar $intervar_input \
-    --autopvs1 $autopvs1_input \
-    --output $out_file \
-    --outdir $out_dir \
-    --variant_summary $selected_submissions
-    
-    else
-    
-      # Run AutoGVP from Cavatica workflow with clinvar annotation in sample vcf
-    Rscript $BASEDIR/scripts/02-annotate_variants_CAVATICA_input.R --vcf $autogvp_input \
-    --multianno $multianno_input \
-    --intervar $intervar_input \
-    --autopvs1 $autopvs1_input \
-    --output $out_file \
-    --outdir $out_dir \
-    --variant_summary $selected_submissions
-    
-  fi
-  
-  autogvp_output=${out_dir}/${out_file}".cavatica_input.annotations_report.abridged.tsv"
-
-  else
-
-  # Run AutoGVP from custom workflow
-  Rscript $BASEDIR/scripts/02-annotate_variants_custom_input.R --vcf $autogvp_input \
-  --clinvar $clinvar_file \
+# Run AutoGVP variant annotation
+Rscript $BASEDIR/scripts/02-annotate_variants.R --vcf $autogvp_input \
+  --clinvar $selected_submissions \
   --multianno $multianno_input \
   --intervar $intervar_input \
   --autopvs1 $autopvs1_input \
   --output $out_file \
   --outdir $out_dir \
-  --variant_summary $selected_submissions \
+  --sample_id $sample_id
   
-  autogvp_output=${out_dir}/${out_file}".custom_input.annotations_report.abridged.tsv"
-
-fi
+autogvp_output=${out_dir}/${out_file}".annotations_report.abridged.tsv"
 
 
 # Parse vcf file so that info field values are in distinct columns
