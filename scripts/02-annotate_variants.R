@@ -218,7 +218,7 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
 
     ## adjust variables based on given rules described in README
     final_call_intervar = ifelse(intervar_adjusted == "No",
-      sub(".*InterVar: ", "", sub("\\ P.*", "", `InterVar: InterVar and Evidence`)),
+      sub(".*InterVar: ", "", sub("\\ PVS.*", "", `InterVar: InterVar and Evidence`)),
       ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 &
         ((evidencePS >= 1) |
           (evidencePM >= 2) |
