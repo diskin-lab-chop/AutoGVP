@@ -9,9 +9,6 @@ export BCFTOOLS_PLUGINS=/rocker-build/bcftools-1.17/plugins
 BASEDIR="$(dirname "${BASH_SOURCE[0]}")"
 echo "$BASEDIR"
 
-## default files
-variant_summary_file="$BASEDIR/data/ClinVar-selected-submissions.tsv"
-
 # define parameter variables 
 while [ $# -gt 0 ]; do
   case "$1" in

@@ -26,11 +26,11 @@ suppressPackageStartupMessages({
 option_list <- list(
   make_option(c("--variant_summary"),
     type = "character",
-    help = "variant_summary file (format: variant_summary.txt.gz)"
+    help = "variant_summary file (format: variant_summary_YYYY-MM.txt.gz)"
   ),
   make_option(c("--submission_summary"),
     type = "character",
-    help = "specific submission summary file (format: submission_summary.txt.gz)"
+    help = "specific submission summary file (format: submission_summary_YYYY-MM.txt.gz)"
   ),
   make_option(c("--outdir"),
     type = "character",
@@ -57,11 +57,24 @@ results_dir <- opt$outdir
 conceptID_file <- opt$conceptID_list
 conflict_res <- opt$conflict_res
 
-# input_submission_file <- file.path("../data/submission_summary_20260104.txt.gz")
-# input_variant_summary <- file.path("../data/variant_summary_20260104.txt.gz")
-# results_dir <- file.path("../refs/")
-# conceptID_file <- file.path("../refs/clinvar_cancer_concept_ids_20260130.txt")
-# conflict_res <- "latest"
+# Function to extract date (YYYY-MM) from filename
+extract_date <- function(path) {
+  parts <- strsplit(basename(path), "_")[[1]]
+  last_part <- tail(parts, 1)
+  sub("\\.tsv\\.gz$|\\.txt\\.gz$", "", last_part)
+}
+
+# Extract dates
+date_submission <- extract_date(input_submission_file)
+date_variant <- extract_date(input_variant_summary)
+
+# Check if they match
+if (date_submission != date_variant) {
+  stop(sprintf("ClinVar date mismatch: %s vs %s", date_submission, date_variant))
+}
+
+# Assign concept label to be overwritten if used
+concept_label <- ""
 
 ## load variant summary file, which reports latest ClinVar consensus calls for each variant
 variant_summary_df <- vroom(input_variant_summary,
@@ -105,6 +118,9 @@ variant_summary_df <- vroom(input_variant_summary,
       grepl("Likely benign", ClinicalSignificance) ~ "Likely benign",
       grepl("Pathogenic", ClinicalSignificance) ~ "Pathogenic",
       grepl("Benign", ClinicalSignificance) ~ "Benign",
+      grepl("Uncertain risk allele", ClinicalSignificance) ~ "Uncertain significance",
+      grepl("risk allele", ClinicalSignificance) ~ "Risk allele",
+      grepl("VUS", ClinicalSignificance) ~ "Uncertain significance",
       TRUE ~ NA
     ),
     Stars = case_when(
@@ -114,7 +130,8 @@ variant_summary_df <- vroom(input_variant_summary,
       ReviewStatus %in% c("criteria provided, conflicting classifications", "criteria provided, single submitter") ~ 1,
       TRUE ~ NA
     )
-  )
+  ) %>%
+  dplyr::filter(!is.na(ClinSig_resolved))
 
 
 # Load ClinVar submission summary file, which reports all submissions for each ClinVar variant
@@ -125,11 +142,14 @@ skip_lines <- -1 # keep last line for column names
 while (grepl("^#", readLines(con, n = 1))) {
   skip_lines <- skip_lines + 1
 }
+close(con)
+skip_lines <- max(skip_lines, 0)
 
 # Load submission file while skipping number of lines determined above
 submission_summary_df <- vroom(input_submission_file,
   skip = skip_lines,
   delim = "\t",
+  quote = "",
   show_col_types = F
 ) %>%
   dplyr::rename(
@@ -171,12 +191,13 @@ if (!"ContributesToAggregateClassification" %in% names(submission_summary_df)) {
 }
 
 submission_summary_df <- submission_summary_df %>%
-  # Redefine `DateLastEvaluated`
+  # Redefine `DateLastEvaluated`; remove all quote characters from Description
   dplyr::mutate(
     DateLastEvaluated = case_when(
       DateLastEvaluated == "-" ~ NA_character_,
       TRUE ~ DateLastEvaluated
     ),
+    Description = str_remove_all(Description, "[\"'‘’“”]"),
     VariationID = as.double(VariationID)
   ) %>%
   dplyr::filter(
@@ -189,9 +210,17 @@ submission_summary_df <- submission_summary_df %>%
     ClinicalSignificance %in% c(
       "Pathogenic",
       "Likely pathogenic",
+      "Pathogenic, low penetrance",
+      "Likely pathogenic, low penetrance",
+      "Established risk allele",
+      "Likely risk allele",
       "Benign",
       "Likely benign",
-      "Uncertain significance"
+      "Uncertain significance",
+      "Uncertain risk allele",
+      "VUS-high",
+      "VUS-mid",
+      "VUS-low"
     ),
     # Filter on contributing records if this column is present in supplied file
     if ("ContributesToAggregateClassification" %in% names(.)) {
@@ -210,11 +239,22 @@ submission_merged_df <- submission_summary_df %>%
     suffix = c("_sub", "_var"),
     relationship = "many-to-many"
   ) %>%
-  dplyr::mutate(LastEvaluated = coalesce(LastEvaluated_sub, LastEvaluated_var))
+  dplyr::mutate(
+    LastEvaluated = coalesce(LastEvaluated_sub, LastEvaluated_var),
+    ClinSig_consensus = case_when(
+      ClinicalSignificance_sub %in% c("Pathogenic", "Likely pathogenic", "Pathogenic, low penetrance", "Likely pathogenic, low penetrance", "Established risk allele", "Likely risk allele") ~ "Pathogenic/Likely pathogenic",
+      ClinicalSignificance_sub %in% c("Benign", "Likely benign") ~ "Benign/Likely benign",
+      ClinicalSignificance_sub %in% c("Uncertain significance", "Uncertain risk allele", "VUS-high", "VUS-mid", "VUS-low") ~ "Uncertain significance",
+      TRUE ~ NA_character_
+    )
+  )
 
 # Extract submissions that have no conflicts
 variants_resolved <- submission_merged_df %>%
-  filter(ClinSig_resolved != "Conflicting classifications of pathogenicity") %>%
+  filter(
+    ClinSig_resolved != "Conflicting classifications of pathogenicity",
+    !is.na(ClinSig_resolved)
+  ) %>%
   dplyr::arrange(desc(mdy(LastEvaluated))) %>%
   distinct(VariationID, .keep_all = T) %>%
   mutate(ClinSig_report = ClinSig_resolved) %>%
@@ -222,6 +262,10 @@ variants_resolved <- submission_merged_df %>%
 
 # IF list of concept IDs provided -- filter remaining submissions to only those associated with concept IDs, and resolve conflicts by consensus, latest date, or severity
 if (!is.null(conceptID_file)) {
+  # pull out concept ID file category (cancer, all, cpg)
+  concept_cat <- strsplit(basename(conceptID_file), "_")[[1]][2]
+  concept_label <- glue::glue("-{concept_cat}-{conflict_res}")
+
   # read in concept IDs
   conceptIDs <- read_lines(conceptID_file)
 
@@ -231,8 +275,6 @@ if (!is.null(conceptID_file)) {
     dplyr::mutate(conceptID = unlist(lapply(strsplit(ReportedPhenotypeInfo, ":"), function(x) x[[1]]))) %>%
     dplyr::filter(conceptID %in% conceptIDs) %>%
     dplyr::select(-conceptID)
-
-  length(unique(variants_with_conceptIDs$VariationID))
 
   # if no. submissions remaining = 1, add to no conflict variants
   variants_no_conflicts_conceptID <- variants_with_conceptIDs %>%
@@ -249,44 +291,39 @@ if (!is.null(conceptID_file)) {
     ) %>%
     bind_rows(variants_resolved)
 
-  # Identify variants with consensus calls
-  consensus_calls_conceptIDs <- variants_with_conceptIDs %>%
+  # Compute max-count buckets per conceptID variant once
+  clinsig_counts_conceptIDs <- variants_with_conceptIDs %>%
     filter(!VariationID %in% variants_no_conflicts_conceptID) %>%
-    # Here, we will group B+LB and P+LP together to identify majority calls
-    dplyr::mutate(ClinSig = case_when(
-      ClinicalSignificance_sub %in% c("Pathogenic", "Likely pathogenic") ~ "Pathogenic/Likely pathogenic",
-      ClinicalSignificance_sub %in% c("Benign", "Likely benign") ~ "Benign/Likely benign",
-      ClinicalSignificance_sub == "Uncertain significance" ~ "Uncertain significance",
-      TRUE ~ NA_character_
-    )) %>%
-    count(VariationID, ClinSig) %>%
+    dplyr::filter(!is.na(ClinSig_consensus)) %>%
+    count(VariationID, ClinSig_consensus) %>%
     group_by(VariationID) %>%
-    dplyr::filter(n == max(n)) %>%
-    dplyr::filter(!VariationID %in% VariationID[duplicated(VariationID)])
+    dplyr::filter(n == max(n))
+
+  consensus_calls_conceptIDs <- clinsig_counts_conceptIDs %>%
+    dplyr::filter(n() == 1) %>%
+    ungroup()
+  tied_calls_conceptIDs <- clinsig_counts_conceptIDs %>%
+    dplyr::filter(n() > 1) %>%
+    ungroup()
 
   # extract variants resolved through consensus calling
   variants_resolved <- variants_with_conceptIDs %>%
-    dplyr::mutate(ClinSig = case_when(
-      ClinicalSignificance_sub %in% c("Pathogenic", "Likely pathogenic") ~ "Pathogenic/Likely pathogenic",
-      ClinicalSignificance_sub %in% c("Benign", "Likely benign") ~ "Benign/Likely benign",
-      ClinicalSignificance_sub == "Uncertain significance" ~ "Uncertain significance",
-      TRUE ~ NA_character_
-    )) %>%
-    dplyr::filter(glue::glue("{VariationID}-{ClinSig}") %in% glue::glue("{consensus_calls_conceptIDs$VariationID}-{consensus_calls_conceptIDs$ClinSig}")) %>%
+    dplyr::semi_join(consensus_calls_conceptIDs, by = c("VariationID", "ClinSig_consensus")) %>%
     dplyr::arrange(desc(mdy(LastEvaluated_sub))) %>%
     distinct(VariationID, .keep_all = T) %>%
     arrange(VariationID) %>%
     dplyr::mutate(ReviewStatus_var = glue::glue("{ReviewStatus_var}, submissions associated with conceptIDs, consensus call taken")) %>%
-    dplyr::rename(ClinSig_report = ClinSig) %>%
+    dplyr::rename(ClinSig_report = ClinSig_consensus) %>%
     bind_rows(variants_resolved)
 
   # Resolve remaining conflicts for variants associated with concept IDs, either by taking date last evaluated or most severe call
   if (conflict_res == "latest") {
     variants_resolved <- variants_with_conceptIDs %>%
       dplyr::filter(
-        !VariationID %in% consensus_calls_conceptIDs,
+        !VariationID %in% consensus_calls_conceptIDs$VariationID,
         !VariationID %in% variants_no_conflicts_conceptID
       ) %>%
+      dplyr::semi_join(tied_calls_conceptIDs, by = c("VariationID", "ClinSig_consensus")) %>%
       dplyr::arrange(desc(mdy(LastEvaluated_sub))) %>%
       distinct(VariationID, .keep_all = T) %>%
       dplyr::mutate(
@@ -298,12 +335,18 @@ if (!is.null(conceptID_file)) {
 
   if (conflict_res == "most_severe") {
     variants_resolved <- variants_with_conceptIDs %>%
-      dplyr::filter(!VariationID %in% variants_consensus_call_conceptIDs$VariationID) %>%
+      dplyr::filter(
+        !VariationID %in% consensus_calls_conceptIDs$VariationID,
+        !VariationID %in% variants_no_conflicts_conceptID
+      ) %>%
+      dplyr::semi_join(tied_calls_conceptIDs, by = c("VariationID", "ClinSig_consensus")) %>%
       dplyr::mutate(ClinicalSignificance_sub = fct_relevel(
         ClinicalSignificance_sub,
         c(
           "Pathogenic", "Likely pathogenic",
-          "Uncertain significance",
+          "Pathogenic, low penetrance", "Likely pathogenic, low penetrance",
+          "Established risk allele", "Likely risk allele",
+          "VUS-high", "VUS-mid", "Uncertain significance", "Uncertain risk allele", "VUS-low",
           "Likely benign", "Benign"
         )
       )) %>%
@@ -321,39 +364,33 @@ if (!is.null(conceptID_file)) {
 conflicting_variants <- submission_merged_df %>%
   dplyr::filter(!VariationID %in% variants_resolved$VariationID)
 
-# Identify cases where a majority pathogenicity call has been made for variants
-consensus_calls <- conflicting_variants %>%
-  # Here, we will group B+LB and P+LP together to identify majority calls
-  dplyr::mutate(ClinSig = case_when(
-    ClinicalSignificance_sub %in% c("Pathogenic", "Likely pathogenic") ~ "Pathogenic/Likely pathogenic",
-    ClinicalSignificance_sub %in% c("Benign", "Likely benign") ~ "Benign/Likely benign",
-    ClinicalSignificance_sub == "Uncertain significance" ~ "Uncertain significance",
-    TRUE ~ NA_character_
-  )) %>%
-  count(VariationID, ClinSig) %>%
+# Compute max-count buckets per variant once
+clinsig_counts <- conflicting_variants %>%
+  dplyr::filter(!is.na(ClinSig_consensus)) %>%
+  count(VariationID, ClinSig_consensus) %>%
   group_by(VariationID) %>%
-  dplyr::filter(n == max(n)) %>%
-  dplyr::filter(!VariationID %in% VariationID[duplicated(VariationID)])
+  dplyr::filter(n == max(n))
+
+consensus_calls <- clinsig_counts %>%
+  dplyr::filter(n() == 1) %>%
+  ungroup()
+tied_calls <- clinsig_counts %>%
+  dplyr::filter(n() > 1) %>%
+  ungroup()
 
 # Extract variants with consensus calls
 variants_consensus_call <- conflicting_variants %>%
-  dplyr::mutate(ClinSig = case_when(
-    ClinicalSignificance_sub %in% c("Pathogenic", "Likely pathogenic") ~ "Pathogenic/Likely pathogenic",
-    ClinicalSignificance_sub %in% c("Benign", "Likely benign") ~ "Benign/Likely benign",
-    ClinicalSignificance_sub == "Uncertain significance" ~ "Uncertain significance",
-    TRUE ~ NA_character_
-  )) %>%
-  dplyr::filter(glue::glue("{VariationID}-{ClinSig}") %in% glue::glue("{consensus_calls$VariationID}-{consensus_calls$ClinSig}")) %>%
+  dplyr::semi_join(consensus_calls, by = c("VariationID", "ClinSig_consensus")) %>%
   dplyr::arrange(desc(mdy(LastEvaluated_sub))) %>%
   distinct(VariationID, .keep_all = T) %>%
   arrange(VariationID) %>%
   dplyr::mutate(ReviewStatus_var = glue::glue("{ReviewStatus_var}, consensus call taken")) %>%
-  dplyr::rename(ClinSig_report = ClinSig)
+  dplyr::rename(ClinSig_report = ClinSig_consensus)
 
 # Resolve conflicts in remaining variants by taking call at date last evaluated
 variants_conflicts_latest <- conflicting_variants %>%
-  dplyr::filter(!VariationID %in% variants_consensus_call) %>%
-  dplyr::filter(ClinicalSignificance_var != ClinicalSignificance_sub) %>%
+  dplyr::filter(!VariationID %in% variants_consensus_call$VariationID) %>%
+  dplyr::semi_join(tied_calls, by = c("VariationID", "ClinSig_consensus")) %>%
   group_by(VariationID) %>%
   dplyr::arrange(desc(mdy(LastEvaluated_sub))) %>%
   dplyr::slice_head(n = 1) %>%
@@ -367,7 +404,11 @@ variants_conflicts_latest <- conflicting_variants %>%
 submission_final_df <- variants_resolved %>%
   bind_rows(variants_consensus_call, variants_conflicts_latest) %>%
   dplyr::mutate(
-    ClinicalSignificance = ClinSig_report,
+    ClinicalSignificance = case_when(
+      grepl("Uncertain risk allele", ClinSig_report, ignore.case = TRUE) ~ "Uncertain significance",
+      grepl("risk allele", ClinSig_report, ignore.case = TRUE) ~ "Risk allele",
+      TRUE ~ ClinSig_report
+    ),
     ReviewStatus = ReviewStatus_var,
     SubmittedPhenotypeInfo = case_when(
       SubmittedPhenotypeInfo == "Not Provided" ~ NA_character_,
@@ -378,7 +419,12 @@ submission_final_df <- variants_resolved %>%
       TRUE ~ Description
     )
   ) %>%
-  distinct(vcf_id, .keep_all = T) %>%
+  filter(
+    !is.na(ClinicalSignificance),
+    !ClinicalSignificance %in% c("-", "not provided", "association", "risk factor", "drug response")
+  ) %>%
+  dplyr::arrange(desc(mdy(LastEvaluated_sub))) %>%
+  distinct(VariationID, .keep_all = TRUE) %>%
   dplyr::select(any_of(c(
     "VariationID", "ClinicalSignificance",
     "LastEvaluated", "Description", "SubmittedPhenotypeInfo",
@@ -397,7 +443,7 @@ clinvar_conflicting <- variant_summary_df %>%
 
 # extract all variants with >= P/LP call
 plp_submissions <- submission_summary_df %>%
-  dplyr::filter(ClinicalSignificance %in% c("Pathogenic", "Likely pathogenic")) %>%
+  dplyr::filter(ClinicalSignificance %in% c("Pathogenic", "Likely pathogenic", "Pathogenic, low penetrance", "Likely pathogenic, low penetrance", "Established risk allele", "Likely risk allele")) %>%
   pull(VariationID)
 
 # add column `clinvar_flag`, and make note of variants with conflicting interpretations and that have >= 1 P/LP call
@@ -411,5 +457,5 @@ table(submission_final_df$ClinicalSignificance)
 
 write_tsv(
   submission_final_df,
-  file.path(results_dir, "resolved-clinvar-interpretations.tsv")
+  file.path(results_dir, glue::glue("resolved-clinvar-{date_submission}{concept_label}.tsv"))
 )
