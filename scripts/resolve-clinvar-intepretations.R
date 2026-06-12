@@ -130,7 +130,7 @@ variant_summary_df <- vroom(input_variant_summary,
       ReviewStatus %in% c("criteria provided, conflicting classifications", "criteria provided, single submitter") ~ 1,
       TRUE ~ NA
     )
-  ) %>% 
+  ) %>%
   dplyr::filter(!is.na(ClinSig_resolved))
 
 
@@ -251,8 +251,10 @@ submission_merged_df <- submission_summary_df %>%
 
 # Extract submissions that have no conflicts
 variants_resolved <- submission_merged_df %>%
-  filter(ClinSig_resolved != "Conflicting classifications of pathogenicity",
-         !is.na(ClinSig_resolved)) %>%
+  filter(
+    ClinSig_resolved != "Conflicting classifications of pathogenicity",
+    !is.na(ClinSig_resolved)
+  ) %>%
   dplyr::arrange(desc(mdy(LastEvaluated))) %>%
   distinct(VariationID, .keep_all = T) %>%
   mutate(ClinSig_report = ClinSig_resolved) %>%
@@ -297,8 +299,12 @@ if (!is.null(conceptID_file)) {
     group_by(VariationID) %>%
     dplyr::filter(n == max(n))
 
-  consensus_calls_conceptIDs <- clinsig_counts_conceptIDs %>% dplyr::filter(n() == 1) %>% ungroup()
-  tied_calls_conceptIDs      <- clinsig_counts_conceptIDs %>% dplyr::filter(n() > 1)  %>% ungroup()
+  consensus_calls_conceptIDs <- clinsig_counts_conceptIDs %>%
+    dplyr::filter(n() == 1) %>%
+    ungroup()
+  tied_calls_conceptIDs <- clinsig_counts_conceptIDs %>%
+    dplyr::filter(n() > 1) %>%
+    ungroup()
 
   # extract variants resolved through consensus calling
   variants_resolved <- variants_with_conceptIDs %>%
@@ -365,8 +371,12 @@ clinsig_counts <- conflicting_variants %>%
   group_by(VariationID) %>%
   dplyr::filter(n == max(n))
 
-consensus_calls <- clinsig_counts %>% dplyr::filter(n() == 1) %>% ungroup()
-tied_calls      <- clinsig_counts %>% dplyr::filter(n() > 1)  %>% ungroup()
+consensus_calls <- clinsig_counts %>%
+  dplyr::filter(n() == 1) %>%
+  ungroup()
+tied_calls <- clinsig_counts %>%
+  dplyr::filter(n() > 1) %>%
+  ungroup()
 
 # Extract variants with consensus calls
 variants_consensus_call <- conflicting_variants %>%
