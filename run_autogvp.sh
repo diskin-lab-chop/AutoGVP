@@ -9,7 +9,10 @@ export BCFTOOLS_PLUGINS=/rocker-build/bcftools-1.17/plugins
 BASEDIR="$(dirname "${BASH_SOURCE[0]}")"
 echo "$BASEDIR"
 
-# define parameter variables 
+# default values
+update_intervar_criteria=TRUE
+
+# define parameter variables
 while [ $# -gt 0 ]; do
   case "$1" in
     --vcf*|-v*)
@@ -31,6 +34,14 @@ while [ $# -gt 0 ]; do
     --autopvs1*|-a*)
       if [[ "$1" != *=* ]]; then shift; fi
       autopvs1_file="${1#*=}"
+      ;;
+    --hgvs4variation_file*)
+      if [[ "$1" != *=* ]]; then shift; fi
+      hgvs4variation_file="${1#*=}"
+      ;;
+    --update_intervar_criteria*)
+      if [[ "$1" != *=* ]]; then shift; fi
+      update_intervar_criteria="${1#*=}"
       ;;
     --outdir*|-O*)
       if [[ "$1" != *=* ]]; then shift; fi
@@ -74,20 +85,22 @@ while [ $# -gt 0 ]; do
         echo "Options:"
         echo "  -v/--vcf                          VCF file"
         echo "  -f/--filter_criteria              VCF filtering criteria"
-        echo "  -i/--intervar                     Intervar results file"
-        echo "  -a/--autopvs1                     Autopvs1 results file"
+        echo "  -i/--intervar                     InterVar results file"
+        echo "  -a/--autopvs1                     AutoPVS1 results file"
         echo "  -m/--multianno                    ANNOVAR file"
-        echo "  -O/--outdir                       output directory"
-        echo "  -o/--out                          output prefix"
-        echo "  -s/--sample_id                    sample ID to be added to the output file"
+        echo "  --hgvs4variation_file             ClinVar HGVS4Variation file"
+        echo "  --update_intervar_criteria        Update InterVar criteria based on updated ClinVar evidence (default: TRUE)"
+        echo "  -O/--outdir                       Output directory"
+        echo "  -o/--out                          Output prefix"
+        echo "  -s/--sample_id                    Sample ID to be added to the output file"
         echo "  -c/--resolved_clinvar             ClinVar variant file with conflicts resolved"
         echo "  --variant_summary                 ClinVar variant summary file"
         echo "  --submission_summary              ClinVar submission summary file"
-        echo "  --conceptIDs                      list of conceptIDs to prioritize submissions for clinvar variant conflict resolution. Will be ignored if --resolved_clinvar is provided"
-        echo "  --conflict_res                    how to resolve conflicts associated with conceptIDs. Will be ignored if --resolved_clinvar is provided or if conceptIDs are not provided"
-        echo "  --custom_output_cols              optional; text file of user-defined column names from VCF info fields or other input file to be included in AutoGVP output files. Must contain three columns named 'Column_name', 'Rename' (i.e., what to rename colum in final output), and 'Abridged' (T or F indicating if column should be included in abridged output)"
+        echo "  --conceptIDs                      List of conceptIDs to prioritize submissions for ClinVar conflict resolution. Ignored if --resolved_clinvar is provided"
+        echo "  --conflict_res                    How to resolve conflicts associated with conceptIDs. Ignored if --resolved_clinvar is provided or if conceptIDs are not provided"
+        echo "  --custom_output_cols              Optional file defining additional output columns. Must contain columns: Column_name, Rename, and Abridged"
         echo "  -h/--help                         Display usage information"
-            exit 0
+        exit 0
       ;;
     *)
       >&2 printf "Error: Invalid argument\n"
@@ -173,6 +186,26 @@ multianno_input=$out_dir/${out_file}_multianno_filtered.txt
 autopvs1_input=$out_dir/${out_file}_autopvs1_filtered.tsv
 intervar_input=$out_dir/${out_file}_intervar_filtered.txt
 
+# Update intervar PS1 and PM5 criteria and intervar classification 
+# when update_intervar_criteria is TRUE
+if [[ "${update_intervar_criteria}" == "TRUE" ]]; then
+
+  # check that hgvs4variation_file is present
+
+  [[ -z "$hgvs4variation_file" ]] && { echo "ERROR: --hgvs4variation_file is required"; exit 1; }
+
+    echo "Updating Intervar PS1 and PM5 evidence and classifications based on provided ClinVar annotations..."
+
+    Rscript scripts/update_intervar.R \
+        --intervar_file "$intervar_input" \
+        --clinvar_file "$selected_submissions" \
+        --clinvar_hgvs4_file "$hgvs4variation_file" \
+        --outdir "$out_dir"
+        
+    # use updated intervar downstream
+    intervar_input=${intervar_input}_updated
+fi
+
 # Run AutoGVP 
 echo "Running AutoGVP..."
 
@@ -222,4 +255,4 @@ echo "Filtering VEP annotations and creating final output..."
   fi
 
 # Remove intermediate files
-rm $autogvp_input $vcf_parsed_file $autogvp_output $out_dir/$out_file.filtered_csq_subfields.tsv $out_dir/${out_file}_multianno_filtered.txt $out_dir/${out_file}_autopvs1_filtered.tsv $out_dir/${out_file}_intervar_filtered.txt
+rm $autogvp_input $vcf_parsed_file $autogvp_output $out_dir/$out_file.filtered_csq_subfields.tsv $out_dir/${out_file}_multianno_filtered.txt $out_dir/${out_file}_autopvs1_filtered.tsv $out_dir/${out_file}_intervar_filtered*
