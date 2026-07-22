@@ -166,26 +166,44 @@ intervar_missense_df <- intervar_df %>%
   )
 
 # Load ClinVar HGVS4Variation file, which provides protein-level HGVS
-# annotations (ProteinChange) linked to ClinVar VariationIDs
-# Open file and read lines until a line without '#' is found
-con <- file(clinvar_hgvs4_file, "r")
-skip_lines <- 0
-while (grepl("^#", readLines(con, n = 1))) {
-  skip_lines <- skip_lines + 1
-}
-
+# annotations (ProteinChange) linked to ClinVar VariationIDs.
+# This file is typically tens of GB uncompressed, but only rows whose
+# VariationID matches an InterVar missense variant are actually needed.
+# Pre-filter with awk (a fast, single C-level pass over the decompressed
+# stream) so that only the small matching subset ever reaches vroom,
+# instead of loading and indexing the entire file in R.
 intervar_ids <- unique(intervar_missense_df$ClinVar_VariationID)
 
-# retain last line starting with "#" to retain column names
+ids_file <- tempfile()
+writeLines(as.character(intervar_ids), ids_file)
+
+decompress_cmd <- if (nzchar(Sys.which("zcat"))) "zcat" else "gzcat"
+
+hgvs4_cols <- c(
+  "Symbol", "GeneID", "VariationID", "AlleleID", "Type", "Assembly",
+  "NucleotideExpression", "NucleotideChange", "ProteinExpression",
+  "ProteinChange", "UsedForNaming", "Submitted", "OnRefSeqGene"
+)
+
+# VariationID is column 3 of the HGVS4Variation file; keep only data
+# lines (drop the leading "#..." comment/header lines) whose VariationID
+# is in the InterVar-matched set
+filter_cmd <- sprintf(
+  "%s %s | awk -F'\\t' 'NR==FNR { gsub(/\\r$/, \"\"); ids[$1]; next } { gsub(/\\r$/, \"\") } !/^#/ && ($3 in ids)' %s -",
+  decompress_cmd,
+  shQuote(clinvar_hgvs4_file),
+  shQuote(ids_file)
+)
+
 hgvs4_variation_df <- vroom::vroom(
-  clinvar_hgvs4_file,
-  skip = skip_lines - 1,
+  pipe(filter_cmd),
   delim = "\t",
+  col_names = hgvs4_cols,
   col_select = c(VariationID, Assembly, ProteinChange),
   show_col_types = FALSE
-) %>%
-  # filter for variants in intervar df
-  dplyr::filter(!is.na(match(VariationID, intervar_ids)))
+)
+
+unlink(ids_file)
 
 # Verify that HGVS annotations were found for all ClinVar variants.
 # Missing VariationIDs usually indicate an outdated HGVS4Variation file.
@@ -444,8 +462,8 @@ intervar_unique <- intervar_unique %>%
 final_intervar_df <- intervar_df %>%
   left_join(intervar_unique %>% dplyr::select(
     `#Chr`, Start, End, Ref, Alt,
-    intervar_updated
-  )) %>%
+    intervar_updated),
+    by = join_by(`#Chr`, Start, End, Ref, Alt)) %>%
   dplyr::mutate(`InterVar: InterVar and Evidence` = case_when(
     !is.na(intervar_updated) ~ intervar_updated,
     TRUE ~ `InterVar: InterVar and Evidence`
