@@ -51,20 +51,14 @@ clinvar_hgvs4_file <- opt$clinvar_hgvs4_file
 results_dir <- opt$outdir
 output_file <- glue::glue("{basename(intervar_file)}_updated")
 
-print(results_dir)
-
-# intervar_file <- "data/06e3b3d0-4fc5-48cb-9495-a6244f1e4f49.hg38_multianno.txt.intervar.gz"
-# clinvar_file <- "refs/resolved-clinvar-2026-06-cancer-latest.tsv"
-# clinvar_hgvs4_file <- "data/hgvs4variation-2026-07.txt.gz"
-
 # Load InterVar output and ensure chromosome values are stored as character
 # strings to avoid type mismatches during downstream joins
-intervar_df <- read_tsv(intervar_file) %>%
+intervar_df <- read_tsv(intervar_file, show_col_types = FALSE) %>%
   dplyr::mutate(`#Chr` = as.character(`#Chr`))
 
 # Parse genomic coordinates from the ClinVar vcf_id field
 # (chr-pos-ref-alt format) into separate columns for variant matching
-clinvar_df <- read_tsv(clinvar_file) %>%
+clinvar_df <- read_tsv(clinvar_file, show_col_types = FALSE) %>%
   dplyr::mutate(
     chr_clinvar = unlist(lapply(strsplit(vcf_id, "-"), function(x) x[[1]])),
     Start_clinvar = as.numeric(unlist(lapply(strsplit(vcf_id, "-"), function(x) x[[2]]))),
@@ -141,7 +135,8 @@ intervar_missense_df <- intervar_df %>%
                             ClinicalSignificance,
                             vcf_id),
             by = c("#Chr" = "chr_clinvar",
-                   "Start" = "Start_clinvar")) %>%
+                   "Start" = "Start_clinvar"),
+            relationship = "many-to-many") %>%
   #retain only SNVs (PS1 and PM5 only applied to missense variants)
   dplyr::filter(nchar(Ref_clinvar) == 1,
                 nchar(Alt_clinvar) == 1) %>%
@@ -153,7 +148,7 @@ intervar_missense_df <- intervar_df %>%
 # Load ClinVar HGVS4Variation file, which provides protein-level HGVS
 # annotations (ProteinChange) linked to ClinVar VariationIDs
 hgvs4_variation_df <- vroom::vroom(clinvar_hgvs4_file, skip = 15,
-                                   delim = "\t") %>%
+                                   delim = "\t", show_col_types = FALSE) %>%
   # filter for variants in intervar df
   dplyr::filter(VariationID %in% intervar_missense_df$ClinVar_VariationID) 
 
@@ -181,7 +176,8 @@ hgvs4_variation_df <- hgvs4_variation_df %>%
 intervar_missense_df <- intervar_missense_df %>%
   left_join(hgvs4_variation_df %>%
               dplyr::select(VariationID, ProteinChange),
-            by = c("ClinVar_VariationID" = "VariationID")) %>%
+            by = c("ClinVar_VariationID" = "VariationID"),
+            relationship = "many-to-many") %>%
   dplyr::rename(HGVSp_clinvar = ProteinChange) %>%
   # convert to one-letter AA abbreviations to match intervar
   dplyr::mutate(HGVSp_clinvar = convert_hgvsp_to_one_letter(HGVSp_clinvar))
