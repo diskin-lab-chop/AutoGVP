@@ -25,33 +25,37 @@ options(scipen = 999)
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
+# Get directory of currently running script
+args <- commandArgs(trailingOnly = FALSE)
+script_path <- sub("--file=", "", args[grep("--file=", args)])
+script_dir <- dirname(normalizePath(script_path))
+
 # parse parameters
 option_list <- list(
   make_option(c("--vcf"),
-    type = "character",
-    help = "Input filtered and parsed VEP VCF file"
+              type = "character",
+              help = "Input filtered and parsed VEP VCF file"
   ),
   make_option(c("--autogvp"),
-    type = "character",
-    help = "input AutoGVP annotated file"
+              type = "character",
+              help = "input AutoGVP annotated file"
   ),
   make_option(c("--output"),
-    type = "character", default = "out",
-    help = "output name"
+              type = "character", default = "out",
+              help = "output name"
   ),
   make_option(c("--outdir"),
-    type = "character", default = "results",
-    help = "output directory"
+              type = "character", default = "results",
+              help = "output directory"
   ),
-  make_option(c("--default_colnames"),
-    type = "character", default = "data/output_colnames_default.tsv",
-    help = "default output colnames"
-  ),
-  make_option(c("--custom_colnames"),
-    type = "character", default = NULL,
-    help = "user-defined output colnames"
+  make_option(c("--output_colnames"),
+              type = "character",
+              default = file.path(script_dir, "..", "data", "output_colnames_default.tsv"),
+              help = "output column names"
   )
 )
+
+print(script_dir)
 
 opt <- parse_args(OptionParser(option_list = option_list))
 
@@ -60,8 +64,7 @@ input_vcf_file <- opt$vcf
 input_autogvp_file <- opt$autogvp
 output_name <- opt$output
 results_dir <- opt$outdir
-default_colnames_file <- opt$default_colnames
-custom_colnames_file <- opt$custom_colnames
+output_colnames_file <- opt$output_colnames
 
 # create results directory if it does not exist
 if (!dir.exists(results_dir)) {
@@ -77,8 +80,8 @@ csq_fields <- file.path(results_dir, glue::glue("{output_name}.filtered_csq_subf
 
 # Read in VEP vcf file
 vcf <- read_tsv(input_vcf_file,
-  show_col_types = FALSE,
-  guess_max = 10000
+                show_col_types = FALSE,
+                guess_max = 10000
 )
 
 # Remove "[#]" characters from column headers, if present
@@ -121,8 +124,8 @@ vcf_separated <- vcf %>%
 
 # Read in autogvp output
 autogvp <- read_tsv(input_autogvp_file,
-  show_col_types = FALSE,
-  guess_max = 10000
+                    show_col_types = FALSE,
+                    guess_max = 10000
 )
 
 # Parse Sample column, if present
@@ -137,12 +140,12 @@ if ("Sample" %in% names(autogvp)) {
     res[missing] <- NA
     as.data.frame(res)
   }
-
+  
   # apply function row-wise
   autogvp_expanded <- dplyr::bind_rows(
     purrr::map2(autogvp$FORMAT, autogvp$Sample, parse_sample)
   )
-
+  
   # merge parsed fields with autogvp df and expand AD column
   autogvp <- bind_cols(autogvp, autogvp_expanded) %>%
     tidyr::separate_wider_delim(AD, delim = ",", names = c("AD_ref", "AD_alt"), too_many = "drop")
@@ -205,7 +208,7 @@ split_and_unique <- function(string) {
   unique_values <- unique(split_values[!is.na(split_values)])
   unique_values <- paste(unique_values, collapse = ";")
   unique_values <- unlist(unique_values)
-
+  
   return(unique_values)
 }
 
@@ -230,34 +233,20 @@ merged_df <- merged_df %>%
   select(-any_of(c("ID", "avsnp147", "Existing_variation")))
 
 # read in default output column names tsv
-default_colnames <- read_tsv(default_colnames_file,
-  show_col_types = FALSE
-)
+output_colnames <- read_tsv(output_colnames_file,
+                            show_col_types = FALSE)
 
-# if custom output colnames provided, append to default colnames
-if (!is.null(custom_colnames_file)) {
-  custom_colnames <- read_tsv(custom_colnames_file,
-    show_col_types = FALSE
-  )
-
-  if (length(names(custom_colnames)) != 3 & all(names(custom_colnames) != c("Column_name", "Rename", "Abridged"))) {
-    stop("Error: custom_colnames should contain three columns with names 'Column_name', 'Rename', 'Abridged')")
-  }
-
-  colnames <- default_colnames %>%
-    # remove col_name from default if also in custom to ensure abridged status is defined by user
-    dplyr::filter(!Column_name %in% custom_colnames$Column_name) %>%
-    bind_rows(custom_colnames)
-} else {
-  colnames <- default_colnames
+# check column names are correct
+if (length(names(output_colnames)) != 3 & all(names(output_colnames) != c("Column_name", "Rename", "Abridged"))) {
+  stop("Error: output_colnames file should contain three columns with names 'Column_name', 'Rename', 'Abridged')")
 }
 
 # Subset and reorder output columns based on inclusion and order in `colnames`
 merged_df <- merged_df %>%
-  dplyr::select(any_of(colnames$Column_name))
+  dplyr::select(any_of(output_colnames$Column_name))
 
 # filter `colnames` for columns present in `merged_df`
-colnames <- colnames %>%
+colnames <- output_colnames %>%
   dplyr::filter(Column_name %in% names(merged_df))
 
 # rename columns according to `colnames` Rename column
@@ -266,7 +255,7 @@ merged_df <- merged_df %>%
 
 # Create list of columns to include in abridged output
 abridged_cols <- colnames %>%
-  filter(Abridged == T) %>%
+  dplyr::filter(Abridged == T) %>%
   pull(Rename)
 
 # Generate abridged output
