@@ -460,10 +460,13 @@ intervar_unique <- intervar_unique %>%
 # data frame and replace the existing evidence string when an updated
 # version is available
 final_intervar_df <- intervar_df %>%
-  left_join(intervar_unique %>% dplyr::select(
-    `#Chr`, Start, End, Ref, Alt,
-    intervar_updated),
-    by = join_by(`#Chr`, Start, End, Ref, Alt)) %>%
+  left_join(
+    intervar_unique %>% dplyr::select(
+      `#Chr`, Start, End, Ref, Alt,
+      intervar_updated
+    ),
+    by = join_by(`#Chr`, Start, End, Ref, Alt)
+  ) %>%
   dplyr::mutate(`InterVar: InterVar and Evidence` = case_when(
     !is.na(intervar_updated) ~ intervar_updated,
     TRUE ~ `InterVar: InterVar and Evidence`
