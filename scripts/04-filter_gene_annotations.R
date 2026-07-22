@@ -33,25 +33,25 @@ script_dir <- dirname(normalizePath(script_path))
 # parse parameters
 option_list <- list(
   make_option(c("--vcf"),
-              type = "character",
-              help = "Input filtered and parsed VEP VCF file"
+    type = "character",
+    help = "Input filtered and parsed VEP VCF file"
   ),
   make_option(c("--autogvp"),
-              type = "character",
-              help = "input AutoGVP annotated file"
+    type = "character",
+    help = "input AutoGVP annotated file"
   ),
   make_option(c("--output"),
-              type = "character", default = "out",
-              help = "output name"
+    type = "character", default = "out",
+    help = "output name"
   ),
   make_option(c("--outdir"),
-              type = "character", default = "results",
-              help = "output directory"
+    type = "character", default = "results",
+    help = "output directory"
   ),
   make_option(c("--output_colnames"),
-              type = "character",
-              default = file.path(script_dir, "..", "data", "output_colnames_default.tsv"),
-              help = "output column names"
+    type = "character",
+    default = file.path(script_dir, "..", "data", "output_colnames_default.tsv"),
+    help = "output column names"
   )
 )
 
@@ -80,8 +80,8 @@ csq_fields <- file.path(results_dir, glue::glue("{output_name}.filtered_csq_subf
 
 # Read in VEP vcf file
 vcf <- read_tsv(input_vcf_file,
-                show_col_types = FALSE,
-                guess_max = 10000
+  show_col_types = FALSE,
+  guess_max = 10000
 )
 
 # Remove "[#]" characters from column headers, if present
@@ -124,8 +124,8 @@ vcf_separated <- vcf %>%
 
 # Read in autogvp output
 autogvp <- read_tsv(input_autogvp_file,
-                    show_col_types = FALSE,
-                    guess_max = 10000
+  show_col_types = FALSE,
+  guess_max = 10000
 )
 
 # Parse Sample column, if present
@@ -140,12 +140,12 @@ if ("Sample" %in% names(autogvp)) {
     res[missing] <- NA
     as.data.frame(res)
   }
-  
+
   # apply function row-wise
   autogvp_expanded <- dplyr::bind_rows(
     purrr::map2(autogvp$FORMAT, autogvp$Sample, parse_sample)
   )
-  
+
   # merge parsed fields with autogvp df and expand AD column
   autogvp <- bind_cols(autogvp, autogvp_expanded) %>%
     tidyr::separate_wider_delim(AD, delim = ",", names = c("AD_ref", "AD_alt"), too_many = "drop")
@@ -208,7 +208,7 @@ split_and_unique <- function(string) {
   unique_values <- unique(split_values[!is.na(split_values)])
   unique_values <- paste(unique_values, collapse = ";")
   unique_values <- unlist(unique_values)
-  
+
   return(unique_values)
 }
 
@@ -234,7 +234,8 @@ merged_df <- merged_df %>%
 
 # read in default output column names tsv
 output_colnames <- read_tsv(output_colnames_file,
-                            show_col_types = FALSE)
+  show_col_types = FALSE
+)
 
 # check column names are correct
 if (length(names(output_colnames)) != 3 & all(names(output_colnames) != c("Column_name", "Rename", "Abridged"))) {
