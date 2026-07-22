@@ -147,7 +147,15 @@ intervar_missense_df <- intervar_df %>%
 
 # Load ClinVar HGVS4Variation file, which provides protein-level HGVS
 # annotations (ProteinChange) linked to ClinVar VariationIDs
-hgvs4_variation_df <- vroom::vroom(clinvar_hgvs4_file, skip = 15,
+# Open file and read lines until a line without '#' is found
+con <- file(clinvar_hgvs4_file, "r")
+skip_lines <- 0
+while (grepl("^#", readLines(con, n = 1))) {
+  skip_lines <- skip_lines + 1
+}
+
+# retain last line starting with "#" to retain column names
+hgvs4_variation_df <- vroom::vroom(clinvar_hgvs4_file, skip = skip_lines - 1,
                                    delim = "\t", show_col_types = FALSE) %>%
   # filter for variants in intervar df
   dplyr::filter(VariationID %in% intervar_missense_df$ClinVar_VariationID) 
@@ -428,17 +436,34 @@ final_intervar_df <- intervar_df %>%
 # by ClinVar-derived PS1/PM5 updates
 print(glue::glue("Number of missense variants queried: {nrow(intervar_unique)}"))
 print(glue::glue("Number of PS1 updates: {sum(intervar_unique$PS1_old != intervar_unique$PS1_new)}"))
-intervar_unique %>%
-  dplyr::filter(PS1_old != PS1_new) %>%
-  dplyr::count(PS1_old, PS1_new)
+
+if (sum(intervar_unique$PS1_old != intervar_unique$PS1_new) > 0){
+
+  intervar_unique %>%
+    dplyr::filter(PS1_old != PS1_new) %>%
+    dplyr::count(PS1_old, PS1_new)
+  
+}
+
 print(glue::glue("Number of PM5 updates: {sum(intervar_unique$PM5_old != intervar_unique$PM5_new)}"))
-intervar_unique %>%
-  dplyr::filter(PM5_old != PM5_new) %>%
-  dplyr::count(PM5_old, PM5_new)
+
+if (sum(intervar_unique$PM5_old != intervar_unique$PM5_new) > 0){
+  
+  intervar_unique %>%
+    dplyr::filter(PM5_old != PM5_new) %>%
+    dplyr::count(PM5_old, PM5_new)
+  
+}
+
 print(glue::glue("Number of Intervar pathogenicity call updates: {sum(intervar_unique$class_changed == TRUE)}"))
-intervar_unique %>%
-  dplyr::filter(class_changed == TRUE) %>%
-  count(original_class, updated_class)
+
+if (sum(intervar_unique$class_changed == TRUE) > 0){
+  
+  intervar_unique %>%
+    dplyr::filter(class_changed == TRUE) %>%
+    count(original_class, updated_class)
+  
+}
 
 # save to output
 write_tsv(final_intervar_df,
