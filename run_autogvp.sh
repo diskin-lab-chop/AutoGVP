@@ -14,164 +14,164 @@ update_intervar_criteria=TRUE
 
 # define parameter variables
 while [ $# -gt 0 ]; do
-  case "$1" in
-    --vcf*|-v*)
-      if [[ "$1" != *=* ]]; then shift; fi
-      vcf_file="${1#*=}"
-      ;;
-    --filter_criteria*|-f*)
-      if [[ "$1" != *=* ]]; then shift; fi
-      filtering_criteria="${1#*=}"
-      ;;
-    --intervar*|-i*)
-      if [[ "$1" != *=* ]]; then shift; fi
-      intervar_file="${1#*=}"
-      ;;
-    --multianno*|-m*)
-      if [[ "$1" != *=* ]]; then shift; fi
-      multianno_file="${1#*=}"
-      ;;
-    --autopvs1*|-a*)
-      if [[ "$1" != *=* ]]; then shift; fi
-      autopvs1_file="${1#*=}"
-      ;;
-    --hgvs4variation_file*)
-      if [[ "$1" != *=* ]]; then shift; fi
-      hgvs4variation_file="${1#*=}"
-      ;;
-    --update_intervar_criteria*)
-      if [[ "$1" != *=* ]]; then shift; fi
-      update_intervar_criteria="${1#*=}"
-      ;;
-    --outdir*|-O*)
-      if [[ "$1" != *=* ]]; then shift; fi
-      out_dir="${1#*=}"
-      ;;
-    --out*|-o*)
-      if [[ "$1" != *=* ]]; then shift; fi
-      out_file="${1#*=}"
-      ;;
-    --sample_id*|-s*)
-      if [[ "$1" != *=* ]]; then shift; fi
-      sample_id="${1#*=}"
-      ;;
-    --resolved_clinvar*|-c*)
-      if [[ "$1" != *=* ]]; then shift; fi
-      selected_submissions="${1#*=}"
-      ;;
-    --variant_summary*)
-      if [[ "$1" != *=* ]]; then shift; fi
-      variant_summary="${1#*=}"
-      ;;
-    --submission_summary*)
-      if [[ "$1" != *=* ]]; then shift; fi
-      submission_summary="${1#*=}"
-      ;;
-    --conceptIDs*)
-      if [[ "$1" != *=* ]]; then shift; fi
-      conceptIDs="${1#*=}"
-      ;;
-    --conflict_res*)
-      if [[ "$1" != *=* ]]; then shift; fi
-      conflict_res="${1#*=}"
-      ;;
-    --custom_output_cols*)
-      if [[ "$1" != *=* ]]; then shift; fi
-      custom_output_cols="${1#*=}"
-      ;;
-    --help|-h)
-        echo "Usage: $0 [-v/--vcf <*.vcf*>] [-f/--filter_criteria=<criteria>] [-i/--intervar <*.txt.intervar>] [-a/--autopvs1 <*autopvs1*>] [-m/--multianno <*multianno*>] [-c/--resolved_clinvar <refs/resolved-clinvar-interpretations.tsv>] [-o/--out <output>]"
-        echo ""
-        echo "Options:"
-        echo "  -v/--vcf                          VCF file"
-        echo "  -f/--filter_criteria              VCF filtering criteria"
-        echo "  -i/--intervar                     InterVar results file"
-        echo "  -a/--autopvs1                     AutoPVS1 results file"
-        echo "  -m/--multianno                    ANNOVAR file"
-        echo "  --hgvs4variation_file             ClinVar HGVS4Variation file"
-        echo "  --update_intervar_criteria        Update InterVar criteria based on updated ClinVar evidence (default: TRUE)"
-        echo "  -O/--outdir                       Output directory"
-        echo "  -o/--out                          Output prefix"
-        echo "  -s/--sample_id                    Sample ID to be added to the output file"
-        echo "  -c/--resolved_clinvar             ClinVar variant file with conflicts resolved"
-        echo "  --variant_summary                 ClinVar variant summary file"
-        echo "  --submission_summary              ClinVar submission summary file"
-        echo "  --conceptIDs                      List of conceptIDs to prioritize submissions for ClinVar conflict resolution. Ignored if --resolved_clinvar is provided"
-        echo "  --conflict_res                    How to resolve conflicts associated with conceptIDs. Ignored if --resolved_clinvar is provided or if conceptIDs are not provided"
-        echo "  --custom_output_cols              Optional file defining additional output columns. Must contain columns: Column_name, Rename, and Abridged"
-        echo "  -h/--help                         Display usage information"
-        exit 0
-      ;;
-    *)
-      >&2 printf "Error: Invalid argument\n"
-      exit 1
-      ;;
-  esac
-  shift
+          case "$1" in
+        --vcf*|-v*)
+if [[ "$1" != *=* ]]; then shift; fi
+vcf_file="${1#*=}"
+;;
+--filter_criteria*|-f*)
+if [[ "$1" != *=* ]]; then shift; fi
+filtering_criteria="${1#*=}"
+;;
+--intervar*|-i*)
+if [[ "$1" != *=* ]]; then shift; fi
+intervar_file="${1#*=}"
+;;
+--multianno*|-m*)
+if [[ "$1" != *=* ]]; then shift; fi
+multianno_file="${1#*=}"
+;;
+--autopvs1*|-a*)
+if [[ "$1" != *=* ]]; then shift; fi
+autopvs1_file="${1#*=}"
+;;
+--hgvs4variation_file*)
+if [[ "$1" != *=* ]]; then shift; fi
+hgvs4variation_file="${1#*=}"
+;;
+--update_intervar_criteria*)
+if [[ "$1" != *=* ]]; then shift; fi
+update_intervar_criteria="${1#*=}"
+;;
+--outdir*|-O*)
+if [[ "$1" != *=* ]]; then shift; fi
+out_dir="${1#*=}"
+;;
+--out*|-o*)
+if [[ "$1" != *=* ]]; then shift; fi
+out_file="${1#*=}"
+;;
+--sample_id*|-s*)
+if [[ "$1" != *=* ]]; then shift; fi
+sample_id="${1#*=}"
+;;
+--resolved_clinvar*|-c*)
+if [[ "$1" != *=* ]]; then shift; fi
+selected_submissions="${1#*=}"
+;;
+--variant_summary*)
+if [[ "$1" != *=* ]]; then shift; fi
+variant_summary="${1#*=}"
+;;
+--submission_summary*)
+if [[ "$1" != *=* ]]; then shift; fi
+submission_summary="${1#*=}"
+;;
+--conceptIDs*)
+if [[ "$1" != *=* ]]; then shift; fi
+conceptIDs="${1#*=}"
+;;
+--conflict_res*)
+if [[ "$1" != *=* ]]; then shift; fi
+conflict_res="${1#*=}"
+;;
+--output_colnames*)
+if [[ "$1" != *=* ]]; then shift; fi
+output_cols="${1#*=}"
+;;
+--help|-h)
+echo "Usage: $0 [-v/--vcf <*.vcf*>] [-f/--filter_criteria=<criteria>] [-i/--intervar <*.txt.intervar>] [-a/--autopvs1 <*autopvs1*>] [-m/--multianno <*multianno*>] [-c/--resolved_clinvar <refs/resolved-clinvar-interpretations.tsv>] [-o/--out <output>]"
+echo ""
+echo "Options:"
+echo "  -v/--vcf                          VCF file"
+echo "  -f/--filter_criteria              VCF filtering criteria"
+echo "  -i/--intervar                     InterVar results file"
+echo "  -a/--autopvs1                     AutoPVS1 results file"
+echo "  -m/--multianno                    ANNOVAR file"
+echo "  --hgvs4variation_file             ClinVar HGVS4Variation file"
+echo "  --update_intervar_criteria        Update InterVar criteria based on updated ClinVar evidence (default: TRUE)"
+echo "  -O/--outdir                       Output directory"
+echo "  -o/--out                          Output prefix"
+echo "  -s/--sample_id                    Sample ID to be added to the output file"
+echo "  -c/--resolved_clinvar             ClinVar variant file with conflicts resolved"
+echo "  --variant_summary                 ClinVar variant summary file"
+echo "  --submission_summary              ClinVar submission summary file"
+echo "  --conceptIDs                      List of conceptIDs to prioritize submissions for ClinVar conflict resolution. Ignored if --resolved_clinvar is provided"
+echo "  --conflict_res                    How to resolve conflicts associated with conceptIDs. Ignored if --resolved_clinvar is provided or if conceptIDs are not provided"
+echo "  --output_cols                     Optional file defining user-derived columns in AutoGVP output file"
+echo "  -h/--help                         Display usage information"
+exit 0
+;;
+*)
+>&2 printf "Error: Invalid argument\n"
+exit 1
+;;
+esac
+shift
 done
 
 
 # If selected ClinVar submissions files not provided, then run select-ClinVar-submissions.R
 if [[ ! -e $selected_submissions ]]; then
-    
-    echo "select ClinVar submission file not specified. Running select-ClinVar-submissions Rscript..."
-    
-  # if variant_summary or submission_summary args not provided, check if files exist in data/
+
+echo "select ClinVar submission file not specified. Running select-ClinVar-submissions Rscript..."
+
+# if variant_summary or submission_summary args not provided, check if files exist in data/
 #  if [[ $variant_summary -eq 0  || $submission_summary -eq 0 ]]
-  if [[ ! -e $variant_summary || ! -e $submission_summary ]]
-  then
-      
-      echo "variant summary and/or submission_summary file(s) not specified. Checking if files exist in data/..."
-      
-      variant_summary=$(find data/ -type f -name "variant_summary*")
-      submission_summary=$(find data/ -type f -name "submission_summary*")
-      
-      # if no files found matching pattern, download latest versions from ClinVar
-      # if [[ -z "$variant_summary" || -z "$submission_summary" ]]
-      if [[ ! -e "$variant_summary" || ! -e "$submission_summary" ]]
-      then
-        
-        echo "variant_summary and/or submission_summary files not found. Downloading latest versions from ClinVar..."
-        
-        bash $BASEDIR/scripts/download_db_files.sh
-        
-        variant_summary=$(find data/ -type f -name "variant_summary*")
-        submission_summary=$(find data/ -type f -name "submission_summary*") ; 
-        
-      else 
-        
-        echo "variant and submission summary files found. Running select-ClinVar-submissions Rscript..."
-        
-      fi
-      
-    fi
-      
-        if [[ ! -e $conceptIDs ]] ; then
-        
-        echo "resolving ClinVar conflicts using default parameters..."
-      
-        Rscript $BASEDIR/scripts/resolve-clinvar-intepretations.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $BASEDIR/refs
-        
-      fi
-      
-      if [[ -f $conceptIDs && -z $conflict_res ]] ; then 
-      
-        echo "resolving ClinVar conflicts with provided concept IDs and taking latest date evaluated call..."
-      
-        Rscript $BASEDIR/scripts/resolve-clinvar-intepretations.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $BASEDIR/refs --conceptID_list $conceptIDs --conflict_res "latest"
-        
-      fi
-      
-      if [[ -f $conceptIDs && -n $conflict_res ]] ; then
-      
-        echo "resolving ClinVar conflicts with provided concept IDs and specified conflict resolution..."
-      
-        Rscript $BASEDIR/scripts/resolve-clinvar-intepretations.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $BASEDIR/refs --conceptID_list $conceptIDs --conflict_res $conflict_res
-      
-      fi
-      
-      selected_submissions="$BASEDIR/refs/resolved-clinvar-interpretations.tsv"
-        
+if [[ ! -e $variant_summary || ! -e $submission_summary ]]
+then
+
+echo "variant summary and/or submission_summary file(s) not specified. Checking if files exist in data/..."
+
+variant_summary=$(find data/ -type f -name "variant_summary*")
+submission_summary=$(find data/ -type f -name "submission_summary*")
+
+# if no files found matching pattern, download latest versions from ClinVar
+# if [[ -z "$variant_summary" || -z "$submission_summary" ]]
+if [[ ! -e "$variant_summary" || ! -e "$submission_summary" ]]
+then
+
+echo "variant_summary and/or submission_summary files not found. Downloading latest versions from ClinVar..."
+
+bash $BASEDIR/scripts/download_db_files.sh
+
+variant_summary=$(find data/ -type f -name "variant_summary*")
+submission_summary=$(find data/ -type f -name "submission_summary*") ; 
+
+else 
+  
+  echo "variant and submission summary files found. Running select-ClinVar-submissions Rscript..."
+
+fi
+
+fi
+
+if [[ ! -e $conceptIDs ]] ; then
+
+echo "resolving ClinVar conflicts using default parameters..."
+
+Rscript $BASEDIR/scripts/resolve-clinvar-intepretations.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $BASEDIR/refs
+
+fi
+
+if [[ -f $conceptIDs && -z $conflict_res ]] ; then 
+
+echo "resolving ClinVar conflicts with provided concept IDs and taking latest date evaluated call..."
+
+Rscript $BASEDIR/scripts/resolve-clinvar-intepretations.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $BASEDIR/refs --conceptID_list $conceptIDs --conflict_res "latest"
+
+fi
+
+if [[ -f $conceptIDs && -n $conflict_res ]] ; then
+
+echo "resolving ClinVar conflicts with provided concept IDs and specified conflict resolution..."
+
+Rscript $BASEDIR/scripts/resolve-clinvar-intepretations.R --variant_summary $variant_summary --submission_summary $submission_summary --outdir $BASEDIR/refs --conceptID_list $conceptIDs --conflict_res $conflict_res
+
+fi
+
+selected_submissions="$BASEDIR/refs/resolved-clinvar-interpretations.tsv"
+
 fi
 
 
@@ -190,20 +190,20 @@ intervar_input=$out_dir/${out_file}_intervar_filtered.txt
 # when update_intervar_criteria is TRUE
 if [[ "${update_intervar_criteria}" == "TRUE" ]]; then
 
-  # check that hgvs4variation_file is present
+# check that hgvs4variation_file is present
 
-  [[ -z "$hgvs4variation_file" ]] && { echo "ERROR: --hgvs4variation_file is required"; exit 1; }
+[[ -z "$hgvs4variation_file" ]] && { echo "ERROR: --hgvs4variation_file is required"; exit 1; }
 
-    echo "Updating Intervar PS1 and PM5 evidence and classifications based on provided ClinVar annotations..."
+echo "Updating Intervar PS1 and PM5 evidence and classifications based on provided ClinVar annotations..."
 
-    Rscript scripts/update_intervar.R \
-        --intervar_file "$intervar_input" \
-        --clinvar_file "$selected_submissions" \
-        --clinvar_hgvs4_file "$hgvs4variation_file" \
-        --outdir "$out_dir"
-        
-    # use updated intervar downstream
-    intervar_input=${intervar_input}_updated
+Rscript scripts/update_intervar.R \
+--intervar_file "$intervar_input" \
+--clinvar_file "$selected_submissions" \
+--clinvar_hgvs4_file "$hgvs4variation_file" \
+--outdir "$out_dir"
+
+# use updated intervar downstream
+intervar_input=${intervar_input}_updated
 fi
 
 # Run AutoGVP 
@@ -211,14 +211,14 @@ echo "Running AutoGVP..."
 
 # Run AutoGVP variant annotation
 Rscript $BASEDIR/scripts/02-annotate_variants.R --vcf $autogvp_input \
-  --clinvar $selected_submissions \
-  --multianno $multianno_input \
-  --intervar $intervar_input \
-  --autopvs1 $autopvs1_input \
-  --output $out_file \
-  --outdir $out_dir \
-  --sample_id $sample_id
-  
+--clinvar $selected_submissions \
+--multianno $multianno_input \
+--intervar $intervar_input \
+--autopvs1 $autopvs1_input \
+--output $out_file \
+--outdir $out_dir \
+--sample_id $sample_id
+
 autogvp_output=${out_dir}/${out_file}".annotations_report.abridged.tsv"
 
 
@@ -230,29 +230,27 @@ bash $BASEDIR/scripts/03-parse_vcf.sh $autogvp_input
 # Define parsed vcf and autogvp output file variables
 vcf_parsed_file=${autogvp_input%.vcf*}."parsed.tsv"
 
-
 # Filter VCF VEP gene/transcript annotations and merge data with AutoGVP output
 echo "Filtering VEP annotations and creating final output..."
 
-  # check if custom colnames file is provided
-  if [[ -f $custom_output_cols ]] ; then
+# check if custom colnames file is provided
+if [[ -f $output_cols ]] ; then
 
+Rscript $BASEDIR/scripts/04-filter_gene_annotations.R --vcf $vcf_parsed_file \
+--autogvp $autogvp_output \
+--output $out_file \
+--outdir $out_dir \
+--output_colnames $output_cols
+
+else 
+  
   Rscript $BASEDIR/scripts/04-filter_gene_annotations.R --vcf $vcf_parsed_file \
-  --autogvp $autogvp_output \
-  --output $out_file \
-  --outdir $out_dir \
-  --default_colnames $BASEDIR/data/output_colnames_default.tsv \
-  --custom_colnames $custom_output_cols
+--autogvp $autogvp_output \
+--output $out_file \
+--outdir $out_dir 
 
-  else 
-
-  Rscript $BASEDIR/scripts/04-filter_gene_annotations.R --vcf $vcf_parsed_file \
-  --autogvp $autogvp_output \
-  --output $out_file \
-  --outdir $out_dir \
-  --default_colnames $BASEDIR/data/output_colnames_default.tsv
-
-  fi
+fi
 
 # Remove intermediate files
 rm $autogvp_input $vcf_parsed_file $autogvp_output $out_dir/$out_file.filtered_csq_subfields.tsv $out_dir/${out_file}_multianno_filtered.txt $out_dir/${out_file}_autopvs1_filtered.tsv $out_dir/${out_file}_intervar_filtered*
+  

@@ -126,9 +126,8 @@ chr | start | ref | alt | rs_id | gene_symbol_vep | variant_classification_vep |
 chr1 | 1332490 | C | T | rs201607183 | TAS1R3 | missense_variant | chr1:g.1332490C>T | c.959C>T | p.Thr320Met | Uncertain_significance | ClinVar | 1 | Uncertain_significance | InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[1, 0, 0, 0, 0, 0, 0] PP=[0, 0, 1, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]
 chr1 | 1390349 | C | T | rs769726291 | CCNL2 | missense_variant | chr1:g.1390349C>T | c.887G>A | p.Gly296Asp | Uncertain_significance | InterVar | NA | NA | InterVar: Uncertain significance PVS1=0 PS=[0, 0, 0, 0, 0] PM=[1, 1, 0, 0, 0, 0, 0] PP=[0, 0, 0, 0, 0, 0] BA1=0 BS=[0, 0, 0, 0, 0] BP=[0, 0, 0, 0, 0, 0, 0, 0]
 
-*NOTE: gnomAD v.3.1.1 non-cancer AF popmax values (`gnomad_3_1_1_AF_non_cancer`) will also be included in abridged output when provided.
-
-See [here](https://github.com/diskin-lab-chop/AutoGVP/blob/main/data/output_colnames.tsv) for list of columns included in full output.
+See [here](https://github.com/diskin-lab-chop/AutoGVP/blob/main/data/output_colnames_default.tsv) for list of columns included in full output.
+Users can provide their own file specifying column names to include in final output with the `--output_colnames` argument (please use same formatting as `output_colnames_default.tsv`).
 
 
 ## Code Authors
