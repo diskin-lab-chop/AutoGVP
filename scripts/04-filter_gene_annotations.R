@@ -55,8 +55,6 @@ option_list <- list(
   )
 )
 
-print(script_dir)
-
 opt <- parse_args(OptionParser(option_list = option_list))
 
 # get input files from parameters
