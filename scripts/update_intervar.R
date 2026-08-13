@@ -180,7 +180,7 @@ intervar_ids <- unique(intervar_missense_df$ClinVar_VariationID)
 ids_file <- tempfile()
 writeLines(as.character(intervar_ids), ids_file)
 
-decompress_cmd <- if (nzchar(Sys.which("zcat"))) "zcat" else "gzcat"
+decompress_cmd <- "gzip -cd"
 
 hgvs4_cols <- c(
   "Symbol", "GeneID", "VariationID", "AlleleID", "Type", "Assembly",
