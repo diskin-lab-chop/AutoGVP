@@ -204,7 +204,7 @@ hgvs4_variation_df <- vroom::vroom(
   col_names = hgvs4_cols,
   col_select = c(VariationID, Assembly, ProteinChange),
   show_col_types = FALSE
-) 
+)
 
 unlink(ids_file)
 
