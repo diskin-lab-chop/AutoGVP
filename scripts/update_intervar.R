@@ -55,7 +55,7 @@ output_file <- glue::glue("{basename(intervar_file)}_updated")
 # strings and start is numeric to avoid type mismatches during downstream joins
 intervar_df <- read_tsv(intervar_file, show_col_types = FALSE) %>%
   dplyr::mutate(`#Chr` = as.character(`#Chr`),
-		Start = as.numeric(Start)))
+		Start = as.numeric(Start))
 
 # Parse genomic coordinates from the ClinVar vcf_id field
 # (chr-pos-ref-alt format) into separate columns for variant matching
@@ -178,7 +178,7 @@ intervar_ids <- unique(intervar_missense_df$ClinVar_VariationID)
 ids_file <- tempfile()
 writeLines(as.character(intervar_ids), ids_file)
 
-decompress_cmd <- if (nzchar(Sys.which("zcat"))) "zcat" else "gzcat"
+decompress_cmd <- "gzip -cd"
 
 hgvs4_cols <- c(
   "Symbol", "GeneID", "VariationID", "AlleleID", "Type", "Assembly",
@@ -202,7 +202,7 @@ hgvs4_variation_df <- vroom::vroom(
   col_names = hgvs4_cols,
   col_select = c(VariationID, Assembly, ProteinChange),
   show_col_types = FALSE
-)
+) 
 
 unlink(ids_file)
 
