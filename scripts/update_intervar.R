@@ -224,7 +224,8 @@ hgvs4_variation_df <- hgvs4_variation_df %>%
     Assembly == "na",
     ProteinChange != "-"
   ) %>%
-  distinct(VariationID, ProteinChange)
+  distinct(VariationID, ProteinChange) %>%
+  dplyr::mutate(VariationID = as.double(VariationID))
 
 # Append ClinVar protein change annotations to each matched variant
 # and convert amino acid abbreviations to match InterVar formatting
