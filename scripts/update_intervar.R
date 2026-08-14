@@ -202,9 +202,10 @@ hgvs4_variation_df <- vroom::vroom(
   pipe(filter_cmd),
   delim = "\t",
   col_names = hgvs4_cols,
-  col_select = c("VariationID", "Assembly", "ProteinChange"),
+#  col_select = c("VariationID", "Assembly", "ProteinChange"),
   show_col_types = FALSE
-)
+) %>%
+  dplyr::select(VariationID, Assembly, ProteinChange)
 
 unlink(ids_file)
 
