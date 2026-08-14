@@ -453,8 +453,6 @@ submission_final_df <- submission_final_df %>%
     TRUE ~ "None"
   ))
 
-table(submission_final_df$ClinicalSignificance)
-
 # There are rare cases of the same variant having multiple ClinVar VariationIDs
 # We will retain one ID per variant with the most submissions
 # If same submission number, take ID with most stars
@@ -483,6 +481,8 @@ submission_final_df <- submission_final_df %>%
   ) %>%
   distinct(vcf_id, .keep_all = TRUE) %>%
   dplyr::select(-submission_count)
+
+table(submission_final_df$ClinicalSignificance)
 
 write_tsv(
   submission_final_df,
