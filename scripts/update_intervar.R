@@ -177,6 +177,16 @@ intervar_missense_df <- intervar_df %>%
 # instead of loading and indexing the entire file in R.
 intervar_ids <- unique(intervar_missense_df$ClinVar_VariationID)
 
+# If no missense variants matched a ClinVar record by position, there is
+# nothing to look up in the HGVS4Variation file and no PS1/PM5 evidence
+# can be updated. Write the input through unchanged and exit early rather
+# than handing vroom an empty pipe further down.
+if (length(intervar_ids) == 0) {
+  print("No ClinVar-matched missense variants found; skipping PS1/PM5 updates.")
+  write_tsv(intervar_df, file.path(results_dir, output_file))
+  quit(save = "no", status = 0)
+}
+
 ids_file <- tempfile()
 writeLines(as.character(intervar_ids), ids_file)
 
