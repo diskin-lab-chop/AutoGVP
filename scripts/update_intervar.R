@@ -280,26 +280,27 @@ intervar_missense_df <- intervar_missense_df %>%
     # Compute relationships between the InterVar variant and matched
     # ClinVar variants that are required for ACMG PS1 and PM5 evaluation
     same_protein = HGVSp == HGVSp_clinvar,
-    same_codon =
-      aa_pos == aa_pos_clinvar
+    same_codon = aa_pos == aa_pos_clinvar,
+    clinvar_is_nonsense = str_detect(HGVSp_clinvar, "\\*")
   ) %>%
   group_by(`#Chr`, Start, Ref, Alt, HGVSp) %>%
   mutate(
     # Evaluate ACMG evidence criteria for each InterVar-ClinVar match:
     # PS1: same amino acid substitution produced by a different nucleotide change
-    # PM5: different amino acid substitution affecting the same codon
+    # PM5: different missense amino acid substitution affecting the same codon
     PS1_new = as.integer(
       clinvar_plp &
         different_nt &
         same_protein
     ),
 
-    # PM5: P/LP variant at same position, diff nt, diff AA change
+    # PM5: P/LP variant at same position, diff nt, diff (missense) AA change
     PM5_new = as.integer(
       clinvar_plp &
         different_nt &
         same_codon &
-        !same_protein
+        !same_protein &
+        !clinvar_is_nonsense
     )
   ) %>%
   ungroup()
@@ -315,7 +316,8 @@ variant_summary <- intervar_missense_df %>%
     PM5_support = clinvar_plp &
       different_nt &
       same_codon &
-      !same_protein
+      !same_protein &
+      !clinvar_is_nonsense
   ) %>%
   group_by(`#Chr`, Start, Ref, Alt, HGVSp) %>%
   summarise(
@@ -341,7 +343,8 @@ intervar_unique <- intervar_missense_df %>%
     -ClinVar_VariationID, -ClinicalSignificance_new_clinvar,
     -HGVSp_clinvar, -aa_pos,
     -aa_pos_clinvar, -clinvar_plp,
-    -different_nt, -same_protein, -same_codon
+    -different_nt, -same_protein, -same_codon,
+    -clinvar_is_nonsense
   ) %>%
   distinct(`#Chr`, Start, Ref, Alt, HGVSp, .keep_all = TRUE) %>%
   left_join(
