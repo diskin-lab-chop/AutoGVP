@@ -146,7 +146,7 @@ if ("Sample" %in% names(autogvp)) {
 
   # merge parsed fields with autogvp df and expand AD column
   autogvp <- bind_cols(autogvp, autogvp_expanded) %>%
-    tidyr::separate_wider_delim(AD, delim = ",", names = c("AD_ref", "AD_alt"), too_many = "drop")
+    tidyr::separate_wider_delim(AD, delim = ",", names = c("AD_ref", "AD_alt"), too_many = "drop", too_few = "align_start")
 }
 
 # Merge `autogvp` and `vcf_final`
@@ -180,7 +180,7 @@ if ("HGVSc" %in% names(merged_df)) {
   merged_df <- merged_df %>%
     # rm ensembl transcript/protein IDs from HGVSc columns
     dplyr::mutate(
-      HGVSc = str_split(HGVSc, ":", simplify = T)[, 2],
+      HGVSc = if_else(grepl(":", HGVSc), str_split_i(HGVSc, ":", 2), HGVSc)
     )
 }
 
@@ -189,7 +189,7 @@ if ("HGVSp" %in% names(merged_df)) {
     # rm ensembl transcript/protein IDs from HGVSp columns
     dplyr::mutate(
       HGVSp = case_when(
-        grepl(":", HGVSp) ~ str_split(HGVSp, ":", simplify = T)[, 2],
+        grepl(":", HGVSp) ~ str_split_i(HGVSp, ":", 2),
         TRUE ~ HGVSp
       )
     ) %>%
