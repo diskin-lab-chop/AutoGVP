@@ -277,7 +277,10 @@ master_tab <- master_tab %>%
     final_call = replace(final_call, final_call == "Uncertain significance", "Uncertain_significance"),
     final_call = replace(final_call, final_call == "Benign PVS1", "Benign"),
     final_call = replace(final_call, final_call == "Pathogenic PVS1", "Pathogenic"),
-    final_call = replace(final_call, final_call == "Likely pathogenic", "Likely_pathogenic")
+    final_call = replace(final_call, final_call == "Likely pathogenic", "Likely_pathogenic"),
+    # combined ClinVar P/LP and B/LB labels use the same underscore format as the single labels
+    final_call = replace(final_call, final_call == "Pathogenic/Likely pathogenic", "Pathogenic/Likely_pathogenic"),
+    final_call = replace(final_call, final_call == "Benign/Likely benign", "Benign/Likely_benign")
   ) %>%
   distinct()
 
