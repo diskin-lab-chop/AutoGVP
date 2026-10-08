@@ -263,9 +263,11 @@ intervar_missense_df <- intervar_missense_df %>%
     aa_pos_clinvar = extract_aa_pos(HGVSp_clinvar),
 
     # determine if clinvar variant is PLP (PS1, PM5 criteria)
+    # word boundary so "Conflicting classifications of pathogenicity" is not
+    # treated as a P/LP record
     clinvar_plp = str_detect(
       ClinicalSignificance_new_clinvar,
-      regex("pathogenic|likely pathogenic", ignore_case = TRUE)
+      regex("\\bpathogenic\\b", ignore_case = TRUE)
     ) &
       !str_detect(
         ClinicalSignificance_new_clinvar,
@@ -350,6 +352,28 @@ intervar_unique <- intervar_missense_df %>%
   left_join(
     variant_summary,
     by = c("#Chr", "Start", "Ref", "Alt", "HGVSp")
+  )
+
+# InterVar reports a single evidence string per variant, but a variant can have
+# several transcript-level HGVSp annotations (one row each above). Collapse to one
+# row per variant so the join back to the InterVar table does not duplicate rows;
+# evidence from any transcript is sufficient to activate PS1/PM5.
+max_or_na <- function(x) if (all(is.na(x))) NA_integer_ else as.integer(max(x, na.rm = TRUE))
+collapse_ids <- function(x) paste(unique(unlist(strsplit(x[!is.na(x) & x != ""], ";"))), collapse = ";")
+
+intervar_unique <- intervar_unique %>%
+  group_by(`#Chr`, Start, End, Ref, Alt) %>%
+  summarise(
+    HGVSp = paste(unique(na.omit(HGVSp)), collapse = ","),
+    ClinicalSignificance_old_clinvar = first(ClinicalSignificance_old_clinvar),
+    `InterVar: InterVar and Evidence` = first(`InterVar: InterVar and Evidence`),
+    PS1_old = first(PS1_old),
+    PM5_old = first(PM5_old),
+    PS1_new = max_or_na(PS1_new),
+    PM5_new = max_or_na(PM5_new),
+    PS1_ClinVarIDs = collapse_ids(PS1_ClinVarIDs),
+    PM5_ClinVarIDs = collapse_ids(PM5_ClinVarIDs),
+    .groups = "drop"
   )
 
 # function to update the PS1 and PM5 values in the `InterVar: InterVar and Evidence`
