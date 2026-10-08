@@ -107,6 +107,12 @@ convert_hgvsp_to_one_letter <- function(hgvsp) {
 #   PM5: different missense amino acid change at the same residue
 # The residue in the reference (e.g. G in p.G172S) must also match, to guard against
 # ClinVar protein numbering that differs from the InterVar transcript.
+#
+# Genes are matched by symbol. InterVar/ANNOVAR gene annotation databases can carry
+# outdated symbols (e.g. GBA, now GBA1 in ClinVar); for genes whose symbol does not
+# exist in ClinVar at all, the candidate ClinVar genes are those with a P/LP record on the
+# same chromosome within `locus_window` bp of the variant, matched by symbol.
+locus_window <- 250e3
 
 # subset intervar df for missense variants and extract the gene and amino acid change
 # of each transcript annotation into separate columns
@@ -155,11 +161,12 @@ intervar_missense_df <- intervar_df %>%
     ref_aa = hgvsp_parts[, 2],
     aa_pos = as.integer(hgvsp_parts[, 3]),
     alt_aa = hgvsp_parts[, 4],
-    var_id = paste(str_remove(`#Chr`, "^chr"), format(Start, scientific = FALSE, trim = TRUE), Ref, Alt, sep = "-")
+    chr_norm = str_remove(`#Chr`, "^chr"),
+    var_id = paste(chr_norm, format(Start, scientific = FALSE, trim = TRUE), Ref, Alt, sep = "-")
   ) %>%
   dplyr::select(
     `#Chr`, Start, End, Ref, Alt,
-    gene, HGVSp, ref_aa, aa_pos, alt_aa, var_id,
+    gene, HGVSp, ref_aa, aa_pos, alt_aa, chr_norm, var_id,
     `clinvar: Clinvar`,
     `InterVar: InterVar and Evidence`,
     PS1_old, PM5_old
@@ -168,7 +175,9 @@ intervar_missense_df <- intervar_df %>%
 
 # only annotations with a gene and a parsed amino acid substitution can be evaluated
 intervar_missense_aa_df <- intervar_missense_df %>%
-  dplyr::filter(!is.na(gene), !is.na(aa_pos))
+  dplyr::filter(!is.na(gene), !is.na(aa_pos)) %>%
+  # annotations spanning overlapping genes (e.g. "GENE1;GENE2") are evaluated per gene
+  tidyr::separate_longer_delim(gene, delim = ";")
 
 # P/LP records in the resolved ClinVar interpretations
 # (a word boundary is used so "Conflicting classifications of pathogenicity" is not
@@ -180,8 +189,10 @@ clinvar_plp_df <- clinvar_df %>%
   ) %>%
   dplyr::transmute(
     ClinVar_VariationID = VariationID,
+    clinvar_chr = str_remove(chr_clinvar, "^chr"),
+    clinvar_pos = Start_clinvar,
     clinvar_var_id = paste(
-      str_remove(chr_clinvar, "^chr"),
+      clinvar_chr,
       format(Start_clinvar, scientific = FALSE, trim = TRUE),
       Ref_clinvar, Alt_clinvar,
       sep = "-"
@@ -208,12 +219,43 @@ if (length(plp_ids) == 0 || length(query_genes) == 0) {
   quit(save = "no", status = 0)
 }
 
+decompress_cmd <- "gzip -cd"
+
+# Gene symbols currently used by ClinVar (any record); query genes absent from this set
+# (e.g. renamed genes) are matched by genomic location instead of symbol
+symbols_cmd <- sprintf(
+  "%s %s | awk -F'\\t' '!/^#/ && !seen[$1]++ { print $1 }'",
+  decompress_cmd,
+  shQuote(clinvar_hgvs4_file)
+)
+clinvar_symbols <- readLines(pipe(symbols_cmd))
+
+unmatched_genes <- setdiff(query_genes, clinvar_symbols)
+if (length(unmatched_genes) > 0) {
+  print(glue::glue(
+    "{length(unmatched_genes)} gene symbol(s) not found in ClinVar; matching by nearby ClinVar genes (+/- {locus_window} bp): ",
+    "{paste(unmatched_genes, collapse = ', ')}"
+  ))
+}
+
+# P/LP ClinVar records near variants in unmatched genes
+fallback_matches_df <- intervar_missense_aa_df %>%
+  dplyr::filter(gene %in% unmatched_genes) %>%
+  dplyr::distinct(chr_norm, Start) %>%
+  dplyr::inner_join(
+    clinvar_plp_df %>%
+      dplyr::mutate(clinvar_lo = clinvar_pos - locus_window, clinvar_hi = clinvar_pos + locus_window),
+    by = dplyr::join_by(chr_norm == clinvar_chr, dplyr::between(Start, clinvar_lo, clinvar_hi)),
+    relationship = "many-to-many"
+  )
+fallback_ids <- unique(fallback_matches_df$ClinVar_VariationID)
+
 ids_file <- tempfile()
 writeLines(sprintf("%.0f", plp_ids), ids_file)
 genes_file <- tempfile()
 writeLines(query_genes, genes_file)
-
-decompress_cmd <- "gzip -cd"
+fallback_ids_file <- tempfile()
+writeLines(sprintf("%.0f", fallback_ids), fallback_ids_file)
 
 hgvs4_cols <- c(
   "Symbol", "GeneID", "VariationID", "AlleleID", "Type", "Assembly",
@@ -223,13 +265,15 @@ hgvs4_cols <- c(
 
 # Symbol is column 1 and VariationID is column 3 of the HGVS4Variation file; keep only
 # data lines (drop the leading "#..." comment/header lines) whose VariationID is a
-# P/LP record and whose gene has an InterVar missense variant
+# P/LP record and that either are in a gene with an InterVar missense variant or are
+# located near a variant whose gene symbol is not in ClinVar
 filter_cmd <- sprintf(
-  "%s %s | awk -F'\\t' 'FILENAME == ARGV[1] { gsub(/\\r$/, \"\"); ids[$1]; next } FILENAME == ARGV[2] { gsub(/\\r$/, \"\"); genes[$1]; next } { gsub(/\\r$/, \"\") } !/^#/ && ($3 in ids) && ($1 in genes)' %s %s -",
+  "%s %s | awk -F'\\t' 'FILENAME == ARGV[1] { gsub(/\\r$/, \"\"); ids[$1]; next } FILENAME == ARGV[2] { gsub(/\\r$/, \"\"); genes[$1]; next } FILENAME == ARGV[3] { gsub(/\\r$/, \"\"); fb[$1]; next } { gsub(/\\r$/, \"\") } !/^#/ && ($3 in ids) && (($1 in genes) || ($3 in fb))' %s %s %s -",
   decompress_cmd,
   shQuote(clinvar_hgvs4_file),
   shQuote(ids_file),
-  shQuote(genes_file)
+  shQuote(genes_file),
+  shQuote(fallback_ids_file)
 )
 
 hgvs4_variation_df <- vroom::vroom(
@@ -241,7 +285,7 @@ hgvs4_variation_df <- vroom::vroom(
   show_col_types = FALSE
 )
 
-unlink(c(ids_file, genes_file))
+unlink(c(ids_file, genes_file, fallback_ids_file))
 
 # Retain only protein-level annotations from the HGVS4Variation file.
 # Assembly == "na" corresponds to protein annotations rather than
@@ -266,14 +310,42 @@ clinvar_protein_df <- hgvs4_variation_df %>%
   dplyr::filter(!is.na(aa_pos)) %>%
   dplyr::distinct(Symbol, VariationID, clinvar_ref_aa, aa_pos, clinvar_alt_aa)
 
-# Match each InterVar missense annotation to P/LP ClinVar missense records in the same
-# gene at the same residue, then evaluate PS1 and PM5 for each match
-intervar_matches_df <- intervar_missense_aa_df %>%
+# Match each InterVar missense annotation to P/LP ClinVar missense records at the same
+# residue: in the same gene (by symbol), or - for genes whose symbol is not in ClinVar - in the
+# nearby ClinVar genes. Then evaluate PS1 and PM5 for each match.
+symbol_matches_df <- intervar_missense_aa_df %>%
+  dplyr::filter(!gene %in% unmatched_genes) %>%
   dplyr::inner_join(
     clinvar_protein_df,
     by = c("gene" = "Symbol", "aa_pos", "ref_aa" = "clinvar_ref_aa"),
     relationship = "many-to-many"
+  )
+
+# For variants in genes whose symbol is not in ClinVar, the candidate ClinVar genes are the
+# symbols of P/LP ClinVar records within `locus_window` of the variant; requiring the same
+# residue and reference amino acid keeps matches to neighboring genes unlikely.
+clinvar_id_symbols <- hgvs4_variation_df %>%
+  dplyr::distinct(VariationID, Symbol)
+
+candidate_clinvar_genes <- fallback_matches_df %>%
+  dplyr::inner_join(
+    clinvar_id_symbols,
+    by = c("ClinVar_VariationID" = "VariationID"),
+    relationship = "many-to-many"
   ) %>%
+  dplyr::distinct(chr_norm, Start, nearest_symbol = Symbol)
+
+locus_matches_df <- intervar_missense_aa_df %>%
+  dplyr::filter(gene %in% unmatched_genes) %>%
+  dplyr::inner_join(candidate_clinvar_genes, by = c("chr_norm", "Start")) %>%
+  dplyr::inner_join(
+    clinvar_protein_df,
+    by = c("nearest_symbol" = "Symbol", "aa_pos", "ref_aa" = "clinvar_ref_aa"),
+    relationship = "many-to-many"
+  ) %>%
+  dplyr::select(-nearest_symbol)
+
+intervar_matches_df <- dplyr::bind_rows(symbol_matches_df, locus_matches_df) %>%
   dplyr::inner_join(
     clinvar_plp_df,
     by = c("VariationID" = "ClinVar_VariationID"),
