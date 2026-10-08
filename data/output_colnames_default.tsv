@@ -21,6 +21,7 @@ clinvar_flag	clinvar_flag	T
 ClinVar_link	clinvar_variant_link	T
 Intervar_evidence	intervar_evidence	T
 final_call_clinvar	autogvp_call_clinvar	F
+Intervar_call_initial	intervar_call_initial	F
 final_call_intervar	autogvp_call_intervar	F
 Func.refGene	variant_location_annovar	F
 Gene.refGene	hugo_symbol_annovar	F
