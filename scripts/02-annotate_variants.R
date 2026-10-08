@@ -28,6 +28,11 @@ options(scipen = 999)
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
+# Get directory of currently running script and load shared InterVar classification
+args <- commandArgs(trailingOnly = FALSE)
+script_dir <- dirname(normalizePath(sub("--file=", "", args[grep("--file=", args)])))
+source(file.path(script_dir, "util", "intervar_classification.R"))
+
 # parse parameters
 option_list <- list(
   make_option(c("--vcf"),
@@ -174,8 +179,11 @@ autopvs1_results <- vroom(input_autopvs1_file, col_names = TRUE, show_col_types 
 ## merge autopvs1_results with vcf data, and filter for those variants that need intervar run
 combined_tab_with_vcf_intervar <- autopvs1_results %>%
   inner_join(clinvar_intervar_vcf_df, by = "vcf_id") %>%
-  ## indicate if recalculated
-  dplyr::mutate(intervar_adjusted = if_else((evidencePVS1 == 0), "No", "Yes")) %>%
+  ## keep original PVS1 and InterVar call to flag whether recalculation changed anything
+  dplyr::mutate(
+    evidencePVS1_original = as.numeric(evidencePVS1),
+    intervar_call_original = sub(".*InterVar: ", "", sub("\\ PVS.*", "", `InterVar: InterVar and Evidence`))
+  ) %>%
   dplyr::mutate(
     ## criteria to check intervar/autopvs1 to re-calculate and create a score column that will inform the new re-calculated final call
     # if criterion is NF1|SS1|DEL1|DEL2|DUP1|IC1 then PVS1=1
@@ -216,81 +224,30 @@ combined_tab_with_vcf_intervar <- autopvs1_results %>%
       criterion == "DUP2" | criterion == "DUP4" | criterion == "DUP5" |
       criterion == "IC5") & evidencePVS1 == 1, 0, as.double(evidencePVS1)),
 
-    ## adjust variables based on given rules described in README
-    final_call_intervar = ifelse(intervar_adjusted == "No",
-      sub(".*InterVar: ", "", sub("\\ PVS.*", "", `InterVar: InterVar and Evidence`)),
-      ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 &
-        ((evidencePS >= 1) |
-          (evidencePM >= 2) |
-          (evidencePM == 1 & evidencePP == 1) |
-          (evidencePP >= 2)) &
-        ((evidenceBA1) == 1 |
-          (evidenceBS >= 2) |
-          (evidenceBP >= 2) |
-          (evidenceBS >= 1 & evidenceBP >= 1) |
-          (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-      ifelse(((evidencePVS1 == 1) & (evidencePS >= 2) &
-        ((evidenceBA1) == 1 |
-          (evidenceBS >= 2) |
-          (evidenceBP >= 2) |
-          (evidenceBS >= 1 & evidenceBP >= 1) |
-          (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-      ifelse(((evidencePVS1 == 1) & (evidencePS == 1 &
-        (evidencePM >= 3 |
-          (evidencePM == 2 & evidencePP >= 2) |
-          (evidencePM == 1 & evidencePP >= 4))) &
-        ((evidenceBA1) == 1 |
-          (evidenceBS >= 2) |
-          (evidenceBP >= 2) |
-          (evidenceBS >= 1 & evidenceBP >= 1) |
-          (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-      ifelse((((evidencePVS1 == 1) & (evidencePVS1 == 1 & evidencePM == 1) |
-        (evidencePS == 1 & evidencePM >= 1) |
-        (evidencePS == 1 & evidencePP >= 2) |
-        (evidencePM >= 3) |
-        (evidencePM == 2 & evidencePP >= 2) |
-        (evidencePM == 1 & evidencePP >= 4)) &
-        ((evidenceBA1) == 1 |
-          (evidenceBS >= 2) |
-          (evidenceBP >= 2) |
-          (evidenceBS >= 1 & evidenceBP >= 1) |
-          (evidenceBA1 == 1 & (evidenceBS >= 1 | evidenceBP >= 1)))), "Uncertain_significance",
-      ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 &
-        ((evidencePS >= 1) |
-          (evidencePM >= 2) |
-          (evidencePM == 1 & evidencePP == 1) |
-          (evidencePP >= 2))), "Pathogenic",
-      ifelse((evidencePVS1 == 1) & (evidencePS >= 2), "Pathogenic",
-        ifelse((evidencePVS1 == 0) & (evidencePS == 1 &
-          (evidencePM >= 3 |
-            (evidencePM == 2 & evidencePP >= 2) |
-            (evidencePM == 1 & evidencePP >= 4))), "Pathogenic",
-        ifelse((evidencePVS1 == 1) & (evidencePVS1 == 1 & evidencePM == 1) |
-          (evidencePS == 1 & evidencePM >= 1) |
-          (evidencePS == 1 & evidencePP >= 2) |
-          (evidencePM >= 3) |
-          (evidencePM == 2 & evidencePP >= 2) |
-          (evidencePM == 1 & evidencePP >= 4), "Likely_pathogenic",
-        ifelse((evidencePVS1 == 1) & (evidenceBA1 == 1) |
-          (evidenceBS >= 2), "Benign",
-        ifelse((evidencePVS1 == 1) & (evidenceBS == 1 & evidenceBP == 1) |
-          (evidenceBP >= 2), "Likely_benign", "Uncertain_significance")
-        )
-        )
-        )
-      )
-      )
-      )
-      )
-      )
-      )
-    )
-  )
+    ## recalculate the InterVar call for ALL variants from the evidence counts, so that PP5 and BP6
+    ## are excluded consistently (they are dropped from evidencePP/evidenceBP above), regardless of
+    ## the original PVS1 value
+    ## pathogenic and benign evidence are evaluated separately; if both are met the
+    ## evidence is conflicting and the call is Uncertain_significance (as in InterVar)
+    final_call_intervar = classify_intervar_call(
+      evidencePVS1, evidencePS, evidencePM, evidencePP,
+      evidenceBA1, evidenceBS, evidenceBP
+    ),
+    ## indicate if the call or PVS1 evidence differs from the original InterVar output
+    intervar_adjusted = if_else(
+      evidencePVS1 != evidencePVS1_original |
+        gsub(" ", "_", intervar_call_original) != final_call_intervar,
+      "Yes", "No"
+    ),
+    ## original InterVar call, kept alongside the recalculated call in `final_call_intervar`
+    Intervar_call_initial = gsub(" ", "_", intervar_call_original)
+  ) %>%
+  dplyr::select(-evidencePVS1_original)
 
 
 ## merge tables together (clinvar and intervar) and write to file
 master_tab <- clinvar_intervar_vcf_df %>%
-  full_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|final_call_intervar", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
+  full_join(combined_tab_with_vcf_intervar[, grepl("vcf_id|intervar_adjusted|evidence|InterVar:|final_call_intervar|Intervar_call_initial", names(combined_tab_with_vcf_intervar))], by = "vcf_id") %>%
   left_join(autopvs1_results, by = "vcf_id") %>%
   # Make calls
   dplyr::mutate(

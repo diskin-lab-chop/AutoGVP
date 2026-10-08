@@ -3,7 +3,7 @@
 # written by Ryan Corbett
 #
 # This script loads the specified intervar df and updates PS1 and PM5 criteria
-# and intervar calls based on clinvar entries in supplied resolved clinvar
+# based on clinvar entries in supplied resolved clinvar
 # interpretations
 #
 # usage: update_intervar.R --intervar_file <intervar file>
@@ -352,36 +352,19 @@ intervar_unique <- intervar_missense_df %>%
     by = c("#Chr", "Start", "Ref", "Alt", "HGVSp")
   )
 
-# function to update intervar to match formatting of `InterVar: InterVar and Evidence`
+# function to update the PS1 and PM5 values in the `InterVar: InterVar and Evidence`
+# string. Only the PS and PM evidence vectors are modified; the InterVar
+# classification is NOT recalculated here. Final classification (including
+# exclusion of PP5/BP6 and handling of conflicting evidence) is performed
+# in 02-annotate_variants.R from the evidence vectors, so the leading class
+# label in the updated string should not be interpreted as the final call.
 update_intervar <- function(intervar_string, PS1_new, PM5_new) {
-  # Parse individual ACMG evidence codes from the InterVar annotation
-  # string so that PS1 and PM5 can be updated and the classification
-  # recalculated
-  PVS1 <- as.numeric(str_match(intervar_string, "PVS1=(\\d)")[, 2])
-
   PS <- str_match(intervar_string, "PS=\\[([^]]+)\\]")[, 2] |>
     str_split(",\\s*") |>
     unlist() |>
     as.numeric()
 
   PM <- str_match(intervar_string, "PM=\\[([^]]+)\\]")[, 2] |>
-    str_split(",\\s*") |>
-    unlist() |>
-    as.numeric()
-
-  PP <- str_match(intervar_string, "PP=\\[([^]]+)\\]")[, 2] |>
-    str_split(",\\s*") |>
-    unlist() |>
-    as.numeric()
-
-  BA1 <- as.numeric(str_match(intervar_string, "BA1=(\\d)")[, 2])
-
-  BS <- str_match(intervar_string, "BS=\\[([^]]+)\\]")[, 2] |>
-    str_split(",\\s*") |>
-    unlist() |>
-    as.numeric()
-
-  BP <- str_match(intervar_string, "BP=\\[([^]]+)\\]")[, 2] |>
     str_split(",\\s*") |>
     unlist() |>
     as.numeric()
@@ -399,45 +382,9 @@ update_intervar <- function(intervar_string, PS1_new, PM5_new) {
     return(intervar_string)
   }
 
-  nPS <- sum(PS)
-  nPM <- sum(PM)
-  nPP <- sum(PP)
-  nBS <- sum(BS)
-  nBP <- sum(BP)
-
-  # Recalculate the InterVar classification using the updated ACMG
-  # evidence profile and standard InterVar decision rules
-  new_class <- case_when(
-    BA1 == 1 ~ "Benign",
-    nBS >= 2 ~ "Benign",
-    (nBS == 1 & nBP >= 1) | nBP >= 2 ~ "Likely benign",
-    (PVS1 == 1 & nPS >= 1) |
-      (PVS1 == 1 & nPM >= 2) |
-      (PVS1 == 1 & nPM == 1 & nPP == 1) |
-      (nPS >= 2) |
-      (nPS == 1 & nPM >= 3) |
-      (nPS == 1 & nPM == 2 & nPP >= 2) |
-      (nPS == 1 & nPM == 1 & nPP >= 4) ~ "Pathogenic",
-    (PVS1 == 1 & nPM == 1) |
-      (PVS1 == 1 & nPP >= 2) |
-      (nPS == 1 & nPM >= 1) |
-      (nPS == 1 & nPP >= 2) |
-      (nPM >= 3) |
-      (nPM == 2 & nPP >= 2) |
-      (nPM == 1 & nPP >= 4) ~ "Likely pathogenic",
-    TRUE ~ "Uncertain significance"
-  )
-
-  paste0(
-    "InterVar: ", new_class,
-    " PVS1=", PVS1,
-    " PS=[", paste(PS, collapse = ", "), "]",
-    " PM=[", paste(PM, collapse = ", "), "]",
-    " PP=[", paste(PP, collapse = ", "), "]",
-    " BA1=", BA1,
-    " BS=[", paste(BS, collapse = ", "), "]",
-    " BP=[", paste(BP, collapse = ", "), "]"
-  )
+  intervar_string %>%
+    str_replace("PS=\\[[^]]+\\]", paste0("PS=[", paste(PS, collapse = ", "), "]")) %>%
+    str_replace("PM=\\[[^]]+\\]", paste0("PM=[", paste(PM, collapse = ", "), "]"))
 }
 
 # Generate an updated InterVar evidence string for each variant
@@ -452,24 +399,6 @@ intervar_unique <- intervar_unique %>%
       ),
       update_intervar
     )
-  ) %>%
-  dplyr::mutate(
-    original_class = str_trim(
-      str_match(
-        `InterVar: InterVar and Evidence`,
-        "^InterVar:\\s*(.*?)\\s*PVS1="
-      )[, 2]
-    ),
-    updated_class = str_trim(
-      str_match(
-        intervar_updated,
-        "^InterVar:\\s*(.*?)\\s*PVS1="
-      )[, 2]
-    ),
-
-    # Compare original and updated InterVar classifications to determine
-    # whether the ClinVar evidence changed the final pathogenicity call
-    class_changed = original_class != updated_class
   )
 
 # Merge updated InterVar annotations back into the original InterVar
@@ -505,14 +434,6 @@ if (sum(intervar_unique$PM5_old != intervar_unique$PM5_new) > 0) {
   intervar_unique %>%
     dplyr::filter(PM5_old != PM5_new) %>%
     dplyr::count(PM5_old, PM5_new)
-}
-
-print(glue::glue("Number of Intervar pathogenicity call updates: {sum(intervar_unique$class_changed == TRUE)}"))
-
-if (sum(intervar_unique$class_changed == TRUE) > 0) {
-  intervar_unique %>%
-    dplyr::filter(class_changed == TRUE) %>%
-    count(original_class, updated_class)
 }
 
 # save to output
