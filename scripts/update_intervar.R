@@ -283,7 +283,10 @@ intervar_missense_df <- intervar_missense_df %>%
     # ClinVar variants that are required for ACMG PS1 and PM5 evaluation
     same_protein = HGVSp == HGVSp_clinvar,
     same_codon = aa_pos == aa_pos_clinvar,
-    clinvar_is_nonsense = str_detect(HGVSp_clinvar, "\\*")
+    # PM5 requires a ClinVar missense (amino acid substitution) at the residue; this
+    # excludes nonsense (p.E285*), synonymous (p.G10=), start-loss/unknown (p.M1?),
+    # extension and other non-missense protein consequences
+    clinvar_is_missense = str_detect(HGVSp_clinvar, "^p\\.[A-Z]\\d+[A-Z]$")
   ) %>%
   group_by(`#Chr`, Start, Ref, Alt, HGVSp) %>%
   mutate(
@@ -302,7 +305,7 @@ intervar_missense_df <- intervar_missense_df %>%
         different_nt &
         same_codon &
         !same_protein &
-        !clinvar_is_nonsense
+        clinvar_is_missense
     )
   ) %>%
   ungroup()
@@ -319,7 +322,7 @@ variant_summary <- intervar_missense_df %>%
       different_nt &
       same_codon &
       !same_protein &
-      !clinvar_is_nonsense
+      clinvar_is_missense
   ) %>%
   group_by(`#Chr`, Start, Ref, Alt, HGVSp) %>%
   summarise(
@@ -346,7 +349,7 @@ intervar_unique <- intervar_missense_df %>%
     -HGVSp_clinvar, -aa_pos,
     -aa_pos_clinvar, -clinvar_plp,
     -different_nt, -same_protein, -same_codon,
-    -clinvar_is_nonsense
+    -clinvar_is_missense
   ) %>%
   distinct(`#Chr`, Start, Ref, Alt, HGVSp, .keep_all = TRUE) %>%
   left_join(
