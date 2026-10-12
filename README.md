@@ -45,6 +45,8 @@ cd /home/rstudio/AutoGVP
 [AutoPVS1 (v2.0)](https://github.com/JiguangPeng/autopvs1/releases/tag/v2.0) <br>
 [bcftools (v1.17)](https://github.com/samtools/bcftools/) <br>
 
+AutoGVP was developed and tested with ANNOVAR (database pulled 2024-05-06), InterVar v2.2.1 and AutoPVS1 v2.0.0. Other ANNOVAR builds can be used. `update_intervar.R` matches InterVar missense variants to ClinVar records by gene symbol; if the ANNOVAR gene annotation database carries symbols that no longer exist in ClinVar (e.g. `GBA`, now `GBA1`), the ClinVar gene is inferred from P/LP ClinVar records within 250 kb of the variant and the script reports the unmatched symbols. Note that InterVar's own gene-list and frequency-based evidence (e.g. PM1, PP2, BP1, BA1/BS1/PM2) is not refreshed by AutoGVP.
+
 ## How to Run AutoGVP
 AutoGVP Requirements (recommended to place all in the `data/` folder):
 - VEP-annotated VCF file (`*VEP.vcf`)

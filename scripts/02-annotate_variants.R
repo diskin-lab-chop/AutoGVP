@@ -95,9 +95,16 @@ Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 # Open vcf and read lines until a line without '#' is found
 con <- file(input_vcf_file, "r")
 skip_lines <- 0
-while (grepl("^#", readLines(con, n = 1))) {
+repeat {
+  line <- readLines(con, n = 1)
+  if (length(line) == 0) {
+    close(con)
+    stop("Input VCF contains no variants after filtering: ", input_vcf_file)
+  }
+  if (!grepl("^#", line)) break
   skip_lines <- skip_lines + 1
 }
+close(con)
 
 ## retrieve and store input vcf into table
 vcf_df <- vroom(input_vcf_file, skip = skip_lines, delim = "\t", col_names = c("CHROM", "START", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "Sample"), show_col_types = FALSE) %>%
@@ -277,7 +284,10 @@ master_tab <- master_tab %>%
     final_call = replace(final_call, final_call == "Uncertain significance", "Uncertain_significance"),
     final_call = replace(final_call, final_call == "Benign PVS1", "Benign"),
     final_call = replace(final_call, final_call == "Pathogenic PVS1", "Pathogenic"),
-    final_call = replace(final_call, final_call == "Likely pathogenic", "Likely_pathogenic")
+    final_call = replace(final_call, final_call == "Likely pathogenic", "Likely_pathogenic"),
+    # combined ClinVar P/LP and B/LB labels use the same underscore format as the single labels
+    final_call = replace(final_call, final_call == "Pathogenic/Likely pathogenic", "Pathogenic/Likely_pathogenic"),
+    final_call = replace(final_call, final_call == "Benign/Likely benign", "Benign/Likely_benign")
   ) %>%
   distinct()
 
@@ -290,7 +300,7 @@ master_tab <- master_tab %>%
   # modify `ClinVar_ClinicalSignificance` to equal `final_call` for ClinVar calls
   dplyr::mutate(ClinVar_ClinicalSignificance = case_when(
     Reasoning_for_call == "ClinVar" ~ final_call,
-    TRUE ~ str_replace(final_call_clinvar, " ", "_")
+    TRUE ~ str_replace_all(final_call_clinvar, " ", "_")
   )) %>%
   dplyr::mutate(sample_id = sample_name) %>%
   dplyr::relocate(

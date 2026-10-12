@@ -12,6 +12,8 @@
 #
 ################################################################################
 
+options(scipen = 999)
+
 suppressPackageStartupMessages({
   library("tidyverse")
   library("optparse")
@@ -98,9 +100,22 @@ convert_hgvsp_to_one_letter <- function(hgvsp) {
   hgvsp
 }
 
-# subset intervar df for missense variants
-# extract relevant criteria to separate columns
-# append clinvar annotations
+# PS1/PM5 are evaluated at the amino acid (codon) level: a P/LP ClinVar missense in
+# the same gene at the same residue supports the criteria, regardless of which
+# nucleotide of the codon is changed.
+#   PS1: same amino acid change as the InterVar variant, caused by a different nucleotide change
+#   PM5: different missense amino acid change at the same residue
+# The residue in the reference (e.g. G in p.G172S) must also match, to guard against
+# ClinVar protein numbering that differs from the InterVar transcript.
+#
+# Genes are matched by symbol. InterVar/ANNOVAR gene annotation databases can carry
+# outdated symbols (e.g. GBA, now GBA1 in ClinVar); for genes whose symbol does not
+# exist in ClinVar at all, the candidate ClinVar genes are those with a P/LP record on the
+# same chromosome within `locus_window` bp of the variant, matched by symbol.
+locus_window <- 250e3
+
+# subset intervar df for missense variants and extract the gene and amino acid change
+# of each transcript annotation into separate columns
 intervar_missense_df <- intervar_df %>%
   dplyr::filter(ExonicFunc.refGene == "nonsynonymous SNV") %>%
   # parse out AAChanges for each transcript in `AAChange.knownGene` into unique rows
@@ -118,10 +133,18 @@ intervar_missense_df <- intervar_df %>%
         "PM=\\[[01],\\s*[01],\\s*[01],\\s*[01],\\s*([01])"
       )[, 2]
     ),
-    # Extract HGVS protein change annotations from AAChange.knownGene.
     # Following transcript expansion, each row should contain only a
     # single transcript annotation in the format:
     # Gene:Transcript:Exon:cDNA_change:Protein_change
+    gene = if_else(
+      AAChange.knownGene == ".",
+      NA_character_,
+      vapply(
+        strsplit(AAChange.knownGene, ":", fixed = TRUE),
+        function(x) x[1],
+        character(1)
+      )
+    ),
     HGVSp = if_else(
       AAChange.knownGene == ".",
       NA_character_,
@@ -133,64 +156,106 @@ intervar_missense_df <- intervar_df %>%
     )
   ) %>%
   dplyr::mutate(HGVSp = str_remove(HGVSp, ",")) %>%
+  dplyr::mutate(
+    hgvsp_parts = str_match(HGVSp, "^p\\.([A-Z])(\\d+)([A-Z])$"),
+    ref_aa = hgvsp_parts[, 2],
+    aa_pos = as.integer(hgvsp_parts[, 3]),
+    alt_aa = hgvsp_parts[, 4],
+    chr_norm = str_remove(`#Chr`, "^chr"),
+    var_id = paste(chr_norm, format(Start, scientific = FALSE, trim = TRUE), Ref, Alt, sep = "-")
+  ) %>%
   dplyr::select(
     `#Chr`, Start, End, Ref, Alt,
-    HGVSp, `clinvar: Clinvar`,
+    gene, HGVSp, ref_aa, aa_pos, alt_aa, chr_norm, var_id,
+    `clinvar: Clinvar`,
     `InterVar: InterVar and Evidence`,
     PS1_old, PM5_old
   ) %>%
-  # Match each InterVar variant to ClinVar records occurring at the
-  # same genomic position. Multiple ClinVar records may be associated
-  # with a single InterVar variant.
-  left_join(
-    clinvar_df %>%
-      dplyr::select(
-        chr_clinvar, Start_clinvar,
-        Ref_clinvar, Alt_clinvar,
-        VariationID,
-        ClinicalSignificance
-      ),
-    by = c(
-      "#Chr" = "chr_clinvar",
-      "Start" = "Start_clinvar"
-    ),
-    relationship = "many-to-many"
-  ) %>%
-  # retain only SNVs (PS1 and PM5 only applied to missense variants)
+  dplyr::rename(ClinicalSignificance_old_clinvar = `clinvar: Clinvar`)
+
+# only annotations with a gene and a parsed amino acid substitution can be evaluated
+intervar_missense_aa_df <- intervar_missense_df %>%
+  dplyr::filter(!is.na(gene), !is.na(aa_pos)) %>%
+  # annotations spanning overlapping genes (e.g. "GENE1;GENE2") are evaluated per gene
+  tidyr::separate_longer_delim(gene, delim = ";")
+
+# P/LP records in the resolved ClinVar interpretations
+# (a word boundary is used so "Conflicting classifications of pathogenicity" is not
+# treated as a P/LP record)
+clinvar_plp_df <- clinvar_df %>%
   dplyr::filter(
-    nchar(Ref_clinvar) == 1,
-    nchar(Alt_clinvar) == 1
+    str_detect(ClinicalSignificance, regex("\\bpathogenic\\b", ignore_case = TRUE)),
+    !str_detect(ClinicalSignificance, regex("benign", ignore_case = TRUE))
   ) %>%
-  dplyr::rename(
+  dplyr::transmute(
     ClinVar_VariationID = VariationID,
-    ClinicalSignificance_old_clinvar = `clinvar: Clinvar`,
-    HGVSp = HGVSp,
-    ClinicalSignificance_new_clinvar = ClinicalSignificance
-  )
+    clinvar_chr = str_remove(chr_clinvar, "^chr"),
+    clinvar_pos = Start_clinvar,
+    clinvar_var_id = paste(
+      clinvar_chr,
+      format(Start_clinvar, scientific = FALSE, trim = TRUE),
+      Ref_clinvar, Alt_clinvar,
+      sep = "-"
+    )
+  ) %>%
+  dplyr::distinct()
 
 # Load ClinVar HGVS4Variation file, which provides protein-level HGVS
 # annotations (ProteinChange) linked to ClinVar VariationIDs.
-# This file is typically tens of GB uncompressed, but only rows whose
-# VariationID matches an InterVar missense variant are actually needed.
+# This file is typically tens of GB uncompressed, but only rows for P/LP VariationIDs
+# in genes with an InterVar missense variant are needed.
 # Pre-filter with awk (a fast, single C-level pass over the decompressed
 # stream) so that only the small matching subset ever reaches vroom,
 # instead of loading and indexing the entire file in R.
-intervar_ids <- unique(intervar_missense_df$ClinVar_VariationID)
+plp_ids <- unique(clinvar_plp_df$ClinVar_VariationID)
+query_genes <- unique(intervar_missense_aa_df$gene)
 
-# If no missense variants matched a ClinVar record by position, there is
-# nothing to look up in the HGVS4Variation file and no PS1/PM5 evidence
+# If there is nothing to look up in the HGVS4Variation file, no PS1/PM5 evidence
 # can be updated. Write the input through unchanged and exit early rather
 # than handing vroom an empty pipe further down.
-if (length(intervar_ids) == 0) {
-  print("No ClinVar-matched missense variants found; skipping PS1/PM5 updates.")
+if (length(plp_ids) == 0 || length(query_genes) == 0) {
+  print("No missense variants or P/LP ClinVar records to evaluate; skipping PS1/PM5 updates.")
   write_tsv(intervar_df, file.path(results_dir, output_file))
   quit(save = "no", status = 0)
 }
 
-ids_file <- tempfile()
-writeLines(as.character(intervar_ids), ids_file)
-
 decompress_cmd <- "gzip -cd"
+
+# Gene symbols currently used by ClinVar (any record); query genes absent from this set
+# (e.g. renamed genes) are matched by genomic location instead of symbol
+symbols_cmd <- sprintf(
+  "%s %s | awk -F'\\t' '!/^#/ && !seen[$1]++ { print $1 }'",
+  decompress_cmd,
+  shQuote(clinvar_hgvs4_file)
+)
+clinvar_symbols <- readLines(pipe(symbols_cmd))
+
+unmatched_genes <- setdiff(query_genes, clinvar_symbols)
+if (length(unmatched_genes) > 0) {
+  print(glue::glue(
+    "{length(unmatched_genes)} gene symbol(s) not found in ClinVar; matching by nearby ClinVar genes (+/- {locus_window} bp): ",
+    "{paste(unmatched_genes, collapse = ', ')}"
+  ))
+}
+
+# P/LP ClinVar records near variants in unmatched genes
+fallback_matches_df <- intervar_missense_aa_df %>%
+  dplyr::filter(gene %in% unmatched_genes) %>%
+  dplyr::distinct(chr_norm, Start) %>%
+  dplyr::inner_join(
+    clinvar_plp_df %>%
+      dplyr::mutate(clinvar_lo = clinvar_pos - locus_window, clinvar_hi = clinvar_pos + locus_window),
+    by = dplyr::join_by(chr_norm == clinvar_chr, dplyr::between(Start, clinvar_lo, clinvar_hi)),
+    relationship = "many-to-many"
+  )
+fallback_ids <- unique(fallback_matches_df$ClinVar_VariationID)
+
+ids_file <- tempfile()
+writeLines(sprintf("%.0f", plp_ids), ids_file)
+genes_file <- tempfile()
+writeLines(query_genes, genes_file)
+fallback_ids_file <- tempfile()
+writeLines(sprintf("%.0f", fallback_ids), fallback_ids_file)
 
 hgvs4_cols <- c(
   "Symbol", "GeneID", "VariationID", "AlleleID", "Type", "Assembly",
@@ -198,158 +263,132 @@ hgvs4_cols <- c(
   "ProteinChange", "UsedForNaming", "Submitted", "OnRefSeqGene"
 )
 
-# VariationID is column 3 of the HGVS4Variation file; keep only data
-# lines (drop the leading "#..." comment/header lines) whose VariationID
-# is in the InterVar-matched set
+# Symbol is column 1 and VariationID is column 3 of the HGVS4Variation file; keep only
+# data lines (drop the leading "#..." comment/header lines) whose VariationID is a
+# P/LP record and that either are in a gene with an InterVar missense variant or are
+# located near a variant whose gene symbol is not in ClinVar
 filter_cmd <- sprintf(
-  "%s %s | awk -F'\\t' 'NR==FNR { gsub(/\\r$/, \"\"); ids[$1]; next } { gsub(/\\r$/, \"\") } !/^#/ && ($3 in ids)' %s -",
+  "%s %s | awk -F'\\t' 'FILENAME == ARGV[1] { gsub(/\\r$/, \"\"); ids[$1]; next } FILENAME == ARGV[2] { gsub(/\\r$/, \"\"); genes[$1]; next } FILENAME == ARGV[3] { gsub(/\\r$/, \"\"); fb[$1]; next } { gsub(/\\r$/, \"\") } !/^#/ && ($3 in ids) && (($1 in genes) || ($3 in fb))' %s %s %s -",
   decompress_cmd,
   shQuote(clinvar_hgvs4_file),
-  shQuote(ids_file)
+  shQuote(ids_file),
+  shQuote(genes_file),
+  shQuote(fallback_ids_file)
 )
 
 hgvs4_variation_df <- vroom::vroom(
   pipe(filter_cmd),
   delim = "\t",
   col_names = hgvs4_cols,
-  col_select = c(VariationID, Assembly, ProteinChange),
+  col_select = c(Symbol, VariationID, Assembly, ProteinChange),
+  col_types = c(Symbol = "c", VariationID = "n", Assembly = "c", ProteinChange = "c"),
   show_col_types = FALSE
 )
 
-unlink(ids_file)
-
-# Verify that HGVS annotations were found for all ClinVar variants.
-# Missing VariationIDs usually indicate an outdated HGVS4Variation file.
-if (length(unique(intervar_missense_df$ClinVar_VariationID)) > length(unique(hgvs4_variation_df$VariationID))) {
-  print("Warning: HGVS annotations not found for some ClinVar variants. Please ensure you are supplying a recent hgvs4variation.txt.gz file from ClinVar")
-}
+unlink(c(ids_file, genes_file, fallback_ids_file))
 
 # Retain only protein-level annotations from the HGVS4Variation file.
 # Assembly == "na" corresponds to protein annotations rather than
 # genomic or transcript-level representations.
-hgvs4_variation_df <- hgvs4_variation_df %>%
-  # only retain entries with unique AA changes
+# Convert amino acid abbreviations to match InterVar formatting
+# (e.g. p.Trp507Arg -> p.W507R) and retain missense substitutions only; this
+# excludes nonsense (p.E285*), synonymous (p.G10=), start-loss/unknown (p.M1?),
+# frameshift, extension and in-frame indel consequences.
+clinvar_protein_df <- hgvs4_variation_df %>%
   dplyr::filter(
     Assembly == "na",
     ProteinChange != "-"
   ) %>%
-  distinct(VariationID, ProteinChange)
+  dplyr::distinct(Symbol, VariationID, ProteinChange) %>%
+  dplyr::mutate(
+    ProteinChange = convert_hgvsp_to_one_letter(ProteinChange),
+    clinvar_parts = str_match(ProteinChange, "^p\\.([A-Z])(\\d+)([A-Z])$"),
+    clinvar_ref_aa = clinvar_parts[, 2],
+    aa_pos = as.integer(clinvar_parts[, 3]),
+    clinvar_alt_aa = clinvar_parts[, 4]
+  ) %>%
+  dplyr::filter(!is.na(aa_pos)) %>%
+  dplyr::distinct(Symbol, VariationID, clinvar_ref_aa, aa_pos, clinvar_alt_aa)
 
-# Append ClinVar protein change annotations to each matched variant
-# and convert amino acid abbreviations to match InterVar formatting
-# (e.g. Trp507Arg -> W507R)
-intervar_missense_df <- intervar_missense_df %>%
-  left_join(
-    hgvs4_variation_df %>%
-      dplyr::select(VariationID, ProteinChange),
+# Match each InterVar missense annotation to P/LP ClinVar missense records at the same
+# residue: in the same gene (by symbol), or - for genes whose symbol is not in ClinVar - in the
+# nearby ClinVar genes. Then evaluate PS1 and PM5 for each match.
+symbol_matches_df <- intervar_missense_aa_df %>%
+  dplyr::filter(!gene %in% unmatched_genes) %>%
+  dplyr::inner_join(
+    clinvar_protein_df,
+    by = c("gene" = "Symbol", "aa_pos", "ref_aa" = "clinvar_ref_aa"),
+    relationship = "many-to-many"
+  )
+
+# For variants in genes whose symbol is not in ClinVar, the candidate ClinVar genes are the
+# symbols of P/LP ClinVar records within `locus_window` of the variant; requiring the same
+# residue and reference amino acid keeps matches to neighboring genes unlikely.
+clinvar_id_symbols <- hgvs4_variation_df %>%
+  dplyr::distinct(VariationID, Symbol)
+
+candidate_clinvar_genes <- fallback_matches_df %>%
+  dplyr::inner_join(
+    clinvar_id_symbols,
     by = c("ClinVar_VariationID" = "VariationID"),
     relationship = "many-to-many"
   ) %>%
-  dplyr::rename(HGVSp_clinvar = ProteinChange) %>%
-  # convert to one-letter AA abbreviations to match intervar
-  dplyr::mutate(HGVSp_clinvar = convert_hgvsp_to_one_letter(HGVSp_clinvar))
+  dplyr::distinct(chr_norm, Start, nearest_symbol = Symbol)
 
-# Helper function to extract amino acid residue positions from HGVS
-# protein annotations (e.g. p.W343R -> 343)
-extract_aa_pos <- function(x) {
-  as.numeric(str_extract(x, "(?<=\\D)\\d+"))
-}
-
-# Calculate new PS1, PM5 criteria based on ClinVar entries
-intervar_missense_df <- intervar_missense_df %>%
-  mutate(
-    # Get AA positions
-    aa_pos = extract_aa_pos(HGVSp),
-    aa_pos_clinvar = extract_aa_pos(HGVSp_clinvar),
-
-    # determine if clinvar variant is PLP (PS1, PM5 criteria)
-    clinvar_plp = str_detect(
-      ClinicalSignificance_new_clinvar,
-      regex("pathogenic|likely pathogenic", ignore_case = TRUE)
-    ) &
-      !str_detect(
-        ClinicalSignificance_new_clinvar,
-        regex("benign", ignore_case = TRUE)
-      ),
-
-    # determine if clinvar variant is a different nt change
-    different_nt =
-      Ref != Ref_clinvar |
-        Alt != Alt_clinvar,
-
-    # Compute relationships between the InterVar variant and matched
-    # ClinVar variants that are required for ACMG PS1 and PM5 evaluation
-    same_protein = HGVSp == HGVSp_clinvar,
-    same_codon = aa_pos == aa_pos_clinvar,
-    clinvar_is_nonsense = str_detect(HGVSp_clinvar, "\\*")
+locus_matches_df <- intervar_missense_aa_df %>%
+  dplyr::filter(gene %in% unmatched_genes) %>%
+  dplyr::inner_join(candidate_clinvar_genes, by = c("chr_norm", "Start")) %>%
+  dplyr::inner_join(
+    clinvar_protein_df,
+    by = c("nearest_symbol" = "Symbol", "aa_pos", "ref_aa" = "clinvar_ref_aa"),
+    relationship = "many-to-many"
   ) %>%
-  group_by(`#Chr`, Start, Ref, Alt, HGVSp) %>%
-  mutate(
-    # Evaluate ACMG evidence criteria for each InterVar-ClinVar match:
-    # PS1: same amino acid substitution produced by a different nucleotide change
-    # PM5: different missense amino acid substitution affecting the same codon
-    PS1_new = as.integer(
-      clinvar_plp &
-        different_nt &
-        same_protein
-    ),
+  dplyr::select(-nearest_symbol)
 
-    # PM5: P/LP variant at same position, diff nt, diff (missense) AA change
-    PM5_new = as.integer(
-      clinvar_plp &
-        different_nt &
-        same_codon &
-        !same_protein &
-        !clinvar_is_nonsense
-    )
+intervar_matches_df <- dplyr::bind_rows(symbol_matches_df, locus_matches_df) %>%
+  dplyr::inner_join(
+    clinvar_plp_df,
+    by = c("VariationID" = "ClinVar_VariationID"),
+    relationship = "many-to-many"
   ) %>%
-  ungroup()
+  dplyr::mutate(
+    # a record for the same nucleotide change is the variant itself
+    different_nt = var_id != clinvar_var_id,
+    PS1_support = different_nt & alt_aa == clinvar_alt_aa,
+    PM5_support = different_nt & alt_aa != clinvar_alt_aa
+  )
 
 # Aggregate evidence across all ClinVar matches associated with the
-# same InterVar variant. A single supporting ClinVar record is sufficient
-# to activate PS1 or PM5 for the variant.
-variant_summary <- intervar_missense_df %>%
-  dplyr::mutate(
-    PS1_support = clinvar_plp &
-      different_nt &
-      same_protein,
-    PM5_support = clinvar_plp &
-      different_nt &
-      same_codon &
-      !same_protein &
-      !clinvar_is_nonsense
-  ) %>%
-  group_by(`#Chr`, Start, Ref, Alt, HGVSp) %>%
-  summarise(
-    PS1_new = as.integer(any(PS1_support, na.rm = TRUE)),
-    PM5_new = as.integer(any(PM5_support, na.rm = TRUE)),
-    PS1_ClinVarIDs = paste(
-      unique(ClinVar_VariationID[PS1_support]),
-      collapse = ";"
-    ),
-    PM5_ClinVarIDs = paste(
-      unique(ClinVar_VariationID[PM5_support]),
-      collapse = ";"
-    ),
+# same InterVar variant (any transcript). A single supporting ClinVar record
+# is sufficient to activate PS1 or PM5 for the variant.
+variant_summary <- intervar_matches_df %>%
+  dplyr::group_by(`#Chr`, Start, End, Ref, Alt) %>%
+  dplyr::summarise(
+    PS1_new = as.integer(any(PS1_support)),
+    PM5_new = as.integer(any(PM5_support)),
+    PS1_ClinVarIDs = paste(unique(VariationID[PS1_support]), collapse = ";"),
+    PM5_ClinVarIDs = paste(unique(VariationID[PM5_support]), collapse = ";"),
     .groups = "drop"
   )
 
-# Reduce back to one row per InterVar variant and merge the aggregated
+# One row per InterVar variant (InterVar reports a single evidence string per variant,
+# although a variant can have several transcript annotations), with the aggregated
 # PS1/PM5 evidence assignments calculated from ClinVar
 intervar_unique <- intervar_missense_df %>%
-  dplyr::select(
-    -PS1_new, -PM5_new,
-    -Ref_clinvar, -Alt_clinvar,
-    -ClinVar_VariationID, -ClinicalSignificance_new_clinvar,
-    -HGVSp_clinvar, -aa_pos,
-    -aa_pos_clinvar, -clinvar_plp,
-    -different_nt, -same_protein, -same_codon,
-    -clinvar_is_nonsense
+  dplyr::distinct(
+    `#Chr`, Start, End, Ref, Alt,
+    ClinicalSignificance_old_clinvar,
+    `InterVar: InterVar and Evidence`,
+    PS1_old, PM5_old
   ) %>%
-  distinct(`#Chr`, Start, Ref, Alt, HGVSp, .keep_all = TRUE) %>%
-  left_join(
+  dplyr::left_join(
     variant_summary,
-    by = c("#Chr", "Start", "Ref", "Alt", "HGVSp")
+    by = c("#Chr", "Start", "End", "Ref", "Alt")
+  ) %>%
+  # variants without a P/LP record at the residue have no new evidence
+  dplyr::mutate(
+    PS1_new = coalesce(PS1_new, 0L),
+    PM5_new = coalesce(PM5_new, 0L)
   )
 
 # function to update the PS1 and PM5 values in the `InterVar: InterVar and Evidence`
