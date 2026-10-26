@@ -200,6 +200,7 @@ Rscript scripts/update_intervar.R \
 --intervar_file "$intervar_input" \
 --clinvar_file "$selected_submissions" \
 --clinvar_hgvs4_file "$hgvs4variation_file" \
+--vcf_file "$autogvp_input" \
 --outdir "$out_dir"
 
 # use updated intervar downstream
