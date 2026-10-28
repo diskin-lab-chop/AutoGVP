@@ -32,6 +32,7 @@ options(scipen = 999)
 args <- commandArgs(trailingOnly = FALSE)
 script_dir <- dirname(normalizePath(sub("--file=", "", args[grep("--file=", args)])))
 source(file.path(script_dir, "util", "intervar_classification.R"))
+source(file.path(script_dir, "util", "variant_ids.R"))
 
 # parse parameters
 option_list <- list(
@@ -108,13 +109,12 @@ close(con)
 
 ## retrieve and store input vcf into table
 vcf_df <- vroom(input_vcf_file, skip = skip_lines, delim = "\t", col_names = c("CHROM", "START", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "Sample"), show_col_types = FALSE) %>%
-  dplyr::mutate(
-    vcf_id = str_remove_all(paste(CHROM, "-", START, "-", REF, "-", ALT), " "),
-    vcf_id = str_replace(vcf_id, "chr", "")
-  )
+  dplyr::mutate(vcf_id = make_variant_id(CHROM, START, REF, ALT))
 
-## load in ClinVar resolved variant interpretations
+## load in ClinVar resolved variant interpretations; ids are re-normalized so that resolved
+## files written with ClinVar's "MT" chromosome name still match
 clinvar_df <- vroom(input_clinVar_file, show_col_types = FALSE) %>%
+  dplyr::mutate(vcf_id = normalize_variant_id(vcf_id)) %>%
   dplyr::filter(vcf_id %in% vcf_df$vcf_id)
 
 ## get multianno file to add correct vcf_id in intervar table
@@ -129,10 +129,8 @@ multianno_df <- vroom(input_multianno_file, delim = "\t", trim_ws = TRUE, col_na
     ))
   ) %>%
   mutate(
-    vcf_id = str_remove_all(paste(Chr, "-", Otherinfo5, "-", Otherinfo7, "-", Otherinfo8), " "),
-    vcf_id = str_replace(vcf_id, "chr", ""),
-    var_id = str_remove_all(paste(Chr, "-", Start, "-", Ref, "-", Alt), " "),
-    var_id = str_replace(var_id, "chr", "")
+    vcf_id = make_variant_id(Chr, Otherinfo5, Otherinfo7, Otherinfo8),
+    var_id = make_variant_id(Chr, Start, Ref, Alt)
   ) %>%
   # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
   dplyr::select(
@@ -146,7 +144,7 @@ intervar_df <- vroom(input_intervar_file, delim = "\t", trim_ws = TRUE, col_name
     -`clinvar: Clinvar`,
     -contains(c("gnomad", "CADD", "Freq", "SCORE", "score", "ORPHA", "MIM", "rmsk", "GERP", "phylo"))
   ) %>%
-  dplyr::mutate(var_id = paste0(`#Chr`, "-", Start, "-", Ref, "-", Alt)) %>%
+  dplyr::mutate(var_id = make_variant_id(`#Chr`, Start, Ref, Alt)) %>%
   distinct(var_id, .keep_all = T) %>%
   # remove coordiante, Otherinfo, gnomad, and clinVar-related columns
   dplyr::select(
@@ -177,10 +175,7 @@ clinvar_intervar_vcf_df <- vcf_df %>%
 ## autopvs1 results
 autopvs1_results <- vroom(input_autopvs1_file, col_names = TRUE, show_col_types = FALSE) %>%
   dplyr::select(vcf_id, Feature, criterion) %>%
-  mutate(
-    vcf_id = str_remove_all(vcf_id, " "),
-    vcf_id = str_replace_all(vcf_id, "chr", "")
-  ) %>%
+  mutate(vcf_id = normalize_variant_id(vcf_id)) %>%
   dplyr::filter(vcf_id %in% clinvar_intervar_vcf_df$vcf_id)
 
 ## merge autopvs1_results with vcf data, and filter for those variants that need intervar run
