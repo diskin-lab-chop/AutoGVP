@@ -491,8 +491,7 @@ final_intervar_df <- intervar_df %>%
     by = join_by(`#Chr`, Start, End, Ref, Alt, `InterVar: InterVar and Evidence`),
     relationship = "many-to-one"
   ) %>%
-  dplyr::mutate(`InterVar: InterVar and Evidence` = coalesce(intervar_updated, `InterVar: InterVar and Evidence`)) %>%
-  dplyr::select(-intervar_updated)
+  dplyr::mutate(`InterVar: InterVar and Evidence` = coalesce(intervar_updated, `InterVar: InterVar and Evidence`))
 
 stopifnot(nrow(final_intervar_df) == nrow(intervar_df))
 
