@@ -60,8 +60,14 @@ results_dir <- opt$outdir
 output_file <- glue::glue("{basename(intervar_file)}_updated")
 
 # Load InterVar output and ensure chromosome values are stored as character
-# strings and start is numeric to avoid type mismatches during downstream joins
-intervar_df <- read_tsv(intervar_file, show_col_types = FALSE) %>%
+# strings and start is numeric to avoid type mismatches during downstream joins.
+# Ref and Alt are read as character so that alleles of only T (or F) are not guessed
+# to be logical.
+intervar_df <- read_tsv(
+  intervar_file,
+  col_types = cols(Ref = col_character(), Alt = col_character(), .default = col_guess()),
+  show_col_types = FALSE
+) %>%
   dplyr::mutate(
     `#Chr` = as.character(`#Chr`),
     Start = as.numeric(Start)
@@ -402,13 +408,12 @@ variant_summary <- intervar_matches_df %>%
     .groups = "drop"
   )
 
-# One row per InterVar variant (InterVar reports a single evidence string per variant,
-# although a variant can have several transcript annotations), with the aggregated
-# PS1/PM5 evidence assignments calculated from ClinVar
+# One row per InterVar variant and evidence string (InterVar reports one row per gene,
+# and the genes of a variant can have different evidence strings), with the aggregated
+# PS1/PM5 evidence assignments calculated from ClinVar for the variant
 intervar_unique <- intervar_missense_df %>%
   dplyr::distinct(
     `#Chr`, Start, End, Ref, Alt,
-    ClinicalSignificance_old_clinvar,
     `InterVar: InterVar and Evidence`,
     PS1_old, PM5_old
   ) %>%
@@ -473,38 +478,38 @@ intervar_unique <- intervar_unique %>%
 
 # Merge updated InterVar annotations back into the original InterVar
 # data frame and replace the existing evidence string when an updated
-# version is available
+# version is available. Rows are matched on their own evidence string as well as the
+# variant, so each gene's row of a multi-gene variant receives only its own updated
+# string; exact duplicate InterVar rows share a key (many-to-one).
 final_intervar_df <- intervar_df %>%
   left_join(
     intervar_unique %>% dplyr::select(
       `#Chr`, Start, End, Ref, Alt,
+      `InterVar: InterVar and Evidence`,
       intervar_updated
     ),
-    by = join_by(`#Chr`, Start, End, Ref, Alt)
+    by = join_by(`#Chr`, Start, End, Ref, Alt, `InterVar: InterVar and Evidence`),
+    relationship = "many-to-one"
   ) %>%
-  dplyr::mutate(`InterVar: InterVar and Evidence` = case_when(
-    !is.na(intervar_updated) ~ intervar_updated,
-    TRUE ~ `InterVar: InterVar and Evidence`
-  ))
+  dplyr::mutate(`InterVar: InterVar and Evidence` = coalesce(intervar_updated, `InterVar: InterVar and Evidence`)) %>%
+  dplyr::select(-intervar_updated)
 
-# Summarize the number of evidence and classification changes introduced
-# by ClinVar-derived PS1/PM5 updates
-print(glue::glue("Number of missense variants queried: {nrow(intervar_unique)}"))
-print(glue::glue("Number of PS1 updates: {sum(intervar_unique$PS1_old != intervar_unique$PS1_new)}"))
+stopifnot(nrow(final_intervar_df) == nrow(intervar_df))
 
-if (sum(intervar_unique$PS1_old != intervar_unique$PS1_new) > 0) {
-  intervar_unique %>%
-    dplyr::filter(PS1_old != PS1_new) %>%
-    dplyr::count(PS1_old, PS1_new)
-}
+# Summarize the number of variants whose PS1/PM5 evidence was added by the ClinVar-derived
+# update (evidence is only added, never removed; a variant is counted once even if it has
+# several gene rows)
+variant_changes <- intervar_unique %>%
+  dplyr::group_by(`#Chr`, Start, End, Ref, Alt) %>%
+  dplyr::summarise(
+    PS1_added = any(PS1_new > PS1_old, na.rm = TRUE),
+    PM5_added = any(PM5_new > PM5_old, na.rm = TRUE),
+    .groups = "drop"
+  )
 
-print(glue::glue("Number of PM5 updates: {sum(intervar_unique$PM5_old != intervar_unique$PM5_new)}"))
-
-if (sum(intervar_unique$PM5_old != intervar_unique$PM5_new) > 0) {
-  intervar_unique %>%
-    dplyr::filter(PM5_old != PM5_new) %>%
-    dplyr::count(PM5_old, PM5_new)
-}
+print(glue::glue("Number of missense variants queried: {nrow(variant_changes)}"))
+print(glue::glue("Number of PS1 updates: {sum(variant_changes$PS1_added)}"))
+print(glue::glue("Number of PM5 updates: {sum(variant_changes$PM5_added)}"))
 
 # save to output
 write_tsv(
