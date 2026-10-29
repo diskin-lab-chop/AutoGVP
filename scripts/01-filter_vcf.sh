@@ -36,8 +36,9 @@ echo "cmd: " $cmd
 eval "$cmd"
 
 # extract variant keys (chrom-pos-ref-alt, without "chr", mitochondrial contig as "M") from the
-# filtered vcf; these match the `vcf_id` built in 02-annotate_variants.R (scripts/util/variant_ids.R). Matching on the full key (rather than on
-# position alone) avoids retaining unrelated rows that merely contain the same number.
+# filtered vcf; these match the `vcf_id` built in 02-annotate_variants.R
+# (scripts/util/variant_ids.R). Matching on the full key (rather than on position alone)
+# avoids retaining unrelated rows that merely contain the same number.
 vcf_keys_file=$out_dir/${out_file}_vcf_filtered_keys.tsv
 bcftools query -f "%CHROM-%POS-%REF-%ALT\n" $out_dir/$vcf_filtered_file | sed -e 's/^chr//' -e 's/^MT-/M-/' > $vcf_keys_file
 
