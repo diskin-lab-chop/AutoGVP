@@ -45,6 +45,8 @@ cd /home/rstudio/AutoGVP
 [AutoPVS1 (v2.0)](https://github.com/JiguangPeng/autopvs1/releases/tag/v2.0) <br>
 [bcftools (v1.17)](https://github.com/samtools/bcftools/) <br>
 
+AutoGVP was developed and tested with ANNOVAR (database pulled 2024-05-06), InterVar v2.2.1 and AutoPVS1 v2.0.0. Other ANNOVAR builds can be used. `update_intervar.R` updates InterVar's PS1 and PM5 evidence for missense variants from P/LP ClinVar missense records at the same residue of the same RefSeq transcript, using the protein change VEP reports on each RefSeq transcript in the VCF. Transcripts are matched by accession regardless of version, and the reference amino acid must also match. Variants that cannot be compared on any transcript (no VEP RefSeq missense annotation, or none of their transcripts present in ClinVar) keep InterVar's PS1/PM5 values, and the script reports them by gene. Note that InterVar's own gene-list and frequency-based evidence (e.g. PM1, PP2, BP1, BA1/BS1/PM2) is not refreshed by AutoGVP.
+
 ## How to Run AutoGVP
 AutoGVP Requirements (recommended to place all in the `data/` folder):
 - VEP-annotated VCF file (`*VEP.vcf`)

@@ -1,81 +1,111 @@
 vcf_id	VariationID	ClinicalSignificance
+7-65960972-C-A	907	Pathogenic/Likely pathogenic
+8-142879080-C-T	1176	Pathogenic
 19-12897713-G-A	2086	Pathogenic
-1-155238215-T-C	4314	Pathogenic
+19-44949215-A-AC	2575	Likely pathogenic
+19-11116144-G-A	3697	Pathogenic/Likely pathogenic
 12-53321423-G-T	5044	Pathogenic
 1-119759915-C-T	9259	Pathogenic/Likely pathogenic
 6-32038514-C-T	12153	Pathogenic/Likely pathogenic
 6-32041097-GG-C	12157	Pathogenic/Likely pathogenic
+17-7673766-T-A	12384	Pathogenic
 1-26438228-A-G	30709	Pathogenic
 19-11113313-G-A	36453	Likely pathogenic
 3-133973750-C-A	37171	Pathogenic
-1-94103071-C-T	99347	Conflicting classifications of pathogenicity
+12-102852936-G-A	102803	Pathogenic
 12-102852935-C-T	102804	Pathogenic
 12-102852935-C-A	102805	Pathogenic
-1-226986598-C-A	214050	Conflicting classifications of pathogenicity
+12-102852934-GC-G	102806	Pathogenic
+19-11106588-G-A	200920	Pathogenic
+19-11120522-G-T	225183	Pathogenic/Likely pathogenic
 19-11100236-C-G	226304	Pathogenic
 19-11105243-G-T	226320	Pathogenic/Likely pathogenic
+19-11120522-G-C	226386	Likely pathogenic
 19-11105243-G-A	237872	Pathogenic
 19-11100236-C-A	251009	Pathogenic/Likely pathogenic
-19-11100236-C-T	251010	Benign
 19-11105243-GAGTTTCGCTGCCACGA-G	251160	Pathogenic
+19-11105366-C-T	251237	Pathogenic/Likely pathogenic
+19-11106588-G-T	251422	Pathogenic
+19-11113314-A-T	251740	Likely pathogenic
+19-11116110-G-T	251930	Likely pathogenic
+19-11116136-GA-G	251941	Pathogenic
 19-11116143-G-C	251946	Pathogenic/Likely pathogenic
+19-11116144-G-T	251947	Pathogenic/Likely pathogenic
+19-11116880-A-C	251998	Likely pathogenic
+19-11116880-A-G	251999	Pathogenic/Likely pathogenic
+19-11116910-CA-C	252020	Pathogenic
+19-11120522-G-A	252233	Likely pathogenic
 18-45928961-G-A	267454	Pathogenic
 13-23320639-T-C	281085	Pathogenic/Likely pathogenic
-7-87440230-T-C	291252	Conflicting classifications of pathogenicity
 17-80210898-C-T	325835	Pathogenic/Likely pathogenic
-19-11113313-G-C	373430	Uncertain significance
+17-7220794-TAA-T	371068	Likely pathogenic
+19-11116138-AAG-A	403642	Pathogenic
 17-7673767-C-T	420133	Pathogenic/Likely pathogenic
+19-11105364-TC-T	426401	Likely pathogenic
+19-11100234-T-C	440540	Pathogenic/Likely pathogenic
+19-11105242-C-CG	440560	Pathogenic
+19-11107414-C-CT	440608	Pathogenic
+19-11116110-G-A	440653	Pathogenic
+17-7673557-TC-T	492744	Likely pathogenic
+2-98396449-C-T	497256	Pathogenic
+16-2093972-AC-A	522418	Pathogenic
 11-112233517-G-A	556230	Pathogenic/Likely pathogenic
 11-112233517-G-T	555399	Pathogenic/Likely pathogenic
-16-8801856-G-A	555844	Conflicting classifications of pathogenicity
 15-40206403-C-T	581252	Pathogenic
 6-32041097-G-A	585750	Pathogenic
 5-149028381-C-A	620528	Pathogenic
 10-75028911-G-T	620340	Pathogenic
-8-142877169-G-A	632517	Conflicting classifications of pathogenicity
+1-179551396-T-A	635511	Pathogenic
 4-119271418-C-T	694481	Pathogenic
+6-32041092-G-GC	800608	Likely pathogenic
+6-104777077-G-T	802254	Pathogenic
 2-32064195-C-T	805513	Pathogenic
-16-56872740-C-T	805468	Conflicting classifications of pathogenicity
 1-179551397-C-A	863810	Pathogenic
 1-94010872-G-A	853893	Pathogenic/Likely pathogenic
-1-226986598-C-T	872624	Conflicting classifications of pathogenicity
+17-7673763-TCCTC-T	849951	Pathogenic
 17-17793795-C-T	870996	Pathogenic
+19-11100234-TGC-CGT	921285	Likely pathogenic
+2-98396504-G-A	944471	Pathogenic
 10-119651783-G-A	949224	Pathogenic/Likely pathogenic
 7-65960973-C-T	936585	Pathogenic
 20-3237570-G-T	941893	Pathogenic
 1-94010872-G-T	957618	Likely pathogenic
-17-7673767-C-G	954095	Uncertain significance
 8-142879079-C-AG	970711	Pathogenic
-1-226986598-C-G	976102	Conflicting classifications of pathogenicity
 16-3026549-C-T	976677	Pathogenic
 1-94010872-G-C	978987	Pathogenic
+10-75029947-AC-A	981802	Likely pathogenic
 11-77162199-G-T	983797	Likely pathogenic
 6-32038514-C-A	988330	Pathogenic
 2-98396450-G-T	989367	Likely pathogenic
 15-89299900-C-T	1031096	Pathogenic/Likely pathogenic
 18-31409583-G-T	2067747	Pathogenic
-2-178677654-CTGGAAGG-C	1065517	Uncertain significance
+2-178557426-CTG-C	1066160	Likely pathogenic
 3-48590528-G-A	1075255	Pathogenic/Likely pathogenic
 6-7583068-C-T	1071031	Pathogenic
-4-3493222-C-T	1146790	Likely benign
 17-4742018-C-T	1244249	Pathogenic
 6-32041097-G-C	1264335	Pathogenic/Likely pathogenic
 15-64980971-G-A	1285233	Pathogenic/Likely pathogenic
 12-53321423-G-A	2735896	Pathogenic
+13-23295435-G-T	1323589	Pathogenic
 22-37974046-C-A	1329465	Likely pathogenic
-19-33411721-C-T	1394444	Uncertain significance
 1-179551397-C-T	1491797	Pathogenic/Likely pathogenic
 19-11113313-G-T	1371905	Pathogenic
+1-94008270-C-T	1511031	Likely pathogenic
+6-32041096-C-T	1455875	Pathogenic
 2-98396450-G-A	1477079	Likely pathogenic
 11-103133609-G-T	1451461	Pathogenic
 2-227702283-C-T	1454463	Pathogenic/Likely pathogenic
 8-142877169-G-T	1384166	Pathogenic/Likely pathogenic
+1-179551396-T-C	1346981	Likely pathogenic
+12-102852936-G-T	1484418	Likely pathogenic
 8-142879079-C-G	1458049	Pathogenic
+16-56872734-TC-T	1376757	Pathogenic
 3-133973750-C-T	1350810	Pathogenic
 9-37424868-C-A	1460348	Pathogenic
-16-67647599-C-A	1573612	Likely benign
 19-44949217-C-T	1685529	Pathogenic/Likely pathogenic
 13-23320639-T-G	1691313	Pathogenic/Likely pathogenic
+12-102852922-CACAGGTCGGAGGC-TACAGGTCGGAGG	1698575	Pathogenic
+16-2093974-C-T	1699513	Pathogenic
 7-155802980-G-A	1702788	Likely pathogenic
 10-13288398-T-A	1725332	Likely pathogenic
 18-46509802-G-A	1725975	Likely pathogenic
@@ -86,21 +116,23 @@ vcf_id	VariationID	ClinicalSignificance
 1-94103071-C-A	2019001	Likely pathogenic
 5-78128053-G-A	2088339	Pathogenic/Likely pathogenic
 16-67647599-C-T	2122854	Pathogenic
-1-155240701-A-G	2227653	Conflicting classifications of pathogenicity
+2-178635225-GAT-G	2135333	Likely pathogenic
 12-114366267-C-A	2442466	Pathogenic
-1-226986598-C-CA	2445844	Conflicting classifications of pathogenicity
+2-178557424-TTCTG-T	2451846	Likely pathogenic
 17-28534889-C-T	2498699	Pathogenic
+15-64980970-CG-C	2500987	Pathogenic
+6-32038513-C-T	2573056	Likely pathogenic
+6-32039405-C-G	2573057	Likely pathogenic
 19-33411721-C-A	2580569	Pathogenic
 12-13564432-C-A	2630296	Likely pathogenic
-4-3493222-CCTGGCTCCTAGAGACCACAGCCCCCCCTCACAGGGCAGCCCCGGCAACAGTGCGGCCAGGGACTCAGGCGGCCAGACGTCCGCCGGGTGTCCCTCTGG-C	2674891	Pathogenic/Likely pathogenic
 10-70598202-C-A	2678061	Pathogenic
 19-12897713-G-T	2675881	Likely pathogenic
-13-23320639-T-TA	2678708	Pathogenic
 17-80210898-CG-C	2678728	Likely pathogenic
 17-80210898-C-A	2678731	Likely pathogenic
 17-3499014-G-T	2678849	Pathogenic/Likely pathogenic
-17-44902415-G-A	2717591	Pathogenic
 2-169018052-G-T	2734333	Pathogenic
+16-66549946-CA-C	2744856	Pathogenic
+1-94010869-A-ATGGCAAACAGGTTCT	2733915	Pathogenic
 1-146019636-C-A	2733975	Pathogenic
 12-12179938-G-A	2754681	Pathogenic
 16-8801856-G-T	2764297	Pathogenic
@@ -110,44 +142,47 @@ vcf_id	VariationID	ClinicalSignificance
 16-66549945-C-T	2857173	Pathogenic
 10-98429615-C-A	2863653	Pathogenic
 5-13776473-C-T	2871903	Pathogenic
-7-87440230-T-A	2877108	Uncertain significance
 4-3493222-C-A	2925372	Pathogenic
+2-178590645-AG-A	2949604	Likely pathogenic
 2-178677654-C-A	2951862	Likely pathogenic
 6-26091583-C-T	2962260	Pathogenic
 10-99845756-C-T	2969650	Pathogenic
 22-42211753-G-A	3068389	Likely pathogenic
+19-11116139-AG-A	3075778	Pathogenic
+17-7673766-T-TCTGTGCGC	3148421	Pathogenic
 1-94010872-GC-G	3248939	Pathogenic
-1-155238215-T-A	3251365	Pathogenic/Likely pathogenic
+19-11105244-AGTTTC-T	3290402	Pathogenic
 19-13919166-C-T	3338662	Likely pathogenic
 1-93998031-G-A	3338800	Pathogenic
 2-227144556-G-C	3376587	Likely pathogenic
 1-158681655-C-A	3381051	Likely pathogenic
 7-128849516-A-T	3382750	Likely pathogenic
 7-155802980-GC-G	3384113	Pathogenic
-16-2093973-C-G	3579004	Uncertain significance
+1-179551188-GTCTT-G	3574188	Likely pathogenic
 6-79491722-G-A	3594148	Likely pathogenic
 5-143310160-G-A	3591819	Pathogenic
 12-80619392-C-T	3601706	Pathogenic/Likely pathogenic
 14-77444287-C-A	3639127	Pathogenic
-18-45928961-G-T	3643521	Likely benign
+2-227702284-C-T	3655415	Pathogenic/Likely pathogenic
+19-11116881-C-G	3655773	Pathogenic
 1-119759915-C-A	3693126	Pathogenic
-17-7673767-CTG-C	3764948	-
 12-121817055-C-A	3775684	Likely pathogenic
 6-104785169-C-A	3775928	Pathogenic
-17-28534889-C-G	3851414	Uncertain significance
-18-31409583-G-C	4015052	Uncertain significance
+19-11105363-TTCCAGTGCAACAGC-T	3895384	Pathogenic
 1-26438228-A-T	4065900	Likely pathogenic
 8-41690508-G-C	4081143	Pathogenic/Likely pathogenic
 8-142879079-C-T	4281647	Pathogenic
 16-2093973-C-T	4531197	Pathogenic
-6-32038514-C-G	4532963	Uncertain significance
 17-7220640-C-T	4720477	Pathogenic
+19-11116139-AGG-A	4721653	Pathogenic
 17-18314730-C-A	4728310	Pathogenic
 2-54659955-C-T	4733773	Pathogenic
 19-33411688-G-A	4771410	Pathogenic
 9-136198952-C-A	4772503	Pathogenic/Likely pathogenic
+10-75028904-A-AGAGGAAG	4813805	Pathogenic
 6-52024982-G-A	4816678	Likely pathogenic
 16-56872740-C-A	4818181	Likely pathogenic
 7-92517457-A-T	4818377	Likely pathogenic
-1-155240701-A-T	4817764	Likely pathogenic
+19-11100232-G-GA	4819958	Likely pathogenic
+10-75029785-C-CA	4838861	Pathogenic
 7-87440230-T-G	4846566	Likely pathogenic
