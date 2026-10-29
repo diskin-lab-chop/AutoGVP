@@ -112,6 +112,8 @@ vcf_separated <- vcf %>%
   separate_longer_delim(CSQ, delim = ",") %>%
   # separate `CSQ` fields into unique columns, named in `csq_cols`
   separate_wider_delim(CSQ, "|", names = csq_cols) %>%
+  # convert empty `Feature` (e.g. intergenic variants) to NA to match AutoGVP output
+  dplyr::mutate(Feature = na_if(Feature, "")) %>%
   # Select columns to retain
   dplyr::select(any_of(columns_to_retain)) %>%
   dplyr::select(-any_of(c(
