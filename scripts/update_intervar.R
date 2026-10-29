@@ -25,6 +25,11 @@ suppressPackageStartupMessages({
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
+# Get directory of currently running script and load shared variant id construction
+args <- commandArgs(trailingOnly = FALSE)
+script_dir <- dirname(normalizePath(sub("--file=", "", args[grep("--file=", args)])))
+source(file.path(script_dir, "util", "variant_ids.R"))
+
 # parse parameters
 option_list <- list(
   make_option(c("--intervar_file"),
@@ -148,7 +153,7 @@ vep_missense_df <- vroom::vroom(
   show_col_types = FALSE
 ) %>%
   dplyr::transmute(
-    chr_norm = str_remove(`#CHROM`, "^chr"),
+    chr_norm = normalize_chrom(`#CHROM`),
     Start = as.numeric(POS),
     Ref = REF,
     Alt = ALT,
@@ -208,7 +213,7 @@ intervar_missense_df <- intervar_df %>%
         "PM=\\[[01],\\s*[01],\\s*[01],\\s*[01],\\s*([01])"
       )[, 2]
     ),
-    chr_norm = str_remove(`#Chr`, "^chr"),
+    chr_norm = normalize_chrom(`#Chr`),
     var_id = paste(chr_norm, format(Start, scientific = FALSE, trim = TRUE), Ref, Alt, sep = "-")
   ) %>%
   dplyr::select(
@@ -239,7 +244,7 @@ clinvar_plp_df <- clinvar_df %>%
   ) %>%
   dplyr::transmute(
     ClinVar_VariationID = VariationID,
-    clinvar_chr = str_remove(chr_clinvar, "^chr"),
+    clinvar_chr = normalize_chrom(chr_clinvar),
     clinvar_pos = Start_clinvar,
     clinvar_var_id = paste(
       clinvar_chr,

@@ -29,6 +29,7 @@ options(scipen = 999)
 args <- commandArgs(trailingOnly = FALSE)
 script_path <- sub("--file=", "", args[grep("--file=", args)])
 script_dir <- dirname(normalizePath(script_path))
+source(file.path(script_dir, "util", "variant_ids.R"))
 
 # parse parameters
 option_list <- list(
@@ -87,8 +88,7 @@ names(vcf) <- sub(".*]", "", names(vcf))
 
 # create `vcf_id` column to match with AutoGVP output, and rm `ANN` column
 vcf <- vcf %>%
-  dplyr::mutate(vcf_id = glue::glue("{CHROM}-{POS}-{REF}-{ALT}")) %>%
-  dplyr::mutate(vcf_id = str_replace_all(vcf_id, "chr", "")) %>%
+  dplyr::mutate(vcf_id = make_variant_id(CHROM, POS, REF, ALT)) %>%
   select(-any_of(c("ANN")))
 
 # Read in VEP CSQ field names

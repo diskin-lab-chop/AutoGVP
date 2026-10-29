@@ -22,6 +22,11 @@ suppressPackageStartupMessages({
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
+# Get directory of currently running script and load shared variant id construction
+args <- commandArgs(trailingOnly = FALSE)
+script_dir <- dirname(normalizePath(sub("--file=", "", args[grep("--file=", args)])))
+source(file.path(script_dir, "util", "variant_ids.R"))
+
 # parse parameters
 option_list <- list(
   make_option(c("--variant_summary"),
@@ -92,8 +97,7 @@ variant_summary_df <- vroom(input_variant_summary,
   ) %>%
   # add vcf id column
   dplyr::mutate(
-    vcf_id = str_remove_all(paste(Chromosome, "-", PositionVCF, "-", ReferenceAlleleVCF, "-", AlternateAlleleVCF), " "),
-    vcf_id = str_replace_all(vcf_id, "chr", ""),
+    vcf_id = make_variant_id(Chromosome, PositionVCF, ReferenceAlleleVCF, AlternateAlleleVCF),
     VariationID = as.double(noquote(VariationID)),
     LastEvaluated = case_when(
       LastEvaluated == "-" ~ NA_character_,
