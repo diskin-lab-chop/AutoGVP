@@ -164,16 +164,19 @@ merged_df <- autogvp %>%
     TRUE ~ NA_character_
   ))
 
+# Report missing gnomAD annotations (".") as NA rather than 0
+merged_df <- merged_df %>%
+  dplyr::mutate(across(
+    starts_with("gnomad") & where(is.character),
+    ~ dplyr::na_if(.x, ".")
+  ))
+
 # Change `gnomad_3_1_1_AF_non_cancer_popmax` to numeric, when present
 if ("gnomad_3_1_1_AF_non_cancer_popmax" %in% names(merged_df)) {
   merged_df <- merged_df %>%
     dplyr::mutate(
       gnomad_3_1_1_AF_non_cancer_popmax =
-        as.numeric(dplyr::na_if(as.character(gnomad_3_1_1_AF_non_cancer_popmax), "."))
-    ) %>%
-    dplyr::mutate(
-      gnomad_3_1_1_AF_non_cancer_popmax =
-        tidyr::replace_na(gnomad_3_1_1_AF_non_cancer_popmax, 0)
+        as.numeric(gnomad_3_1_1_AF_non_cancer_popmax)
     )
 }
 
