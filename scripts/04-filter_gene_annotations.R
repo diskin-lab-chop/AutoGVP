@@ -169,16 +169,12 @@ merged_df <- merged_df %>%
   dplyr::mutate(across(
     starts_with("gnomad") & where(is.character),
     ~ dplyr::na_if(.x, ".")
+  )) %>%
+  # gnomAD FILTER values of "MISSING" indicate variant absent from gnomAD
+  dplyr::mutate(across(
+    starts_with("gnomad") & ends_with("FILTER") & where(is.character),
+    ~ dplyr::na_if(.x, "MISSING")
   ))
-
-# Change `gnomad_3_1_1_AF_non_cancer_popmax` to numeric, when present
-if ("gnomad_3_1_1_AF_non_cancer_popmax" %in% names(merged_df)) {
-  merged_df <- merged_df %>%
-    dplyr::mutate(
-      gnomad_3_1_1_AF_non_cancer_popmax =
-        as.numeric(gnomad_3_1_1_AF_non_cancer_popmax)
-    )
-}
 
 # Reformat HGVSc and HGVSp columns, when present, to remove gene IDs
 if ("HGVSc" %in% names(merged_df)) {
