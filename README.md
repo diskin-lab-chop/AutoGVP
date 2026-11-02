@@ -81,7 +81,7 @@ bash run_autogvp.sh \
 --hgvs4variation_file=data/hgvsv4variation-YYYY-MM.txt.gz \
 --outdir=results \
 --out="test_custom" \
---selected_clinvar_submissions=refs/resolved-clinvar-YYYY-MM.tsv \
+--resolved_clinvar=refs/resolved-clinvar-YYYY-MM.tsv \
 --variant_summary=data/variant_summary_YYYY-MM.txt.gz \
 --submission_summary=data/submission_summary_YYYY-MM.txt.gz \
 --conceptIDs=refs/clinvar_<concept_cat>_concept_ids_YYYYMMDD.txt \
@@ -111,7 +111,7 @@ bash run_autogvp.sh \
 --hgvs4variation_file=data/hgvsv4variation-2026-07.txt.gz \
 --outdir=results \
 --out="test_pbta" \
---selected_clinvar_submissions=refs/resolved-clinvar-YYYY-MM.tsv \
+--resolved_clinvar=refs/resolved-clinvar-YYYY-MM.tsv \
 --variant_summary=data/variant_summary_YYYY-MM.txt.gz \
 --submission_summary=data/submission_summary_YYYY-MM.txt.gz \
 --conceptIDs=refs/clinvar_<concept_cat>_concept_ids_YYYYMMDD.txt \
