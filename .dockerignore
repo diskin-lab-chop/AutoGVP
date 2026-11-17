@@ -1,0 +1,15 @@
+# Repository metadata and local configuration
+.git
+.github
+.aws
+.env
+.env.*
+**/.DS_Store
+**/.DS_store
+**/.Rhistory
+**/.RData
+**/.Renviron
+
+# Generated results; retain the directory placeholder
+results/*
+!results/.gitignore
