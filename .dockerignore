@@ -1,0 +1,19 @@
+# Repository metadata and local configuration
+.git
+.github
+.aws
+.env
+.env.*
+**/.DS_Store
+**/.Rhistory
+**/.RData
+**/.Renviron
+
+# Generated results; retain the directory placeholder
+results/*
+!results/.gitignore
+
+# Ignore data dir, but keep necessary files
+data/*
+!data/output_colnames_default.tsv
+!data/test_pbta*

@@ -25,14 +25,14 @@ RUN R -e "BiocManager::install(version = '3.19', ask = FALSE)"
 # install R packages
 RUN R -e 'BiocManager::install(c( \
     "Biobase", \
-    "BiocManager", \
     "lubridate", \
     "optparse", \
-    "vcfR", \
-    "vroom" \
+    "vcfR" \
 ))' 
-    
+
+RUN R -e "install.packages('pak', dependencies=TRUE); pak::pkg_install('url::https://github.com/tidyverse/vroom/archive/refs/tags/v1.7.1.tar.gz', ask = FALSE); remove.packages('pak')"
+
 # AutoGVP
-RUN git clone https://github.com/diskin-lab-chop/AutoGVP.git
+COPY . /rocker-build/AutoGVP/
 
 ADD Dockerfile .
